@@ -1,0 +1,13 @@
+Source,Gear,Data,DataType,YearStart,YearEnd
+Roe gillnet fishery,,Catch,,1972,
+Roe seine fishery,,Catch,,1972,
+Other fisheries,,Catch,,1951,
+Test fishery,seine,Biological,number-at-age,1975,
+Test fishery,seine,Biological,weight-at-age,1975,
+Roe seine fishery,,Biological,number-at-age,1972,
+Roe seine fishery,,Biological,weight-at-age,1972,
+Roe gillnet fishery,,Biological,number-at-age,1972,
+Other fisheries,,Biological,number-at-age,1951,
+Other fisheries,,Biological,weight-at-age,1951,
+Surface survey,,Abundance,spawn index,1951,1987
+Dive survey,,Abundance,spawn index,1988,

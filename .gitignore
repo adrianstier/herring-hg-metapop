@@ -1,0 +1,41 @@
+# R
+.Rhistory
+.RData
+.Rproj.user/
+*.RData
+*.rds
+
+# renv
+renv/library/
+renv/staging/
+renv/cellar/
+
+# Large model output (regenerable)
+Output/posteriors/*.RData
+Output/posteriors/*.rds
+Output/posteriors/*.csv
+
+# Legacy posteriors (diagnostic PDFs, regenerable)
+Code/legacy-2019/Posteriors/
+
+# Generated figures
+Output/figures/*.png
+Output/figures/*.pdf
+Output/*.pdf
+
+# Literature PDFs (too large for git, stored on Google Drive)
+Literature/
+!Literature/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Stan
+*.exe
+*.o
+*.so
+*.dll
+
+# Temporary
+_temp*.pptx

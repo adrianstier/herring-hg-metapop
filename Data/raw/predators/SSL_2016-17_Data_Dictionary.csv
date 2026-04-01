@@ -1,0 +1,35 @@
+﻿Steller Sea Lion Haulout Counts in British Columbia,,,
+Data Dictionary,,,
+Field Name,Field Type,Field Description,Coded Values
+Objectid,ObjectId,Unique id field,
+Complex,Text,"Simplified site name (rolls-up individual rocks within a site, matches historical names, etc)",
+Regioncode,Text,Generalized areas along the British Columbia coast are included to facilitate geographic sorting if required,"SOG = Strait of Georgia, CMC = Central Mainland Coast, HG = Haida Gwaii, JQCS = Johnstone & Queen Charlotte Straits, NMC = North Mainland Coast, WCVI = West Coast Vancouver Island, SI = Scott Islands"
+Sitetype,Text,Describes the recurrence/use of the rookery and haulout ,"R = Rookery: Near continuous occupation, > 50 pups born annually, observed sex structure during breeding season; Y = Year-round haulout: Near continuous occupation, even during breeding season and/or summer; W = Winter: Occupation limited to mid-October through mid-April; Swm = Swimmers: Groups of swimming animals not associated with a haul-out at the time of the survey"
+Longitude,Float,Longitude in decimal degrees (WGS 84),
+Latitude,Float,Latitude in decimal degrees (WGS 84),
+Year,Integer,Year of survey,
+Season,Text,Season of survey,"‘Winter’, ‘Summer’, ‘Fall’"
+Species,Text,Pinniped species,Steller = Steller’s sea lion
+Pup,Integer,Raw survey count of animals classified as pups/young-of-the-year (note: pups can only be distinguished during ‘Summer’ and ‘Fall’ surveys within a few months of birth; they cannot be distinguished from juveniles in the ‘Winter’ surveys.,
+Nonpup,Integer,Raw survey count of animals classified as juveniles or adults (note: can only be separated from pups during ‘Summer’ & ‘Fall surveys.,
+Total,Integer,Sum of pup and non-pup counts in the ‘Summer’ and ‘Fall’ season OR the total count of all animals (non-categorized) in the ‘Winter’ season.,
+Shape,Geometry,Geospatial field defining a geometry as one or more ordered coordinates.,
+,,,
+,,,
+,,,
+ Nombre d'otaries de Steller en Colombie-Britannique,,,
+Dictionnaire des données,,,
+Nom du champ,Type de champ,Description du champ,Valeurs codées
+Objectid,ObjectId,Champ d'identification unique,
+Complex,Texte,"Simplification du nom du site (pour regrouper les roches d'un site, faire correspondre les noms historiques, etc.)",
+Regioncode,Texte,"Des zones généralisées le long de la côte de la Colombie-Britannique sont incluses pour faciliter le tri géographique, si nécessaire.","SOG = Détroit de Géorgie, CMC = Côte centrale du continent, HG = Haida Gwaii, JQCS = Détroits de Johnstone et de la Reine-Charlotte, NMC = Côte nord du continent, WCVI = Côte ouest de l'île de Vancouver, SI = Îles Scott"
+Sitetype,Texte,Décrit la récurrence/l'utilisation des roqueries et des échoueries.,"R = Roqueries : Occupation quasi continue, > 50 petits nés annuellement, structure sexuelle observée pendant la saison de reproduction ; Y = échouerie toute l'année : occupation quasi continue, même pendant la saison de reproduction et/ou l'été ; W = hiver : Occupation limitée à la période allant de la mi-octobre à la mi-avril ; Swm = Nageurs : Groupes d'animaux nageurs non associés à une échouerie au moment de l'étude."
+Longitude,Flottant,Longitude en degrés décimaux (WGS 84),
+Latitude,Flottant,Latitude en degrés décimaux (WGS 84),
+Year,Entier,Année du relevé,
+Season,Texte,Saison du relevé,"Hiver, Été, Automne "
+Species,Texte,Espèces de pinnipèdes,Steller =otaries de Steller 
+Pup,Entier,"Nombre brut d'animaux classés comme petits/jeunes de l'année (note : les petits ne peuvent être distingués que lors des relevés d'été et d'automne, quelques mois après leur naissance ; ils ne peuvent pas être distingués des jeunes lors des relevés d'hiver).",
+Nonpup,Entier,Nombre brut d'animaux classés comme jeunes ou adultes (note : on ne peut les distinguer des petits que pendant les relevés d'été et d'automne).,
+Total,Entier,Somme du nombre des petits et des non-petits au cours des saisons d'été et d'automne OU nombre total de tous les animaux (non classés) au cours de la saison d'hiver.,
+Shape,Géométrie,Champ géospatial définissant une géométrie sous la forme d'une ou plusieurs coordonnées ordonnées,
