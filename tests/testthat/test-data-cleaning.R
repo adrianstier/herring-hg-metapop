@@ -15,10 +15,14 @@ library(janitor)
 source(here("R", "00_setup.R"))
 source(here("R", "01_data_cleaning.R"))
 source(here("R", "02_prepare_model_data.R"))
+source(here("R", "03_fit_model.R"))
+source(here("R", "08_occupancy_model.R"))
+source(here("R", "09_zero_inflated_obs.R"))
+source(here("R", "10_spatial_data.R"))
 
 # ── Paths to test data ──
 path_spawn_legacy <- here("Data", "raw", "legacy-2019", "HG_Spawn_Survey_1940_2015.csv")
-path_spawn_new    <- here("Data", "raw", "dfo-spawn", "HG_spawn_index_by_section_1951_2025.csv")
+path_spawn_new    <- here("Data", "processed", "HG_Spawn_Survey_1951_2025_all_sections.csv")
 path_catch_legacy <- here("Data", "raw", "legacy-2019", "herring_catch_local2015.csv")
 path_catch_new    <- here("Data", "raw", "dfo-catch", "herring_catch_local2024.csv")
 path_pdo_legacy   <- here("Data", "raw", "legacy-2019", "pdo.csv")
@@ -30,7 +34,9 @@ path_seal         <- here("Data", "raw", "predators",
 path_whale        <- here("Data", "raw", "predators",
                           "humpback_whale_NorthPacific_abundance_Cheeseman2024.csv")
 path_sst          <- here("Data", "raw", "environmental",
-                          "oisst_haida_gwaii_monthly_2014_2022.csv")
+                          "oisst_haida_gwaii_monthly_regional_avg_2014_2025.csv")
+path_distance_xlsx <- here("Data", "raw",
+                           "Euclidean & effective distance matrices herring & Steller.xlsx")
 
 # ============================================================================
 # clean_spawn
@@ -57,18 +63,30 @@ test_that("clean_spawn returns correct dimensions", {
   expect_equal(nrow(spawn$long), N_YEARS * N_SITES)
 })
 
-test_that("clean_spawn converts zeros to NA", {
+test_that("clean_spawn preserves surveyed zeros and logs positives only", {
   spawn <- clean_spawn(path_spawn_legacy, path_spawn_new)
 
-  # The long tibble should have NAs where spawn_index was 0
-  zero_rows <- spawn$long |> filter(is.na(spawn_index) | spawn_index == 0)
-  nonzero_rows <- spawn$long |> filter(!is.na(spawn_index) & spawn_index > 0)
+  expect_true(all(c("totalrecords", "surveyed", "positive_spawn", "survey_status") %in%
+                    names(spawn$long)))
 
-  # All zero spawn_index values should be NA in the cleaned data
+  zero_rows <- spawn$long |>
+    filter(survey_status == "censored_zero")
+  nonzero_rows <- spawn$long |>
+    filter(survey_status == "positive")
+  missing_rows <- spawn$long |>
+    filter(survey_status == "missing")
+
+  # Surveyed zeros remain explicit in the long data and are censored on log scale.
+  expect_gt(nrow(zero_rows), 0)
+  expect_true(all(zero_rows$surveyed))
+  expect_true(all(zero_rows$spawn_index == 0))
   expect_true(all(is.na(zero_rows$log_shi)))
 
-  # Non-zero values should not be NA in log_shi
+  # Positive values are the only cells with finite log-SHI.
+  expect_true(all(nonzero_rows$spawn_index > 0))
   expect_true(all(!is.na(nonzero_rows$log_shi)))
+  expect_true(all(!missing_rows$surveyed))
+  expect_true(all(is.na(missing_rows$log_shi)))
 
   # The wide matrix should have NO exact zeros (they should all be NA)
   non_na_values <- spawn$wide[!is.na(spawn$wide)]
@@ -216,26 +234,34 @@ test_that("build_survey_index returns correct length and values", {
   q_idx <- build_survey_index()
 
   expect_length(q_idx, N_YEARS)
-  expect_true(all(q_idx %in% c(1L, 2L)))
+  expect_true(all(q_idx %in% c(1L, 2L, 3L)))
 
-  # Surface surveys before transition year
-  n_surface <- sum(YEARS < SURVEY_TRANSITION_YEAR)
+  # Surface surveys before the mixed transition
+  n_surface <- sum(YEARS < SURVEY_MIXED_START_YEAR)
   expect_equal(sum(q_idx == 1L), n_surface)
 
-  # Dive surveys from transition year onward
-  n_dive <- sum(YEARS >= SURVEY_TRANSITION_YEAR)
-  expect_equal(sum(q_idx == 2L), n_dive)
+  # Mixed transition years
+  n_mixed <- sum(YEARS >= SURVEY_MIXED_START_YEAR & YEARS < SURVEY_DIVE_START_YEAR)
+  expect_equal(sum(q_idx == 2L), n_mixed)
+
+  # Dive-dominant years
+  n_dive <- sum(YEARS >= SURVEY_DIVE_START_YEAR)
+  expect_equal(sum(q_idx == 3L), n_dive)
 })
 
 test_that("build_survey_index transition is at correct year", {
   q_idx <- build_survey_index()
 
-  # 1987 should be surface (1), 1988 should be dive (2)
-  idx_1987 <- which(YEARS == 1987L)
-  idx_1988 <- which(YEARS == 1988L)
+  # 1989 should be surface (1), 1990-1992 mixed (2), 1993 dive (3)
+  idx_1989 <- which(YEARS == 1989L)
+  idx_1990 <- which(YEARS == 1990L)
+  idx_1992 <- which(YEARS == 1992L)
+  idx_1993 <- which(YEARS == 1993L)
 
-  expect_equal(q_idx[idx_1987], 1L)
-  expect_equal(q_idx[idx_1988], 2L)
+  expect_equal(q_idx[idx_1989], 1L)
+  expect_equal(q_idx[idx_1990], 2L)
+  expect_equal(q_idx[idx_1992], 2L)
+  expect_equal(q_idx[idx_1993], 3L)
 })
 
 
@@ -253,9 +279,11 @@ test_that("prepare_model_data (format='stan') assembles valid Stan data list", {
   expect_type(model_data, "list")
 
   # Check all Stan-format components are present
-  expected_names <- c("N_years", "N_sites", "Y", "Y_obs", "pdo", "q_idx",
+  expected_names <- c("N_years", "N_sites", "Y", "Y_obs", "Y_censored",
+                      "Y_missing", "Y_obs_flag", "Y_censored_flag",
+                      "Y_missing_flag", "pdo", "q_idx",
                       "N_catch", "catch_row", "catch_col", "log_catch",
-                      "N_zero", "zero_row", "zero_col")
+                      "N_zero", "zero_row", "zero_col", "prior_only")
   expect_true(all(expected_names %in% names(model_data)))
 
   # Verify dimensions
@@ -263,6 +291,8 @@ test_that("prepare_model_data (format='stan') assembles valid Stan data list", {
   expect_equal(model_data$N_sites, N_SITES)
   expect_equal(dim(model_data$Y), c(N_YEARS, N_SITES))
   expect_equal(dim(model_data$Y_obs), c(N_YEARS, N_SITES))
+  expect_equal(dim(model_data$Y_censored), c(N_YEARS, N_SITES))
+  expect_equal(dim(model_data$Y_missing), c(N_YEARS, N_SITES))
   expect_equal(length(model_data$pdo), N_YEARS)
   expect_equal(length(model_data$q_idx), N_YEARS)
 
@@ -271,6 +301,13 @@ test_that("prepare_model_data (format='stan') assembles valid Stan data list", {
 
   # Y_obs should be binary (0 or 1)
   expect_true(all(model_data$Y_obs %in% c(0L, 1L)))
+  expect_true(all(model_data$Y_censored %in% c(0L, 1L)))
+  expect_true(all(model_data$Y_missing %in% c(0L, 1L)))
+  expect_true(all(model_data$Y_obs + model_data$Y_censored + model_data$Y_missing == 1L))
+  expect_gt(sum(model_data$Y_censored), 0)
+  expect_identical(model_data$Y_obs_flag, model_data$Y_obs)
+  expect_identical(model_data$Y_censored_flag, model_data$Y_censored)
+  expect_identical(model_data$Y_missing_flag, model_data$Y_missing)
 
   # catch_row and catch_col should have length N_catch
   expect_equal(length(model_data$catch_row), model_data$N_catch)
@@ -308,7 +345,8 @@ test_that("prepare_model_data (format='jags') assembles valid JAGS data list", {
   expect_type(model_data, "list")
 
   # Check all JAGS-format components are present
-  expected_names <- c("Y", "nYears", "nSites", "pdo", "ctab",
+  expected_names <- c("Y", "Y_clean", "Y_obs", "Y_censored", "Y_missing",
+                      "nYears", "nSites", "pdo", "ctab",
                       "INDEX", "INDEX.zero", "nIndex", "nIndex.zero", "q_idx")
   expect_true(all(expected_names %in% names(model_data)))
 
@@ -316,6 +354,10 @@ test_that("prepare_model_data (format='jags') assembles valid JAGS data list", {
   expect_equal(model_data$nYears, N_YEARS)
   expect_equal(model_data$nSites, N_SITES)
   expect_equal(dim(model_data$Y), c(N_YEARS, N_SITES))
+  expect_equal(dim(model_data$Y_clean), c(N_YEARS, N_SITES))
+  expect_equal(dim(model_data$Y_obs), c(N_YEARS, N_SITES))
+  expect_equal(dim(model_data$Y_censored), c(N_YEARS, N_SITES))
+  expect_true(all(model_data$Y_obs + model_data$Y_censored + model_data$Y_missing == 1L))
   expect_equal(dim(model_data$ctab), c(N_YEARS, N_SITES))
   expect_equal(length(model_data$pdo), N_YEARS)
   expect_equal(length(model_data$q_idx), N_YEARS)
@@ -344,6 +386,120 @@ test_that("prepare_model_data appends predators when provided", {
 
   expect_true("predators" %in% names(model_data))
   expect_equal(nrow(model_data$predators), N_YEARS)
+})
+
+test_that("prepare_model_data appends spatial predator data with current names", {
+  skip_if_not(
+    file.exists(path_ssl) && file.exists(path_seal) &&
+      file.exists(path_whale) && file.exists(path_distance_xlsx),
+    "Spatial predator input files not found"
+  )
+
+  spawn <- clean_spawn(path_spawn_legacy, path_spawn_new)
+  catch <- clean_catch(path_catch_legacy, path_catch_new)
+  pdo   <- clean_pdo(path_pdo_legacy, path_pdo_ext)
+  pred  <- clean_predators(path_ssl, path_seal, path_whale)
+  D     <- load_distance_matrix(path_distance_xlsx)
+  cent  <- get_spawn_centroids(path_spawn_new, path_distance_xlsx)
+
+  predator_spatial <- build_predator_spatial_index(
+    ssl_data  = read_csv(path_ssl, show_col_types = FALSE),
+    seal_data = read_csv(path_seal, show_col_types = FALSE,
+                         locale = locale(encoding = "latin1")),
+    spawn_coords = cent,
+    distance_decay_km = 50
+  )
+
+  model_data <- prepare_model_data(
+    spawn = spawn,
+    catch = catch,
+    pdo = pdo,
+    predators = pred,
+    spatial = TRUE,
+    distance_matrix = D,
+    predator_spatial = predator_spatial
+  )
+
+  expect_true(all(c("dist_mat", "max_dist", "ssl_spatial", "seal_spatial",
+                    "whale_obs", "pred_obs") %in% names(model_data)))
+  expect_equal(dim(model_data$dist_mat), c(N_SITES, N_SITES))
+  expect_equal(dim(model_data$ssl_spatial), c(N_YEARS, N_SITES))
+  expect_equal(dim(model_data$seal_spatial), c(N_YEARS, N_SITES))
+  expect_equal(length(model_data$whale_obs), N_YEARS)
+  expect_equal(length(model_data$pred_obs), N_YEARS)
+})
+
+test_that(".build_stan_input maps version-specific fields correctly", {
+  skip_if_not(
+    file.exists(path_ssl) && file.exists(path_seal) &&
+      file.exists(path_whale) && file.exists(path_distance_xlsx),
+    "Stan input files not found"
+  )
+
+  spawn <- clean_spawn(path_spawn_legacy, path_spawn_new)
+  catch <- clean_catch(path_catch_legacy, path_catch_new)
+  pdo   <- clean_pdo(path_pdo_legacy, path_pdo_ext)
+  pred  <- clean_predators(path_ssl, path_seal, path_whale)
+  D     <- load_distance_matrix(path_distance_xlsx)
+  cent  <- get_spawn_centroids(path_spawn_new, path_distance_xlsx)
+
+  predator_spatial <- build_predator_spatial_index(
+    ssl_data  = read_csv(path_ssl, show_col_types = FALSE),
+    seal_data = read_csv(path_seal, show_col_types = FALSE,
+                         locale = locale(encoding = "latin1")),
+    spawn_coords = cent,
+    distance_decay_km = 50
+  )
+
+  model_base <- prepare_model_data(spawn, catch, pdo, predators = pred)
+  model_spatial <- prepare_model_data(
+    spawn = spawn,
+    catch = catch,
+    pdo = pdo,
+    predators = pred,
+    spatial = TRUE,
+    distance_matrix = D,
+    predator_spatial = predator_spatial
+  )
+
+  v1_input <- .build_stan_input(model_base, "v1")
+  m2_input <- .build_stan_input(model_spatial, "m2")
+  m5_input <- .build_stan_input(model_spatial, "m5")
+  m6_input <- .build_stan_input(model_spatial, "m6")
+
+  expect_true("prior_only" %in% names(v1_input))
+  expect_true(all(c("dist_mat", "max_dist") %in% names(m2_input)))
+  expect_equal(length(m5_input$seal), N_YEARS)
+  expect_equal(length(m5_input$ssl), N_YEARS)
+  expect_equal(dim(m6_input$seal), c(N_YEARS, N_SITES))
+  expect_equal(dim(m6_input$ssl), c(N_YEARS, N_SITES))
+  expect_equal(length(m6_input$whale_obs), N_YEARS)
+  expect_equal(length(m6_input$pred_obs), N_YEARS)
+})
+
+test_that("prepare_stan_data_spatial appends validated distance data and masks", {
+  skip_if_not(file.exists(path_distance_xlsx), "Distance matrix file not found")
+
+  stan_data <- list(
+    N_years = N_YEARS,
+    N_sites = N_SITES,
+    whale = rep(c(0, 1), length.out = N_YEARS),
+    ssl = matrix(0, nrow = N_YEARS, ncol = N_SITES),
+    seal = matrix(0, nrow = N_YEARS, ncol = N_SITES)
+  )
+  stan_data$ssl[1, 1] <- 1
+  stan_data$seal[2, 1] <- 1
+
+  out <- prepare_stan_data_spatial(stan_data, distance_type = "effective")
+
+  expect_true(all(c("dist_mat", "max_dist", "whale_obs", "pred_obs") %in% names(out)))
+  expect_equal(dim(out$dist_mat), c(N_SITES, N_SITES))
+  expect_equal(length(out$whale_obs), N_YEARS)
+  expect_equal(length(out$pred_obs), N_YEARS)
+  expect_equal(out$whale_obs[1], 0L)
+  expect_equal(out$whale_obs[2], 1L)
+  expect_equal(out$pred_obs[1], 1L)
+  expect_equal(out$pred_obs[2], 1L)
 })
 
 
@@ -377,17 +533,19 @@ test_that("clean_sst has correct year range and no NA in years", {
 })
 
 test_that("clean_sst handles multiple paths", {
-  path_sst2 <- here("Data", "raw", "environmental",
-                     "oisst_haida_gwaii_monthly_2023_2025.csv")
-  skip_if_not(file.exists(path_sst) && file.exists(path_sst2),
-              "SST data files not found")
+  skip_if_not(file.exists(path_sst), "SST data file not found")
 
-  sst <- clean_sst(c(path_sst, path_sst2))
+  raw_sst <- read_csv(path_sst, show_col_types = FALSE)
+  tmp1 <- tempfile(fileext = ".csv")
+  tmp2 <- tempfile(fileext = ".csv")
+  write_csv(raw_sst |> slice(1:(nrow(raw_sst) %/% 2)), tmp1)
+  write_csv(raw_sst |> slice((nrow(raw_sst) %/% 2 + 1):n()), tmp2)
+
+  sst <- clean_sst(c(tmp1, tmp2))
 
   expect_s3_class(sst, "tbl_df")
-  # Should have more years than single-file version
   sst_single <- clean_sst(path_sst)
-  expect_gte(nrow(sst), nrow(sst_single))
+  expect_equal(sst, sst_single)
 })
 
 
@@ -434,4 +592,41 @@ test_that("clean_predators has no unexpected NAs in year column", {
 
   # Predator counts may have NAs (survey gaps), but year must be complete
   expect_equal(length(pred$year), N_YEARS)
+})
+
+
+# ============================================================================
+# prepare_occupancy_data
+# ============================================================================
+
+test_that("prepare_occupancy_data includes post-2015 survey effort", {
+  spawn <- clean_spawn(path_spawn_legacy, path_spawn_new)
+
+  occ <- prepare_occupancy_data(
+    spawn_clean = spawn,
+    path_legacy = path_spawn_legacy,
+    path_new    = path_spawn_new
+  )
+
+  post_2015_idx <- which(YEARS >= 2016L)
+  expect_gt(sum(occ$surveyed[post_2015_idx, ]), 0)
+})
+
+test_that("prepare_censored_data includes post-2015 survey effort", {
+  spawn <- clean_spawn(path_spawn_legacy, path_spawn_new)
+
+  censored <- prepare_censored_data(
+    spawn_clean = spawn,
+    path_legacy = path_spawn_legacy,
+    path_new    = path_spawn_new
+  )
+
+  post_2015_idx <- which(YEARS >= 2016L)
+  expect_gt(
+    sum(censored$Y_observed[post_2015_idx, ] + censored$Y_censored[post_2015_idx, ]),
+    0
+  )
+  expect_true(all(
+    censored$Y_observed + censored$Y_censored + censored$Y_missing == 1L
+  ))
 })

@@ -1,8 +1,13 @@
 # Analysis Plan: Herring Metapopulation Dynamics at Haida Gwaii
 
+> Note
+> This file mixes early planning notes with implementation details.
+> For the current maintained map from theory to cleaned data to Stan inputs, read [`docs/theory-data-model-integration.md`](/Users/adrianstier/stier-2027-herring-metapopulation/docs/theory-data-model-integration.md).
+> For a first-pass walkthrough of the codebase, read [`docs/collaborator-reading-guide.md`](/Users/adrianstier/stier-2027-herring-metapopulation/docs/collaborator-reading-guide.md).
+
 ## Overview
 
-This project estimates spatiotemporal dynamics of Pacific herring (*Clupea pallasii*) spawning biomass across 11 sections at Haida Gwaii, British Columbia (1950--2024). The analysis tests how portfolio effects, spatial synchrony, and collective memory interact to shape metapopulation resilience under fishing pressure and environmental change.
+This project estimates spatiotemporal dynamics of Pacific herring (*Clupea pallasii*) spawning biomass across 11 sections at Haida Gwaii, British Columbia (1951--2025). The analysis tests how portfolio effects, spatial synchrony, and collective memory interact to shape metapopulation resilience under fishing pressure and environmental change.
 
 The central question: **Did age-selective fishing erode the collective memory that maintained spawning site fidelity, contributing to site abandonment and reduced metapopulation stability?**
 
@@ -91,9 +96,9 @@ Z[t,j] = X[t-1,j] + U[j] + pdocoef * pdo[t-1]
 
 **Stan file:** planned  
 **R helper:** `R/09_zero_inflated_obs.R` (`prepare_censored_data()`)  
-**Status:** Data preparation implemented, Stan model not yet written.
+**Status:** Data preparation implemented; threshold-aware Stan variants are now part of the active model comparison.
 
-Modifies the observation model to properly handle surveyed-zero SHI values. Currently, zeros are treated as missing (NA). In reality, surveyed-zeros are left-censored observations telling us biomass is below the detection threshold.
+Modifies the observation model to properly handle surveyed-zero spawn-index values. Positive observations are logged, surveyed-zeros are left-censored observations telling us biomass is below the detection threshold, and unsurveyed cells are skipped.
 
 ```
 if (Y_status[t,j] == 1)    # observed positive SHI

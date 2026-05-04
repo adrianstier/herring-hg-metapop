@@ -13,6 +13,11 @@
 #   8. Figures (format = "file")
 # ============================================================================
 
+# Reader note:
+# Read this file after the maintained function files and primary Stan models.
+# The transformation logic lives in `R/`; `_targets.R` is the orchestration
+# summary that wires those contracts together into a reproducible pipeline.
+
 library(targets)
 library(tarchetypes)
 
@@ -54,7 +59,7 @@ list(
 
   tar_target(
     file_spawn_new,
-    here("Data", "raw", "dfo-spawn", "HG_spawn_index_by_section_1951_2025.csv"),
+    here("Data", "processed", "HG_Spawn_Survey_1951_2025_all_sections.csv"),
     format = "file"
   ),
 
@@ -107,10 +112,8 @@ list(
   # -- SST data --
   tar_target(
     file_sst,
-    c(
-      here("Data", "raw", "environmental", "oisst_haida_gwaii_monthly_2014_2022.csv"),
-      here("Data", "raw", "environmental", "oisst_haida_gwaii_monthly_2023_2025.csv")
-    ),
+    here("Data", "raw", "environmental",
+         "oisst_haida_gwaii_monthly_regional_avg_2014_2025.csv"),
     format = "file"
   ),
 
@@ -233,6 +236,13 @@ list(
   # STAGE 4: Model fitting (long-running, deployment = "main")
   # ========================================================================
 
+  # Reader note:
+  # The maintained targets graph currently wires the baseline biomass model
+  # (`v1`) and the separate occupancy model end to end. The broader Stan
+  # hierarchy (`m2`-`m6`, `v2`) is supported by `fit_model()` and documented
+  # in the repo, but those fits are not all run automatically in this default
+  # pipeline yet.
+
   tar_target(
     fit_v1,
     fit_model(
@@ -304,7 +314,8 @@ list(
     occupancy_data,
     prepare_occupancy_data(
       spawn_clean  = spawn_clean,
-      path_legacy  = file_spawn_legacy
+      path_legacy  = file_spawn_legacy,
+      path_new     = file_spawn_new
     )
   ),
 

@@ -8,6 +8,12 @@
 # are model-ready.
 # ============================================================================
 
+# Reader note:
+# This is the main theory-to-data contract file in the maintained pipeline.
+# It creates one canonical analysis object with fixed dimensions and optional
+# predator/spatial covariates; `R/03_fit_model.R` then trims that richer
+# object down to the exact data block required by each Stan model version.
+
 #' Assemble the complete data list for the herring metapopulation model.
 #'
 #' @param spawn     List returned by clean_spawn() — must contain $wide, $site_order
@@ -21,31 +27,64 @@
 #'   distances (km). Required when spatial = TRUE.
 #' @param predator_spatial List returned by build_predator_spatial_index().
 #'   Required when spatial = TRUE. Must contain $ssl_spatial and $seal_spatial.
-#' @return Named list suitable for passing to Stan or JAGS:
-#'   When format = "stan":
-#'   - N_years, N_sites: integer dimensions
-#'   - Y: log(SHI) matrix (N_years x N_sites), NAs replaced with 0
-#'   - Y_obs: integer matrix (N_years x N_sites), 1 if observed, 0 if missing
-#'   - pdo: numeric vector (length N_years)
-#'   - q_idx: integer array (length N_years), 1=surface, 2=dive
-#'   - N_catch: integer, number of (year,site) pairs with catch > 0
-#'   - catch_row: integer array, year indices for positive catch
-#'   - catch_col: integer array, site indices for positive catch
-#'   - log_catch: numeric vector, log(catch+1) at positive-catch positions
-#'   - N_zero: integer, number of (year,site) pairs with zero catch
-#'   - zero_row: integer array, year indices for zero catch
-#'   - zero_col: integer array, site indices for zero catch
-#'   When spatial = TRUE (Stan only), additionally:
-#'   - D: distance matrix (N_sites x N_sites), km
-#'   - predator_ssl_spatial: matrix (N_years x N_sites), spatially-weighted SSL index
-#'   - predator_seal_spatial: matrix (N_years x N_sites), spatially-weighted seal index
-#'   When format = "jags" (legacy):
-#'   - Y, nYears, nSites, pdo, ctab, INDEX, INDEX.zero, nIndex, nIndex.zero, q_idx
+#' @return Named list suitable for passing to Stan or JAGS.
+#'   For `format = "stan"`, the list always includes the canonical biomass
+#'   model contract: `N_years`, `N_sites`, `Y`, `Y_obs`, `Y_censored`,
+#'   `Y_missing`, `pdo`, `q_idx`, `N_catch`, `catch_row`, `catch_col`,
+#'   `log_catch`, `N_zero`, `zero_row`, `zero_col`, and `prior_only`.
+#'   If `predators` is supplied, the Stan list also includes the original
+#'   annual predator tibble plus standardized predator covariates
+#'   (`whale`, `ssl_region`, `seal_region`) and their observation masks
+#'   (`whale_obs`, `pred_obs`).
+#'   If `spatial = TRUE`, the Stan list also includes `dist_mat`, `max_dist`,
+#'   standardized site-level predator matrices (`ssl_spatial`, `seal_spatial`),
+#'   and backward-compatible aliases (`D`, `predator_ssl_spatial`,
+#'   `predator_seal_spatial`).
+#'   For `format = "jags"`, the list uses the legacy names expected by the
+#'   historical scripts: `Y`, `nYears`, `nSites`, `pdo`, `ctab`, `INDEX`,
+#'   `INDEX.zero`, `nIndex`, `nIndex.zero`, and `q_idx`.
 prepare_model_data <- function(spawn, catch, pdo, predators = NULL,
                                format = "stan",
                                spatial = FALSE,
                                distance_matrix = NULL,
                                predator_spatial = NULL) {
+
+  standardize_series <- function(x) {
+    x <- as.numeric(x)
+    out <- rep(0, length(x))
+    keep <- !is.na(x)
+
+    if (!any(keep)) {
+      return(out)
+    }
+
+    center <- mean(x[keep])
+    spread <- stats::sd(x[keep])
+
+    if (is.na(spread) || spread == 0) {
+      out[keep] <- x[keep] - center
+    } else {
+      out[keep] <- (x[keep] - center) / spread
+    }
+
+    out
+  }
+
+  standardize_matrix_cols <- function(mat) {
+    mat <- as.matrix(mat)
+    out <- matrix(
+      0.0,
+      nrow = nrow(mat),
+      ncol = ncol(mat),
+      dimnames = dimnames(mat)
+    )
+
+    for (j in seq_len(ncol(mat))) {
+      out[, j] <- standardize_series(mat[, j])
+    }
+
+    out
+  }
 
   stopifnot(format %in% c("stan", "jags"))
 
@@ -100,17 +139,42 @@ prepare_model_data <- function(spawn, catch, pdo, predators = NULL,
   # ── Build survey method index ──
   q_idx <- build_survey_index()
 
+  # ── Build survey-state matrices ──
+  if ("long" %in% names(spawn) && "survey_status" %in% names(spawn$long)) {
+    status_wide <- spawn$long |>
+      select(year, section_name, survey_status) |>
+      pivot_wider(names_from = section_name, values_from = survey_status) |>
+      arrange(year)
+
+    status_mat <- status_wide |>
+      select(all_of(SITE_NAMES)) |>
+      as.matrix()
+
+    Y_obs <- array(as.integer(status_mat == "positive"), dim = c(N_YEARS, N_SITES))
+    Y_censored <- array(as.integer(status_mat == "censored_zero"), dim = c(N_YEARS, N_SITES))
+    Y_missing <- array(as.integer(status_mat == "missing"), dim = c(N_YEARS, N_SITES))
+  } else {
+    # Backward-compatible fallback for older spawn objects.
+    Y_obs <- array(as.integer(!is.na(Y)), dim = c(N_YEARS, N_SITES))
+    Y_censored <- array(0L, dim = c(N_YEARS, N_SITES))
+    Y_missing <- array(as.integer(is.na(Y)), dim = c(N_YEARS, N_SITES))
+  }
+
+  stopifnot(
+    "Survey states must be exhaustive" =
+      all((Y_obs + Y_censored + Y_missing) == 1L),
+    "Positive observations must match non-missing log-SHI cells" =
+      identical(Y_obs, array(as.integer(!is.na(Y)), dim = c(N_YEARS, N_SITES)))
+  )
+
+  # Replace NAs with 0 for Stan/JAGS storage. Likelihoods use the flags.
+  Y_clean <- Y
+  Y_clean[is.na(Y_clean)] <- 0.0
+
   # ── Assemble the data list based on format ──
 
   if (format == "stan") {
     # Stan-compatible format matching herring_metapop_v1.stan data block
-
-    # Observation indicator: 1 = observed, 0 = missing/NA
-    Y_obs <- matrix(as.integer(!is.na(Y)), nrow = N_YEARS, ncol = N_SITES)
-
-    # Replace NAs with 0 for Stan (not used in likelihood when Y_obs == 0)
-    Y_clean <- Y
-    Y_clean[is.na(Y_clean)] <- 0.0
 
     # Catch indexing: (year, site) pairs where catch > 0
     catch_positive <- which(log_catch > 0, arr.ind = TRUE)
@@ -121,6 +185,11 @@ prepare_model_data <- function(spawn, catch, pdo, predators = NULL,
       N_sites   = N_SITES,
       Y         = Y_clean,
       Y_obs     = Y_obs,
+      Y_censored = Y_censored,
+      Y_missing = Y_missing,
+      Y_obs_flag = Y_obs,
+      Y_censored_flag = Y_censored,
+      Y_missing_flag = Y_missing,
       pdo       = as.numeric(pdo),
       q_idx     = as.array(q_idx),
       N_catch   = nrow(catch_positive),
@@ -129,12 +198,17 @@ prepare_model_data <- function(spawn, catch, pdo, predators = NULL,
       log_catch = log_catch[catch_positive],
       N_zero    = nrow(catch_zero),
       zero_row  = as.array(catch_zero[, 1]),
-      zero_col  = as.array(catch_zero[, 2])
+      zero_col  = as.array(catch_zero[, 2]),
+      prior_only = 0L
     )
   } else {
     # Legacy JAGS naming convention
     model_data <- list(
       Y            = Y,
+      Y_clean      = Y_clean,
+      Y_obs        = Y_obs,
+      Y_censored   = Y_censored,
+      Y_missing    = Y_missing,
       nYears       = N_YEARS,
       nSites       = N_SITES,
       pdo          = as.numeric(pdo),
@@ -149,12 +223,30 @@ prepare_model_data <- function(spawn, catch, pdo, predators = NULL,
 
   # ── Optional: append predator data ──
   if (!is.null(predators)) {
+    predators <- predators |>
+      arrange(year)
+
     stopifnot(
       "predators must be a tibble/data.frame" = is.data.frame(predators),
       "predators must have 'year' column"     = "year" %in% names(predators),
-      "predators must cover N_YEARS rows"     = nrow(predators) == N_YEARS
+      "predators must cover N_YEARS rows"     = nrow(predators) == N_YEARS,
+      "predators must align to YEARS"         =
+        identical(as.integer(predators$year), as.integer(YEARS))
     )
     model_data$predators <- predators
+
+    if (format == "stan") {
+      model_data$whale <- standardize_series(predators$whale_abundance)
+      model_data$ssl_region <- standardize_series(predators$ssl_count)
+      model_data$seal_region <- standardize_series(predators$seal_count)
+      model_data$whale_obs <- as.array(as.integer(
+        !is.na(predators$whale_abundance) & predators$whale_abundance != 0
+      ))
+      model_data$pred_obs <- as.array(as.integer(
+        (!is.na(predators$ssl_count) & predators$ssl_count != 0) |
+          (!is.na(predators$seal_count) & predators$seal_count != 0)
+      ))
+    }
   }
 
   # ── Optional: append spatial data (distance matrix + predator indices) ──
@@ -187,9 +279,22 @@ prepare_model_data <- function(spawn, catch, pdo, predators = NULL,
         ncol(predator_spatial$seal_spatial) == N_SITES
     )
 
-    model_data$D                    <- distance_matrix
-    model_data$predator_ssl_spatial  <- predator_spatial$ssl_spatial
-    model_data$predator_seal_spatial <- predator_spatial$seal_spatial
+    ssl_raw  <- as.matrix(predator_spatial$ssl_spatial)
+    seal_raw <- as.matrix(predator_spatial$seal_spatial)
+
+    model_data$dist_mat <- distance_matrix
+    model_data$max_dist <- max(distance_matrix)
+    model_data$ssl_spatial <- standardize_matrix_cols(ssl_raw)
+    model_data$seal_spatial <- standardize_matrix_cols(seal_raw)
+    model_data$pred_obs <- as.array(as.integer(
+      apply(ssl_raw, 1, function(x) any(!is.na(x) & x != 0)) |
+        apply(seal_raw, 1, function(x) any(!is.na(x) & x != 0))
+    ))
+
+    # Backward-compatible aliases for older scripts.
+    model_data$D <- model_data$dist_mat
+    model_data$predator_ssl_spatial <- model_data$ssl_spatial
+    model_data$predator_seal_spatial <- model_data$seal_spatial
   }
 
   # ── Final sanity checks ──

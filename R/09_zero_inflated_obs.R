@@ -2,9 +2,8 @@
 # 09_zero_inflated_obs.R — Zero-inflated / left-censored observation helpers
 # stier-2027-herring-metapopulation
 #
-# The main state-space model (herring_metapop_v1.stan) currently treats
-# zero-SHI site-years as missing data (NA in the observation matrix). But
-# zeros come in two flavors:
+# The maintained data contract distinguishes zero-SHI site-years from true
+# missing effort before data reach Stan. Zeros come in two flavors:
 #
 #   1. Surveyed-zero (totalrecords > 0, SHI == 0): The site WAS surveyed
 #      and no spawning was detected. This is informative — it tells us
@@ -17,9 +16,9 @@
 #      TRUE missing data (NA).
 #
 # This script provides helper functions that create the observation
-# matrices needed for a future left-censored observation model in Stan.
-# The occupancy model (08_occupancy_model.R, site_occupancy.stan) already
-# uses this distinction for its binary occupied/not-occupied analysis.
+# matrices needed for left-censored observation models in Stan. The occupancy
+# model (08_occupancy_model.R, site_occupancy.stan) uses the same distinction
+# for binary occupied/not-occupied analysis.
 #
 # FUTURE INTEGRATION:
 # ------------------
@@ -44,12 +43,18 @@
 #   - Stan User Guide, Chapter on Censored Data
 # ============================================================================
 
+# Reader note:
+# This file is the staging area for a future censored-observation extension.
+# It matters because the continuous biomass models currently drop surveyed
+# zeros on the log scale, while the occupancy path already treats those zeros
+# as informative observations rather than missing effort.
+
 
 # ── prepare_censored_data() ─────────────────────────────────────────────────
 #' Create observation matrices distinguishing positive, censored, and missing
 #'
-#' Reads the raw legacy spawn survey data to recover the `totalrecords`
-#' column, then classifies each (year, site) cell into three categories:
+#' Reads the raw legacy and newer DFO spawn survey data to recover survey
+#' effort, then classifies each (year, site) cell into three categories:
 #'
 #'   - Observed positive: totalrecords > 0 AND SHI > 0 (Y_observed)
 #'   - Left-censored:     totalrecords > 0 AND SHI == 0 (Y_censored)
@@ -58,6 +63,9 @@
 #' @param spawn_clean List returned by clean_spawn(). Contains $wide (the
 #'   log(SHI) matrix with NA for zeros) and $long.
 #' @param path_legacy Path to legacy CSV with totalrecords column.
+#' @param path_new Optional path to the newer DFO spawn CSV with
+#'   `total_records`. When present, post-2015 survey effort is merged so
+#'   surveyed zeros are not misclassified as missing.
 #' @param sections_drop Integer vector of sections to exclude.
 #' @return Named list:
 #'   - Y_observed:  integer matrix (N_YEARS x N_SITES). 1 = observed positive
@@ -75,6 +83,8 @@ prepare_censored_data <- function(
     spawn_clean,
     path_legacy    = here::here("Data", "raw", "legacy-2019",
                                 "HG_Spawn_Survey_1940_2015.csv"),
+    path_new       = here::here("Data", "raw", "dfo-spawn",
+                                "HG_spawn_index_by_section_1951_2025.csv"),
     sections_drop  = c(4L, 11L)
 ) {
 
@@ -92,6 +102,38 @@ prepare_censored_data <- function(
       year <= YEAR_END
     ) |>
     dplyr::select(year, section, totalrecords, spawn_index)
+
+  if (!is.null(path_new) && file.exists(path_new)) {
+    new_raw <- readr::read_csv(path_new, show_col_types = FALSE) |>
+      janitor::clean_names()
+
+    if ("spawn_index_tonnes" %in% names(new_raw)) {
+      new_raw <- new_raw |>
+        dplyr::rename(spawn_index = spawn_index_tonnes)
+    } else if ("spawn_index_t" %in% names(new_raw)) {
+      new_raw <- new_raw |>
+        dplyr::rename(spawn_index = spawn_index_t)
+    }
+
+    if ("total_records" %in% names(new_raw)) {
+      new_raw <- new_raw |>
+        dplyr::rename(totalrecords = total_records)
+    }
+
+    new_raw <- new_raw |>
+      dplyr::mutate(section = as.integer(section)) |>
+      dplyr::filter(
+        !section %in% sections_drop,
+        year >= YEAR_START,
+        year <= YEAR_END
+      ) |>
+      dplyr::select(year, section, totalrecords, spawn_index)
+
+    survey_info <- dplyr::bind_rows(
+      new_raw,
+      dplyr::anti_join(survey_info, new_raw, by = c("year", "section"))
+    )
+  }
 
   complete_grid <- tidyr::expand_grid(
     year    = seq(YEAR_START, YEAR_END),

@@ -7,15 +7,25 @@
 # Source 00_setup.R before calling any of these.
 # ============================================================================
 
+# Reader note:
+# This file is where raw observations become analysis-ready objects with
+# explicit semantics. The most important decisions here are how zeros,
+# missing effort, annual aggregation, and site alignment are represented
+# before anything reaches a model.
+
 # ── Spawn index ──────────────────────────────────────────────────────────────
 
 #' Read legacy and new DFO spawn survey data, merge, filter, and pivot wide.
 #'
 #' @param path_legacy Path to legacy CSV (HG_Spawn_Survey_1940_2015.csv)
-#' @param path_new    Path to new DFO CSV (HG_spawn_index_by_section_1951_2025.csv)
+#' @param path_new    Path to newer DFO section-year CSV. Prefer the processed
+#'   `HG_Spawn_Survey_1951_2025_all_sections.csv` used by the model fits;
+#'   the older raw aggregate schema is also accepted.
 #' @return List with components:
-#'   - wide:    matrix (N_YEARS x N_SITES) of log(SHI), zeros as NA
-#'   - long:    tibble with columns year, section, section_name, shi, log_shi
+#'   - wide:    matrix (N_YEARS x N_SITES) of log positive SHI; zeros and
+#'              missing cells are NA because the log transform is undefined
+#'   - long:    tibble with survey-state columns. Surveyed zeros keep
+#'              spawn_index == 0 and survey_status == "censored_zero".
 #'   - site_order: character vector of section_name column order
 clean_spawn <- function(path_legacy, path_new) {
 
@@ -23,7 +33,7 @@ clean_spawn <- function(path_legacy, path_new) {
   legacy <- read_csv(path_legacy, show_col_types = FALSE) |>
     clean_names() |>
     rename(spawn_index = shi) |>
-    select(year, section, section_name, spawn_index) |>
+    select(year, section, section_name, totalrecords, spawn_index) |>
     mutate(section = as.integer(section))
 
   # ---- Read new DFO data (1951-2025, subset of sections) ----
@@ -32,10 +42,28 @@ clean_spawn <- function(path_legacy, path_new) {
   # 2025 vs "Port Louis" in legacy). Join on section number (integer),
   # NOT on section_name, to avoid merge failures from renamed sections.
   new_dfo <- read_csv(path_new, show_col_types = FALSE) |>
-    clean_names() |>
-    rename(spawn_index = spawn_index_t) |>
+    clean_names()
+
+  if ("spawn_index_tonnes" %in% names(new_dfo)) {
+    new_dfo <- new_dfo |>
+      rename(spawn_index = spawn_index_tonnes)
+  } else if ("spawn_index_t" %in% names(new_dfo)) {
+    new_dfo <- new_dfo |>
+      rename(spawn_index = spawn_index_t)
+  } else if (!"spawn_index" %in% names(new_dfo)) {
+    stop("New DFO spawn file must contain spawn_index_tonnes, spawn_index_t, or spawn_index.")
+  }
+
+  if ("total_records" %in% names(new_dfo)) {
+    new_dfo <- new_dfo |>
+      rename(totalrecords = total_records)
+  } else if (!"totalrecords" %in% names(new_dfo)) {
+    stop("New DFO spawn file must contain totalrecords or total_records.")
+  }
+
+  new_dfo <- new_dfo |>
     mutate(section = as.integer(section)) |>
-    select(year, section, spawn_index)
+    select(year, section, totalrecords, spawn_index)
 
   # ---- Validate: section numbers in new DFO must exist in SECTIONS_ALL ----
   unknown_sections <- setdiff(unique(new_dfo$section), SECTIONS_ALL$section)
@@ -46,21 +74,17 @@ clean_spawn <- function(path_legacy, path_new) {
     new_dfo <- new_dfo |> filter(section %in% SECTIONS_ALL$section)
   }
 
-  # ---- Merge: use legacy as base, append new years from DFO ----
+  # ---- Merge: prefer the newer DFO section-year file on overlap ----
   # Join on section number (integer) to handle renamed sections.
-  # The new DFO data may overlap with legacy years. For overlapping years
-  # and sections, prefer legacy values (they match the published 2019 analysis).
-  # Only append rows from new DFO that are beyond the legacy year range
-  # OR for section/year combos not in legacy.
-  legacy_max_year <- max(legacy$year)
+  # The current model inputs are built from the DFO 1951-2025 tonnes file for
+  # the full period, so the maintained R path should use the same precedence.
+  legacy_extra <- legacy |>
+    anti_join(new_dfo, by = c("year", "section"))
 
-  new_rows <- new_dfo |>
-    anti_join(legacy, by = c("year", "section"))
-
-  # Apply canonical section_name from SECTIONS_ALL after joining
+  # Apply canonical section_name from SECTIONS_ALL after joining.
   combined <- bind_rows(
-      legacy |> select(year, section, spawn_index),
-      new_rows
+      new_dfo,
+      legacy_extra |> select(year, section, totalrecords, spawn_index)
     ) |>
     left_join(SECTIONS_ALL |> select(section, section_name), by = "section") |>
     arrange(year, section)
@@ -93,15 +117,23 @@ clean_spawn <- function(path_legacy, path_new) {
   filtered <- complete_grid |>
     left_join(section_lookup, by = "section") |>
     left_join(
-      filtered |> select(year, section, spawn_index),
+      filtered |> select(year, section, totalrecords, spawn_index),
       by = c("year", "section")
     )
 
   # ---- Build long tibble ----
   long <- filtered |>
     mutate(
-      spawn_index = if_else(spawn_index == 0, NA_real_, spawn_index),
-      log_shi     = log(spawn_index)
+      totalrecords = replace_na(totalrecords, 0),
+      spawn_index = replace_na(spawn_index, 0),
+      surveyed = totalrecords > 0,
+      positive_spawn = spawn_index > 0,
+      survey_status = case_when(
+        positive_spawn ~ "positive",
+        surveyed ~ "censored_zero",
+        TRUE ~ "missing"
+      ),
+      log_shi = if_else(positive_spawn, log(spawn_index), NA_real_)
     ) |>
     arrange(year, section)
 
@@ -338,22 +370,39 @@ clean_pdo <- function(path_legacy, path_extension) {
 #'   complete spring data.
 clean_sst <- function(path) {
 
-  # Handle single path or vector of paths
-  if (length(path) == 1) {
-    paths <- path
-  } else {
-    paths <- path
-  }
+  paths <- as.character(path)
 
-  raw_list <- map(paths, function(p) {
-    # skip = 1 because OISST CSVs have a units row immediately below the
-    # header (e.g., "degrees_east", "Celsius"). Skipping it prevents
-    # readr from coercing numeric columns to character.
-    raw <- read_csv(p, show_col_types = FALSE, skip = 1) |>
+  read_sst_file <- function(p) {
+    raw <- read_csv(p, show_col_types = FALSE) |>
+      clean_names()
+
+    # Current checked-in monthly files are already aggregated and expose
+    # year/month/sst_mean/anom_mean directly.
+    if (all(c("year", "month", "sst_mean", "anom_mean") %in% names(raw))) {
+      return(
+        raw |>
+          transmute(
+            year  = as.integer(year),
+            month = as.integer(month),
+            sst   = as.numeric(sst_mean),
+            anom  = as.numeric(anom_mean)
+          )
+      )
+    }
+
+    # Older ERDDAP exports include a units row below the header and raw
+    # per-cell SST/anomaly columns.
+    raw <- read_csv(p, show_col_types = FALSE, skip = 1)
+
+    if (ncol(raw) < 6) {
+      cli::cli_abort(
+        "SST file {.file {p}} does not match a supported schema."
+      )
+    }
+
+    raw <- raw |>
       set_names(c("time", "zlev", "latitude", "longitude", "sst", "anom"))
 
-    # Validate that the first data row looks like a date — if we still
-    # see the units row (e.g., "degrees_east"), skip = 1 was wrong.
     first_time <- raw$time[1]
     if (!is.na(first_time) && is.na(suppressWarnings(as.Date(first_time)))) {
       cli::cli_abort(c(
@@ -362,17 +411,18 @@ clean_sst <- function(path) {
       ))
     }
 
-    raw
-  })
+    raw |>
+      transmute(
+        year  = year(as.Date(time)),
+        month = month(as.Date(time)),
+        sst   = as.numeric(sst),
+        anom  = as.numeric(anom)
+      )
+  }
 
-  raw <- bind_rows(raw_list)
+  raw <- map_dfr(paths, read_sst_file)
 
   sst <- raw |>
-    mutate(
-      date  = as.Date(time),
-      year  = year(date),
-      month = month(date)
-    ) |>
     filter(month %in% PDO_MONTHS) |>
     group_by(year, month) |>
     summarise(
@@ -421,7 +471,11 @@ clean_predators <- function(path_ssl, path_seal, path_whale) {
 
   ssl <- ssl_raw |>
     filter(region == "Haida Gwaii") |>
-    group_by(year = survey_year) |>
+    mutate(
+      year          = as.integer(survey_year),
+      count_non_pup = suppressWarnings(as.numeric(count_non_pup))
+    ) |>
+    group_by(year) |>
     summarise(
       ssl_count = sum(count_non_pup, na.rm = TRUE),
       .groups   = "drop"
@@ -446,6 +500,10 @@ clean_predators <- function(path_ssl, path_seal, path_whale) {
 
   seal <- seal_raw |>
     filter(region == "Haida Gwaii") |>
+    mutate(
+      year          = as.integer(year),
+      complex_count = suppressWarnings(as.numeric(complex_count))
+    ) |>
     group_by(year) |>
     summarise(
       seal_count = sum(complex_count, na.rm = TRUE),
@@ -456,6 +514,10 @@ clean_predators <- function(path_ssl, path_seal, path_whale) {
   whale <- read_csv(path_whale, show_col_types = FALSE) |>
     clean_names() |>
     select(year, abundance) |>
+    mutate(
+      year      = as.integer(year),
+      abundance = suppressWarnings(as.numeric(abundance))
+    ) |>
     rename(whale_abundance = abundance)
 
   # ---- Combine into single tibble ----
@@ -521,23 +583,29 @@ build_catch_index <- function(catch_matrix) {
 
 # ── Survey method index ──────────────────────────────────────────────────────
 
-#' Build the q_idx vector that indexes survey method (surface vs dive).
+#' Build the q_idx vector that indexes survey method.
 #'
-#' Surface surveys (q=1): YEAR_START to SURVEY_TRANSITION_YEAR - 1
-#' SCUBA/dive surveys (q=2): SURVEY_TRANSITION_YEAR to YEAR_END
+#' Surface surveys (q=1): YEAR_START to SURVEY_MIXED_START_YEAR - 1
+#' Mixed transition (q=2): SURVEY_MIXED_START_YEAR to SURVEY_DIVE_START_YEAR - 1
+#' SCUBA/dive surveys (q=3): SURVEY_DIVE_START_YEAR to YEAR_END
 #'
 #' @param years Integer vector of years (default: YEARS from 00_setup.R)
-#' @return Integer vector of length N_YEARS, values 1 or 2
+#' @return Integer vector of length N_YEARS, values 1, 2, or 3
 build_survey_index <- function(years = YEARS) {
   stopifnot(
-    "SURVEY_TRANSITION_YEAR not defined" = exists("SURVEY_TRANSITION_YEAR")
+    "SURVEY_MIXED_START_YEAR not defined" = exists("SURVEY_MIXED_START_YEAR"),
+    "SURVEY_DIVE_START_YEAR not defined" = exists("SURVEY_DIVE_START_YEAR")
   )
 
-  q_idx <- if_else(years < SURVEY_TRANSITION_YEAR, 1L, 2L)
+  q_idx <- case_when(
+    years < SURVEY_MIXED_START_YEAR ~ 1L,
+    years < SURVEY_DIVE_START_YEAR ~ 2L,
+    TRUE ~ 3L
+  )
 
   stopifnot(
     "q_idx length must match N_YEARS" = length(q_idx) == length(years),
-    "q_idx must be 1 or 2"           = all(q_idx %in% c(1L, 2L))
+    "q_idx must be 1, 2, or 3"       = all(q_idx %in% c(1L, 2L, 3L))
   )
 
   q_idx

@@ -6,15 +6,20 @@
 # and package loading. Source this at the top of every script.
 # ============================================================================
 
+# Reader note:
+# This file defines the fixed dimensions and names that every maintained file
+# assumes. If an object elsewhere has unexpected rows, columns, or site labels,
+# come back here before debugging downstream code.
+
 # ── Packages ──
 library(tidyverse)
 library(here)
 library(janitor)
 
 # ── Year ranges ──
-YEAR_START       <- 1950L
+YEAR_START       <- 1951L
 YEAR_END_LEGACY  <- 2015L
-YEAR_END_UPDATED <- 2024L
+YEAR_END_UPDATED <- 2025L
 YEAR_END         <- YEAR_END_UPDATED
 YEARS            <- seq(YEAR_START, YEAR_END)
 N_YEARS          <- length(YEARS)
@@ -39,9 +44,12 @@ SITE_NAMES    <- SECTIONS_ALL |> filter(!section %in% SECTIONS_DROP) |> pull(sec
 N_SITES       <- length(SECTIONS_KEEP)
 
 # ── Survey method transition ──
-# Surface surveys: 1950-1987
-# SCUBA/dive surveys: 1988-present
-SURVEY_TRANSITION_YEAR <- 1988L
+# Surface era: 1951-1989
+# Mixed transition era: 1990-1992
+# SCUBA/dive era: 1993-present
+SURVEY_MIXED_START_YEAR <- 1990L
+SURVEY_DIVE_START_YEAR <- 1993L
+SURVEY_TRANSITION_YEAR <- SURVEY_MIXED_START_YEAR # backward-compatible alias
 
 # ── PDO months for spring average ──
 PDO_MONTHS <- c(3L, 4L, 5L, 6L)  # March-June

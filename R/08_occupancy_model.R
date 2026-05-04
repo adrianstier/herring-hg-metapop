@@ -19,6 +19,11 @@
 #   - Stier et al. 2020. (portfolio effect at Haida Gwaii)
 # ============================================================================
 
+# Reader note:
+# This is a separate theory branch, not just a stripped-down biomass model.
+# It rebuilds survey effort explicitly because occupancy semantics depend on
+# distinguishing surveyed zeros from unsurveyed site-years.
+
 # Note: packages (cmdstanr, posterior, tidybayes, tidyverse, etc.) are loaded
 # via tar_option_set(packages = ...) in _targets.R.
 
@@ -35,6 +40,9 @@
 #'   columns: year, section, section_name, spawn_index, log_shi.
 #' @param path_legacy Path to legacy CSV with totalrecords column.
 #'   Default: the standard legacy file path.
+#' @param path_new Path to the newer DFO spawn CSV with `total_records`.
+#'   When present, post-2015 survey effort is merged into the survey mask so
+#'   newer site-years are not treated as universally unsurveyed.
 #' @param log_N_total Optional numeric vector of log total population size
 #'   (length N_YEARS). If NULL, computed as log of sum of non-NA SHI across
 #'   all sections per year.
@@ -55,6 +63,8 @@ prepare_occupancy_data <- function(
     spawn_clean,
     path_legacy    = here::here("Data", "raw", "legacy-2019",
                                 "HG_Spawn_Survey_1940_2015.csv"),
+    path_new       = here::here("Data", "raw", "dfo-spawn",
+                                "HG_spawn_index_by_section_1951_2025.csv"),
     log_N_total    = NULL,
     age_index      = NULL,
     sections_drop  = c(4L, 11L)
@@ -66,7 +76,6 @@ prepare_occupancy_data <- function(
     dplyr::rename(spawn_index = shi) |>
     dplyr::mutate(section = as.integer(section))
 
-  # ── Filter to analysis sections and year range ──
   survey_data <- legacy_raw |>
     dplyr::filter(
       !section %in% sections_drop,
@@ -74,6 +83,40 @@ prepare_occupancy_data <- function(
       year <= YEAR_END
     ) |>
     dplyr::select(year, section, totalrecords, spawn_index)
+
+  # Extend the survey mask with the newer DFO file so 2016+ site-years are
+  # not treated as universally unsurveyed.
+  if (!is.null(path_new) && file.exists(path_new)) {
+    new_raw <- readr::read_csv(path_new, show_col_types = FALSE) |>
+      janitor::clean_names()
+
+    if ("spawn_index_tonnes" %in% names(new_raw)) {
+      new_raw <- new_raw |>
+        dplyr::rename(spawn_index = spawn_index_tonnes)
+    } else if ("spawn_index_t" %in% names(new_raw)) {
+      new_raw <- new_raw |>
+        dplyr::rename(spawn_index = spawn_index_t)
+    }
+
+    if ("total_records" %in% names(new_raw)) {
+      new_raw <- new_raw |>
+        dplyr::rename(totalrecords = total_records)
+    }
+
+    new_raw <- new_raw |>
+      dplyr::mutate(section = as.integer(section)) |>
+      dplyr::filter(
+        !section %in% sections_drop,
+        year >= YEAR_START,
+        year <= YEAR_END
+      ) |>
+      dplyr::select(year, section, totalrecords, spawn_index)
+
+    survey_data <- dplyr::bind_rows(
+      new_raw,
+      dplyr::anti_join(survey_data, new_raw, by = c("year", "section"))
+    )
+  }
 
   # ── Complete the grid: ensure every year x section exists ──
   complete_grid <- tidyr::expand_grid(

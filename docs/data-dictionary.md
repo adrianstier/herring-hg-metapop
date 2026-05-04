@@ -2,15 +2,19 @@
 
 Variables across all data sources for the Haida Gwaii herring metapopulation analysis.
 
+> Note
+> Raw file headers, cleaned column names, and Stan variable names are intentionally different in some places.
+> Use this file together with [`docs/theory-data-model-integration.md`](/Users/adrianstier/stier-2027-herring-metapopulation/docs/theory-data-model-integration.md) if you need to trace a variable from a raw source into a model.
+> The maintained pipeline reads a subset of these sources directly; some "processed file" paths below are reference outputs from earlier or exploratory workflows rather than required inputs to `_targets.R`.
+
 ---
 
 ## 1. Spawn Index Data
 
-**Source:** DFO Pacific Herring Spawn Index (2025 release)
-**Raw file:** `Data/raw/dfo-spawn/Pacific_herring_spawn_index_data_2025_EN.csv`
-**Legacy file:** `Data/raw/legacy-2019/HG_Spawn_Survey_1940_2015.csv`
-**Processed file:** `Data/processed/HG_Spawn_Survey_1951_2025_all_sections.csv`
-**Coverage:** 1951--2025, 13 DFO statistical sections
+**Source:** DFO Pacific Herring spawn survey releases plus the legacy 2019 analysis file
+**Maintained source files:** `Data/raw/legacy-2019/HG_Spawn_Survey_1940_2015.csv`, `Data/processed/HG_Spawn_Survey_1951_2025_all_sections.csv`
+**Legacy raw aggregate:** `Data/raw/dfo-spawn/HG_spawn_index_by_section_1951_2025.csv`
+**Coverage:** 1940--2025 across source files; maintained model window is 1951--2025 for 13 DFO statistical sections before section filtering
 
 | Variable | Type | Units | Description |
 |----------|------|-------|-------------|
@@ -25,15 +29,15 @@ Variables across all data sources for the Haida Gwaii herring metapopulation ana
 | `spawn_date_sd` | numeric | days | Standard deviation of spawn start dates |
 | `spawn_date_min` | numeric | day-of-year | Earliest spawn start date (Julian day) |
 | `spawn_date_max` | numeric | day-of-year | Latest spawn start date (Julian day) |
-| `dive_survey_pct` | numeric | % (0--100) | Percentage of location records using dive survey method (vs. surface survey). Transition from surface to dive surveys occurred ~1988. |
+| `dive_survey_pct` | numeric | % (0--100) | Percentage of location records using dive survey method (vs. surface survey). The maintained `q_idx` uses surface, mixed-transition, and dive-dominant eras. |
 | `latitude` | numeric | decimal degrees N | Mean latitude of spawn locations |
 | `longitude` | numeric | decimal degrees E | Mean longitude of spawn locations (negative = west) |
 
 **Notes:**
-- SHI = 0 means no spawning was detected; these are real biological zeros, not missing data.
-- The model uses `log(SHI)`, so zeros become missing (NA) in the log-transformed observation matrix.
+- Spawn index = 0 with survey records means no spawning was detected; these are real surveyed zeros, not missing data.
+- Positive spawn index values are logged. Surveyed zeros are retained separately as left-censored cells in `Y_censored`; unsurveyed cells are `Y_missing`.
 - 11 sections retained for analysis after dropping sections 4 and 11.
-- Survey method transition year: 1988 (surface to SCUBA dive surveys). The model estimates separate catchability coefficients (q) for each method.
+- Survey method eras: surface (`q_idx = 1`, 1951--1989), mixed transition (`q_idx = 2`, 1990--1992), and dive-dominant (`q_idx = 3`, 1993--2025).
 
 ### Section Mapping
 
@@ -60,8 +64,8 @@ Variables across all data sources for the Haida Gwaii herring metapopulation ana
 ## 2. Catch Data
 
 **Source:** DFO Pacific Herring commercial catch records
-**Raw files:** `Data/raw/legacy-2019/herring_catch_local2015.csv`, `Data/raw/dfo-catch/herring_catch_local2024.csv`
-**Processed file:** `Data/processed/herring_catch_local_1950_2024.csv`
+**Maintained raw files:** `Data/raw/legacy-2019/herring_catch_local2015.csv`, `Data/raw/dfo-catch/herring_catch_local2024.csv`
+**Reference processed file:** `Data/processed/herring_catch_local_1950_2024.csv`
 **Coverage:** 1950--2024, 13 sections (matching spawn data)
 
 | Variable | Type | Units | Description |
@@ -92,8 +96,8 @@ Variables across all data sources for the Haida Gwaii herring metapopulation ana
 ## 3. PDO (Pacific Decadal Oscillation)
 
 **Source:** NOAA JISAO (Joint Institute for the Study of the Atmosphere and Ocean)
-**Raw files:** `Data/raw/legacy-2019/pdo.csv`, `Data/raw/environmental/pdo_2015_2025.csv`
-**Processed file:** `Data/processed/pdo_combined_1854_2025.csv`
+**Maintained raw files:** `Data/raw/legacy-2019/pdo.csv`, `Data/raw/environmental/pdo_2015_2025.csv`
+**Reference processed file:** `Data/processed/pdo_combined_1854_2025.csv`
 **Coverage:** 1854--2025, monthly
 
 | Variable | Type | Units | Description |
@@ -112,8 +116,9 @@ Variables across all data sources for the Haida Gwaii herring metapopulation ana
 ## 4. SST (Sea Surface Temperature)
 
 **Source:** NOAA OISST (Optimum Interpolation Sea Surface Temperature)
-**Raw files:** `Data/raw/environmental/oisst_haida_gwaii_*.csv`
-**Processed file:** `Data/processed/sst_haida_gwaii_monthly.csv`
+**Maintained raw file:** `Data/raw/environmental/oisst_haida_gwaii_monthly_regional_avg_2014_2025.csv`
+**Upstream daily inputs:** `Data/raw/environmental/oisst_haida_gwaii_daily_*.csv`
+**Reference processed file:** `Data/processed/sst_haida_gwaii_monthly.csv`
 **Coverage:** 2014--2025, monthly (Haida Gwaii region spatial average)
 
 | Variable | Type | Units | Description |
@@ -121,10 +126,11 @@ Variables across all data sources for the Haida Gwaii herring metapopulation ana
 | `year` | integer | — | Calendar year |
 | `month` | integer | — | Calendar month (1--12) |
 | `sst_mean` | numeric | degrees C | Regional mean SST averaged across OISST grid cells in the Haida Gwaii bounding box |
-| `sst_anom_mean` | numeric | degrees C | Regional mean SST anomaly (departure from 1971--2000 climatology) |
-| `n_cells` | integer | count | Number of grid cells included in the spatial average |
+| `anom_mean` | numeric | degrees C | Regional mean SST anomaly (departure from 1971--2000 climatology) |
+| `n_grid_cells` | integer | count | Number of grid cells included in the spatial average |
 
 **Notes:**
+- The maintained `clean_sst()` path reads the monthly regional-average file directly. `R/process_oisst_monthly.R` regenerates that file from daily NOAA downloads when needed.
 - Coverage begins in 2014; earlier SST data would need to come from other sources.
 - The marine heatwave ("blob") period (2014--2016) is clearly visible as sustained positive anomalies.
 - SST anomaly is computed relative to NOAA's 1971--2000 climatological baseline.
@@ -261,8 +267,9 @@ Variables estimated by the state-space model (Stan) and stored in posterior draw
 | `Pc_mat[t,j]` | N_years x N_sites | probability (0--1) | Full matrix of catch proportions (0 where no catch) |
 | `sigma` | scalar | log | Process error standard deviation (diagonal and equal) |
 | `sigma_obs` | scalar | log | Observation error standard deviation |
-| `log_q[1]` | scalar | log | Log catchability for surface surveys (1950--1987) |
-| `log_q[2]` | scalar | log | Log catchability for dive surveys (1988--present) |
+| `log_q[1]` | scalar | log | Log catchability for surface surveys (1951--1989) |
+| `log_q[2]` | scalar | log | Log catchability for mixed transition surveys (1990--1992) |
+| `log_q[3]` | scalar | log | Log catchability for dive-dominant surveys (1993--2025) |
 | `delta[t,j]` | N_years x N_sites | log | Site-specific process error deviations |
 
 ---
@@ -271,10 +278,12 @@ Variables estimated by the state-space model (Stan) and stored in posterior draw
 
 | Constant | Value | Description |
 |----------|-------|-------------|
-| `YEAR_START` | 1950 | First year of analysis |
+| `YEAR_START` | 1951 | First year of analysis |
 | `YEAR_END_LEGACY` | 2015 | Last year of Stier et al. 2020 dataset |
-| `YEAR_END_UPDATED` | 2024 | Last year of updated dataset |
+| `YEAR_END_UPDATED` | 2025 | Last year of updated dataset |
 | `N_SITES` | 11 | Number of sections retained (13 total minus 2 dropped) |
-| `SURVEY_TRANSITION_YEAR` | 1988 | Year of transition from surface to dive surveys |
+| `SURVEY_MIXED_START_YEAR` | 1990 | First year of mixed transition survey era |
+| `SURVEY_DIVE_START_YEAR` | 1993 | First year of dive-dominant survey era |
+| `SURVEY_TRANSITION_YEAR` | 1990 | Backward-compatible alias for `SURVEY_MIXED_START_YEAR` |
 | `PDO_MONTHS` | 3, 4, 5, 6 | Months used for spring PDO average (March--June) |
 | `SECTIONS_DROP` | 4, 11 | Sections excluded (Cartwright Sound, Masset Inlet) |
