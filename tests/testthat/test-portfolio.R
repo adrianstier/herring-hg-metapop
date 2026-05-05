@@ -51,6 +51,16 @@ test_that("compute_portfolio returns expected structure", {
   expect_true(all(expected_cols %in% names(result)))
 })
 
+test_that("compute_portfolio accepts section_name input from extract_posteriors", {
+  bio <- make_test_biomass(n_years = 20, n_sites = 5) |>
+    rename(section_name = site)
+
+  result <- compute_portfolio(bio, window = 10L, sections_drop = character(0))
+
+  expect_s3_class(result, "tbl_df")
+  expect_equal(nrow(result), 20 - 10 + 1)
+})
+
 test_that("compute_portfolio returns correct number of windows", {
   bio <- make_test_biomass(n_years = 20, n_sites = 4)
 
@@ -95,6 +105,16 @@ test_that("compute_synchrony returns values between -1 and 1", {
   # Correlation values must be in [-1, 1]
   valid_cors <- result$mean_pairwise_cor[!is.na(result$mean_pairwise_cor)]
   expect_true(all(valid_cors >= -1 & valid_cors <= 1))
+})
+
+test_that("compute_synchrony accepts section_name input from extract_posteriors", {
+  bio <- make_test_biomass(n_years = 20, n_sites = 4) |>
+    rename(section_name = site)
+
+  result <- compute_synchrony(bio, window = 10L, sections_drop = character(0))
+
+  expect_s3_class(result, "tbl_df")
+  expect_equal(nrow(result), 20 - 10 + 1)
 })
 
 test_that("compute_synchrony returns correct number of windows", {

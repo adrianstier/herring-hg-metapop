@@ -14,6 +14,12 @@
 #   m6        — Time-varying distance-decay + site DD + predators
 # ============================================================================
 
+# Reader note:
+# `prepare_model_data()` builds a richer, version-agnostic data object.
+# This file is the narrowing bridge that maps that object onto a specific
+# Stan `data {}` contract, then translates posterior arrays back into
+# labeled tibbles that the ecological summary code can read.
+
 # Note: packages (cmdstanr, posterior, tidybayes, loo) are loaded via
 # tar_option_set(packages = ...) in _targets.R. Do NOT add library() or
 # source() calls here — tar_source("R") handles sourcing.
@@ -37,7 +43,205 @@
 .spatial_models <- c("m2", "m3", "m4", "m5", "m6")
 
 # Models that require predator data + observation masks
-.predator_models <- c("m5", "m6")
+.region_predator_models <- c("m5")
+.matrix_predator_models <- c("v2", "m6")
+.masked_predator_models <- c("m5", "m6")
+
+
+.standardize_series_for_stan <- function(x) {
+  x <- as.numeric(x)
+  out <- rep(0, length(x))
+  keep <- !is.na(x)
+
+  if (!any(keep)) {
+    return(out)
+  }
+
+  center <- mean(x[keep])
+  spread <- stats::sd(x[keep])
+
+  if (is.na(spread) || spread == 0) {
+    out[keep] <- x[keep] - center
+  } else {
+    out[keep] <- (x[keep] - center) / spread
+  }
+
+  out
+}
+
+
+# Convert the canonical analysis object into the exact data list expected by
+# one Stan file. This keeps model-specific contracts in one place instead of
+# scattering ad hoc data munging across fitting scripts.
+.build_stan_input <- function(stan_data, version) {
+  required_base <- c(
+    "N_years", "N_sites", "Y", "Y_obs", "pdo", "q_idx",
+    "N_catch", "catch_row", "catch_col", "log_catch"
+  )
+  missing_base <- setdiff(required_base, names(stan_data))
+  if (length(missing_base) > 0) {
+    stop(
+      "stan_data is missing required fields for ", version, ": ",
+      paste(missing_base, collapse = ", "),
+      call. = FALSE
+    )
+  }
+
+  predators_tbl <- stan_data$predators
+  if (!is.null(predators_tbl)) {
+    predators_tbl <- predators_tbl |>
+      arrange(year)
+  }
+
+  dist_mat <- stan_data$dist_mat
+  if (is.null(dist_mat) && !is.null(stan_data$D)) {
+    dist_mat <- stan_data$D
+  }
+
+  ssl_spatial_raw <- stan_data$ssl_spatial
+  if (is.null(ssl_spatial_raw) && !is.null(stan_data$predator_ssl_spatial)) {
+    ssl_spatial_raw <- stan_data$predator_ssl_spatial
+  }
+
+  seal_spatial_raw <- stan_data$seal_spatial
+  if (is.null(seal_spatial_raw) && !is.null(stan_data$predator_seal_spatial)) {
+    seal_spatial_raw <- stan_data$predator_seal_spatial
+  }
+
+  whale_vec <- stan_data$whale
+  if (is.null(whale_vec) && !is.null(predators_tbl)) {
+    whale_vec <- .standardize_series_for_stan(predators_tbl$whale_abundance)
+  }
+
+  ssl_region <- stan_data$ssl_region
+  if (is.null(ssl_region) && !is.null(predators_tbl)) {
+    ssl_region <- .standardize_series_for_stan(predators_tbl$ssl_count)
+  }
+
+  seal_region <- stan_data$seal_region
+  if (is.null(seal_region) && !is.null(predators_tbl)) {
+    seal_region <- .standardize_series_for_stan(predators_tbl$seal_count)
+  }
+
+  ssl_matrix <- NULL
+  if (!is.null(ssl_spatial_raw)) {
+    ssl_matrix <- as.matrix(ssl_spatial_raw)
+  } else if (!is.null(stan_data$ssl) && is.matrix(stan_data$ssl)) {
+    ssl_matrix <- as.matrix(stan_data$ssl)
+  }
+
+  seal_matrix <- NULL
+  if (!is.null(seal_spatial_raw)) {
+    seal_matrix <- as.matrix(seal_spatial_raw)
+  } else if (!is.null(stan_data$seal) && is.matrix(stan_data$seal)) {
+    seal_matrix <- as.matrix(stan_data$seal)
+  }
+
+  whale_obs <- stan_data$whale_obs
+  if (is.null(whale_obs) && !is.null(predators_tbl)) {
+    whale_obs <- as.array(as.integer(
+      !is.na(predators_tbl$whale_abundance) & predators_tbl$whale_abundance != 0
+    ))
+  }
+
+  pred_obs <- stan_data$pred_obs
+  if (is.null(pred_obs) && !is.null(ssl_spatial_raw) && !is.null(seal_spatial_raw)) {
+    pred_obs <- as.array(as.integer(
+      apply(ssl_spatial_raw, 1, function(x) any(!is.na(x) & x != 0)) |
+        apply(seal_spatial_raw, 1, function(x) any(!is.na(x) & x != 0))
+    ))
+  } else if (is.null(pred_obs) && !is.null(predators_tbl)) {
+    pred_obs <- as.array(as.integer(
+      (!is.na(predators_tbl$ssl_count) & predators_tbl$ssl_count != 0) |
+        (!is.na(predators_tbl$seal_count) & predators_tbl$seal_count != 0)
+    ))
+  }
+
+  stan_input <- list(
+    N_years   = stan_data$N_years,
+    N_sites   = stan_data$N_sites,
+    Y         = stan_data$Y,
+    Y_obs     = stan_data$Y_obs,
+    pdo       = as.numeric(stan_data$pdo),
+    q_idx     = as.array(stan_data$q_idx),
+    N_catch   = stan_data$N_catch,
+    catch_row = as.array(stan_data$catch_row),
+    catch_col = as.array(stan_data$catch_col),
+    log_catch = as.numeric(stan_data$log_catch),
+    prior_only = as.integer(if (is.null(stan_data$prior_only)) 0L else stan_data$prior_only)
+  )
+
+  if (version %in% .spatial_models) {
+    if (is.null(dist_mat)) {
+      stop(
+        "Model ", version, " requires a distance matrix. ",
+        "Provide `dist_mat` directly or use `prepare_model_data(..., spatial = TRUE)`.",
+        call. = FALSE
+      )
+    }
+
+    stan_input$dist_mat <- as.matrix(dist_mat)
+
+    if (version == "m2") {
+      stan_input$max_dist <- as.numeric(
+        if (is.null(stan_data$max_dist)) max(dist_mat) else stan_data$max_dist
+      )
+    }
+  }
+
+  if (version %in% .region_predator_models) {
+    if (is.null(whale_vec) || is.null(ssl_region) || is.null(seal_region)) {
+      stop(
+        "Model ", version, " requires region-level predator covariates. ",
+        "Provide `predators` to `prepare_model_data()`.",
+        call. = FALSE
+      )
+    }
+
+    stan_input$whale <- as.numeric(whale_vec)
+    stan_input$ssl <- as.numeric(ssl_region)
+    stan_input$seal <- as.numeric(seal_region)
+  }
+
+  if (version %in% .matrix_predator_models) {
+    if (is.null(whale_vec) || is.null(ssl_matrix) || is.null(seal_matrix)) {
+      stop(
+        "Model ", version, " requires whale plus site-level predator matrices. ",
+        "Provide `predators` and `predator_spatial` via `prepare_model_data(..., spatial = TRUE)`.",
+        call. = FALSE
+      )
+    }
+
+    stan_input$whale <- as.numeric(whale_vec)
+    stan_input$ssl <- ssl_matrix
+    stan_input$seal <- seal_matrix
+  }
+
+  if (version %in% .masked_predator_models) {
+    if (is.null(whale_obs) || is.null(pred_obs)) {
+      stop(
+        "Model ", version, " requires `whale_obs` and `pred_obs`. ",
+        "Provide predator covariates through `prepare_model_data(..., spatial = TRUE)` ",
+        "or `prepare_stan_data_spatial()`.",
+        call. = FALSE
+      )
+    }
+
+    stan_input$whale_obs <- as.array(as.integer(whale_obs))
+    stan_input$pred_obs <- as.array(as.integer(pred_obs))
+  }
+
+  if (version == "v2") {
+    stan_input$use_gompertz <- as.integer(
+      if (is.null(stan_data$use_gompertz)) 0L else stan_data$use_gompertz
+    )
+    stan_input$lkj_eta <- as.numeric(
+      if (is.null(stan_data$lkj_eta)) 2 else stan_data$lkj_eta
+    )
+  }
+
+  stan_input
+}
 
 
 # ── compile_model() ─────────────────────────────────────────────────────────
@@ -80,8 +284,9 @@ compile_model <- function(version = "v1", force_recompile = FALSE) {
 #' For spatial models (m2-m6), the distance matrix must be included in
 #' \code{stan_data}. Use \code{prepare_stan_data_spatial()} to add it.
 #'
-#' @param stan_data Named list of data for Stan. Must contain all variables
-#'   declared in the data{} block of the chosen model version.
+#' @param stan_data Named list produced by `prepare_model_data()` or by
+#'   `prepare_stan_data_spatial()`. It may be richer than the chosen Stan
+#'   model requires; `.build_stan_input()` selects the exact subset needed.
 #' @param version Character, one of "v1", "v2", "m1" through "m6".
 #' @param chains Integer, number of MCMC chains (default 4).
 #' @param iter_warmup Integer, warmup iterations per chain (default 1000).
@@ -104,21 +309,7 @@ fit_model <- function(stan_data,
                       parallel_chains  = 4L,
                       seed             = 2027L,
                       ...) {
-
-  # Validate that spatial models have the distance matrix
-  if (version %in% .spatial_models && is.null(stan_data$dist_mat)) {
-    stop("Model ", version, " requires 'dist_mat' in stan_data. ",
-         "Use prepare_stan_data_spatial() to add it.", call. = FALSE)
-  }
-
-  # Validate that predator models have predator masks
-
-  if (version %in% .predator_models) {
-    if (is.null(stan_data$whale_obs) || is.null(stan_data$pred_obs)) {
-      stop("Model ", version, " requires 'whale_obs' and 'pred_obs' in stan_data. ",
-           "Use prepare_stan_data_spatial() to add them.", call. = FALSE)
-    }
-  }
+  stan_input <- .build_stan_input(stan_data, version)
 
   mod <- compile_model(version)
 
@@ -126,7 +317,7 @@ fit_model <- function(stan_data,
       chains, "chains x", iter_sampling, "post-warmup samples\n")
 
   fit <- mod$sample(
-    data             = stan_data,
+    data             = stan_input,
     chains           = chains,
     parallel_chains  = parallel_chains,
     iter_warmup      = iter_warmup,
@@ -377,7 +568,7 @@ extract_posteriors <- function(fit,
   # _targets.R and 06_figures.R expect $biomass_estimates with columns:
   #   section_name, year, biomass_median, biomass_lower, biomass_upper, .width
   biomass_estimates <- biomass |>
-    rename(section_name = site) |>
+    mutate(section_name = site) |>
     mutate(
       biomass_median = biomass,
       biomass_lower  = biomass_lo,
@@ -388,10 +579,8 @@ extract_posteriors <- function(fit,
   # _targets.R and 06_figures.R expect $fishing_estimates with columns:
   #   section_name, year, pc_median, .lower, .upper
   fishing_estimates <- fishing_rate |>
-    rename(
-      section_name = site,
-      pc_median    = fishing_rate
-    )
+    mutate(section_name = site) |>
+    rename(pc_median = fishing_rate)
 
   list(
     biomass_estimates  = biomass_estimates,
@@ -418,10 +607,10 @@ extract_posteriors <- function(fit,
 # ── prepare_stan_data_spatial() ─────────────────────────────────────────────
 #' Add distance matrix and predator masks to a Stan data list
 #'
-#' Reads the effective distance matrix from the Excel file, subsets to the
-#' 11 retained sections (SECTIONS_KEEP), scales distances to km, and appends
-#' to the existing Stan data list. Also creates predator observation masks
-#' for models m5/m6.
+#' Backward-compatible helper for older manual fitting workflows.
+#' The maintained targets path now prefers `prepare_model_data(..., spatial = TRUE)`,
+#' but this helper is still useful when a collaborator starts from a simpler
+#' Stan list and wants to append distance data plus predator observation masks.
 #'
 #' @param stan_data Named list produced by \code{prepare_model_data(format = "stan")}.
 #' @param distance_type Character, "effective" (default, accounts for coastline)
@@ -454,56 +643,20 @@ prepare_stan_data_spatial <- function(stan_data,
     "Herring Euclidean"
   }
 
-  dist_raw <- readxl::read_xlsx(xlsx_path, sheet = sheet_name)
-
-  # First column is the row labels (section IDs), rest are distance values
-  # Column names are "Id1", "Id2", ..., "Id25" (section IDs with "Id" prefix)
-  # Row labels are in the first column (unnamed or named)
-
-  # Extract section IDs from column names (strip "Id" prefix)
-  col_ids <- as.integer(gsub("^Id", "", names(dist_raw)[-1]))
-
-  # The first column contains row labels (section IDs)
-  row_ids <- as.integer(dist_raw[[1]])
-
-  # Remove any NA rows (padding in Excel)
-  valid_rows <- !is.na(row_ids)
-  row_ids <- row_ids[valid_rows]
-
-  # Extract numeric matrix
-  dist_full <- as.matrix(dist_raw[valid_rows, -1])
-  rownames(dist_full) <- row_ids
-  colnames(dist_full) <- col_ids
-
-  # ── Subset to SECTIONS_KEEP (11 retained sites) ──
-  # SECTIONS_KEEP is defined in 00_setup.R: c(1, 2, 3, 5, 6, 12, 21, 22, 23, 24, 25)
-  keep_str <- as.character(SECTIONS_KEEP)
-
-  if (!all(keep_str %in% rownames(dist_full))) {
-    missing <- setdiff(keep_str, rownames(dist_full))
-    stop("Sections not found in distance matrix: ",
-         paste(missing, collapse = ", "), call. = FALSE)
-  }
-
-  dist_sub <- dist_full[keep_str, keep_str]
-
-  # Convert to numeric (may be character from Excel read)
-  dist_sub <- apply(dist_sub, 2, as.numeric)
-
-  # Verify symmetry and zero diagonal
-  stopifnot(
-    "Distance matrix must be square" = nrow(dist_sub) == ncol(dist_sub),
-    "Distance matrix must match N_sites" = nrow(dist_sub) == stan_data$N_sites,
-    "Diagonal must be zero" = all(diag(dist_sub) == 0),
-    "Matrix must be symmetric" = all(abs(dist_sub - t(dist_sub)) < 1e-6)
+  dist_sub <- load_distance_matrix(
+    path_xlsx = xlsx_path,
+    sheet = sheet_name,
+    units_out = if (scale_km) "km" else "m"
   )
 
-  # ── Optional: scale to km ──
-  if (scale_km) {
-    dist_sub <- dist_sub / 1000
-  }
+  stopifnot(
+    "Distance matrix must match N_sites" = nrow(dist_sub) == stan_data$N_sites
+  )
 
   stan_data$dist_mat <- dist_sub
+
+  # ── Max inter-site distance (for M2 phi prior scaling) ──
+  stan_data$max_dist <- max(dist_sub)
 
   # ── Build predator observation masks ──
   # whale_obs[t] = 1 if whale data is non-zero/non-NA at time t

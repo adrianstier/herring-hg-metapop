@@ -14,14 +14,25 @@ renv/cellar/
 Output/posteriors/*.RData
 Output/posteriors/*.rds
 Output/posteriors/*.csv
+Output/diagnostics/
+Output/*.csv
+Output/*.png
+*_output.txt
+*_watch.log
 
 # Legacy posteriors (diagnostic PDFs, regenerable)
 Code/legacy-2019/Posteriors/
 
 # Generated figures
+Output/figures/
 Output/figures/*.png
 Output/figures/*.pdf
 Output/*.pdf
+
+# Generated processed data products (force-add if a processed artifact is intended
+# to become a maintained repository input)
+Data/processed/*.csv
+Data/raw/HG_biological_samples*.csv
 
 # Literature PDFs (too large for git, stored on Google Drive)
 Literature/

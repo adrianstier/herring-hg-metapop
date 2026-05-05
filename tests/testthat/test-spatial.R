@@ -199,6 +199,20 @@ test_that("compute_distance_matrix gives plausible Haida Gwaii distances", {
   expect_gt(min(D_offdiag), 1)
 })
 
+test_that("compute_distance_matrix accepts spawn_coords with lat/lon columns", {
+  spawn_coords <- tibble(
+    section = SECTIONS_KEEP,
+    lat     = seq(52.2, 54.0, length.out = N_SITES),
+    lon     = seq(-131.2, -132.9, length.out = N_SITES)
+  )
+
+  D <- compute_distance_matrix(spawn_coords = spawn_coords)
+
+  expect_equal(nrow(D), N_SITES)
+  expect_equal(ncol(D), N_SITES)
+  expect_equal(D, t(D), tolerance = 1e-6)
+})
+
 # ============================================================================
 # haversine_km
 # ============================================================================

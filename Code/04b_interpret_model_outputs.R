@@ -26,17 +26,35 @@ if (!file.exists(comparison_path) || !file.exists(ppc_path)) {
 
 comparison_tbl <- read_csv(comparison_path, show_col_types = FALSE)
 ppc_tbl <- read_csv(ppc_path, show_col_types = FALSE)
+if (!"artifact_current" %in% names(comparison_tbl)) {
+  comparison_tbl$artifact_current <- TRUE
+}
 
 clean_tbl <- comparison_tbl %>%
-  filter(sampler_clean)
+  filter(artifact_current, sampler_clean)
 
 current_reference <- clean_tbl %>%
   filter(comparison_status == "within_unit_reference") %>%
   slice(1)
 
 surveyed_unit_candidate <- comparison_tbl %>%
+  filter(artifact_current, likelihood_unit == "surveyed_cells") %>%
+  arrange(
+    desc(sampler_clean),
+    zero_calibration_gap,
+    positive_signal_log_rmse,
+    occupied_sections_rmse
+  ) %>%
+  slice(1)
+
+historical_surveyed_unit_candidate <- comparison_tbl %>%
   filter(likelihood_unit == "surveyed_cells") %>%
-  arrange(desc(sampler_clean), zero_calibration_gap, occupied_sections_rmse) %>%
+  arrange(
+    desc(sampler_clean),
+    zero_calibration_gap,
+    positive_signal_log_rmse,
+    occupied_sections_rmse
+  ) %>%
   slice(1)
 
 practical_baseline <- comparison_tbl %>%
@@ -46,9 +64,19 @@ practical_baseline <- comparison_tbl %>%
 archived_tbl <- comparison_tbl %>%
   filter(comparison_status == "archived_excluded")
 
+stale_tbl <- comparison_tbl %>%
+  filter(comparison_status == "stale_refit_required")
+
 ppc_zero_tbl <- ppc_tbl %>%
   filter(metric == "total_below_detection_surveys") %>%
   select(model, observed, pred_median, pred_q05, pred_q95)
+
+ppc_positive_tbl <- ppc_tbl %>%
+  filter(metric %in% c(
+    "aggregate_positive_signal_log_rmse",
+    "aggregate_positive_signal_log_bias"
+  )) %>%
+  select(model, metric, observed, pred_median, pred_q05, pred_q95)
 
 lines <- c(
   "# Latest Model Status",
@@ -76,6 +104,11 @@ if (nrow(practical_baseline) == 1) {
     paste0(
       "- Strength: predicted surveyed zeros miss observed zeros by only ",
       round(practical_baseline$zero_calibration_gap, 1), "."
+    ),
+    paste0(
+      "- Positive-magnitude check: aggregate log10 RMSE=",
+      round(practical_baseline$positive_signal_log_rmse, 2),
+      ", bias=", round(practical_baseline$positive_signal_log_bias, 2), "."
     )
   )
 }
@@ -106,7 +139,23 @@ if (nrow(current_reference) == 1) {
     )
   )
 } else if (nrow(practical_baseline) == 0) {
-  lines <- c(lines, "- No sampler-clean reference model is currently available.")
+  lines <- c(lines, "- No current sampler-clean reference model is available.")
+}
+
+if (nrow(stale_tbl) > 0) {
+  stale_lines <- pmap_chr(
+    stale_tbl %>%
+      select(model, fit_mtime, loo_mtime, source_mtime),
+    function(model, fit_mtime, loo_mtime, source_mtime) {
+      paste0(
+        "- `", model, "` requires refit because source files are newer than artifacts",
+        " (fit=", format(as.POSIXct(fit_mtime, origin = "1970-01-01"), "%Y-%m-%d %H:%M"),
+        ", LOO=", format(as.POSIXct(loo_mtime, origin = "1970-01-01"), "%Y-%m-%d %H:%M"),
+        ", source=", format(as.POSIXct(source_mtime, origin = "1970-01-01"), "%Y-%m-%d %H:%M"), ")."
+      )
+    }
+  )
+  lines <- c(lines, "", "## Stale Fit Artifacts", "", stale_lines)
 }
 
 if (nrow(archived_tbl) > 0) {
@@ -150,13 +199,78 @@ if (nrow(ppc_zero_tbl) > 0) {
   lines <- c(lines, zero_lines)
 }
 
+lines <- c(lines, "", "## Positive-Magnitude Calibration", "")
+
+if (nrow(ppc_positive_tbl) > 0) {
+  positive_lines <- pmap_chr(
+    ppc_positive_tbl,
+    function(model, metric, observed, pred_median, pred_q05, pred_q95) {
+      label <- recode(
+        metric,
+        aggregate_positive_signal_log_rmse = "aggregate log10 RMSE",
+        aggregate_positive_signal_log_bias = "aggregate log10 bias"
+      )
+      paste0(
+        "- `", model, "` ", label, ": median=", round(pred_median, 2),
+        " (90% interval ", round(pred_q05, 2), " to ", round(pred_q95, 2), ")."
+      )
+    }
+  )
+  lines <- c(lines, positive_lines)
+}
+
 lines <- c(lines, "", "## Next Decision", "")
 
 if (nrow(surveyed_unit_candidate) == 1) {
   lines <- c(
     lines,
     paste0(
-      "- Best surveyed-cell model remains `", surveyed_unit_candidate$model, "`."
+      "- Best surveyed-cell model by current gates: `",
+      surveyed_unit_candidate$model, "`."
+    )
+  )
+} else if (nrow(historical_surveyed_unit_candidate) == 1) {
+  lines <- c(
+    lines,
+    paste0(
+      "- Best historical surveyed-cell model by current gates: `",
+      historical_surveyed_unit_candidate$model,
+      "`; it still requires refit before promotion."
+    )
+  )
+}
+
+if (nrow(practical_baseline) == 1) {
+  lines <- c(
+    lines,
+    paste0(
+      "- `", practical_baseline$model,
+      "` is the promoted baseline for practical analysis and reporting."
+    )
+  )
+} else {
+  lines <- c(
+    lines,
+    "- No surveyed-cell model currently passes both zero and positive-magnitude calibration gates."
+  )
+}
+
+if (nrow(stale_tbl) > 0) {
+  lines <- c(
+    lines,
+    paste0(
+      "- Stale branches need refits before promotion: `",
+      paste(stale_tbl$model, collapse = "`, `"), "`."
+    )
+  )
+}
+
+if (nrow(archived_tbl) > 0) {
+  lines <- c(
+    lines,
+    paste0(
+      "- Archived branches are not live promotion candidates: `",
+      paste(archived_tbl$model, collapse = "`, `"), "`."
     )
   )
 }
@@ -164,9 +278,7 @@ if (nrow(surveyed_unit_candidate) == 1) {
 lines <- c(
   lines,
   "- Do not treat raw LOOIC as comparable across `positive_only` and `surveyed_cells` likelihood units.",
-  "- `m1_v4` is the promoted baseline for practical analysis and reporting.",
-  "- `m3_v5` is archived as an excluded branch, not a live candidate for promotion.",
-  "- Do not advance richer process structure again unless a new branch is explicitly started from the `m1_v4` baseline."
+  "- Do not advance richer process structure again unless a new branch first passes the observation-calibration gates."
 )
 
 writeLines(lines, file.path(diag_dir, "latest_model_status.md"))

@@ -1,26 +1,40 @@
 // ============================================================================
-// herring_metapop_m5_predators.stan — Distance-decay + site DD + predators
+// herring_metapop_m5_predators.stan — Distance-decay + Gompertz DD + predators
 //
-// Extends m4 with predator covariates (whales, Steller sea lions, harbour seals).
-// Predator data may not be available for all years, so we use a predator
-// observation mask to only include predator effects where data exist.
+// Extends m3 (distance-decay + global Gompertz DD) with predator recovery
+// covariates. Tests the Samhouri, Stier et al. (2017) hypothesis that marine
+// predator recovery suppresses herring population recovery at Haida Gwaii.
+//
+// READER GUIDE:
+//   Read this after M3 and focus on which predator covariates are region-level
+//   versus site-level in the maintained R pipeline. The important integration
+//   step happens before Stan in `prepare_model_data()` and `.build_stan_input()`.
+//
+// Three predator indices (all region-level, standardized):
+//   - Harbour seal (Phoca vitulina): DFO haul-out counts, HG
+//   - Steller sea lion (Eumetopias jubatus): DFO summer counts, HG
+//   - Humpback whale (Megaptera novaeangliae): N Pacific abundance
 //
 // PROCESS MODEL:
-//   Z[t,j] = Z[t-1,j] + U[j] + beta[j] * (Z[t-1,j] - K_log[j])
+//   Z[t,j] = Z[t-1,j] + U[j] + beta * (Z[t-1,j] - K_log)
 //            + pdocoef * pdo[t-1]
-//            + whale_coef * whale[t-1] * whale_obs[t-1]
-//            + ssl_coef * ssl[t-1,j] * pred_obs[t-1]
-//            + seal_coef * seal[t-1,j] * pred_obs[t-1]
+//            + seal_coef * seal[t-1]
+//            + ssl_coef * ssl[t-1]
+//            + whale_coef * whale[t-1]
 //            + epsilon[t-1,j]
 //   X[t,j] = Z[t,j] + log(1 - Pc[t,j])
 //
-//   pred_obs[t] = 1 if predator data available at time t, 0 otherwise
-//   whale_obs[t] = 1 if whale data available at time t, 0 otherwise
-//   When obs = 0, the covariate contribution is zeroed out.
+// Predator covariates are region-level (vectors, not matrices) because:
+//   (a) Survey effort is too sparse for site-level indices
+//   (b) Marine predators are mobile — region-level is ecologically appropriate
+//   (c) This matches the PDO covariate structure
 //
 // SPATIAL CORRELATION:
 //   epsilon[t,] ~ MVN(0, Sigma)
 //   Omega[i,j] = exp(-D[i,j] / phi)
+//
+// OBSERVATION MODEL:
+//   Y[t,j] ~ Normal(X[t,j] + log_q[q_idx[t]], sigma_obs)
 // ============================================================================
 
 data {
@@ -31,16 +45,16 @@ data {
 
   vector[N_years] pdo;
 
-  // Predator indices
-  vector[N_years] whale;                   // humpback whale index (region-level)
-  matrix[N_years, N_sites] ssl;           // Steller sea lion index (site-level)
-  matrix[N_years, N_sites] seal;          // harbour seal index (site-level)
+  // Predator indices (region-level, standardized to zero mean / unit SD)
+  vector[N_years] seal;                    // harbour seal index
+  vector[N_years] ssl;                     // Steller sea lion index
+  vector[N_years] whale;                   // humpback whale index
 
-  // Predator observation masks (1 = data available, 0 = missing/NA)
-  array[N_years] int<lower=0, upper=1> whale_obs;  // whale data availability
-  array[N_years] int<lower=0, upper=1> pred_obs;   // ssl/seal data availability
+  // Predator observation masks (1 = observed, 0 = missing / imputed mean)
+  array[N_years] int<lower=0, upper=1> whale_obs;
+  array[N_years] int<lower=0, upper=1> pred_obs;
 
-  array[N_years] int<lower=1, upper=2> q_idx;
+  array[N_years] int<lower=1, upper=3> q_idx;
 
   // Effective distance matrix
   matrix[N_sites, N_sites] dist_mat;
@@ -69,18 +83,14 @@ parameters {
   real pdocoef;
 
   // -- Predator coefficients --
-  real whale_coef;
-  real ssl_coef;
+  // Expected sign: negative (predators suppress herring growth)
   real seal_coef;
+  real ssl_coef;
+  real whale_coef;
 
-  // -- Site-specific Gompertz DD (hierarchical, non-centered) --
-  real<upper=0> beta_mu;
-  real<lower=0> sigma_beta;
-  vector[N_sites] beta_raw;
-
-  real K_mu;
-  real<lower=0> sigma_K;
-  vector[N_sites] K_raw;
+  // -- Global Gompertz density dependence --
+  real<upper=0> beta;                      // DD strength, constrained negative
+  real K_log;                              // log carrying capacity
 
   // -- Process error: distance-decay spatial correlation --
   vector<lower=0>[N_sites] sigma_site;
@@ -90,7 +100,7 @@ parameters {
   real<lower=0> sigma_obs;
 
   // -- Catchability --
-  vector[2] log_q;
+  vector[3] log_q;
 
   // -- Proportion catch (logit scale) --
   vector[N_catch] Pc_logit;
@@ -104,8 +114,6 @@ parameters {
 
 transformed parameters {
   vector[N_sites] U;
-  vector<upper=0>[N_sites] beta;
-  vector[N_sites] K_log;
   vector<lower=0,upper=1>[N_catch] Pc;
   matrix[N_years, N_sites] Z;
   matrix[N_years, N_sites] X;
@@ -137,12 +145,6 @@ transformed parameters {
   // -- Non-centered site growth rates --
   U = U_mu + sigma_U * U_raw;
 
-  // -- Non-centered site-specific DD --
-  for (j in 1:N_sites) {
-    beta[j] = fmin(beta_mu + sigma_beta * beta_raw[j], -1e-8);
-  }
-  K_log = K_mu + sigma_K * K_raw;
-
   // -- Transform Pc --
   Pc = inv_logit(Pc_logit);
 
@@ -158,18 +160,19 @@ transformed parameters {
     X[1, j] = Z[1, j] + log1m(Pc_mat[1, j]);
   }
 
-  // -- State dynamics with DD + predator covariates --
-  // Predator masks ensure covariates only contribute when data exist.
-  // When whale_obs[t-1] = 0 or pred_obs[t-1] = 0, those terms vanish.
+  // -- State dynamics: Gompertz DD + predator effects --
+  // Predator covariates enter at t-1 (lagged effect on next year's biomass),
+  // matching the biological mechanism: predation in year t reduces biomass
+  // available for spawning in year t+1.
   for (t in 2:N_years) {
     for (j in 1:N_sites) {
       Z[t, j] = Z[t - 1, j]
                 + U[j]
-                + beta[j] * (Z[t - 1, j] - K_log[j])
+                + beta * (Z[t - 1, j] - K_log)
                 + pdocoef * pdo[t - 1]
+                + seal_coef * seal[t - 1] * pred_obs[t - 1]
+                + ssl_coef * ssl[t - 1] * pred_obs[t - 1]
                 + whale_coef * whale[t - 1] * whale_obs[t - 1]
-                + ssl_coef * ssl[t - 1, j] * pred_obs[t - 1]
-                + seal_coef * seal[t - 1, j] * pred_obs[t - 1]
                 + epsilon[t - 1, j];
       X[t, j] = Z[t, j] + log1m(Pc_mat[t, j]);
     }
@@ -181,41 +184,46 @@ model {
   // PRIORS
   // ========================================================================
 
+  // -- Hierarchical growth rate --
   U_mu ~ normal(0, 1);
   sigma_U ~ student_t(3, 0, 1);
   U_raw ~ std_normal();
 
+  // -- Environmental effect --
   pdocoef ~ normal(0, 1);
 
-  // Predator effects: weakly informative, centered at zero
-  whale_coef ~ normal(0, 1);
-  ssl_coef ~ normal(0, 1);
-  seal_coef ~ normal(0, 1);
+  // -- Predator effects --
+  // Weakly informative, centered at zero. Since predator indices are
+  // standardized (SD = 1), a coefficient of -0.1 means a 1-SD increase
+  // in predator abundance reduces log-biomass growth by 0.1 (~10%).
+  // We use N(0, 0.5) to regularize while allowing meaningful effects.
+  seal_coef  ~ normal(0, 0.5);
+  ssl_coef   ~ normal(0, 0.5);
+  whale_coef ~ normal(0, 0.5);
 
-  // Hierarchical DD
-  beta_mu ~ normal(-0.3, 0.3);
-  sigma_beta ~ student_t(3, 0, 0.5);
-  beta_raw ~ std_normal();
+  // -- Gompertz DD --
+  beta ~ normal(-0.3, 0.3);
+  K_log ~ normal(10, 3);
 
-  K_mu ~ normal(10, 3);
-  sigma_K ~ student_t(3, 0, 2.5);
-  K_raw ~ std_normal();
-
-  // Process error
+  // -- Process error SDs --
   sigma_site ~ student_t(3, 0, 2.5);
+
+  // -- Spatial range --
   phi ~ inv_gamma(5, 5);
+
+  // -- Process errors --
   to_vector(epsilon_raw) ~ std_normal();
 
-  // Observation error
+  // -- Observation error --
   sigma_obs ~ student_t(3, 0, 2.5);
 
-  // Catchability
+  // -- Catchability --
   log_q ~ normal(0, 2);
 
-  // Proportion catch
+  // -- Proportion catch --
   Pc_logit ~ normal(-1.386, 0.707);
 
-  // Initial states
+  // -- Initial states --
   Z_init ~ normal(5, 10);
 
   // ========================================================================
@@ -244,6 +252,10 @@ generated quantities {
   matrix[N_years, N_sites] Y_rep;
   corr_matrix[N_sites] Omega;
 
+  // -- Total predator effect per year (for plotting) --
+  vector[N_years] pred_effect_total;
+
+  // Reconstruct correlation matrix
   for (i in 1:N_sites) {
     Omega[i, i] = 1.0;
     for (j in (i + 1):N_sites) {
@@ -252,6 +264,14 @@ generated quantities {
     }
   }
 
+  // Total predator effect per year
+  for (t in 1:N_years) {
+    pred_effect_total[t] = seal_coef * seal[t] * pred_obs[t]
+                         + ssl_coef * ssl[t] * pred_obs[t]
+                         + whale_coef * whale[t] * whale_obs[t];
+  }
+
+  // Log-likelihood and posterior predictive
   {
     int idx = 0;
     for (t in 1:N_years) {
@@ -268,6 +288,7 @@ generated quantities {
     }
   }
 
+  // Predicted biomass and fishing rates
   for (t in 1:N_years) {
     for (j in 1:N_sites) {
       biomass_pred[t, j] = exp(Z[t, j]);

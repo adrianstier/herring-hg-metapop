@@ -22,7 +22,7 @@ Variables across all data sources for the Haida Gwaii herring metapopulation ana
 | `section` | integer | — | Legacy section identifier (1--6, 11--12, 21--25). Sections 4 (Cartwright Sound) and 11 (Masset Inlet) are dropped in analysis due to sparse data. |
 | `section_name` | character | — | Human-readable section name (e.g., "Skidegate Inlet", "Juan Perez Sound") |
 | `totalrecords` | integer | count | Number of spawn survey location records aggregated for that section-year. Zero if no spawning observed. |
-| `SHI` | numeric | tonnes | Spawn Habitat Index. Sum of Surface + Macrocystis + Understory egg deposition estimates across all locations in the section-year. Zero indicates no spawning detected. |
+| `spawn_index_tonnes` | numeric | tonnes | DFO spawn index. Sum of Surface + Macrocystis + Understory egg deposition estimates across all locations in the section-year. Zero indicates no spawning detected. Older exploratory scripts may map this to `SHI` locally for backward compatibility. |
 | `total_length` | numeric | m | Total linear extent of spawn observed across all locations in the section-year |
 | `mean_width` | numeric | m | Mean width of spawn deposits across locations |
 | `spawn_date_xbar` | numeric | day-of-year | Mean spawn start date (Julian day) across locations |

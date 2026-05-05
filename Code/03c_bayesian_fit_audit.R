@@ -21,14 +21,40 @@ out_dir  <- file.path(proj_dir, "Output", "diagnostics")
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
 models <- tribble(
-  ~model,   ~fit_path,                              ~loo_path,                              ~max_treedepth,
-  "m1_v3",  file.path(proc_dir, "m1_v3_fit.rds"),  file.path(post_dir, "loo_m1_v3.rds"),  15L,
-  "m3_v3",  file.path(proc_dir, "m3_v3_fit.rds"),  file.path(post_dir, "loo_m3_v3.rds"),  15L,
-  "m5_v3",  file.path(proc_dir, "m5_v3_fit.rds"),  file.path(post_dir, "loo_m5_v3.rds"),  15L,
-  "m1_v4",  file.path(proc_dir, "m1_v4_fit.rds"),  file.path(post_dir, "loo_m1_v4.rds"),  16L,
-  "m1_v5",  file.path(proc_dir, "m1_v5_fit.rds"),  file.path(post_dir, "loo_m1_v5.rds"),  16L,
-  "m3_v5",  file.path(proc_dir, "m3_v5_fit.rds"),  file.path(post_dir, "loo_m3_v5.rds"),  15L
+  ~model,   ~fit_path,                              ~loo_path,                              ~stan_path,                                                ~fit_script_path,                         ~max_treedepth,
+  "m1_v3",  file.path(proc_dir, "m1_v3_fit.rds"),  file.path(post_dir, "loo_m1_v3.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m1_v3.stan"), file.path(proj_dir, "Code/03_fit_m1_v3.R"), 15L,
+  "m3_v3",  file.path(proc_dir, "m3_v3_fit.rds"),  file.path(post_dir, "loo_m3_v3.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m3_v3.stan"), file.path(proj_dir, "Code/03_fit_m3_v3.R"), 15L,
+  "m5_v3",  file.path(proc_dir, "m5_v3_fit.rds"),  file.path(post_dir, "loo_m5_v3.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m5_v3.stan"), file.path(proj_dir, "Code/03_fit_m5_v3.R"), 15L,
+  "m1_v4",  file.path(proc_dir, "m1_v4_fit.rds"),  file.path(post_dir, "loo_m1_v4.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m1_v4.stan"), file.path(proj_dir, "Code/03_fit_m1_v4.R"), 16L,
+  "m1_v5",  file.path(proc_dir, "m1_v5_fit.rds"),  file.path(post_dir, "loo_m1_v5.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m1_v5.stan"), file.path(proj_dir, "Code/03_fit_m1_v5.R"), 16L,
+  "m3_v5",  file.path(proc_dir, "m3_v5_fit.rds"),  file.path(post_dir, "loo_m3_v5.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m3_v5.stan"), file.path(proj_dir, "Code/03_fit_m3_v5.R"), 15L
 ) %>%
+  mutate(
+    source_mtime = pmap_dbl(
+      list(stan_path, fit_script_path),
+      function(stan_path, fit_script_path) {
+        source_paths <- c(stan_path, fit_script_path)
+        source_paths <- source_paths[file.exists(source_paths)]
+        if (length(source_paths) == 0) {
+          return(0)
+        }
+        max(as.numeric(file.info(source_paths)$mtime), na.rm = TRUE)
+      }
+    ),
+    fit_mtime = if_else(file.exists(fit_path), as.numeric(file.info(fit_path)$mtime), NA_real_),
+    loo_mtime = if_else(file.exists(loo_path), as.numeric(file.info(loo_path)$mtime), NA_real_),
+    artifact_current = file.exists(fit_path) &
+      fit_mtime >= source_mtime &
+      (is.na(loo_mtime) | loo_mtime >= source_mtime)
+  )
+
+stale_models <- models %>%
+  filter(file.exists(fit_path), !artifact_current)
+if (nrow(stale_models) > 0) {
+  write_csv(stale_models, file.path(out_dir, "stale_fit_artifacts.csv"))
+}
+
+models <- models %>%
   filter(file.exists(fit_path))
 
 if (nrow(models) == 0) {
@@ -39,7 +65,10 @@ load(file.path(proc_dir, "jags_model_inputs_v2.RData"))
 n_positive <- sum(jags_data$Y_obs == 1L)
 n_surveyed <- sum((jags_data$Y_obs + jags_data$Y_censored) == 1L)
 
-audit_one <- function(model, fit_path, loo_path, max_treedepth) {
+audit_one <- function(
+    model, fit_path, loo_path, max_treedepth,
+    artifact_current, source_mtime, fit_mtime, loo_mtime
+) {
   fit <- readRDS(fit_path)
   sampler <- rstan::get_sampler_params(fit, inc_warmup = FALSE)
 
@@ -89,6 +118,10 @@ audit_one <- function(model, fit_path, loo_path, max_treedepth) {
 
   tibble(
     model = model,
+    artifact_current = artifact_current,
+    source_mtime = source_mtime,
+    fit_mtime = fit_mtime,
+    loo_mtime = loo_mtime,
     likelihood_unit = likelihood_unit,
     n_log_lik = n_log_lik,
     n_loo_points = n_loo_points,
@@ -110,7 +143,14 @@ audit_one <- function(model, fit_path, loo_path, max_treedepth) {
   )
 }
 
-audit_tbl <- pmap_dfr(models, audit_one)
+audit_tbl <- pmap_dfr(
+  models %>%
+    select(
+      model, fit_path, loo_path, max_treedepth,
+      artifact_current, source_mtime, fit_mtime, loo_mtime
+    ),
+  audit_one
+)
 write_csv(audit_tbl, file.path(out_dir, "bayesian_fit_audit.csv"))
 write_csv(audit_tbl, file.path(out_dir, "bayesian_fit_audit_v3.csv"))
 print(audit_tbl)

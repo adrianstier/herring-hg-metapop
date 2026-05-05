@@ -18,6 +18,12 @@
 #   - Ono et al. 2025. Nature (collective memory loss)
 # ============================================================================
 
+# Reader note:
+# This file turns model output into ecological summaries that collaborators
+# usually interpret first: portfolio buffering, synchrony, and occupancy-like
+# patterns in the observed spawn data. It should be read after the posterior
+# extraction layer, not as a replacement for it.
+
 # ── Portfolio effect: CV ratio ──────────────────────────────────────────────
 
 #' Compute portfolio effect metrics over a moving window
@@ -42,12 +48,19 @@ compute_portfolio <- function(
     window = 10L,
     sections_drop = c("Tasu Sound & Gowgaia Bay", "Naden Harbour")
 ) {
+  site_col <- if ("site" %in% names(biomass_estimates)) {
+    "site"
+  } else if ("section_name" %in% names(biomass_estimates)) {
+    "section_name"
+  } else {
+    cli::cli_abort("biomass_estimates must contain either `site` or `section_name`.")
+  }
 
   # Filter to core subpopulations and use 90% CI rows
   biomass_core <- biomass_estimates |>
     filter(
       .width == 0.9,
-      !site %in% sections_drop
+      !.data[[site_col]] %in% sections_drop
     )
 
   years <- sort(unique(biomass_core$year))
@@ -60,7 +73,7 @@ compute_portfolio <- function(
 
   # Pivot to wide matrix: rows = years, columns = sites
   biomass_wide <- biomass_core |>
-    select(year, site, biomass) |>
+    select(year, site = all_of(site_col), biomass) |>
     pivot_wider(names_from = site, values_from = biomass) |>
     arrange(year)
 
@@ -151,16 +164,23 @@ compute_synchrony <- function(
     window = 10L,
     sections_drop = c("Tasu Sound & Gowgaia Bay", "Naden Harbour")
 ) {
+  site_col <- if ("site" %in% names(biomass_estimates)) {
+    "site"
+  } else if ("section_name" %in% names(biomass_estimates)) {
+    "section_name"
+  } else {
+    cli::cli_abort("biomass_estimates must contain either `site` or `section_name`.")
+  }
 
   biomass_core <- biomass_estimates |>
     filter(
       .width == 0.9,
-      !site %in% sections_drop
+      !.data[[site_col]] %in% sections_drop
     )
 
   # Pivot to wide matrix
   biomass_wide <- biomass_core |>
-    select(year, site, biomass) |>
+    select(year, site = all_of(site_col), biomass) |>
     pivot_wider(names_from = site, values_from = biomass) |>
     arrange(year)
 

@@ -5,6 +5,11 @@
 // Both beta[j] and K_log[j] are site-specific with hierarchical priors,
 // testing whether density dependence varies across spawning sections.
 //
+// READER GUIDE:
+//   Read this as "M3 with partial pooling over site-specific DD parameters."
+//   The main extra complexity is hierarchical shrinkage for `beta[j]` and
+//   `K_log[j]`, not a new observation model.
+//
 // PROCESS MODEL:
 //   Z[t,j] = Z[t-1,j] + U[j] + beta[j] * (Z[t-1,j] - K_log[j])
 //            + pdocoef * pdo[t-1] + epsilon[t-1,j]
@@ -27,7 +32,7 @@ data {
 
   vector[N_years] pdo;
 
-  array[N_years] int<lower=1, upper=2> q_idx;
+  array[N_years] int<lower=1, upper=3> q_idx;
 
   // Effective distance matrix
   matrix[N_sites, N_sites] dist_mat;
@@ -72,7 +77,7 @@ parameters {
   real<lower=0> sigma_obs;
 
   // -- Catchability --
-  vector[2] log_q;
+  vector[3] log_q;
 
   // -- Proportion catch (logit scale) --
   vector[N_catch] Pc_logit;

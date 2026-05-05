@@ -15,6 +15,11 @@
 #   - CIs: light fill with alpha = 0.2
 # ============================================================================
 
+# Reader note:
+# This is the publication-facing communication layer. Inputs should already be
+# labeled ecological summaries or posterior summaries; these helpers should
+# clarify the story, not hide additional data-wrangling assumptions.
+
 # ── Helper: save a figure to Output/figures/ ───────────────────────────────
 
 #' Save a ggplot to Output/figures/ as PDF
@@ -93,21 +98,40 @@ fig_spawn_index <- function(
 #' Shows individual subpopulation biomass trajectories (coloured) with the
 #' archipelago mean (thick grey line) and credible interval ribbon.
 #'
-#' @param biomass_est Tibble from extract_posteriors()$biomass_estimates with
-#'   columns: year, section_name, biomass_median, biomass_lower, biomass_upper,
-#'   .width. Uses the .width == 0.9 rows for the 90% CI.
+#' @param biomass_est Tibble from `extract_posteriors()` with either
+#'   `section_name` or `site`, and either `biomass_median` or `biomass`.
+#'   Uses the `.width == 0.9` rows for the 90% interval.
 #' @param sections_drop Character vector of section names to exclude.
 #' @return ggplot object
 fig_biomass_timeseries <- function(
     biomass_est,
     sections_drop = c("Tasu Sound & Gowgaia Bay", "Naden Harbour")
 ) {
+  site_col <- if ("section_name" %in% names(biomass_est)) {
+    "section_name"
+  } else if ("site" %in% names(biomass_est)) {
+    "site"
+  } else {
+    cli::cli_abort("biomass_est must contain either `section_name` or `site`.")
+  }
+
+  biomass_col <- if ("biomass_median" %in% names(biomass_est)) {
+    "biomass_median"
+  } else if ("biomass" %in% names(biomass_est)) {
+    "biomass"
+  } else {
+    cli::cli_abort("biomass_est must contain either `biomass_median` or `biomass`.")
+  }
 
   # Use 90% CI rows and filter out sparse-data sites
   subpop <- biomass_est |>
     filter(
       .width == 0.9,
-      !section_name %in% sections_drop
+      !.data[[site_col]] %in% sections_drop
+    ) |>
+    mutate(
+      section_name = .data[[site_col]],
+      biomass_median = .data[[biomass_col]]
     ) |>
     group_by(section_name) |>
     mutate(biomass_scaled = scale(biomass_median)[, 1]) |>
@@ -176,26 +200,33 @@ fig_biomass_timeseries <- function(
 #'   - Solid: archipelago mean Pc (averaging across all sites including zeros)
 #'   - Dashed: mean Pc across only sites where fishing occurred
 #'
-#' @param fishing_est Tibble from extract_posteriors()$fishing_estimates with
-#'   columns: year, section_name, pc_median, .lower, .upper.
+#' @param fishing_est Tibble from `extract_posteriors()` with either
+#'   `pc_median` or `fishing_rate`.
 #' @return ggplot object
 fig_fishing_rates <- function(fishing_est) {
+  fishing_col <- if ("pc_median" %in% names(fishing_est)) {
+    "pc_median"
+  } else if ("fishing_rate" %in% names(fishing_est)) {
+    "fishing_rate"
+  } else {
+    cli::cli_abort("fishing_est must contain either `pc_median` or `fishing_rate`.")
+  }
 
   # Archipelago-level: mean across all sites (including zero-catch sites)
   arch <- fishing_est |>
     group_by(year) |>
     summarise(
-      pc = mean(pc_median, na.rm = TRUE),
+      pc = mean(.data[[fishing_col]], na.rm = TRUE),
       .groups = "drop"
     ) |>
     mutate(scale = "Archipelago")
 
   # Subpopulation-level: mean across only fished sites
   subpop <- fishing_est |>
-    filter(pc_median > 0) |>
+    filter(.data[[fishing_col]] > 0) |>
     group_by(year) |>
     summarise(
-      pc = mean(pc_median, na.rm = TRUE),
+      pc = mean(.data[[fishing_col]], na.rm = TRUE),
       .groups = "drop"
     ) |>
     mutate(scale = "Subpopulation (fished only)")

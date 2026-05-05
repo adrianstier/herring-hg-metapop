@@ -53,7 +53,7 @@ data {
   matrix[N_years, N_sites] ssl;           // Steller sea lion index (site-level)
   matrix[N_years, N_sites] seal;          // harbour seal index (site-level)
 
-  array[N_years] int<lower=1, upper=2> q_idx; // survey method index: 1=surface, 2=dive
+  array[N_years] int<lower=1, upper=3> q_idx; // survey method index: 1=surface, 2=mixed, 3=dive
 
   // Catch indexing
   int<lower=0> N_catch;
@@ -96,7 +96,7 @@ parameters {
   real<lower=0> sigma_obs;
 
   // -- Catchability --
-  vector[2] log_q;
+  vector[3] log_q;
 
   // -- Proportion catch (logit scale) --
   vector[N_catch] Pc_logit;

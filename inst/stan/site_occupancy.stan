@@ -2,6 +2,11 @@
 // site_occupancy.stan — Bayesian spawning site occupancy model
 // stier-2027-herring-metapopulation
 //
+// READER GUIDE:
+//   This is a different response model, not a simplified biomass model.
+//   Read `surveyed` and `occupied` in `data {}` first, then follow how the
+//   autoregressive occupancy process uses last year's occupancy state.
+//
 // MODEL OVERVIEW:
 // ---------------
 // Autoregressive occupancy model for Pacific herring spawning sites at

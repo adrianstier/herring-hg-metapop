@@ -7,6 +7,11 @@
 # importance sampling; Vehtari et al. 2017).
 # ============================================================================
 
+# Reader note:
+# Read this after `R/03_fit_model.R`. The comparison logic works on observed
+# spawn likelihood contributions only, so it is about predictive fit on the
+# primary response, not on the auxiliary catch likelihood.
+
 # Note: packages (loo, posterior) are loaded via tar_option_set(packages = ...)
 # in _targets.R. Do NOT add library() or source() calls here — tar_source("R")
 # handles sourcing.

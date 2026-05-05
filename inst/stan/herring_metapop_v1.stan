@@ -4,6 +4,11 @@
 //
 // Direct translation of JAGS Model1_diagonal_equal.R with improved priors.
 //
+// READER GUIDE:
+//   1. Read `data {}` first to see the contract built in R/02_prepare_model_data.R.
+//   2. Read `transformed parameters {}` next to follow the biological state updates.
+//   3. Read `model {}` last for priors and likelihood contributions.
+//
 // MODEL OVERVIEW:
 // ---------------
 // State-space model for Pacific herring (Clupea pallasii) spawn biomass
@@ -56,7 +61,7 @@ data {
   array[N_years, N_sites] int<lower=0, upper=1> Y_obs; // 1 if Y[t,j] observed, 0 if missing
 
   vector[N_years] pdo;                     // spring PDO index (Mar-Jun average)
-  array[N_years] int<lower=1, upper=2> q_idx; // survey method index: 1=surface, 2=dive
+  array[N_years] int<lower=1, upper=3> q_idx; // survey method index: 1=surface, 2=mixed, 3=dive
 
   // Catch indexing: only estimate Pc where catch > 0
   int<lower=0> N_catch;                    // number of (year,site) pairs with catch > 0
@@ -83,7 +88,7 @@ parameters {
   real<lower=0> sigma_obs;                 // observation error SD
 
   // -- Catchability --
-  vector[2] log_q;                         // log catchability: surface, dive
+  vector[3] log_q;                         // log catchability: surface, mixed, dive
 
   // -- Proportion catch (logit scale) --
   vector[N_catch] Pc_logit;                // logit(Pc) for catch > 0 positions

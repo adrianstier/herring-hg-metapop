@@ -1,5 +1,5 @@
 # ============================================================================
-# Process NOAA OISST v2.1 Daily Data into Monthly Averages
+# process_oisst_monthly.R — Regenerate monthly OISST files used by clean_sst()
 # Region: Haida Gwaii / Hecate Strait, BC, Canada
 #   Latitude:  51.5°N to 54.5°N
 #   Longitude: 129°W to 133°W
@@ -7,23 +7,34 @@
 # Source: NOAA CoastWatch ERDDAP (ncdcOisst21Agg_LonPM180)
 # ============================================================================
 
+# Reader note:
+# This is an optional preprocessing utility, not part of `tar_make()`.
+# Run it only when refreshing the raw daily NOAA downloads that feed
+# `Data/raw/environmental/oisst_haida_gwaii_monthly_regional_avg_2014_2025.csv`.
+
 library(tidyverse)
 library(lubridate)
+library(here)
 
-data_dir <- "Data/raw/environmental"
-out_dir  <- "Data/raw/environmental"
+data_dir <- here("Data", "raw", "environmental")
+out_dir  <- data_dir
 
 # --- 1. Read and combine all daily files ---
 years <- 2014:2025
 daily_files <- file.path(data_dir,
                          paste0("oisst_haida_gwaii_daily_", years, ".csv"))
+available_files <- daily_files[file.exists(daily_files)]
+
+if (length(available_files) == 0) {
+  stop(
+    "No daily OISST files found under ", data_dir, ". ",
+    "Expected files like `oisst_haida_gwaii_daily_2014.csv`.",
+    call. = FALSE
+  )
+}
 
 cat("Reading daily OISST files...\n")
-daily <- map_dfr(daily_files, function(f) {
-  if (!file.exists(f)) {
-    warning("File not found: ", f)
-    return(NULL)
-  }
+daily <- map_dfr(available_files, function(f) {
   # ERDDAP CSVs have a units row (row 2); skip it
 
   read_csv(f, skip = 2, col_names = c("time", "zlev", "latitude", "longitude", "sst", "anom"),
@@ -38,6 +49,10 @@ daily <- map_dfr(daily_files, function(f) {
            show_col_types = FALSE)
 })
 
+if (nrow(daily) == 0) {
+  stop("Daily OISST files were found but produced no rows after import.", call. = FALSE)
+}
+
 cat("Total daily observations:", nrow(daily), "\n")
 cat("Date range:", as.character(min(daily$time, na.rm = TRUE)), "to",
     as.character(max(daily$time, na.rm = TRUE)), "\n")
@@ -46,6 +61,9 @@ cat("Lon range:", min(daily$longitude), "to", max(daily$longitude), "\n")
 
 # Remove NaN SST values (land pixels)
 daily_ocean <- daily %>% filter(!is.na(sst))
+if (nrow(daily_ocean) == 0) {
+  stop("All imported OISST rows had missing SST values.", call. = FALSE)
+}
 cat("Ocean observations (non-NA):", nrow(daily_ocean), "\n")
 cat("Unique grid cells:", daily_ocean %>% distinct(latitude, longitude) %>% nrow(), "\n")
 
