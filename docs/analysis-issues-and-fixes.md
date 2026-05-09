@@ -28,8 +28,11 @@ Compiled from 5 diagnostic agents (MCMC diagnostics, data audit, model critique,
 
 ### C4. Informative zeros discarded
 - **Source:** Data audit + model critique agents
-- **Status:** Resolved in the maintained data contract. The 19 surveyed zeros are carried as `Y_censored` / `Y_censored_flag`, not collapsed into missing values.
-- **Remaining requirement:** Use censored, hurdle, or detection-aware Stan likelihoods for models that claim to use surveyed-cell likelihoods.
+- **Status update, 2026-05-06:** The data contract can carry 19 zero records separately as `Y_censored` / `Y_censored_flag`, but these should not automatically be promoted as informative nondetections.
+- **Status update, 2026-05-08:** `m1_stier_11` is now the promoted Stier-aligned baseline. It treats zero spawn records as ambiguous/missing, fits the 11-section model, and keeps detection-aware zeros as sensitivity analyses.
+- **Stier alignment:** Stier et al. (2020) treated reported zero spawn as ambiguous and classified those records as missing. The archived model code does the same with `w[w==0] <- NA`.
+- **Haida Gwaii survey context:** Some site-years may be unsurveyed for governance/access reasons, including Haida preferences, rather than because biomass is low. That makes "no survey" and many zero records part of the observation/governance process, not direct biological evidence of absence.
+- **Current modeling decision:** The promoted baseline treats zero spawn records as ambiguous/missing unless explicit survey metadata justify true nondetection. Detection-aware / left-censored zero models should be retained as sensitivity analyses, not the default.
 - **Files:** `Code/02_data_merge.R`, `R/02_prepare_model_data.R`, detection-aware `.stan` files.
 
 ## MAJOR (should fix for publication quality)
@@ -60,7 +63,8 @@ Compiled from 5 diagnostic agents (MCMC diagnostics, data audit, model critique,
 - **Source:** Data audit agent
 - **Problem:** In 1988, only 11% of records used dive methods. Transition was gradual.
 - **Resolved baseline:** The maintained model inputs now use three method eras: surface, mixed transition, and dive.
-- **Remaining option:** Use section-year specific method covariates if the three-era approximation is still too coarse.
+- **Stier-aligned sensitivity:** The original paper and archived JAGS code used two eras: surface through 1987 and SCUBA from 1988 onward. Compare this two-era split against the maintained three-era split rather than assuming one is universally correct.
+- **Remaining option:** Use section-year specific method covariates if both era approximations are still too coarse.
 
 ### M6. Post-closure SOK catch treated as roe harvest
 - **Source:** Data audit agent

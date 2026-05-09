@@ -61,11 +61,20 @@ practical_baseline <- comparison_tbl %>%
   filter(comparison_status == "promoted_baseline") %>%
   slice(1)
 
+loo_unstable_tbl <- comparison_tbl %>%
+  filter(comparison_status %in% c(
+    "loo_unstable_live_candidate",
+    "loo_unstable_review"
+  ))
+
 archived_tbl <- comparison_tbl %>%
   filter(comparison_status == "archived_excluded")
 
 stale_tbl <- comparison_tbl %>%
   filter(comparison_status == "stale_refit_required")
+
+exact_reloo_tbl <- comparison_tbl %>%
+  filter("exact_reloo_resolved" %in% names(.), exact_reloo_resolved)
 
 ppc_zero_tbl <- ppc_tbl %>%
   filter(metric == "total_below_detection_surveys") %>%
@@ -102,15 +111,40 @@ if (nrow(practical_baseline) == 1) {
       ", max Pareto k=", round(practical_baseline$max_pareto_k, 3), "."
     ),
     paste0(
-      "- Strength: predicted surveyed zeros miss observed zeros by only ",
-      round(practical_baseline$zero_calibration_gap, 1), "."
-    ),
-    paste0(
       "- Positive-magnitude check: aggregate log10 RMSE=",
       round(practical_baseline$positive_signal_log_rmse, 2),
       ", bias=", round(practical_baseline$positive_signal_log_bias, 2), "."
     )
   )
+  if (practical_baseline$likelihood_unit == "surveyed_cells") {
+    lines <- c(
+      lines,
+      paste0(
+        "- Strength: predicted surveyed zeros miss observed zeros by only ",
+        round(practical_baseline$zero_calibration_gap, 1), "."
+      )
+    )
+  } else if (practical_baseline$model == "m1_stier_11") {
+    lines <- c(
+      lines,
+      "- Zero-spawn records are treated as ambiguous/missing for this Stier-aligned baseline; zero calibration is descriptive only."
+    )
+  }
+  if (
+    "exact_reloo_resolved" %in% names(practical_baseline) &&
+      isTRUE(practical_baseline$exact_reloo_resolved)
+  ) {
+    lines <- c(
+      lines,
+      paste0(
+        "- Exact re-LOO resolved the high Pareto-k point: held-out ",
+        practical_baseline$exact_reloo_year, " ",
+        practical_baseline$exact_reloo_site_name,
+        ", corrected LOOIC=", round(practical_baseline$exact_reloo_looic_total, 2),
+        ", delta=", round(practical_baseline$exact_reloo_looic_delta, 2), "."
+      )
+    )
+  }
 }
 
 if (nrow(current_reference) == 1) {
@@ -138,8 +172,37 @@ if (nrow(current_reference) == 1) {
       round(current_reference$zero_calibration_gap, 1), "."
     )
   )
+  if (current_reference$model == "m1_stier_11") {
+    lines <- c(
+      lines,
+      "- For `m1_stier_11`, the zero check is descriptive because the model intentionally treats zero-spawn records as ambiguous/missing."
+    )
+  }
 } else if (nrow(practical_baseline) == 0) {
-  lines <- c(lines, "- No current sampler-clean reference model is available.")
+  lines <- c(lines, "- No model currently passes all promotion gates.")
+  if (nrow(loo_unstable_tbl) > 0) {
+    live <- loo_unstable_tbl %>% slice(1)
+    lines <- c(
+      lines,
+      paste0(
+        "- Live review candidate: `", live$model,
+        "` is sampler-clean but has unstable PSIS-LOO",
+        " (max Pareto k=", round(live$max_pareto_k, 3),
+        ", Pareto k > 1=", live$n_pareto_k_gt_1_0, ")."
+      ),
+      paste0(
+        "- Positive-magnitude check for `", live$model,
+        "`: aggregate log10 RMSE=", round(live$positive_signal_log_rmse, 2),
+        ", bias=", round(live$positive_signal_log_bias, 2), "."
+      )
+    )
+    if (live$model == "m1_stier_11") {
+      lines <- c(
+        lines,
+        "- Zero-spawn records are intentionally treated as ambiguous/missing for `m1_stier_11`; zero calibration is descriptive only."
+      )
+    }
+  }
 }
 
 if (nrow(stale_tbl) > 0) {
@@ -181,6 +244,65 @@ if (nrow(archived_tbl) > 0) {
     }
   )
   lines <- c(lines, "", "## Archived Exclusions", "", archived_lines)
+}
+
+if (nrow(loo_unstable_tbl) > 0) {
+  loo_lines <- pmap_chr(
+    loo_unstable_tbl %>%
+      select(
+        model, max_pareto_k, n_pareto_k_gt_0_7, n_pareto_k_gt_1_0,
+        divergences, treedepth_hits, max_rhat, min_ebfmi,
+        positive_signal_log_rmse, positive_signal_log_bias
+      ),
+    function(
+        model, max_pareto_k, n_pareto_k_gt_0_7, n_pareto_k_gt_1_0,
+        divergences, treedepth_hits, max_rhat, min_ebfmi,
+        positive_signal_log_rmse, positive_signal_log_bias
+    ) {
+      paste0(
+        "- `", model, "` remains live pending LOO review: divergences=",
+        divergences, ", treedepth hits=", treedepth_hits,
+        ", max R-hat=", round(max_rhat, 3),
+        ", min E-BFMI=", round(min_ebfmi, 3),
+        ", max Pareto k=", round(max_pareto_k, 3),
+        ", Pareto k > 0.7=", n_pareto_k_gt_0_7,
+        ", Pareto k > 1=", n_pareto_k_gt_1_0,
+        ", positive RMSE=", round(positive_signal_log_rmse, 2),
+        ", positive bias=", round(positive_signal_log_bias, 2), "."
+      )
+    }
+  )
+  lines <- c(lines, "", "## LOO-Unstable Live Candidates", "", loo_lines)
+}
+
+if (nrow(exact_reloo_tbl) > 0) {
+  exact_lines <- pmap_chr(
+    exact_reloo_tbl %>%
+      select(
+        model, exact_reloo_year, exact_reloo_site_name,
+        exact_reloo_pareto_k, exact_reloo_looic_total,
+        exact_reloo_looic_delta, exact_reloo_divergences,
+        exact_reloo_treedepth_hits, exact_reloo_min_ebfmi
+      ),
+    function(
+        model, exact_reloo_year, exact_reloo_site_name,
+        exact_reloo_pareto_k, exact_reloo_looic_total,
+        exact_reloo_looic_delta, exact_reloo_divergences,
+        exact_reloo_treedepth_hits, exact_reloo_min_ebfmi
+    ) {
+      paste0(
+        "- `", model, "` exact re-LOO resolved held-out ",
+        exact_reloo_year, " ", exact_reloo_site_name,
+        " (original Pareto k=", round(exact_reloo_pareto_k, 3),
+        "): corrected LOOIC=", round(exact_reloo_looic_total, 2),
+        ", delta=", round(exact_reloo_looic_delta, 2),
+        ", refit divergences=", exact_reloo_divergences,
+        ", refit treedepth hits=", exact_reloo_treedepth_hits,
+        ", refit min E-BFMI=", round(exact_reloo_min_ebfmi, 3), "."
+      )
+    }
+  )
+  lines <- c(lines, "", "## Exact Re-LOO Resolutions", "", exact_lines)
 }
 
 lines <- c(lines, "", "## Surveyed-Zero Calibration", "")
@@ -251,7 +373,17 @@ if (nrow(practical_baseline) == 1) {
 } else {
   lines <- c(
     lines,
-    "- No surveyed-cell model currently passes both zero and positive-magnitude calibration gates."
+    "- No model currently passes the active promotion gates."
+  )
+}
+
+if (nrow(loo_unstable_tbl) > 0) {
+  lines <- c(
+    lines,
+    paste0(
+      "- Live LOO-review candidates: `",
+      paste(loo_unstable_tbl$model, collapse = "`, `"), "`."
+    )
   )
 }
 
@@ -278,6 +410,7 @@ if (nrow(archived_tbl) > 0) {
 lines <- c(
   lines,
   "- Do not treat raw LOOIC as comparable across `positive_only` and `surveyed_cells` likelihood units.",
+  "- For unresolved LOO-unstable candidates, resolve high Pareto-k points before using PSIS-LOO for promotion.",
   "- Do not advance richer process structure again unless a new branch first passes the observation-calibration gates."
 )
 

@@ -34,8 +34,9 @@ Variables across all data sources for the Haida Gwaii herring metapopulation ana
 | `longitude` | numeric | decimal degrees E | Mean longitude of spawn locations (negative = west) |
 
 **Notes:**
-- Spawn index = 0 with survey records means no spawning was detected; these are real surveyed zeros, not missing data.
-- Positive spawn index values are logged. Surveyed zeros are retained separately as left-censored cells in `Y_censored`; unsurveyed cells are `Y_missing`.
+- Spawn index = 0 with survey records means no spawning was recorded in the source data. This is a data code, not automatically biological evidence of absence.
+- Positive spawn index values are logged. The data contract can retain zero records separately as `Y_censored`, but the Stier-aligned baseline should treat zero spawn as ambiguous/missing unless survey metadata justify a true nondetection interpretation. Detection-aware / left-censored zero models are sensitivity analyses.
+- Unsurveyed cells are `Y_missing`. Lack of survey effort may reflect governance/access decisions, including Haida preferences, and must not be interpreted as low biomass.
 - 11 sections retained for analysis after dropping sections 4 and 11.
 - Survey method eras: surface (`q_idx = 1`, 1951--1989), mixed transition (`q_idx = 2`, 1990--1992), and dive-dominant (`q_idx = 3`, 1993--2025).
 

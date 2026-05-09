@@ -64,6 +64,28 @@ All models compared via LOO-CV. See `docs/analysis-plan.md` for details.
 | Pipeline | Scripts with `setwd()` | `{targets}` + `here()` |
 | Tests | None | 434 regression tests |
 
+## Current Modeling Direction
+
+Recent review of Stier et al. (2020), the archived JAGS code, and the Haida Gwaii survey context changed the preferred baseline direction:
+
+- **Zero spawn records are ambiguous by default.** Stier et al. treated reported zero spawn as missing because zeros can reflect missing or unreliable survey information rather than true biological absence. In the current Haida Gwaii context, some site-years may also be unsurveyed for governance/access reasons, including Haida preferences, so absence of survey effort must not be interpreted as low biomass.
+- **Informative-zero / detection models are sensitivity analyses.** Detection-aware models that treat surveyed zeros as evidence of below-threshold biomass remain useful, but they should not be promoted without explicit survey metadata justifying that interpretation.
+- **Survey method effects are essential.** Stier estimated separate surface and SCUBA survey catchability terms. This repository may also test a mixed-transition era, but Stier-aligned replication should preserve the original two-era logic.
+- **The `q` scale is unit dependent.** Stier used the spawn habitat index scale, while current maintained data use `spawn_index_tonnes`. The proportional observation equation transfers, but numerical `log.q` values should not be copied across scales without a unit-specific sensitivity.
+- **Fit 11, report 9 as a sensitivity.** Stier fit the state-space model to 11 Haida Gwaii subpopulations but focused figures and interpretation on 9 data-rich focal subpopulations. This repo should preserve both 11-section and 9-focal reporting paths.
+- **Hold size/age structure for now.** Age composition and weight-at-age are future covariates or stock-area cross-checks, not part of the current section-level baseline.
+
+### Current promoted baseline
+
+As of 2026-05-08, the promoted practical baseline is `m1_stier_11`:
+
+- zeros are treated as ambiguous/missing, following Stier et al. (2020) and the archived JAGS model;
+- all 11 Haida Gwaii sections are fit;
+- surface and SCUBA survey-era catchability terms are explicit;
+- size/age structure, predators, and density dependence are held out of this baseline.
+
+The fit is sampler-clean and the only high PSIS-LOO point was resolved by exact re-LOO. The held-out 1970 Naden Harbour refit changed total LOOIC only from 1953.02 to 1953.08, so the LOO warning is negligible for current model selection. Detection-aware models such as `m1_v4`/`m1_v5` remain sensitivity analyses because they use a different surveyed-cell likelihood unit and treat zeros as informative nondetections.
+
 ## Repository Structure
 
 ```
@@ -159,9 +181,10 @@ targets::tar_visnetwork()
 ## Repository Conventions
 
 - `YEARS`, `SECTIONS_KEEP`, and `SITE_NAMES` in `R/00_setup.R` define the canonical model dimensions. Most downstream objects are expected to align to those values exactly.
-- Spawn survey zeros and missing data are intentionally treated differently. Positive spawn observations are logged, surveyed zeros are retained as left-censored cells, and unsurveyed cells are treated as true missing effort.
+- Zero-spawn handling must be explicit in every model/report. The Stier-aligned default treats zero spawn records as ambiguous/missing unless survey metadata justify true nondetection. Detection-aware / left-censored zero models are sensitivity analyses.
 - Spatial models use the same site order as `SITE_NAMES`, with distance matrices and predator matrices aligned to that order.
 - Model helpers return cleaned R objects first; `R/03_fit_model.R` then maps those objects onto version-specific Stan `data {}` contracts.
+- Future agents should read `AGENTS.md` before changing model code or result interpretation.
 
 ## Timeline
 

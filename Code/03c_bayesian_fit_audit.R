@@ -25,6 +25,7 @@ models <- tribble(
   "m1_v3",  file.path(proc_dir, "m1_v3_fit.rds"),  file.path(post_dir, "loo_m1_v3.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m1_v3.stan"), file.path(proj_dir, "Code/03_fit_m1_v3.R"), 15L,
   "m3_v3",  file.path(proc_dir, "m3_v3_fit.rds"),  file.path(post_dir, "loo_m3_v3.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m3_v3.stan"), file.path(proj_dir, "Code/03_fit_m3_v3.R"), 15L,
   "m5_v3",  file.path(proc_dir, "m5_v3_fit.rds"),  file.path(post_dir, "loo_m5_v3.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m5_v3.stan"), file.path(proj_dir, "Code/03_fit_m5_v3.R"), 15L,
+  "m1_stier_11",  file.path(proc_dir, "m1_stier_11_fit.rds"),  file.path(post_dir, "loo_m1_stier_11.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m1_stier_11.stan"), file.path(proj_dir, "Code/03_fit_m1_stier_11.R"), 15L,
   "m1_v4",  file.path(proc_dir, "m1_v4_fit.rds"),  file.path(post_dir, "loo_m1_v4.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m1_v4.stan"), file.path(proj_dir, "Code/03_fit_m1_v4.R"), 16L,
   "m1_v5",  file.path(proc_dir, "m1_v5_fit.rds"),  file.path(post_dir, "loo_m1_v5.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m1_v5.stan"), file.path(proj_dir, "Code/03_fit_m1_v5.R"), 16L,
   "m3_v5",  file.path(proc_dir, "m3_v5_fit.rds"),  file.path(post_dir, "loo_m3_v5.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m3_v5.stan"), file.path(proj_dir, "Code/03_fit_m3_v5.R"), 15L

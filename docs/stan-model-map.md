@@ -20,6 +20,33 @@ These are the files whose `data {}` contracts are explicitly supported by [`R/03
 
 - [`inst/stan/herring_metapop_v2.stan`](/Users/adrianstier/stier-2027-herring-metapopulation/inst/stan/herring_metapop_v2.stan) is still supported by `fit_model(version = "v2")`, but it is best treated as a reference or transitional model rather than the main path in `_targets.R`.
 
+## Stier-Aligned Baseline Direction
+
+The current promoted Stier-aligned branch is:
+
+- [`inst/stan/herring_metapop_m1_stier_11.stan`](/Users/adrianstier/stier-2027-herring-metapopulation/inst/stan/herring_metapop_m1_stier_11.stan)
+- [`Code/03_fit_m1_stier_11.R`](/Users/adrianstier/stier-2027-herring-metapopulation/Code/03_fit_m1_stier_11.R)
+
+As of 2026-05-08, `m1_stier_11` is the promoted practical baseline. It treats
+zero spawn records as ambiguous/missing, fits all 11 Haida Gwaii sections, uses
+the Stier-style two-era surface/SCUBA survey `q` split, and holds size/age
+structure, predators, and density dependence out of the baseline. Its one high
+Pareto-k point was resolved by exact re-LOO: the held-out 1970 Naden Harbour
+refit changed total LOOIC from 1953.02 to 1953.08 with no sampler pathologies.
+
+Future model branches should preserve the following distinction:
+
+- A **Stier-aligned baseline** should treat zero spawn records as ambiguous/missing, use explicit survey-era `q` terms, and avoid size/age structure.
+- A **detection-aware sensitivity** may treat selected zero records as informative nondetections, but only if the report states that interpretation clearly.
+
+This distinction matters because the current Haida Gwaii survey process includes non-biological causes of missing effort, including governance/access decisions. Do not let missing survey effort imply low biomass.
+
+Also keep the section-count distinction explicit:
+
+- Stier fit the state-space model to 11 subpopulations.
+- Stier focused interpretation and figures on 9 data-rich focal subpopulations.
+- New Stan/data branches should make 11-section fitting and 9-focal reporting choices explicit in names and outputs.
+
 ## Archival or Experimental Variants
 
 Files such as these are useful provenance, but they are not the first files a collaborator should learn:

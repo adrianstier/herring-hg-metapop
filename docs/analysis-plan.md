@@ -4,6 +4,7 @@
 > This file mixes early planning notes with implementation details.
 > For the current maintained map from theory to cleaned data to Stan inputs, read [`docs/theory-data-model-integration.md`](/Users/adrianstier/stier-2027-herring-metapopulation/docs/theory-data-model-integration.md).
 > For a first-pass walkthrough of the codebase, read [`docs/collaborator-reading-guide.md`](/Users/adrianstier/stier-2027-herring-metapopulation/docs/collaborator-reading-guide.md).
+> As of 2026-05-08, the promoted practical baseline is `m1_stier_11`, which treats zero spawn records as ambiguous/missing following Stier et al. (2020). The left-censored / detection-aware zero model described below is now a sensitivity analysis, not the default baseline.
 
 ## Overview
 
@@ -96,9 +97,9 @@ Z[t,j] = X[t-1,j] + U[j] + pdocoef * pdo[t-1]
 
 **Stan file:** planned  
 **R helper:** `R/09_zero_inflated_obs.R` (`prepare_censored_data()`)  
-**Status:** Data preparation implemented; threshold-aware Stan variants are now part of the active model comparison.
+**Status:** Data preparation implemented; threshold-aware Stan variants are sensitivity analyses, not the promoted baseline.
 
-Modifies the observation model to properly handle surveyed-zero spawn-index values. Positive observations are logged, surveyed-zeros are left-censored observations telling us biomass is below the detection threshold, and unsurveyed cells are skipped.
+Modifies the observation model to treat selected surveyed-zero spawn-index values as informative nondetections. Positive observations are logged, surveyed-zeros are left-censored observations telling us biomass is below the detection threshold, and unsurveyed cells are skipped. This interpretation requires survey metadata or a stated sensitivity-analysis framing; it is not the current Stier-aligned default.
 
 ```
 if (Y_status[t,j] == 1)    # observed positive SHI
@@ -108,7 +109,7 @@ else if (Y_status[t,j] == -1)  # surveyed-zero (left-censored)
 # Y_status == 0: not surveyed, skip
 ```
 
-**What it reveals:** Whether the current treatment of zeros biases latent biomass estimates upward. Surveyed-zeros carry information (biomass < threshold) that the model currently discards.
+**What it reveals:** How much inference changes if selected zero records are treated as biological evidence of below-threshold biomass rather than ambiguous/missing survey outcomes.
 
 ### M6: Site Occupancy Sub-Model (Collective Memory)
 

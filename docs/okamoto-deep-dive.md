@@ -58,15 +58,15 @@ The currently running `m3_v4` experiment uses a dive prior centered near `q = 0.
 
 NotebookLM surfaced the Stier 2020 choice to treat zero spawn records as missing because, in that earlier analysis, zeros were considered ambiguous.
 
-That should not be copied blindly into the current workflow.
+That choice is now the preferred baseline direction for this project unless survey metadata clearly justify a stronger nondetection interpretation.
 
-Our current Haida Gwaii section-level DFO survey data contain surveyed zero observations. The raw-data audit recovered surveyed zeros that had been dropped earlier. For this dataset, the defensible options are:
+Our current Haida Gwaii section-level DFO survey data contain zero records, but not every zero or lack of survey effort is biological evidence for low biomass. Some site-years may be unsurveyed for governance/access reasons, including Haida preferences. For this dataset, the defensible options are:
 
-- left-censored zeros,
-- an explicit detection / hurdle model,
-- or a carefully justified missing-data rule tied to specific survey metadata.
+- Stier-aligned ambiguous zeros treated as missing,
+- left-censored or detection-aware zeros as a sensitivity analysis,
+- or a carefully justified rule tied to explicit survey metadata.
 
-Defaulting all zeros to missing would discard real survey information.
+Defaulting all zeros to informative nondetections would overinterpret the survey process. Defaulting all zeros to missing is more faithful to Stier et al.; the detection-aware branch should be reported as sensitivity.
 
 ## 5. Additional DFO Data Worth Adding
 

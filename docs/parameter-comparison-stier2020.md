@@ -43,10 +43,10 @@ Derived: sigma_proc = sqrt(0.391) = 0.625, sigma_obs = 1/sqrt(1.783) = 0.749
 - Current: Y = X + log_q with log_q < 0 (observed spawn < true biomass)
 - The sign flip is EXPECTED and correct for the different measurement scales
 
-### 4. Sections dropped
-- Stier 2020 focused on "9 focal subpopulations" — dropped Tasu Sound (1) and Naden Harbour (12) due to data sparsity
-- Current analysis drops Cartwright Sound (4) and Masset Inlet (11) — different sections!
-- Should we align with the published analysis? Or keep all 11 and let the model handle sparsity?
+### 4. Section framing
+- The archived Stier JAGS code drops Cartwright Sound (4) and Masset Inlet (11) from the raw section set, leaving 11 modeled sections.
+- The paper then focuses figures and interpretation on 9 data-rich focal subpopulations, effectively de-emphasizing Tasu Sound (1) and Naden Harbour (12) because of sparse or uncertain data.
+- Current analysis should preserve this distinction: fit 11 sections where defensible, but report a 9-focal-section sensitivity aligned with the paper.
 
 ## From Okamoto et al. 2020
 
@@ -68,5 +68,5 @@ the DFO spawn index is explicitly reported as unscaled by q and should be treate
 2. Consider site-specific observation error (Okamoto approach)
 3. The q prior from Martell et al. 2012 (`Normal(0, 0.05)` on `ln q`) would further constrain the model, but any different mean needs direct source support
 4. Site-specific DD (Okamoto's α, β per site) may be needed — global b is restrictive
-5. Zero-spawn treatment should be dataset-specific: Stier 2020 treated zeros as missing, but the current DFO section data include surveyed zeros that should not simply be dropped
-6. Match section selection with Stier 2020 (drop Tasu + Naden) or justify why we differ
+5. Zero-spawn treatment should be dataset-specific. Re-reading Stier et al. and the Haida Gwaii survey context supports treating zero spawn records as ambiguous/missing in the promoted `m1_stier_11` baseline, with detection-aware zeros retained as a sensitivity analysis rather than the default.
+6. Match the Stier section framing carefully: the original model fit 11 subpopulations after dropping Cartwright and Masset from the raw section set, but figures and interpretation focused on 9 data-rich focal subpopulations.
