@@ -177,3 +177,36 @@ Verification:
 Next item noticed:
 
 - The checker should eventually be wired into the refresh script once the current dirty analysis branch is consolidated.
+
+## Cycle 5 - Cloud Runtime Review
+
+Branch: `chore/overnight-cloud-runtime-review-20260511-2240`
+
+Decision:
+
+- Review the cloud runtime scripts that connect model-farm submission to actual R execution.
+- Fix only obvious runtime bugs that can be tested locally without AWS.
+
+Work completed:
+
+- Patched `cloud/sync_model_farm_results.sh` to summarize results against the downloaded run manifest when available.
+
+Why:
+
+- Result sync previously used the current local `cloud/model-farm-manifest.csv`. If the manifest changed after a cloud run was submitted, the downloaded artifact summary could be evaluated against the wrong expected-artifact list.
+
+Files touched in this cycle:
+
+- `SESSION_LOG_20260511.md`
+- `cloud/sync_model_farm_results.sh`
+
+Verification:
+
+- `bash -n cloud/sync_model_farm_results.sh` passed.
+- `bash -n cloud/batch_entrypoint.sh` passed.
+- `bash -n cloud/run_cloud_job.sh` passed.
+- `bash -n cloud/promote_cloud_results.sh` passed.
+
+Next item noticed:
+
+- The cloud scripts are now safer locally, but AWS cannot be polled until the `herring` SSO token is refreshed.

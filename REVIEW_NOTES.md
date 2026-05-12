@@ -18,6 +18,13 @@
 - **Fix:** Added `--out-csv`; successful submissions now write `model`, `aws_job_id`, `queue`, `priority`, and `notes`. Dry runs write `DRY_RUN` as the job id for schema checks.
 - **Verification:** Dry-run output was written to `/private/tmp/herring-submit-dryrun.csv` and contained the expected columns.
 
+### Fixed: cloud result sync could summarize against the wrong manifest
+
+- **File:** `cloud/sync_model_farm_results.sh`
+- **Issue:** The script downloaded the run manifest from S3 but summarized artifacts against the current local `cloud/model-farm-manifest.csv`. If the manifest changed after submission, the status table could report incorrect expected artifacts.
+- **Fix:** Prefer `${local_dir}/model-farm-manifest.csv` when present, with the local manifest as fallback.
+- **Verification:** `bash -n` passed for the sync, entrypoint, run, and promote scripts.
+
 ### Flagged: README still opens with an old M1-M6 hierarchy before the promoted baseline
 
 - **File:** `README.md:39`
