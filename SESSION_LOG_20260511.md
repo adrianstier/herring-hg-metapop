@@ -108,3 +108,35 @@ Verification:
 Next item noticed:
 
 - The cloud setup documentation should show the new `--out-csv` handoff to `cloud/watch_aws_batch_run.py`, but `docs/cloud-model-running-setup.md` is already dirty from earlier work. I will flag rather than commit broad doc changes in this cycle unless I can isolate the patch safely.
+
+## Cycle 3 - Current Analysis Quickstart
+
+Branch: `chore/overnight-current-analysis-quickstart-20260511-2203`
+
+Decision:
+
+- Add a standalone current-analysis quickstart instead of editing `README.md` or `docs/stan-model-map.md` directly, because those tracked files are already dirty from prior work.
+- Use the refreshed May 11 outputs as the source of truth.
+
+Work completed:
+
+- Added `docs/current-analysis-quickstart.md`.
+- The doc points first-time collaborators to the current model status, promoted baseline evidence package, covariate readiness registry, and May 11 status snapshot.
+- It summarizes promoted/held branches, baseline interpretation, figure entry points, safe next steps, and the known risk that older docs still foreground the historical M1-M6 hierarchy.
+
+Why:
+
+- This creates one clean current-analysis entry point without staging broad existing README/doc changes from the active worktree.
+
+Files touched in this cycle:
+
+- `SESSION_LOG_20260511.md`
+- `docs/current-analysis-quickstart.md`
+
+Verification:
+
+- Checked that every explicit project path listed in `docs/current-analysis-quickstart.md` exists.
+
+Next item noticed:
+
+- A lightweight documentation reference checker would help prevent future stale-path drift as generated diagnostics and cloud scripts accumulate.
