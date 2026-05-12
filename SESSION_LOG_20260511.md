@@ -241,3 +241,29 @@ Verification:
 Next item noticed:
 
 - `docs/cloud-model-running-setup.md` should eventually show `--out-csv` and watcher usage explicitly.
+
+## Cycle 7 - Maintained Test Suite
+
+Branch: `chore/overnight-cloud-dryrun-ids-20260511-2254`
+
+Decision:
+
+- Run the maintained `tests/testthat/` suite before further cleanup.
+- Treat failures as P0 if present.
+
+Work completed:
+
+- Ran `Rscript tests/testthat.R`.
+
+Why:
+
+- The repo has a maintained test surface for `R/` code paths, and the overnight changes touched tooling/docs while the analysis worktree is active.
+
+Verification:
+
+- Result: 439 passed, 0 failed, 0 warnings, 0 skipped.
+- Duration: 5.8 seconds.
+
+Next item noticed:
+
+- Tests cover maintained `R/` code, not the exploratory `Code/07*` diagnostics or cloud tools. The cloud dry-run and shell syntax checks remain the relevant verification for those files.
