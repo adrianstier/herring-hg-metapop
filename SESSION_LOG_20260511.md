@@ -210,3 +210,34 @@ Verification:
 Next item noticed:
 
 - The cloud scripts are now safer locally, but AWS cannot be polled until the `herring` SSO token is refreshed.
+
+## Cycle 6 - Unique Dry-Run Job IDs
+
+Branch: `chore/overnight-cloud-dryrun-ids-20260511-2254`
+
+Decision:
+
+- Keep the change small and local to the model-farm submitter.
+- Use unique dry-run IDs so generated CSVs are safe for schema tests involving multiple rows.
+
+Work completed:
+
+- Changed dry-run job ids from `DRY_RUN` to `DRY_RUN_<job_id>`.
+
+Why:
+
+- A dry-run CSV with repeated `DRY_RUN` ids can collapse rows if passed to watcher code or inspected as a keyed table. Unique placeholders make schema tests safer.
+
+Files touched in this cycle:
+
+- `SESSION_LOG_20260511.md`
+- `cloud/submit_model_farm.py`
+
+Verification:
+
+- `python3 -m py_compile cloud/submit_model_farm.py` passed.
+- Smoke dry-run CSV now contains `DRY_RUN_smoke_cloud_pipeline`.
+
+Next item noticed:
+
+- `docs/cloud-model-running-setup.md` should eventually show `--out-csv` and watcher usage explicitly.

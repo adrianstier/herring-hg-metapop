@@ -15,7 +15,7 @@
 - **File:** `cloud/submit_model_farm.py`
 - **Related watcher:** `cloud/watch_aws_batch_run.py:105`
 - **Issue:** The watcher expects a CSV with `aws_job_id`, but the submitter only printed commands / AWS output. That forced manual job-id capture between submission and monitoring.
-- **Fix:** Added `--out-csv`; successful submissions now write `model`, `aws_job_id`, `queue`, `priority`, and `notes`. Dry runs write `DRY_RUN` as the job id for schema checks.
+- **Fix:** Added `--out-csv`; successful submissions now write `model`, `aws_job_id`, `queue`, `priority`, and `notes`. Dry runs write unique `DRY_RUN_<job_id>` values for schema checks.
 - **Verification:** Dry-run output was written to `/private/tmp/herring-submit-dryrun.csv` and contained the expected columns.
 
 ### Fixed: cloud result sync could summarize against the wrong manifest

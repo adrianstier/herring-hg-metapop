@@ -85,7 +85,7 @@ def submit(row: dict[str, str], args: argparse.Namespace) -> dict[str, str]:
 
     print(" ".join(command))
     if args.dry_run:
-        aws_job_id = "DRY_RUN"
+        aws_job_id = f"DRY_RUN_{row['job_id']}"
     else:
         result = subprocess.run(command, check=True, capture_output=True, text=True)
         print(result.stdout, end="")
