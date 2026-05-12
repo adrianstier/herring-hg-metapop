@@ -74,3 +74,37 @@ Verification:
 Next item noticed:
 
 - P2 docs cleanup is warranted: move/relabel the old README M1-M6 hierarchy and reorder `docs/stan-model-map.md` so the promoted `m1_stier_11` path appears before legacy model-family infrastructure.
+
+## Cycle 2 - Cloud Result Guardrails
+
+Branch: `chore/overnight-cloud-result-checks-20260511-2153`
+
+Decision:
+
+- Keep working on P0 cloud guardrails because the user explicitly wants AWS model farming to be reusable and safe for reruns.
+- Avoid live AWS calls because credentials were last known expired and this cycle can be verified locally.
+
+Work completed:
+
+- Extended `cloud/submit_model_farm.py` with `--out-csv`.
+- The submitter now records `model`, `aws_job_id`, `queue`, `priority`, and `notes` rows compatible with `cloud/watch_aws_batch_run.py`.
+- Dry runs write `DRY_RUN` as the job id, which is useful for schema checks without touching AWS.
+
+Why:
+
+- `cloud/watch_aws_batch_run.py` requires a jobs CSV containing `aws_job_id`, but the submitter previously only printed commands / AWS output. That left a manual handoff in the model-farm loop.
+
+Files touched in this cycle:
+
+- `SESSION_LOG_20260511.md`
+- `cloud/submit_model_farm.py`
+
+Verification:
+
+- `python3 -m py_compile cloud/submit_model_farm.py` passed.
+- `python3 cloud/submit_model_farm.py --dry-run --s3-prefix s3://dummy/herring --job-queue dummy-queue --job-definition dummy-def --job-id smoke_cloud_pipeline --include-spot --out-csv /private/tmp/herring-submit-dryrun.csv` passed.
+- `/private/tmp/herring-submit-dryrun.csv` has the watcher-compatible columns and a `DRY_RUN` smoke row.
+
+Next item noticed:
+
+- The cloud setup documentation should show the new `--out-csv` handoff to `cloud/watch_aws_batch_run.py`, but `docs/cloud-model-running-setup.md` is already dirty from earlier work. I will flag rather than commit broad doc changes in this cycle unless I can isolate the patch safely.

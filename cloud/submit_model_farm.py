@@ -22,6 +22,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--task-type", action="append", default=[])
     parser.add_argument("--include-spot", action="store_true")
     parser.add_argument("--include-planned", action="store_true")
+    parser.add_argument("--out-csv", default="")
     parser.add_argument("--dry-run", action="store_true")
     return parser.parse_args()
 
@@ -40,7 +41,7 @@ def keep(row: dict[str, str], args: argparse.Namespace) -> bool:
     return True
 
 
-def submit(row: dict[str, str], args: argparse.Namespace) -> None:
+def submit(row: dict[str, str], args: argparse.Namespace) -> dict[str, str]:
     script = Path(row["script"])
     if not script.exists():
         raise FileNotFoundError(f"Manifest script missing for {row['job_id']}: {script}")
@@ -83,8 +84,21 @@ def submit(row: dict[str, str], args: argparse.Namespace) -> None:
         command.extend(["--array-properties", f"size={array_size}"])
 
     print(" ".join(command))
-    if not args.dry_run:
-        subprocess.run(command, check=True)
+    if args.dry_run:
+        aws_job_id = "DRY_RUN"
+    else:
+        result = subprocess.run(command, check=True, capture_output=True, text=True)
+        print(result.stdout, end="")
+        payload = json.loads(result.stdout)
+        aws_job_id = payload["jobId"]
+
+    return {
+        "model": row["job_id"],
+        "aws_job_id": aws_job_id,
+        "queue": args.job_queue,
+        "priority": row.get("job_family", ""),
+        "notes": row.get("notes", ""),
+    }
 
 
 def main() -> int:
@@ -98,8 +112,15 @@ def main() -> int:
         print("No manifest rows selected.", file=sys.stderr)
         return 1
 
-    for row in selected:
-        submit(row, args)
+    submitted_rows = [submit(row, args) for row in selected]
+    if args.out_csv:
+        out_path = Path(args.out_csv)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        with out_path.open("w", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=list(submitted_rows[0].keys()))
+            writer.writeheader()
+            writer.writerows(submitted_rows)
+        print(f"Wrote {out_path}")
     return 0
 
 

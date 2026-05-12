@@ -10,6 +10,14 @@
 - **Fix:** Added a default guard that skips `planned_*` task types unless `--include-planned` is explicitly passed. Added a local script-existence check before submit/dry-run output.
 - **Verification:** Dry-run checks listed below in `SESSION_LOG_20260511.md`.
 
+### Fixed: AWS model-farm submitter did not create watcher-compatible job records
+
+- **File:** `cloud/submit_model_farm.py`
+- **Related watcher:** `cloud/watch_aws_batch_run.py:105`
+- **Issue:** The watcher expects a CSV with `aws_job_id`, but the submitter only printed commands / AWS output. That forced manual job-id capture between submission and monitoring.
+- **Fix:** Added `--out-csv`; successful submissions now write `model`, `aws_job_id`, `queue`, `priority`, and `notes`. Dry runs write `DRY_RUN` as the job id for schema checks.
+- **Verification:** Dry-run output was written to `/private/tmp/herring-submit-dryrun.csv` and contained the expected columns.
+
 ### Flagged: README still opens with an old M1-M6 hierarchy before the promoted baseline
 
 - **File:** `README.md:39`
@@ -37,4 +45,3 @@
 - **Issue:** "Best historical surveyed-cell model by current gates: `m1_v5`" appears in the next-decision section before the more important promoted-baseline line. This can overemphasize stale detection-aware models even though `m1_stier_11` is the practical baseline and zeros are ambiguous.
 - **Options considered:** change only prose; change the generating script; leave generated output and rely on README/AGENTS.
 - **Recommendation:** Patch the generator (`Code/04b_interpret_model_outputs.R`) so promoted-baseline guidance is first and surveyed-cell stale models are explicitly labeled as archival sensitivity.
-
