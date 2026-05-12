@@ -1,0 +1,36 @@
+{
+  "jobDefinitionName": "herring-hg-metapop",
+  "type": "container",
+  "platformCapabilities": ["EC2"],
+  "containerProperties": {
+    "image": "__ECR_IMAGE_URI__",
+    "vcpus": 4,
+    "memory": 32000,
+    "jobRoleArn": "__BATCH_JOB_ROLE_ARN__",
+    "executionRoleArn": "__BATCH_EXECUTION_ROLE_ARN__",
+    "readonlyRootFilesystem": false,
+    "privileged": false,
+    "environment": [],
+    "ulimits": [
+      {
+        "name": "nofile",
+        "softLimit": 65536,
+        "hardLimit": 65536
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/aws/batch/herring-hg-metapop",
+        "awslogs-region": "us-east-1",
+        "awslogs-stream-prefix": "herring"
+      }
+    }
+  },
+  "retryStrategy": {
+    "attempts": 1
+  },
+  "timeout": {
+    "attemptDurationSeconds": 86400
+  }
+}

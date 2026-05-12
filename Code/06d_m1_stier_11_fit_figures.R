@@ -162,7 +162,7 @@ p_aggregate <- ggplot(aggregate_df, aes(x = year)) +
 p_resid_time <- ggplot(fit_obs_df, aes(x = year, y = log_residual, colour = method)) +
   geom_hline(yintercept = 0, linetype = "dashed", colour = "grey50") +
   geom_point(size = 1.2, alpha = 0.75) +
-  geom_smooth(se = FALSE, method = "loess", linewidth = 0.6) +
+  geom_smooth(se = FALSE, method = "loess", formula = y ~ x, linewidth = 0.6) +
   scale_colour_manual(values = method_cols) +
   labs(
     x = "Year",

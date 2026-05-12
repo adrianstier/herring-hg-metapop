@@ -4,7 +4,8 @@
 > This file mixes early planning notes with implementation details.
 > For the current maintained map from theory to cleaned data to Stan inputs, read [`docs/theory-data-model-integration.md`](/Users/adrianstier/stier-2027-herring-metapopulation/docs/theory-data-model-integration.md).
 > For a first-pass walkthrough of the codebase, read [`docs/collaborator-reading-guide.md`](/Users/adrianstier/stier-2027-herring-metapopulation/docs/collaborator-reading-guide.md).
-> As of 2026-05-08, the promoted practical baseline is `m1_stier_11`, which treats zero spawn records as ambiguous/missing following Stier et al. (2020). The left-censored / detection-aware zero model described below is now a sensitivity analysis, not the default baseline.
+> For the current literature/NotebookLM parameter roadmap, read [`docs/literature-parameter-roadmap.md`](/Users/adrianstier/stier-2027-herring-metapopulation/docs/literature-parameter-roadmap.md).
+> As of 2026-05-11, the promoted practical baseline is still `m1_stier_11`, which treats zero spawn records as ambiguous/missing following Stier et al. (2020). The observation-hierarchy branch `m1_stier_obs_hier` finished and is sampler-clean, but it is held because positive-spawn calibration worsened relative to `m1_stier_11`. The left-censored / detection-aware zero model described below remains a sensitivity analysis, not the default baseline.
 
 ## Overview
 
@@ -31,7 +32,109 @@ At Haida Gwaii, herring experienced intense reduction fishery (1950s--1960s), a 
 
 ---
 
-## Model Hierarchy: Six Candidate Models (M1--M6)
+## Current Forward Plan After `m1_stier_11`
+
+The active baseline has shifted from the early six-model hierarchy to a
+Stier-aligned branch:
+
+- `m1_stier_11` is the promoted baseline.
+- zeros are ambiguous/missing,
+- survey catchability uses the Stier two-era surface/SCUBA split,
+- all 11 sections are fit,
+- the 9 focal sections are a reporting sensitivity, not a separate model fit.
+
+The next models should be rebuilt from this observation layer. Do not promote
+older `v3`/`v5` process branches without refitting them under the same
+zero/method assumptions.
+
+Recommended model sequence:
+
+1. `m1_stier_11`: promoted baseline.
+2. `m1_stier_9_report`: reporting sensitivity from the same posterior.
+3. `m2_stier_site_growth`: completed May 9 and held; sampler-clean but no
+   positive-spawn fit gain and unresolved Pareto-k instability.
+4. `m1_stier_method_sensitivity`: completed May 9 and held; sampler-clean, but
+   no positive-spawn fit gain and unresolved Pareto-k instability. The three-era
+   q estimates are useful for interpretation, not model promotion.
+5. `m3_stier_distance`: completed May 9 and held; distance-decay process
+   covariance was sampler-clean and biologically interpretable, but did not
+   materially improve positive-spawn calibration. Exact re-LOO completed for
+   its three high-k PSIS points, but one exact refit had treedepth pressure, so
+   the branch remains spatial context rather than promoted inference.
+6. `m1_stier_obs_hier`: completed May 11 and held. It kept the `m1_stier_11`
+   process, ambiguous-zero likelihood, 11 sections, Stier two-era `q`, lagged
+   PDO, and catch removal, then added hierarchical section-specific observation
+   error and extra surface-era positive-observation variance. The sampler was
+   clean, but positive-spawn calibration worsened (`RMSE 0.64` vs `0.56` for
+   `m1_stier_11`) and PSIS was less stable (`max Pareto k 1.29`). Treat this
+   as evidence that extra observation variance alone is not the fix.
+7. Hold complex density dependence for now. The posterior-median density screen
+   found no strong archipelago-wide negative density signal and only weak pooled
+   section evidence. If tested later, start with one global Gompertz term only.
+8. Do not launch a redundant PDO-only branch: `m1_stier_11` already includes
+   lagged PDO. If climate needs more work, test PDO window/lag sensitivity on
+   the existing baseline structure.
+9. `m5_stier_timing_habitat`: lagged spawn timing and substrate covariates only
+   as observation/context branches after simpler calibration checks.
+10. `m6_stier_predator_exposure`: predator covariates only after a separate
+    spatial exposure data product exists and the simpler process/observation
+    branches are stable.
+11. Age composition and weight-at-age: future regional productivity/recruitment
+    covariates or external checks, not a full 11-section age-structured model.
+
+Every branch should be evaluated with sampler diagnostics, positive-spawn fit,
+catch fit, and PSIS/exact re-LOO. Raw LOOIC should only be compared within the
+same likelihood unit.
+
+The May 9 population/driver screen is summarized in
+[`current-population-driver-findings.md`](current-population-driver-findings.md).
+The short version is that recent archipelago biomass is partly rebounding, but
+occupied sections remain low and recovery is highly uneven. Historical fishing
+pressure is negatively associated with section recovery, but fishing alone
+explains only part of section outcomes. Cumshewa and Louscoone are the cleanest
+persistent-depletion-beyond-fishing sections, while Tasu and Naden are
+sparse-data sensitivities. The existing lagged-PDO term is the most stable
+regional climate signal, but its coefficient remains uncertain.
+Predator indices remain descriptive context for now because they are strongly
+time-confounded with closure-era trends.
+
+For rapid synthesis, use `Output/diagnostics/may9_headline_findings.md`. To
+regenerate the current diagnostic suite in dependency order, run
+`Code/08_refresh_may9_analysis_suite.sh`.
+
+The May 9-11 `m2_stier_site_growth`, `m1_stier_method_sensitivity`,
+`m1_stier_obs_hier`, and `m3_stier_distance` results are useful negative or
+partial results. Simple constant section-productivity offsets did not explain
+the spatial recovery pattern, splitting the positive-observation q term into
+surface/mixed/dive eras did not improve positive-spawn calibration, adding
+section-specific observation error plus surface-era extra variance worsened the
+aggregate positive-spawn calibration, and distance-decay process covariance
+estimated a plausible correlation range without enough calibration gain to
+promote it. Keep `m1_stier_11` as the working baseline. Do not jump to
+predators, density dependence, or age/size structure as a promoted path before
+Monday. The parallel non-Stan priority remains observation/data scale
+diagnostics, legacy SHI reconstruction if feasible, section-mechanism typology,
+and sharper fishing/PDO interpretation.
+
+As of May 11, the most important fit caveat is no longer zeros. It is
+positive-spawn magnitude calibration in the early surface-survey era. The
+promoted `m1_stier_11` baseline fits recent SCUBA/dive-era positive spawn much
+better than early surface observations; the caveat memo and figure are written
+to `Output/diagnostics/positive_spawn_fit_caveat.md` and
+`Output/figures/positive_spawn_fit_caveat.pdf`. Treat this as a communication
+and data-scale caveat for Monday, not a reason to promote the observation-
+hierarchy branch, because that branch worsened positive-spawn RMSE despite clean
+sampler diagnostics.
+
+The current biomass estimate also needs a specific uncertainty caveat. The
+2025 all-11 median is useful, but the all-11 upper interval is dominated by
+Tasu and Naden, which are retained as sparse fit-only sensitivity sections.
+Use `Output/diagnostics/current_biomass_uncertainty_decomposition.md` and
+`Output/figures/current_biomass_uncertainty_decomposition.pdf`; sparse fit-only
+sections account for about 92% of biomass in the top 5% of all-11 posterior
+draws.
+
+## Historical Model Hierarchy: Six Candidate Models (M1--M6)
 
 We use a structured model comparison to disentangle process error structure, covariate effects, and the collective memory signal.
 

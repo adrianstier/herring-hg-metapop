@@ -6,7 +6,9 @@ This note records the first full `v3` comparison after `m1_v3`, `m3_v3`, and `m5
 
 ## Bottom Line
 
-`m1_v3` is the only fit that is currently trustworthy enough to use for inference.
+Within the April 2026 `v3` comparison, `m1_v3` was the only fit trustworthy
+enough to use for inference. It is now superseded for practical reporting by
+the Stier-aligned `m1_stier_11` baseline.
 
 `m3_v3` and `m5_v3` are not credible analysis endpoints because they fail basic sampler-health thresholds before model-selection questions even matter.
 

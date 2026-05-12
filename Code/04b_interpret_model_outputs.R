@@ -61,6 +61,18 @@ practical_baseline <- comparison_tbl %>%
   filter(comparison_status == "promoted_baseline") %>%
   slice(1)
 
+process_extension_tbl <- comparison_tbl %>%
+  filter(comparison_status == "process_extension_candidate")
+
+observation_sensitivity_tbl <- comparison_tbl %>%
+  filter(comparison_status == "observation_sensitivity_candidate")
+
+held_process_extension_tbl <- comparison_tbl %>%
+  filter(comparison_status == "hold_process_extension_no_fit_gain")
+
+held_observation_sensitivity_tbl <- comparison_tbl %>%
+  filter(comparison_status == "hold_observation_sensitivity_no_fit_gain")
+
 loo_unstable_tbl <- comparison_tbl %>%
   filter(comparison_status %in% c(
     "loo_unstable_live_candidate",
@@ -203,6 +215,110 @@ if (nrow(current_reference) == 1) {
       )
     }
   }
+}
+
+if (nrow(process_extension_tbl) > 0) {
+  process_lines <- pmap_chr(
+    process_extension_tbl %>%
+      select(
+        model, looic_decision, max_pareto_k, divergences, treedepth_hits,
+        max_rhat, min_ebfmi, positive_signal_log_rmse, positive_signal_log_bias
+      ),
+    function(
+        model, looic_decision, max_pareto_k, divergences, treedepth_hits,
+        max_rhat, min_ebfmi, positive_signal_log_rmse, positive_signal_log_bias
+    ) {
+      paste0(
+        "- `", model, "` is a process-extension candidate: corrected/comparable LOOIC=",
+        round(looic_decision, 2),
+        ", divergences=", divergences,
+        ", treedepth hits=", treedepth_hits,
+        ", max R-hat=", round(max_rhat, 3),
+        ", min E-BFMI=", round(min_ebfmi, 3),
+        ", max Pareto k=", round(max_pareto_k, 3),
+        ", positive RMSE=", round(positive_signal_log_rmse, 2),
+        ", positive bias=", round(positive_signal_log_bias, 2), "."
+      )
+    }
+  )
+  lines <- c(lines, "", "## Process-Extension Candidates", "", process_lines)
+}
+
+if (nrow(observation_sensitivity_tbl) > 0) {
+  observation_lines <- pmap_chr(
+    observation_sensitivity_tbl %>%
+      select(
+        model, looic_decision, max_pareto_k, divergences, treedepth_hits,
+        max_rhat, min_ebfmi, positive_signal_log_rmse, positive_signal_log_bias
+      ),
+    function(
+        model, looic_decision, max_pareto_k, divergences, treedepth_hits,
+        max_rhat, min_ebfmi, positive_signal_log_rmse, positive_signal_log_bias
+    ) {
+      paste0(
+        "- `", model, "` is an observation-sensitivity candidate: corrected/comparable LOOIC=",
+        round(looic_decision, 2),
+        ", divergences=", divergences,
+        ", treedepth hits=", treedepth_hits,
+        ", max R-hat=", round(max_rhat, 3),
+        ", min E-BFMI=", round(min_ebfmi, 3),
+        ", max Pareto k=", round(max_pareto_k, 3),
+        ", positive RMSE=", round(positive_signal_log_rmse, 2),
+        ", positive bias=", round(positive_signal_log_bias, 2), "."
+      )
+    }
+  )
+  lines <- c(lines, "", "## Observation-Sensitivity Candidates", "", observation_lines)
+}
+
+if (nrow(held_process_extension_tbl) > 0) {
+  held_lines <- pmap_chr(
+    held_process_extension_tbl %>%
+      select(
+        model, looic_decision, max_pareto_k, n_pareto_k_gt_0_7,
+        positive_signal_log_rmse, positive_signal_log_bias
+      ),
+    function(
+        model, looic_decision, max_pareto_k, n_pareto_k_gt_0_7,
+        positive_signal_log_rmse, positive_signal_log_bias
+    ) {
+      paste0(
+        "- `", model, "` is held: sampler is usable, but the branch does not improve positive-spawn calibration",
+        " relative to the promoted baseline",
+        " (LOOIC=", round(looic_decision, 2),
+        ", max Pareto k=", round(max_pareto_k, 3),
+        ", Pareto k > 0.7=", n_pareto_k_gt_0_7,
+        ", positive RMSE=", round(positive_signal_log_rmse, 2),
+        ", positive bias=", round(positive_signal_log_bias, 2), ")."
+      )
+    }
+  )
+  lines <- c(lines, "", "## Held Process Extensions", "", held_lines)
+}
+
+if (nrow(held_observation_sensitivity_tbl) > 0) {
+  held_observation_lines <- pmap_chr(
+    held_observation_sensitivity_tbl %>%
+      select(
+        model, looic_decision, max_pareto_k, n_pareto_k_gt_0_7,
+        positive_signal_log_rmse, positive_signal_log_bias
+      ),
+    function(
+        model, looic_decision, max_pareto_k, n_pareto_k_gt_0_7,
+        positive_signal_log_rmse, positive_signal_log_bias
+    ) {
+      paste0(
+        "- `", model, "` is held: the survey-method sensitivity is sampler-usable, but it does not improve",
+        " positive-spawn calibration relative to the promoted baseline",
+        " (LOOIC=", round(looic_decision, 2),
+        ", max Pareto k=", round(max_pareto_k, 3),
+        ", Pareto k > 0.7=", n_pareto_k_gt_0_7,
+        ", positive RMSE=", round(positive_signal_log_rmse, 2),
+        ", positive bias=", round(positive_signal_log_bias, 2), ")."
+      )
+    }
+  )
+  lines <- c(lines, "", "## Held Observation Sensitivities", "", held_observation_lines)
 }
 
 if (nrow(stale_tbl) > 0) {
@@ -383,6 +499,46 @@ if (nrow(loo_unstable_tbl) > 0) {
     paste0(
       "- Live LOO-review candidates: `",
       paste(loo_unstable_tbl$model, collapse = "`, `"), "`."
+    )
+  )
+}
+
+if (nrow(process_extension_tbl) > 0) {
+  lines <- c(
+    lines,
+    paste0(
+      "- Process-extension candidates ready for scientific review: `",
+      paste(process_extension_tbl$model, collapse = "`, `"), "`."
+    )
+  )
+}
+
+if (nrow(observation_sensitivity_tbl) > 0) {
+  lines <- c(
+    lines,
+    paste0(
+      "- Observation-sensitivity candidates ready for scientific review: `",
+      paste(observation_sensitivity_tbl$model, collapse = "`, `"), "`."
+    )
+  )
+}
+
+if (nrow(held_process_extension_tbl) > 0) {
+  lines <- c(
+    lines,
+    paste0(
+      "- Held process extensions should not be promoted without a new reason to spend exact-reLOO/refit time: `",
+      paste(held_process_extension_tbl$model, collapse = "`, `"), "`."
+    )
+  )
+}
+
+if (nrow(held_observation_sensitivity_tbl) > 0) {
+  lines <- c(
+    lines,
+    paste0(
+      "- Held observation sensitivities should not replace the baseline without a clear calibration gain: `",
+      paste(held_observation_sensitivity_tbl$model, collapse = "`, `"), "`."
     )
   )
 }

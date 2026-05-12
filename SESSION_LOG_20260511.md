@@ -282,3 +282,40 @@ Final verification state:
 Remaining caveat:
 
 - The pre-existing dirty worktree is still broad. I did not stage unrelated modified or untracked files.
+
+## Cycle 8 - Full Pipeline Integration
+
+Branch: `chore/overnight-cloud-dryrun-ids-20260511-2254`
+
+Decision:
+
+- Integrate the May 9-11 analysis results into the runnable refresh path rather than leave them as loose scripts.
+- Keep `m1_stier_11` as the promoted baseline and treat `m2_stier_site_growth`, `m3_stier_distance`, `m1_stier_method_sensitivity`, and `m1_stier_obs_hier` as held branches unless a later refit clears the calibration gates.
+
+Work completed:
+
+- Added the document-reference checker to the end of `Code/08_refresh_may9_analysis_suite.sh`.
+- Updated the current quickstart to say the full refresh now catches stale local markdown references.
+- Ran the full May 9 refresh suite successfully.
+- Verified the regenerated status layer reports:
+  - `m1_stier_11` as promoted baseline,
+  - `m2_stier_site_growth` and `m3_stier_distance` as held process extensions,
+  - `m1_stier_method_sensitivity` and `m1_stier_obs_hier` as held observation sensitivities,
+  - `m5_v3` as stale/pathological predator provenance, not evidence.
+
+Why:
+
+- The repo needed one authoritative command that refreshes diagnostics, model status, AWS status, and doc-reference integrity after cloud/local model artifacts change.
+
+Verification:
+
+- `zsh -n Code/08_refresh_may9_analysis_suite.sh` passed.
+- `Rscript Code/09_check_document_references.R` passed with 0 missing references and 1 planned-missing reference.
+- `python3 -m py_compile cloud/submit_model_farm.py cloud/summarize_model_farm_results.py cloud/summarize_aws_batch_status.py cloud/watch_aws_batch_run.py` passed.
+- `bash -n` passed for the cloud shell scripts.
+- `Rscript --vanilla -e 'parse(...)'` passed for the full `Code/08_refresh_may9_analysis_suite.sh` R-script family: 60 files parsed.
+- `zsh Code/08_refresh_may9_analysis_suite.sh` completed successfully at 2026-05-12 06:26:50 -10.
+
+Next item noticed:
+
+- The cloud model-farm scripts and manifests should be committed with their dependent fit scripts and Stan files so the previously pushed submitter branch works from a fresh checkout.

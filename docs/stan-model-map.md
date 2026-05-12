@@ -34,6 +34,44 @@ structure, predators, and density dependence out of the baseline. Its one high
 Pareto-k point was resolved by exact re-LOO: the held-out 1970 Naden Harbour
 refit changed total LOOIC from 1953.02 to 1953.08 with no sampler pathologies.
 
+The completed May 9 process branch is:
+
+- [`inst/stan/herring_metapop_m2_stier_site_growth.stan`](/Users/adrianstier/stier-2027-herring-metapopulation/inst/stan/herring_metapop_m2_stier_site_growth.stan)
+- [`Code/03_fit_m2_stier_site_growth.R`](/Users/adrianstier/stier-2027-herring-metapopulation/Code/03_fit_m2_stier_site_growth.R)
+
+`m2_stier_site_growth` keeps the `m1_stier_11` observation layer unchanged and
+adds hierarchical section-specific productivity `U[j]`. It finished
+sampler-clean, but it is held rather than promoted: PSIS-LOO was unstable
+(max Pareto k `0.842`, five points above `0.7`), positive-spawn calibration did
+not improve, and the section-productivity estimates were strongly pooled.
+
+The completed May 9 observation-sensitivity branch is:
+
+- [`inst/stan/herring_metapop_m1_stier_method_sensitivity.stan`](/Users/adrianstier/stier-2027-herring-metapopulation/inst/stan/herring_metapop_m1_stier_method_sensitivity.stan)
+- [`Code/03_fit_m1_stier_method_sensitivity.R`](/Users/adrianstier/stier-2027-herring-metapopulation/Code/03_fit_m1_stier_method_sensitivity.R)
+
+`m1_stier_method_sensitivity` keeps the `m1_stier_11` process and
+ambiguous-zero likelihood but estimates three q terms for surface,
+mixed-transition, and dive-dominant years. It finished sampler-clean, but it is
+held rather than promoted: PSIS-LOO was unstable (max Pareto k `0.866`, seven
+points above `0.7`) and aggregate positive-spawn RMSE was worse than
+`m1_stier_11` (`0.569` versus `0.565`). Its q medians are useful descriptive
+checks: surface `0.187`, mixed transition `0.623`, and dive-dominant `0.278`.
+
+The completed May 9 distance-covariance branch is:
+
+- [`inst/stan/herring_metapop_m3_stier_distance.stan`](/Users/adrianstier/stier-2027-herring-metapopulation/inst/stan/herring_metapop_m3_stier_distance.stan)
+- [`Code/03_fit_m3_stier_distance.R`](/Users/adrianstier/stier-2027-herring-metapopulation/Code/03_fit_m3_stier_distance.R)
+
+`m3_stier_distance` keeps the `m1_stier_11` observation layer unchanged and
+adds a one-parameter distance-decay covariance for annual process shocks. It
+finished sampler-clean and estimated a median practical process-correlation
+range of about `144` km, but it is held rather than promoted: positive-spawn
+calibration improved only slightly (`0.556` aggregate log10 RMSE versus `0.565`
+for `m1_stier_11`). Exact re-LOO completed for the three high-k points, but one
+exact refit had treedepth pressure, so the branch remains spatial context
+rather than a promoted inference model.
+
 Future model branches should preserve the following distinction:
 
 - A **Stier-aligned baseline** should treat zero spawn records as ambiguous/missing, use explicit survey-era `q` terms, and avoid size/age structure.
@@ -46,6 +84,63 @@ Also keep the section-count distinction explicit:
 - Stier fit the state-space model to 11 subpopulations.
 - Stier focused interpretation and figures on 9 data-rich focal subpopulations.
 - New Stan/data branches should make 11-section fitting and 9-focal reporting choices explicit in names and outputs.
+
+## Forward Stan Branches To Build Next
+
+The next Stan files should be new `*_stier_*` branches that inherit the
+`m1_stier_11` observation model. Do not revive older `v3`/`v5` variants as
+promotion candidates unless they are refit under the same zero and survey-method
+assumptions.
+
+The literature/NotebookLM roadmap is summarized in
+[`docs/literature-parameter-roadmap.md`](/Users/adrianstier/stier-2027-herring-metapopulation/docs/literature-parameter-roadmap.md).
+It points to observation calibration before new biological-driver branches.
+
+Recommended branch order:
+
+1. `herring_metapop_m2_stier_site_growth.stan`
+   - completed May 9 and held,
+   - section-specific productivity did not explain the scorecard.
+2. `herring_metapop_m1_stier_method_sensitivity.stan`
+   - completed May 9 and held,
+   - same process as `m1_stier_11`,
+   - compared two-era `q` with three-era surface/mixed/dive `q`.
+3. `herring_metapop_m3_stier_distance.stan`
+   - completed May 9 and held after exact re-LOO,
+   - distance-decay process covariance,
+   - same Stier observation layer,
+   - exact re-LOO completed for 3 high-k points, but one exact refit had
+     treedepth pressure and the positive-spawn fit gain is too small for
+     promotion.
+4. `herring_metapop_m1_stier_obs_hier.stan`
+   - completed May 11 and held,
+   - same `m1_stier_11` process, ambiguous-zero likelihood, 11 sections,
+     Stier two-era `q`, lagged PDO, and catch removal,
+   - added hierarchical section-specific observation error `sigma_obs[j]`,
+   - added method-specific positive-observation scale, especially extra
+     surface-era variance,
+   - sampler-clean but not promoted because positive-spawn RMSE worsened and
+     PSIS became less stable.
+5. `herring_metapop_m2_stier_site_growth_regularized.stan`
+   - fallback only if section productivity becomes necessary again,
+   - tighter pooling or simpler section grouping.
+6. `herring_metapop_m2_stier_process_variance.stan`
+   - section-specific process variance with strong pooling,
+   - only after the observation-calibration branch stays sampler-clean.
+7. `herring_metapop_m4_stier_dd.stan`
+   - global density dependence,
+   - only after spatial re-LOO and observation calibration justify moving past
+     the baseline.
+8. `herring_metapop_m5_stier_timing_habitat.stan`
+   - lagged spawn timing and substrate covariates,
+   - first as observation/reporting or phenology/habitat sensitivity.
+9. `herring_metapop_m6_stier_predator_exposure.stan`
+   - predator covariates only after a spatial exposure data product exists and
+     process/observation calibration remain stable.
+
+Keep full section-level age/size structure out of this sequence. Age composition
+and weight-at-age can later inform priors, regional covariates, or external
+checks.
 
 ## Archival or Experimental Variants
 

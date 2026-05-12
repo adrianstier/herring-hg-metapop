@@ -19,6 +19,7 @@ Output/*.csv
 Output/*.png
 *_output.txt
 *_watch.log
+*.log
 
 # Legacy posteriors (diagnostic PDFs, regenerable)
 Code/legacy-2019/Posteriors/

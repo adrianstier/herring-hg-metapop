@@ -1,0 +1,9 @@
+job_id,script,chains,cores,iter,warmup,priority,dependency,expected_fit,expected_loo,notes
+m1_stier_obs_hier,Code/03_fit_m1_stier_obs_hier.R,4,4,4500,2000,1,none,Data/processed/m1_stier_obs_hier_fit.rds,Output/posteriors/loo_m1_stier_obs_hier.rds,Completed clean negative result; do not submit unchanged except for reproducibility.
+m3_stier_distance_reloo_117,Code/04g_m3_stier_distance_exact_reloo.R,2,2,1500,750,1,none,Data/processed/m3_stier_distance_triage_reloo_idx117_fit.rds,Output/diagnostics/m3_stier_distance_triage_reloo.csv,Exact re-LOO holdout for 1970 Naden Harbour.
+m3_stier_distance_reloo_487,Code/04g_m3_stier_distance_exact_reloo.R,2,2,1500,750,1,none,Data/processed/m3_stier_distance_triage_reloo_idx487_fit.rds,Output/diagnostics/m3_stier_distance_triage_reloo.csv,Exact re-LOO holdout for 2024 Englefield Bay.
+m3_stier_distance_reloo_82,Code/04g_m3_stier_distance_exact_reloo.R,2,2,1500,750,1,none,Data/processed/m3_stier_distance_triage_reloo_idx82_fit.rds,Output/diagnostics/m3_stier_distance_triage_reloo.csv,Exact re-LOO holdout for 1965 Skidegate Inlet.
+m2_stier_process_variance_tbd,Code/03_fit_m2_stier_process_variance.R,4,4,4500,2000,3,m1_stier_11_promoted,,,Future branch; implement only if a new diagnostic justifies extra process variance.
+m4_stier_dd_global_tbd,Code/03_fit_m4_stier_dd_global.R,4,4,4500,2000,4,m1_stier_11_promoted,,,Future branch; one global Gompertz term only.
+m5_stier_timing_habitat_tbd,Code/03_fit_m5_stier_timing_habitat.R,4,4,4500,2000,5,m1_stier_11_promoted,,,Future observation/context sensitivity.
+m6_stier_predator_exposure_tbd,Code/03_fit_m6_stier_predator_exposure.R,4,4,4500,2000,6,predator_exposure_data_done,,,Future only after spatial predator exposure data product exists.

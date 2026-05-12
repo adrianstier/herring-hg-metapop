@@ -258,7 +258,7 @@ resid_df <- obs_fit %>%
 p3 <- ggplot(resid_df, aes(x = year, y = residual)) +
   geom_hline(yintercept = 0, colour = "grey50", linewidth = 0.3) +
   geom_point(size = 0.6, colour = "#0072B2", alpha = 0.7) +
-  geom_smooth(method = "loess", se = TRUE, span = 0.5,
+  geom_smooth(method = "loess", formula = y ~ x, se = TRUE, span = 0.5,
               colour = "#D55E00", fill = "#D55E00",
               alpha = 0.15, linewidth = 0.5) +
   # Event markers

@@ -1,0 +1,47 @@
+FROM rocker/tidyverse:4.4.2
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV RENV_CONFIG_PAK_ENABLED=false
+ENV R_MAKEVARS_USER=/root/.R/Makevars
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    ca-certificates \
+    curl \
+    gfortran \
+    git \
+    libcurl4-openssl-dev \
+    libfontconfig1-dev \
+    libfreetype6-dev \
+    libfribidi-dev \
+    libharfbuzz-dev \
+    libjpeg-dev \
+    libpng-dev \
+    libssl-dev \
+    libtiff5-dev \
+    libxml2-dev \
+    make \
+    pandoc \
+    unzip \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o /tmp/awscliv2.zip \
+  && unzip -q /tmp/awscliv2.zip -d /tmp \
+  && /tmp/aws/install \
+  && rm -rf /tmp/aws /tmp/awscliv2.zip
+
+WORKDIR /opt/herring
+COPY r-packages.txt /opt/herring/r-packages.txt
+COPY required-r-packages.txt /opt/herring/required-r-packages.txt
+
+RUN mkdir -p /root/.R \
+  && printf '%s\n' \
+    'CXX14FLAGS += -O2 -pipe' \
+    'CXX17FLAGS += -O2 -pipe' \
+    > /root/.R/Makevars \
+  && Rscript --vanilla -e 'options(repos = c(CRAN = "https://cloud.r-project.org")); pkgs <- readLines("/opt/herring/r-packages.txt"); pkgs <- pkgs[nzchar(pkgs)]; install.packages(pkgs, Ncpus = 2); required <- readLines("/opt/herring/required-r-packages.txt"); required <- required[nzchar(required)]; missing <- required[!vapply(required, requireNamespace, logical(1), quietly = TRUE)]; if (length(missing)) stop("Missing required R packages after image build: ", paste(missing, collapse = ", "))'
+
+COPY batch_entrypoint.sh /usr/local/bin/herring-batch-entrypoint
+RUN chmod +x /usr/local/bin/herring-batch-entrypoint
+
+ENTRYPOINT ["/usr/local/bin/herring-batch-entrypoint"]

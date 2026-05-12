@@ -62,7 +62,7 @@ All models compared via LOO-CV. See `docs/analysis-plan.md` for details.
 | Collective memory | Not tested | Formal occupancy sub-model |
 | Models | 1 | 7 in a comparison hierarchy |
 | Pipeline | Scripts with `setwd()` | `{targets}` + `here()` |
-| Tests | None | 434 regression tests |
+| Tests | None | 235 `testthat` expectations across 4 test files |
 
 ## Current Modeling Direction
 
@@ -77,7 +77,7 @@ Recent review of Stier et al. (2020), the archived JAGS code, and the Haida Gwai
 
 ### Current promoted baseline
 
-As of 2026-05-08, the promoted practical baseline is `m1_stier_11`:
+As of 2026-05-11, the promoted practical baseline is still `m1_stier_11`:
 
 - zeros are treated as ambiguous/missing, following Stier et al. (2020) and the archived JAGS model;
 - all 11 Haida Gwaii sections are fit;
@@ -85,6 +85,118 @@ As of 2026-05-08, the promoted practical baseline is `m1_stier_11`:
 - size/age structure, predators, and density dependence are held out of this baseline.
 
 The fit is sampler-clean and the only high PSIS-LOO point was resolved by exact re-LOO. The held-out 1970 Naden Harbour refit changed total LOOIC only from 1953.02 to 1953.08, so the LOO warning is negligible for current model selection. Detection-aware models such as `m1_v4`/`m1_v5` remain sensitivity analyses because they use a different surveyed-cell likelihood unit and treat zeros as informative nondetections.
+
+The main May 11 challenger, `m1_stier_obs_hier`, is also sampler-clean but is held rather than promoted. It kept the Stier-aligned ambiguous-zero likelihood and added section-specific observation error plus surface-era extra variance, but positive-spawn calibration worsened relative to `m1_stier_11` (aggregate log10 RMSE 0.64 versus 0.56) and PSIS was less stable (max Pareto k 1.29).
+
+### Current model sequence
+
+The next models should be rebuilt from the `m1_stier_11` observation layer rather than promoted from older stale `v3`/`v5` branches. The current working order is:
+
+1. finish the 9-focal reporting sensitivity from the existing 11-section fit;
+2. screen population state, section winners/losers, fishing pressure, and candidate drivers from `m1_stier_11`;
+3. hold `m2_stier_site_growth`: it was sampler-clean but did not improve positive-spawn calibration and had unresolved Pareto-k instability;
+4. hold `m1_stier_method_sensitivity`: it was sampler-clean but did not improve positive-spawn calibration, had unresolved Pareto-k instability, and estimated a highly uncertain mixed-transition q;
+5. hold `m1_stier_obs_hier`: it was sampler-clean but worsened positive-spawn calibration, so extra observation variance alone is not the answer;
+6. hold `m3_stier_distance`: it was sampler-clean and estimated a plausible distance-decay range; exact re-LOO completed for the three high-k points, but one exact refit had treedepth pressure and the positive-spawn calibration gain remains too small for promotion;
+7. hold complex density dependence for now: the posterior-median density screen has no strong archipelago-wide negative signal;
+8. do not launch a redundant PDO-only branch: `m1_stier_11` already includes lagged PDO, so further climate work should focus on PDO window/lag sensitivity or clearer interpretation of the existing coefficient;
+9. add timing/substrate covariates and predator covariates only after observation and process calibration remain stable.
+
+As of 2026-05-11, the promoted branch remains `m1_stier_11`. The three-era method-sensitivity readout is `Output/diagnostics/m1_stier_method_sensitivity_postfit.md` and `Output/figures/m1_stier_method_sensitivity_postfit.pdf`. The distance-covariance readout is `Output/diagnostics/m3_stier_distance_postfit.md` and `Output/figures/m3_stier_distance_postfit.pdf`; exact re-LOO completed for its three high-k points, but the branch remains spatial context because fit gain is small and one exact refit had treedepth pressure. See `docs/current-population-driver-findings.md` for the current population/driver synthesis, `docs/may-9-analysis-decision-summary.md` for the compact model-decision checkpoint, `docs/may-9-analysis-output-index.md` for a map of the diagnostics generated during the May 9 sprint, and `Output/diagnostics/may9_headline_findings.md` for the shortest table of headline numbers. Three additional context audits now support the model-ordering decision: `Output/diagnostics/survey_coverage_zero_ambiguity.md` documents why zero/no-survey cells remain ambiguous, `Output/diagnostics/predator_data_feasibility_audit.md` documents why regional predator covariates remain descriptive, and `Output/diagnostics/predator_spatial_exposure_prototype.md` shows that a section-level seal/sea-lion exposure product is feasible but still not causal evidence.
+
+As of 2026-05-10, use `Output/diagnostics/may10_integrated_evidence_matrix.md`
+as the compact analysis control sheet. It translates the diagnostic suite into
+claim, evidence, caveat, next-action, and confidence rows, and is regenerated by
+`Code/07ag_integrated_evidence_matrix.R`.
+For model-parameter choices from the NotebookLM/paper scan, use
+`docs/literature-parameter-roadmap.md`. The observation-calibration branch with
+section-specific observation error and surface-era extra variance has now been
+tested as `m1_stier_obs_hier`; it is clean but held because it does not improve
+fit. Predators and age/size remain future/context work.
+The main portfolio figure has also been regenerated from the promoted baseline:
+`Output/figures/m1_stier_11_portfolio_metrics_combined.pdf` now overwrites the
+legacy `Output/figures/portfolio_metrics_combined.pdf` path.
+For fit caveats, use `Output/diagnostics/positive_spawn_fit_caveat.md`: the
+modern/recent fit is much better than the early surface-era fit, so individual
+early surface magnitudes should not carry the headline story.
+For the shortest single current evidence package, use
+`Output/diagnostics/promoted_baseline_evidence_package.md`; it combines model
+status, biomass, spawn/catch fit, section roles, caveats, and priority figure
+paths for the promoted `m1_stier_11` baseline.
+For the current section-level work plan, use
+`Output/diagnostics/section_action_matrix.md` and
+`Output/figures/section_action_matrix.pdf`: Cumshewa/Louscoone are the lead
+mechanism cases, Juan Perez/Skincuttle are current biomass concentration cases,
+and Tasu/Naden are uncertainty sensitivity only.
+For the lead mechanism/portfolio local data audit, use
+`Output/diagnostics/lead_section_local_audit.md` and
+`Output/figures/lead_section_local_audit.pdf`: it focuses Cumshewa,
+Louscoone, Laskeek, and Skidegate on survey coverage, period records, and raw
+HG location concentration.
+For within-section raw spawn-location persistence, use
+`Output/diagnostics/lead_section_location_transition.md` and
+`Output/figures/lead_section_location_transition.pdf`: Louscoone and Cumshewa
+have recent raw signal near 1% of roe-fishery signal, while Laskeek has a
+larger but still depleted recent raw signal across more locations. Skidegate is
+not available in that raw HG section extract, so keep it as model/processed
+series evidence only for this specific local-location screen.
+The geocoded companion is `Output/diagnostics/lead_section_location_map.md` and
+`Output/figures/lead_section_location_map.pdf`; use it to target local
+access/habitat/exposure follow-up rather than to infer absence.
+`Output/diagnostics/lead_spawn_location_predator_proximity.md` and
+`Output/figures/lead_spawn_location_predator_proximity.pdf` link those
+geocoded raw spawn locations to post-2005 harbour seal and Steller sea lion
+sites. Current read: predator proximity is computable at the local scale, but
+lost locations are not clearly more predator-exposed than persistent locations,
+so this remains audit targeting rather than predator-effect evidence.
+The practical named follow-up list is
+`Output/diagnostics/lead_location_followup_targets.md` with figure
+`Output/figures/lead_location_followup_targets.pdf`: it combines
+location-transition status, spawn-method/substrate metadata, coordinates, and
+seal/sea-lion proximity. Use it for targeted local review; a lost-location
+label still means "no recent positive raw record in this extract", not proven
+absence.
+For predator work, use `Output/diagnostics/predator_spatial_exposure_prototype.md`
+and `Output/figures/predator_spatial_exposure_prototype.pdf`: raw Haida Gwaii
+harbour seal and Steller sea lion records can be converted into rough
+section-level exposure covariates, but the current screen is still
+time-confounded and should be treated as a data-product roadmap, not a
+predator-effect result.
+For the most compact combined covariate read, use
+`Output/diagnostics/section_recovery_covariate_screen.md` and
+`Output/figures/section_recovery_covariate_screen.pdf`: historical fishing
+is the strongest section-level recovery axis. For model-scope decisions, use
+`Output/diagnostics/covariate_readiness_registry.md`; it separates covariates
+already in the promoted model from descriptive screens, prototype data products,
+and held ideas such as age/size. Predator exposure, timing/substrate, and
+survey coverage remain descriptive/context variables.
+For the current biomass number, also use
+`Output/diagnostics/current_biomass_uncertainty_decomposition.md` and
+`Output/figures/current_biomass_uncertainty_decomposition.pdf`: the 2025
+all-11 median is useful, but sparse fit-only sections account for about 92% of
+the upper 5% biomass tail, so the focal-9 estimate is the cleaner talk number.
+For the specific question of whether the original Stier et al. signal persists
+with the 2025 update, use
+`Output/diagnostics/stier_signal_persistence_summary.md`.
+For cloud execution, use `docs/cloud-model-running-setup.md` and the scripts in
+`cloud/`. The setup supports simple EC2+S3 jobs and an AWS Batch model farm
+driven by `cloud/model-farm-manifest.csv`, so observation, spatial, density,
+predator, time-varying, exact re-LOO, and smoke-test branches can run as
+independent cloud jobs.
+The latest local AWS status report is
+`Output/diagnostics/aws_batch_model_farm_status.md`; if it is stale, refresh the
+CLI token with `aws sso login --profile herring` before polling or syncing
+Batch results.
+The full run/collect/audit/rerun scope is in
+`docs/full-analysis-model-farm-scope.md`.
+Implementation notes for reusing this Codex-to-AWS pattern in future projects
+are in `docs/aws-codex-model-farm-lessons.md`.
+
+Key May 9 diagnostics so far: recent biomass is concentrated in a few sections, three focal sections remain below 20% of their 1951-1965 section baseline in the recent closure period, historical fishing pressure is a strong but incomplete section-level driver, and the closure-response diagnostic shows why fishing history and recovery must be separated: recent biomass is about 1.52x the roe-fishery median after fishing ended, but median occupied sections fall from 8 during the roe fishery to 5 recently. Cumshewa and Louscoone are the clearest depletion-beyond-fishing cases. The existing lagged-PDO baseline effect is negative but uncertain; a cheap PDO window screen finds lag 0-1 slightly stronger while lag 1 remains competitive, so do not launch a redundant PDO-only branch. Predator indices are strongly time-confounded, density-dependence evidence is weak, and residual spawn-fit correlations show only weak distance decay. The new predator spatial exposure prototype makes the next predator step clearer: refine section-level exposure from raw seal/sea-lion locations before fitting a predator coefficient. Those results keep the near-term priority on section heterogeneity, local exposure data products, and observation calibration before predator or age/size model branches.
+
+The May 9 spawn-index scale audit also shows that maintained DFO `spawn_index_tonnes` is not a simple numerical continuation of Stier's legacy SHI scale. The median SHI / tonnes ratio is about 112, but it varies strongly by section, so legacy `q` values should not be copied into the current DFO-tonnes model.
+
+Full age/size structure is not part of the next section-level model branch. Age composition and weight-at-age should be treated as future regional covariates, priors, or cross-checks.
 
 ## Repository Structure
 
@@ -104,14 +216,17 @@ stier-2027-herring-metapopulation/
 │   ├── 10_spatial_data.R           # Distance matrices, spatial predator indices
 │   └── process_oisst_monthly.R     # Utility to regenerate monthly SST inputs
 ├── inst/stan/                      # Primary Stan models + archival variants/cache artifacts
-│   ├── herring_metapop_v1.stan     # M1: baseline (diagonal-equal)
-│   ├── herring_metapop_v2.stan     # Legacy v2: free MVN (reference only)
-│   ├── herring_metapop_m2_distance.stan    # M2: distance-decay
-│   ├── herring_metapop_m3_dd_global.stan   # M3: + global Gompertz
-│   ├── herring_metapop_m4_dd_site.stan     # M4: + site-specific Gompertz
-│   ├── herring_metapop_m5_predators.stan   # M5: + predator covariates
-│   ├── herring_metapop_m6_timevarying.stan # M6: + time-varying φ
-│   └── site_occupancy.stan                 # Collective memory model
+│   ├── herring_metapop_m1_stier_11.stan    # Promoted Stier-aligned baseline (zeros ambiguous, 11 sections)
+│   ├── herring_metapop_v1.stan             # Earlier diagonal-equal baseline (archival)
+│   ├── herring_metapop_v2.stan             # Legacy v2: free MVN (reference only)
+│   ├── herring_metapop_m2_distance.stan    # Distance-decay process covariance
+│   ├── herring_metapop_m3_dd_global.stan   # + global Gompertz
+│   ├── herring_metapop_m4_dd_site.stan     # + site-specific Gompertz
+│   ├── herring_metapop_m5_predators.stan   # + predator covariates
+│   ├── herring_metapop_m6_timevarying.stan # + time-varying φ
+│   ├── site_occupancy.stan                 # Collective memory model
+│   ├── herring_metapop_m1_v{2,3,4,5}.stan  # Detection-aware / informative-zero sensitivities (archival)
+│   └── herring_metapop_m{3,5}_v{2,3,5}.stan # Earlier process-branch experiments (archival)
 ├── _targets.R                      # Maintained targets pipeline entrypoint
 ├── tests/testthat/                 # Regression tests for maintained R code
 ├── Code/legacy-2019/               # Original JAGS scripts (historical reference)
@@ -128,13 +243,23 @@ stier-2027-herring-metapopulation/
 │   └── processed/                  # Cleaned, merged analysis-ready data
 ├── Literature/                     # 71 PDFs (core + predators)
 ├── docs/
-│   ├── analysis-plan.md            # 6-model hierarchy + expected results
-│   ├── stan-model-map.md           # Which Stan files are primary vs archival
-│   └── data-dictionary.md          # All variables documented
+│   ├── analysis-plan.md                  # Forward plan after `m1_stier_11`; historical M1-M6 reference
+│   ├── analysis-issues-and-fixes.md      # Historical diagnostic memo
+│   ├── collaborator-reading-guide.md     # First-pass codebase reading order
+│   ├── current-population-driver-findings.md # Current state, driver, and next-model synthesis
+│   ├── data-dictionary.md                # All variables documented
+│   ├── high-quality-analysis-scope.md    # What is ready vs what would strengthen the analysis
+│   ├── okamoto-deep-dive.md              # Okamoto et al. 2020 model deep-dive
+│   ├── parameter-comparison-stier2020.md # JAGS vs Stan parameter comparison
+│   ├── stan-model-map.md                 # Which Stan files are primary vs archival
+│   ├── theory-data-model-integration.md  # Hypotheses → cleaned data → Stan inputs → outputs
+│   ├── v3-model-comparison-results.md    # Historical `v3` comparison record
+│   └── v5-covariate-rationale.md         # `v5` covariate selection rationale
 ├── Output/
 │   ├── figures/                    # Publication + lecture figures
+│   ├── diagnostics/                # Sampler audits, PPCs, LOO/Pareto-k summaries, `latest_model_status.md`
 │   ├── tables/                     # Model summaries
-│   └── posteriors/                 # MCMC output
+│   └── posteriors/                 # MCMC output / LOO artifacts
 ├── .gitignore
 ├── README.md
 └── stier-2027-herring-metapopulation.Rproj

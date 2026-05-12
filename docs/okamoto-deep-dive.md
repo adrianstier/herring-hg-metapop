@@ -52,7 +52,7 @@ For Haida Gwaii, the defensible path is:
 - avoid inventing a new prior mean unless a source explicitly justifies it.
 
 Important correction:
-The currently running `m3_v4` experiment uses a dive prior centered near `q = 0.57`. That value is not supported by the local Okamoto excerpt checked here. Treat that model as exploratory until the source for that mean is verified.
+The historical `m3_v4` experiment used a dive prior centered near `q = 0.57`. That value is not supported by the local Okamoto excerpt checked here. Treat that model as exploratory provenance, not a current promotion candidate.
 
 ## 4. Zero Spawn Observations Need Dataset-Specific Handling
 

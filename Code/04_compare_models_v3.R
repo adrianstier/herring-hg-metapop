@@ -53,32 +53,70 @@ for (col in c(
   }
 }
 
-exact_reloo_path <- file.path(diag_dir, "m1_stier_11_exact_reloo.csv")
-exact_reloo_tbl <- if (file.exists(exact_reloo_path)) {
-  read_csv(exact_reloo_path, show_col_types = FALSE) %>%
-    transmute(
-      model,
-      exact_reloo_resolved = divergences == 0 &
-        treedepth_hits == 0 &
-        min_ebfmi >= 0.3,
-      exact_reloo_heldout_index = heldout_log_lik_index,
-      exact_reloo_year = year,
-      exact_reloo_site_name = site_name,
-      exact_reloo_pareto_k = pareto_k,
-      exact_reloo_psis_elpd = psis_elpd,
-      exact_reloo_elpd = exact_elpd,
-      exact_reloo_looic_total = looic_total_exact_corrected,
-      exact_reloo_looic_delta = looic_total_exact_corrected - looic_total_psis,
-      exact_reloo_divergences = divergences,
-      exact_reloo_treedepth_hits = treedepth_hits,
-      exact_reloo_min_ebfmi = min_ebfmi
+exact_reloo_files <- list.files(
+  diag_dir,
+  pattern = "(_exact_reloo|_triage_reloo)\\.csv$",
+  full.names = TRUE
+)
+exact_reloo_tbl <- if (length(exact_reloo_files) > 0) {
+  raw_exact_reloo <- map_dfr(
+    exact_reloo_files,
+    ~ read_csv(.x, show_col_types = FALSE),
+    .id = "source_id"
+  )
+
+  for (col in c("n_high_pareto_total", "n_exact_refit_completed")) {
+    if (!col %in% names(raw_exact_reloo)) {
+      raw_exact_reloo[[col]] <- NA_integer_
+    }
+  }
+  if (!"exact_looic_point" %in% names(raw_exact_reloo)) {
+    raw_exact_reloo$exact_looic_point <- -2 * raw_exact_reloo$exact_elpd
+  }
+
+  raw_exact_reloo %>%
+    mutate(
+      refit_clean = divergences == 0 & treedepth_hits == 0 & min_ebfmi >= 0.3
+    ) %>%
+    group_by(model) %>%
+    summarise(
+      n_required = if (all(is.na(n_high_pareto_total))) {
+        n()
+      } else {
+        max(n_high_pareto_total, na.rm = TRUE)
+      },
+      n_completed = if (all(is.na(n_exact_refit_completed))) {
+        n()
+      } else {
+        max(n_exact_refit_completed, na.rm = TRUE)
+      },
+      exact_reloo_completed = n_completed >= n_required,
+      exact_reloo_refits_clean = all(refit_clean) &
+        n_completed >= n_required,
+      exact_reloo_resolved = exact_reloo_completed,
+      exact_reloo_heldout_index = paste(heldout_log_lik_index, collapse = ";"),
+      exact_reloo_year = paste(year, collapse = ";"),
+      exact_reloo_site_name = paste(site_name, collapse = ";"),
+      exact_reloo_pareto_k = max(pareto_k, na.rm = TRUE),
+      exact_reloo_psis_elpd = sum(psis_elpd, na.rm = TRUE),
+      exact_reloo_elpd = sum(exact_elpd, na.rm = TRUE),
+      exact_reloo_looic_total = first(looic_total_psis) -
+        sum(psis_looic_point, na.rm = TRUE) +
+        sum(exact_looic_point, na.rm = TRUE),
+      exact_reloo_looic_delta = exact_reloo_looic_total - first(looic_total_psis),
+      exact_reloo_divergences = sum(divergences, na.rm = TRUE),
+      exact_reloo_treedepth_hits = sum(treedepth_hits, na.rm = TRUE),
+      exact_reloo_min_ebfmi = min(min_ebfmi, na.rm = TRUE),
+      .groups = "drop"
     )
 } else {
   tibble(
     model = character(),
+    exact_reloo_completed = logical(),
+    exact_reloo_refits_clean = logical(),
     exact_reloo_resolved = logical(),
-    exact_reloo_heldout_index = integer(),
-    exact_reloo_year = integer(),
+    exact_reloo_heldout_index = character(),
+    exact_reloo_year = character(),
     exact_reloo_site_name = character(),
     exact_reloo_pareto_k = double(),
     exact_reloo_psis_elpd = double(),
@@ -95,6 +133,8 @@ comparison_tbl <- audit_tbl %>%
   left_join(ppc_tbl, by = "model") %>%
   left_join(exact_reloo_tbl, by = "model") %>%
   mutate(
+    exact_reloo_completed = coalesce(exact_reloo_completed, FALSE),
+    exact_reloo_refits_clean = coalesce(exact_reloo_refits_clean, FALSE),
     exact_reloo_resolved = coalesce(exact_reloo_resolved, FALSE),
     sampler_health_clean = divergences == 0 &
       treedepth_hits == 0 &
@@ -121,6 +161,11 @@ comparison_tbl <- audit_tbl %>%
     positive_magnitude_clean = positive_signal_log_rmse <= 0.75 &
       abs(positive_signal_log_bias) <= 0.35,
     stier_aligned = model == "m1_stier_11",
+    observation_sensitivity = model %in% c(
+      "m1_stier_method_sensitivity",
+      "m1_stier_obs_hier"
+    ),
+    process_extension = model %in% c("m2_stier_site_growth", "m3_stier_distance"),
     loo_unstable_live = artifact_current &
       sampler_health_clean &
       !loo_resolved &
@@ -138,6 +183,32 @@ comparison_tbl <- audit_tbl %>%
   ) %>%
   ungroup() %>%
   mutate(
+    promoted_baseline_positive_rmse = {
+      baseline_rmse <- positive_signal_log_rmse[
+        model == "m1_stier_11" &
+          artifact_current &
+          positive_magnitude_clean
+      ]
+      if (length(baseline_rmse) == 0) {
+        NA_real_
+      } else {
+        baseline_rmse[1]
+      }
+    },
+    process_extension_no_fit_gain = artifact_current &
+      sampler_clean &
+      likelihood_unit == "positive_only" &
+      process_extension &
+      positive_magnitude_clean &
+      !is.na(promoted_baseline_positive_rmse) &
+      positive_signal_log_rmse >= promoted_baseline_positive_rmse - 0.02,
+    observation_sensitivity_no_fit_gain = artifact_current &
+      sampler_clean &
+      likelihood_unit == "positive_only" &
+      observation_sensitivity &
+      positive_magnitude_clean &
+      !is.na(promoted_baseline_positive_rmse) &
+      positive_signal_log_rmse >= promoted_baseline_positive_rmse - 0.02,
     promoted_baseline = sampler_clean &
       loo_resolved &
       artifact_current &
@@ -152,12 +223,30 @@ comparison_tbl <- audit_tbl %>%
               likelihood_unit == "positive_only"
           )
       ),
+    process_extension_candidate = artifact_current &
+      sampler_clean &
+      loo_resolved &
+      likelihood_unit == "positive_only" &
+      process_extension &
+      positive_magnitude_clean &
+      looic_rank_within_unit == 1,
+    observation_sensitivity_candidate = artifact_current &
+      sampler_clean &
+      loo_resolved &
+      likelihood_unit == "positive_only" &
+      observation_sensitivity &
+      positive_magnitude_clean &
+      looic_rank_within_unit == 1,
     comparison_status = case_when(
       !artifact_current ~ "stale_refit_required",
       !sampler_health_clean ~ "archived_excluded",
+      observation_sensitivity_no_fit_gain ~ "hold_observation_sensitivity_no_fit_gain",
+      process_extension_no_fit_gain ~ "hold_process_extension_no_fit_gain",
       loo_unstable_live ~ "loo_unstable_live_candidate",
       sampler_health_clean & !loo_resolved ~ "loo_unstable_review",
       promoted_baseline ~ "promoted_baseline",
+      observation_sensitivity_candidate ~ "observation_sensitivity_candidate",
+      process_extension_candidate ~ "process_extension_candidate",
       likelihood_unit == "surveyed_cells" &
         zero_calibration_gap <= 2 &
         !positive_magnitude_clean ~ "hold_positive_magnitude_miscalibration",
@@ -168,6 +257,8 @@ comparison_tbl <- audit_tbl %>%
   ) %>%
   arrange(
     desc(promoted_baseline),
+    desc(observation_sensitivity_candidate),
+    desc(process_extension_candidate),
     desc(loo_unstable_live),
     desc(artifact_current),
     desc(sampler_clean),

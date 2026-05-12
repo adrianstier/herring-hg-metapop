@@ -80,7 +80,9 @@ Current read from the May 11 refresh:
 ## Safe Next Analysis Steps
 
 1. Refresh local diagnostics with `Code/08_refresh_may9_analysis_suite.sh` after
-   any model artifact changes.
+   any model artifact changes. The wrapper now ends with
+   `Code/09_check_document_references.R`, so stale local file references are
+   caught as part of the full refresh.
 2. If AWS credentials are active, submit only smoke jobs first, then write the
    submission CSV with `cloud/submit_model_farm.py --out-csv ...`.
 3. Use `cloud/watch_aws_batch_run.py` on that CSV to poll and sync cloud results.
@@ -93,4 +95,3 @@ Current read from the May 11 refresh:
 Some older docs still begin with the historical M1-M6 model hierarchy. Treat
 that as provenance. For current inference and reporting, use the promoted
 `m1_stier_11` path described here.
-

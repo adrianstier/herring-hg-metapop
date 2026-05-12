@@ -31,6 +31,10 @@ models <- tribble(
   "m3_v3",  file.path(proc_dir, "m3_v3_fit.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m3_v3.stan"), file.path(proj_dir, "Code/03_fit_m3_v3.R"),
   "m5_v3",  file.path(proc_dir, "m5_v3_fit.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m5_v3.stan"), file.path(proj_dir, "Code/03_fit_m5_v3.R"),
   "m1_stier_11",  file.path(proc_dir, "m1_stier_11_fit.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m1_stier_11.stan"), file.path(proj_dir, "Code/03_fit_m1_stier_11.R"),
+  "m1_stier_method_sensitivity",  file.path(proc_dir, "m1_stier_method_sensitivity_fit.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m1_stier_method_sensitivity.stan"), file.path(proj_dir, "Code/03_fit_m1_stier_method_sensitivity.R"),
+  "m1_stier_obs_hier",  file.path(proc_dir, "m1_stier_obs_hier_fit.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m1_stier_obs_hier.stan"), file.path(proj_dir, "Code/03_fit_m1_stier_obs_hier.R"),
+  "m2_stier_site_growth",  file.path(proc_dir, "m2_stier_site_growth_fit.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m2_stier_site_growth.stan"), file.path(proj_dir, "Code/03_fit_m2_stier_site_growth.R"),
+  "m3_stier_distance",  file.path(proc_dir, "m3_stier_distance_fit.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m3_stier_distance.stan"), file.path(proj_dir, "Code/03_fit_m3_stier_distance.R"),
   "m1_v4",  file.path(proc_dir, "m1_v4_fit.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m1_v4.stan"), file.path(proj_dir, "Code/03_fit_m1_v4.R"),
   "m1_v5",  file.path(proc_dir, "m1_v5_fit.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m1_v5.stan"), file.path(proj_dir, "Code/03_fit_m1_v5.R"),
   "m3_v5",  file.path(proc_dir, "m3_v5_fit.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m3_v5.stan"), file.path(proj_dir, "Code/03_fit_m3_v5.R")
