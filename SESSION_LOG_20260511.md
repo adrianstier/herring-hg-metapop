@@ -140,3 +140,40 @@ Verification:
 Next item noticed:
 
 - A lightweight documentation reference checker would help prevent future stale-path drift as generated diagnostics and cloud scripts accumulate.
+
+## Cycle 4 - Documentation Reference Checker
+
+Branch: `chore/overnight-doc-reference-checker-20260511-2210`
+
+Decision:
+
+- Add a standalone checker rather than editing many docs manually.
+- Limit the checker to local project-file references in markdown backticks and markdown links so it catches real stale paths without trying to validate prose tokens or URLs.
+
+Work completed:
+
+- Added `Code/09_check_document_references.R`.
+- Generated `Output/diagnostics/document_reference_check.csv`.
+- Generated `Output/diagnostics/document_reference_check.md`.
+
+Why:
+
+- The project now has many generated diagnostics, cloud scripts, and model branch docs. A lightweight local reference check catches stale file paths before presentations or cloud reruns.
+
+Files touched in this cycle:
+
+- `SESSION_LOG_20260511.md`
+- `Code/09_check_document_references.R`
+- `Output/diagnostics/document_reference_check.csv`
+- `Output/diagnostics/document_reference_check.md`
+
+Verification:
+
+- `Rscript Code/09_check_document_references.R` passed.
+- The checker scanned 65 markdown files and 372 local references.
+- Result: 0 missing references.
+- Result: 1 known planned-missing reference, `Code/03_fit_m6_timevarying.R`, referenced from `REVIEW_NOTES.md` as an intentional unimplemented manifest row.
+
+Next item noticed:
+
+- The checker should eventually be wired into the refresh script once the current dirty analysis branch is consolidated.
