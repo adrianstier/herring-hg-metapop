@@ -1,0 +1,76 @@
+# Overnight Session Log - 2026-05-11
+
+## Initial Plan
+
+Read before making changes:
+
+- `README.md`
+- `git log --oneline -50`
+
+Recent commit context:
+
+- `c299152 Promote Stier-aligned herring baseline`
+- `35708a8 Harden herring model diagnostics and inputs`
+- `39d6098 Fix censored-zero data contract and diagnostics`
+- `a32e2d8 Full modernization: Stan models, targets pipeline, spatial analysis, collective memory`
+- `683618f Initial scaffold: legacy code + data from Stier et al. 2020, 20 core PDFs, project README`
+
+Initial decision:
+
+- The repo already contains substantial uncommitted analysis and documentation work from the current modeling push.
+- I will not stage or commit unrelated existing dirty files by accident.
+- I will create short-lived branches for discrete work cycles and explicitly stage only the files changed in that cycle.
+- I will avoid cloud/AWS execution until credentials are confirmed, because the last known SSO state was expired.
+- I will prioritize P0/P1/P2 work: broken references, review notes, and documentation clarity around the promoted model path.
+
+Planned first cycle:
+
+1. Check current branch, worktree state, and files touched by commits in the last 4 hours.
+2. Create a short-lived overnight branch.
+3. Run a P0-oriented scan for stale or broken documentation references.
+4. Add `REVIEW_NOTES.md` with concrete risks found while reading the recent changes.
+5. Commit only the session log, review notes, and any standalone diagnostic documentation output from this cycle.
+
+## Cycle 1 - Review/Documentation Branch
+
+Branch: `chore/overnight-review-docs-20260511-2138`
+
+Pre-change checks:
+
+- Current branch before cycle: `codex/systematic-model-review-fixes`.
+- `git log --since="4 hours ago"` returned no committed files, so the hard recent-commit block is clear.
+- Worktree was already dirty with many modified and untracked files from prior model-analysis work.
+
+Decision:
+
+- Do not stage broad existing dirty work.
+- Stage only files created or intentionally edited during this overnight cycle.
+- Start with P0/P1 review because the repo is in an active analysis sprint and stale model guidance is the highest risk.
+
+Work completed:
+
+- Added a guard to `cloud/submit_model_farm.py` so manifest rows with `task_type` beginning `planned_` are skipped unless `--include-planned` is explicitly passed.
+- Added a local script-existence check to `cloud/submit_model_farm.py`; a missing script now fails before an AWS Batch job is submitted.
+- Added `REVIEW_NOTES.md` with review findings from the current model/documentation state.
+
+Why:
+
+- `cloud/model-farm-manifest.csv` includes `m6_timevarying` as a planned row pointing at `Code/03_fit_m6_timevarying.R`, which is intentionally not implemented. Without a submitter guard, a broad AWS farm submission could spend queue/runtime on a guaranteed failing job.
+- The docs now contain both current promoted-baseline guidance and older model hierarchy guidance; the review notes flag where that ordering can mislead collaborators.
+
+Files touched in this cycle:
+
+- `SESSION_LOG_20260511.md`
+- `REVIEW_NOTES.md`
+- `cloud/submit_model_farm.py`
+
+Verification:
+
+- `python3 -m py_compile cloud/submit_model_farm.py` passed.
+- `python3 cloud/submit_model_farm.py --dry-run --s3-prefix s3://dummy/herring --job-queue dummy-queue --job-definition dummy-def --family time_varying` returned `No manifest rows selected`, confirming planned rows are skipped by default.
+- `python3 cloud/submit_model_farm.py --dry-run --s3-prefix s3://dummy/herring --job-queue dummy-queue --job-definition dummy-def --job-id smoke_cloud_pipeline --include-spot` printed the expected smoke-test Batch command.
+- `python3 cloud/submit_model_farm.py --dry-run --s3-prefix s3://dummy/herring --job-queue dummy-queue --job-definition dummy-def --include-spot` printed all non-planned rows and did not attempt `m6_timevarying`.
+
+Next item noticed:
+
+- P2 docs cleanup is warranted: move/relabel the old README M1-M6 hierarchy and reorder `docs/stan-model-map.md` so the promoted `m1_stier_11` path appears before legacy model-family infrastructure.
