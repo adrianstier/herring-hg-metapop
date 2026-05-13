@@ -33,6 +33,7 @@ Output/*.pdf
 # Generated processed data products (force-add if a processed artifact is intended
 # to become a maintained repository input)
 Data/processed/*.csv
+Data/processed/predators/
 Data/raw/HG_biological_samples*.csv
 
 # Literature PDFs (too large for git, stored on Google Drive)
@@ -51,3 +52,5 @@ Thumbs.db
 
 # Temporary
 _temp*.pptx
+__pycache__/
+cloud/aws_batch_runs/

@@ -100,7 +100,12 @@ The next models should be rebuilt from the `m1_stier_11` observation layer rathe
 6. hold `m3_stier_distance`: it was sampler-clean and estimated a plausible distance-decay range; exact re-LOO completed for the three high-k points, but one exact refit had treedepth pressure and the positive-spawn calibration gain remains too small for promotion;
 7. hold complex density dependence for now: the posterior-median density screen has no strong archipelago-wide negative signal;
 8. do not launch a redundant PDO-only branch: `m1_stier_11` already includes lagged PDO, so further climate work should focus on PDO window/lag sensitivity or clearer interpretation of the existing coefficient;
-9. add timing/substrate covariates and predator covariates only after observation and process calibration remain stable.
+9. use `m5_stier_predation_pressure` as the first AWS predator branch: it keeps
+   the Stier-aligned observation layer and adds lagged HG predation pressure
+   from `stier-lab/pacific-herring-predators`;
+10. add timing/substrate covariates and finer section-level predator exposure
+    only after the annual predator-pressure branch remains sampler-clean and
+    materially improves diagnostics.
 
 As of 2026-05-11, the promoted branch remains `m1_stier_11`. The three-era method-sensitivity readout is `Output/diagnostics/m1_stier_method_sensitivity_postfit.md` and `Output/figures/m1_stier_method_sensitivity_postfit.pdf`. The distance-covariance readout is `Output/diagnostics/m3_stier_distance_postfit.md` and `Output/figures/m3_stier_distance_postfit.pdf`; exact re-LOO completed for its three high-k points, but the branch remains spatial context because fit gain is small and one exact refit had treedepth pressure. See `docs/current-population-driver-findings.md` for the current population/driver synthesis, `docs/may-9-analysis-decision-summary.md` for the compact model-decision checkpoint, `docs/may-9-analysis-output-index.md` for a map of the diagnostics generated during the May 9 sprint, and `Output/diagnostics/may9_headline_findings.md` for the shortest table of headline numbers. Three additional context audits now support the model-ordering decision: `Output/diagnostics/survey_coverage_zero_ambiguity.md` documents why zero/no-survey cells remain ambiguous, `Output/diagnostics/predator_data_feasibility_audit.md` documents why regional predator covariates remain descriptive, and `Output/diagnostics/predator_spatial_exposure_prototype.md` shows that a section-level seal/sea-lion exposure product is feasible but still not causal evidence.
 
@@ -156,7 +161,16 @@ location-transition status, spawn-method/substrate metadata, coordinates, and
 seal/sea-lion proximity. Use it for targeted local review; a lost-location
 label still means "no recent positive raw record in this extract", not proven
 absence.
-For predator work, use `Output/diagnostics/predator_spatial_exposure_prototype.md`
+For predator work, first run
+`Rscript Code/02c_integrate_hg_predator_repo_products.R` with
+`PREDATOR_REPO_PATH` pointing to a checkout of the private
+`stier-lab/pacific-herring-predators` repo. That creates
+`Data/processed/predators/hg_predation_pressure_covariates.csv`, which feeds the
+new `m5_stier_predation_pressure` AWS/model-farm branch. This is the current
+predator branch to test before returning to older `m5_v5` or `m5_combined`
+scripts.
+
+For spatial predator context, use `Output/diagnostics/predator_spatial_exposure_prototype.md`
 and `Output/figures/predator_spatial_exposure_prototype.pdf`: raw Haida Gwaii
 harbour seal and Steller sea lion records can be converted into rough
 section-level exposure covariates, but the current screen is still

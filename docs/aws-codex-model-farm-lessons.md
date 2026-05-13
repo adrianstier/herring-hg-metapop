@@ -219,6 +219,26 @@ For this repo:
 python3 cloud/summarize_aws_batch_status.py
 ```
 
+May 12, 2026 repeat symptom:
+
+```text
+aws: [ERROR]: Error when retrieving token from sso: Token has expired and refresh failed
+```
+
+This blocked live Batch submission even though the repo/cloud scripts were ready.
+Do not keep debugging Batch when this appears. Refresh the local shell session:
+
+```sh
+aws sso login --profile herring
+AWS_PROFILE=herring aws sts get-caller-identity
+```
+
+Then run the prepared round launcher:
+
+```sh
+zsh cloud/submit_today_model_rounds.sh
+```
+
 ### Wrong SSO Config Section
 
 Using:

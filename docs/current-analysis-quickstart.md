@@ -44,6 +44,7 @@ Baseline interpretation:
 | `m1_stier_method_sensitivity` | Held | Useful q sensitivity; no calibration gain and unstable PSIS points remain. |
 | `m2_stier_site_growth` | Held | Sampler-clean; section-growth heterogeneity did not improve calibration. |
 | `m3_stier_distance` | Spatial context only | Sampler-clean and estimates a plausible distance range, but exact re-LOO had treedepth pressure and calibration gain is small. |
+| `m5_stier_predation_pressure` | Run next | First Stier-aligned predator branch using HG-specific annual predation pressure from the private predator repo. |
 | `m5_v3` / older predator branches | Do not use for inference | Stale/pathological or exploratory; predator work needs a better spatial exposure data product first. |
 
 ## Headline Numbers To Check Before Reporting
@@ -85,8 +86,12 @@ Current read from the May 11 refresh:
    caught as part of the full refresh.
 2. If AWS credentials are active, submit only smoke jobs first, then write the
    submission CSV with `cloud/submit_model_farm.py --out-csv ...`.
-3. Use `cloud/watch_aws_batch_run.py` on that CSV to poll and sync cloud results.
-4. Promote no model branch unless it improves calibration, stays sampler-clean,
+3. For the May 12 predator/model-farm round, run:
+   `zsh cloud/submit_today_model_rounds.sh`. It integrates predator repo
+   products, uploads the current bundle, and submits the Stier baseline,
+   site-growth, spatial, and predator-pressure branches.
+4. Use `cloud/watch_aws_batch_run.py` on the submission CSVs to poll and sync cloud results.
+5. Promote no model branch unless it improves calibration, stays sampler-clean,
    and preserves the ambiguous-zero interpretation unless explicitly labeled as
    a sensitivity.
 

@@ -54,6 +54,15 @@ Use `docs/full-analysis-model-farm-scope.md` for the iterative
 run/collect/audit/rerun decision framework. Every branch should end as
 `promoted`, `supporting_sensitivity`, `needs_rerun`, `archived_excluded`, or
 `data_blocked`.
+As of 2026-05-12, predator work has a new Stier-aligned process branch:
+`m5_stier_predation_pressure`, with Stan file
+`inst/stan/herring_metapop_m5_stier_predation_pressure.stan` and fit script
+`Code/03_fit_m5_stier_predation_pressure.R`. It uses annual HG predation
+pressure from the private `stier-lab/pacific-herring-predators` repo via
+`Code/02c_integrate_hg_predator_repo_products.R`. This branch keeps ambiguous
+zeros, two-era q, and no age/size structure. Treat it as the first defensible
+predator model to run on AWS, not as a promoted result until audit/PPC/LOO
+clear.
 Use `docs/aws-codex-model-farm-lessons.md` as the living implementation log for
 what worked and failed while connecting Codex to AWS; update it immediately
 when new AWS setup issues are discovered.

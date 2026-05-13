@@ -8,6 +8,8 @@ log_file="may9_analysis_suite_refresh.log"
 {
   echo "[$(date)] Starting May 9 analysis suite refresh"
 
+  Rscript Code/02c_integrate_hg_predator_repo_products.R
+
   Rscript Code/06e_m1_stier_9_focal_reporting.R
   Rscript Code/06f_m1_stier_11_portfolio_figures.R
   Rscript Code/07_m1_stier_11_population_driver_analysis.R

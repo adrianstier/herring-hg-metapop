@@ -24,6 +24,17 @@ series live in a sibling repo:
 > of concept, not a predator-effect result: the screen remains time-confounded
 > and humpback exposure is still basin-scale.
 
+> 2026-05-12 update. The private predator repo now provides an audited HG
+> predation-pressure product that is useful enough for a first Stier-aligned
+> Stan branch. Run
+> `Rscript Code/02c_integrate_hg_predator_repo_products.R` with
+> `PREDATOR_REPO_PATH` pointing to the predator checkout. The script writes
+> `Data/processed/predators/hg_predation_pressure_covariates.csv` and a short
+> report at `Output/diagnostics/hg_predator_repo_integration.md`. The first
+> model branch using this product is `m5_stier_predation_pressure`: annual
+> regional HG predation pressure, lagged one year in the biomass process, while
+> retaining ambiguous zeros, two-era q, and no age/size structure.
+
 ## Headline finding from the literature (revision 2026-05-09)
 
 Three BC-coast-wide reviews now anchor the predator scope:
@@ -181,18 +192,27 @@ keep them separate.
 
 ## How this connects back to the herring manuscript
 
-The modeling roadmap in `docs/analysis-plan.md` and `AGENTS.md` keeps predator
-covariates *out* of the next process branch until the Stier-aligned baseline
-is sampler-clean and the timing/substrate covariates are tested. So this
-predator database is **not** on the critical path for the next model fit. It is:
+The modeling roadmap in `docs/analysis-plan.md` and `AGENTS.md` now separates
+two predator uses:
 
-1. The provenance of any predator covariate that eventually re-enters the
+1. `m5_stier_predation_pressure`: a direct annual HG predation-pressure process
+   branch that should be run on AWS and judged by the same sampler/PPC/LOO gates
+   as other branches.
+2. Section-level predator exposure: still a data-product roadmap, because seal
+   and Steller spatial products are available but humpback exposure and
+   time/effort confounding remain unresolved.
+
+So the predator database is:
+
+1. The provenance of the annual HG pressure covariate used by
+   `m5_stier_predation_pressure`.
+2. The provenance of any section-level predator covariate that eventually re-enters the
    model after `m6_stier_predators`.
-2. A descriptive figure that shows how the predator field surrounding herring
+3. A descriptive figure that shows how the predator field surrounding herring
    has changed across the same 1951-2025 window the spawn data cover. That
    figure can sit in the manuscript Introduction independently of whether
    predator covariates are in the final fit.
-3. A literature/citation backbone (NotebookLM + Zotero) that any agent doing
+4. A literature/citation backbone (NotebookLM + Zotero) that any agent doing
    manuscript work can query.
 
 The May 11 herring-repo prototype narrows the near-term predator task:

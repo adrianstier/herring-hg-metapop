@@ -146,14 +146,18 @@ Purpose:
 
 Current jobs:
 
+- `m5_stier_predation_pressure`;
 - `m5_v5`;
 - `m5_combined`.
 
 Important limitation:
 
-The current predator data are heavily time-confounded and not yet a clean
-section-level exposure product. These branches are exploratory until predator
-exposure is spatialized.
+`m5_stier_predation_pressure` is the first defensible predator branch to run:
+it keeps the Stier-aligned observation layer and uses annual HG predation
+pressure from `stier-lab/pacific-herring-predators`. It is still a regional
+annual pressure covariate, not section-specific exposure. The older `m5_v5` and
+`m5_combined` branches remain exploratory until their predator inputs are
+rebuilt from the predator repo.
 
 Promotion criteria:
 
@@ -167,6 +171,26 @@ Rerun triggers:
 - predator coefficient tracks calendar time;
 - predator branch worsens q/observation calibration;
 - no section-level exposure gradient exists.
+
+### Round 2b: Predator-Pressure Branch
+
+Run after predator repo products are available:
+
+- `m5_stier_predation_pressure`;
+- `smoke_m5_stier_predation_pressure_reduced` before a long cloud run if the
+  image or bundle changed.
+
+Goal:
+
+- test whether HG annual predation pressure explains residual productivity
+  patterns after keeping the Stier observation assumptions fixed.
+
+Stop if:
+
+- the coefficient is only a calendar-time proxy;
+- posterior geometry worsens relative to `m1_stier_11`;
+- positive-spawn calibration worsens without a clear compensating biological
+  interpretation.
 
 ### 6. Climate / Timing / Habitat
 
