@@ -33,6 +33,16 @@ def artifact_status(job_dir: Path, expected: str) -> tuple[int, int, str]:
     return (len(found), len(patterns), ";".join(sorted(found)))
 
 
+def matching_job_dirs(jobs_dir: Path, job_id: str) -> list[Path]:
+    """Return exact job output dirs plus AWS Batch array children for a job id."""
+    exact = jobs_dir / job_id
+    candidates: list[Path] = []
+    if exact.is_dir():
+        candidates.append(exact)
+    candidates.extend(path for path in jobs_dir.glob(f"{job_id}_rank*") if path.is_dir())
+    return sorted(candidates)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("results_dir", help="Directory containing downloaded jobs/")
@@ -52,7 +62,7 @@ def main() -> int:
     summary_rows: list[dict[str, str]] = []
     for row in rows:
         job_id = row["job_id"]
-        candidate_dirs = sorted(jobs_dir.glob(f"{job_id}*"))
+        candidate_dirs = matching_job_dirs(jobs_dir, job_id)
         if not candidate_dirs:
             summary_rows.append({
                 **row,

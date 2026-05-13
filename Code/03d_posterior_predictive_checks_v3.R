@@ -5,6 +5,7 @@
 # Focuses on the core features the analysis is claiming to explain:
 #   - observed positive survey detections,
 #   - surveyed-but-below-detection zeros,
+#   - catch accounting/removal consistency,
 #   - occupied sections by year.
 # ============================================================================
 
@@ -24,6 +25,9 @@ surveyed <- (jags_data$Y_obs + jags_data$Y_censored) == 1L
 obs_positive <- jags_data$Y_obs == 1L
 obs_censored <- jags_data$Y_censored == 1L
 obs_occ_by_year <- rowSums(obs_positive)
+catch_yr <- jags_data$INDEX[, 1]
+catch_site <- jags_data$INDEX[, 2]
+observed_log_catch <- jags_data$ctab[jags_data$INDEX]
 
 models <- tribble(
   ~model,   ~fit_path,                              ~stan_path,                                             ~fit_script_path,
@@ -72,11 +76,11 @@ if (nrow(models) == 0) {
 summarize_metric <- function(x, observed) {
   tibble(
     observed = observed,
-    pred_median = stats::median(x),
-    pred_q05 = stats::quantile(x, 0.05),
-    pred_q95 = stats::quantile(x, 0.95),
-    ppc_p_lower = mean(x <= observed),
-    ppc_p_upper = mean(x >= observed)
+    pred_median = stats::median(x, na.rm = TRUE),
+    pred_q05 = stats::quantile(x, 0.05, na.rm = TRUE),
+    pred_q95 = stats::quantile(x, 0.95, na.rm = TRUE),
+    ppc_p_lower = mean(x <= observed, na.rm = TRUE),
+    ppc_p_upper = mean(x >= observed, na.rm = TRUE)
   )
 }
 
@@ -160,6 +164,34 @@ ppc_one <- function(model, fit_path, artifact_current) {
     na.rm = TRUE
   )
 
+  catch_fit_available <- all(c("biomass_pred", "fishing_rate") %in% fit@sim$pars_oi) &&
+    length(observed_log_catch) > 0
+  if (catch_fit_available) {
+    catch_draws <- rstan::extract(
+      fit,
+      pars = c("biomass_pred", "fishing_rate"),
+      permuted = TRUE
+    )
+    catch_fit_log <- vapply(
+      seq_along(observed_log_catch),
+      function(k) {
+        log(pmax(catch_draws$biomass_pred[, catch_yr[k], catch_site[k]], 1e-12)) +
+          log(pmax(catch_draws$fishing_rate[, catch_yr[k], catch_site[k]], 1e-12))
+      },
+      numeric(n_draws)
+    )
+    catch_log_resid <- sweep(catch_fit_log, 2, observed_log_catch, "-")
+    catch_log_rmse <- apply(
+      catch_log_resid,
+      1,
+      function(x) sqrt(mean(x^2, na.rm = TRUE))
+    )
+    catch_log_bias <- rowMeans(catch_log_resid, na.rm = TRUE)
+  } else {
+    catch_log_rmse <- NA_real_
+    catch_log_bias <- NA_real_
+  }
+
   summary_tbl <- bind_rows(
     summarize_metric(total_positive, sum(obs_positive)) %>% mutate(metric = "total_positive_survey_detections"),
     summarize_metric(total_censored, sum(obs_censored)) %>% mutate(metric = "total_below_detection_surveys"),
@@ -172,7 +204,11 @@ ppc_one <- function(model, fit_path, artifact_current) {
     summarize_metric(aggregate_positive_signal_log_rmse, 0) %>%
       mutate(metric = "aggregate_positive_signal_log_rmse"),
     summarize_metric(aggregate_positive_signal_log_bias, 0) %>%
-      mutate(metric = "aggregate_positive_signal_log_bias")
+      mutate(metric = "aggregate_positive_signal_log_bias"),
+    summarize_metric(catch_log_rmse, 0) %>%
+      mutate(metric = "catch_log_rmse"),
+    summarize_metric(catch_log_bias, 0) %>%
+      mutate(metric = "catch_log_bias")
   ) %>%
     mutate(
       model = model,

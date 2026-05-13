@@ -5,7 +5,8 @@
 # Combines:
 #   - sampler health / PSIS diagnostics,
 #   - LOO summaries,
-#   - posterior predictive calibration on detections / censored zeros.
+#   - posterior predictive calibration on detections / censored zeros,
+#   - catch accounting/removal consistency.
 #
 # Raw LOOIC is only ranked within matching likelihood units.
 # ============================================================================
@@ -46,7 +47,9 @@ ppc_tbl <- read_csv(ppc_path, show_col_types = FALSE) %>%
 
 for (col in c(
   "pred_median__aggregate_positive_signal_log_rmse",
-  "pred_median__aggregate_positive_signal_log_bias"
+  "pred_median__aggregate_positive_signal_log_bias",
+  "pred_median__catch_log_rmse",
+  "pred_median__catch_log_bias"
 )) {
   if (!col %in% names(ppc_tbl)) {
     ppc_tbl[[col]] <- NA_real_
@@ -160,6 +163,10 @@ comparison_tbl <- audit_tbl %>%
     ),
     positive_magnitude_clean = positive_signal_log_rmse <= 0.75 &
       abs(positive_signal_log_bias) <= 0.35,
+    catch_log_rmse = coalesce(pred_median__catch_log_rmse, Inf),
+    catch_log_bias = coalesce(pred_median__catch_log_bias, Inf),
+    catch_fit_clean = catch_log_rmse <= 0.10 &
+      abs(catch_log_bias) <= 0.05,
     stier_aligned = model == "m1_stier_11",
     observation_sensitivity = model %in% c(
       "m1_stier_method_sensitivity",
@@ -173,7 +180,8 @@ comparison_tbl <- audit_tbl %>%
     loo_unstable_live = artifact_current &
       sampler_health_clean &
       !loo_resolved &
-      positive_magnitude_clean
+      positive_magnitude_clean &
+      catch_fit_clean
   ) %>%
   group_by(likelihood_unit) %>%
   mutate(
@@ -204,6 +212,7 @@ comparison_tbl <- audit_tbl %>%
       likelihood_unit == "positive_only" &
       process_extension &
       positive_magnitude_clean &
+      catch_fit_clean &
       !is.na(promoted_baseline_positive_rmse) &
       positive_signal_log_rmse >= promoted_baseline_positive_rmse - 0.02,
     observation_sensitivity_no_fit_gain = artifact_current &
@@ -211,12 +220,14 @@ comparison_tbl <- audit_tbl %>%
       likelihood_unit == "positive_only" &
       observation_sensitivity &
       positive_magnitude_clean &
+      catch_fit_clean &
       !is.na(promoted_baseline_positive_rmse) &
       positive_signal_log_rmse >= promoted_baseline_positive_rmse - 0.02,
     promoted_baseline = sampler_clean &
       loo_resolved &
       artifact_current &
       positive_magnitude_clean &
+      catch_fit_clean &
       (
         (
           likelihood_unit == "surveyed_cells" &
@@ -233,6 +244,7 @@ comparison_tbl <- audit_tbl %>%
       likelihood_unit == "positive_only" &
       process_extension &
       positive_magnitude_clean &
+      catch_fit_clean &
       looic_rank_within_unit == 1,
     observation_sensitivity_candidate = artifact_current &
       sampler_clean &
@@ -240,6 +252,7 @@ comparison_tbl <- audit_tbl %>%
       likelihood_unit == "positive_only" &
       observation_sensitivity &
       positive_magnitude_clean &
+      catch_fit_clean &
       looic_rank_within_unit == 1,
     comparison_status = case_when(
       !artifact_current ~ "stale_refit_required",
@@ -248,6 +261,7 @@ comparison_tbl <- audit_tbl %>%
       process_extension_no_fit_gain ~ "hold_process_extension_no_fit_gain",
       loo_unstable_live ~ "loo_unstable_live_candidate",
       sampler_health_clean & !loo_resolved ~ "loo_unstable_review",
+      sampler_health_clean & !catch_fit_clean ~ "hold_catch_fit_miscalibration",
       promoted_baseline ~ "promoted_baseline",
       observation_sensitivity_candidate ~ "observation_sensitivity_candidate",
       process_extension_candidate ~ "process_extension_candidate",

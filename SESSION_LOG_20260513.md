@@ -28,3 +28,23 @@
 - Updated model-farm docs to record the dependency-ordering failure and the
   future rule: do not submit exact re-LOO arrays until source model artifacts
   exist.
+
+## Fit-and-diagnostics gates
+
+- Added catch-fit metrics to the generic posterior predictive check script:
+  `catch_log_rmse` and `catch_log_bias`.
+- Updated model comparison so promotion requires sampler health, resolved LOO,
+  positive-spawn magnitude fit, and catch accounting consistency.
+- Fixed `cloud/summarize_model_farm_results.py` so array-child output folders
+  such as `m3_stier_distance_reloo_rank001` are no longer incorrectly matched
+  to the parent `m3_stier_distance` manifest row.
+- Reran `Code/03d_posterior_predictive_checks_v3.R` and
+  `Code/04_compare_models_v3.R`.
+- Current local decision after the regenerated comparison:
+  - `m1_stier_11` remains the promoted baseline;
+  - sampler diagnostics are clean (`0` divergences, `0` treedepth hits, max
+    R-hat about `1.001`);
+  - positive-spawn log RMSE is about `0.565`;
+  - catch log RMSE is about `0.010`;
+  - process/sensitivity branches are held unless they improve data fit without
+    creating diagnostics problems.

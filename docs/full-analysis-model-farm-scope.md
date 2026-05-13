@@ -25,6 +25,18 @@ Treat the analysis as iterative rounds:
 Do not launch all speculative branches at once. AWS gives throughput, but bad
 posterior geometry still has to be diagnosed.
 
+Every model has to pass two gates before interpretation:
+
+1. Computational diagnostics: divergences, treedepth hits, R-hat, E-BFMI, ESS,
+   and PSIS/exact re-LOO.
+2. Data-fit diagnostics: positive-spawn magnitude fit, surveyed-zero behavior
+   where the model treats zeros as data, occupied-section PPC, and catch
+   accounting/removal consistency.
+
+Do not promote a branch that only passes one gate. A sampler-clean model that
+misses the observed spawn or catch patterns is a context/sensitivity branch, not
+a headline model. A good-looking fit with bad chains is archived or rerun.
+
 ## Model Families
 
 ### 1. Baseline / Observation
