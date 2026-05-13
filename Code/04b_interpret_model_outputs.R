@@ -99,6 +99,10 @@ ppc_positive_tbl <- ppc_tbl %>%
   )) %>%
   select(model, metric, observed, pred_median, pred_q05, pred_q95)
 
+ppc_catch_tbl <- ppc_tbl %>%
+  filter(metric %in% c("catch_log_rmse", "catch_log_bias")) %>%
+  select(model, metric, observed, pred_median, pred_q05, pred_q95)
+
 lines <- c(
   "# Latest Model Status",
   "",
@@ -126,6 +130,11 @@ if (nrow(practical_baseline) == 1) {
       "- Positive-magnitude check: aggregate log10 RMSE=",
       round(practical_baseline$positive_signal_log_rmse, 2),
       ", bias=", round(practical_baseline$positive_signal_log_bias, 2), "."
+    ),
+    paste0(
+      "- Catch accounting check: log RMSE=",
+      round(practical_baseline$catch_log_rmse, 3),
+      ", bias=", round(practical_baseline$catch_log_bias, 3), "."
     )
   )
   if (practical_baseline$likelihood_unit == "surveyed_cells") {
@@ -180,6 +189,10 @@ if (nrow(current_reference) == 1) {
       " within the `", current_reference$likelihood_unit, "` comparison set."
     ),
     paste0(
+      "- Data-fit gates: positive log10 RMSE=", round(current_reference$positive_signal_log_rmse, 2),
+      ", catch log RMSE=", round(current_reference$catch_log_rmse, 3), "."
+    ),
+    paste0(
       "- Remaining weakness: predicted surveyed zeros miss observed zeros by ",
       round(current_reference$zero_calibration_gap, 1), "."
     )
@@ -222,11 +235,13 @@ if (nrow(process_extension_tbl) > 0) {
     process_extension_tbl %>%
       select(
         model, looic_decision, max_pareto_k, divergences, treedepth_hits,
-        max_rhat, min_ebfmi, positive_signal_log_rmse, positive_signal_log_bias
+        max_rhat, min_ebfmi, positive_signal_log_rmse, positive_signal_log_bias,
+        catch_log_rmse, catch_log_bias
       ),
     function(
         model, looic_decision, max_pareto_k, divergences, treedepth_hits,
-        max_rhat, min_ebfmi, positive_signal_log_rmse, positive_signal_log_bias
+        max_rhat, min_ebfmi, positive_signal_log_rmse, positive_signal_log_bias,
+        catch_log_rmse, catch_log_bias
     ) {
       paste0(
         "- `", model, "` is a process-extension candidate: corrected/comparable LOOIC=",
@@ -237,7 +252,9 @@ if (nrow(process_extension_tbl) > 0) {
         ", min E-BFMI=", round(min_ebfmi, 3),
         ", max Pareto k=", round(max_pareto_k, 3),
         ", positive RMSE=", round(positive_signal_log_rmse, 2),
-        ", positive bias=", round(positive_signal_log_bias, 2), "."
+        ", positive bias=", round(positive_signal_log_bias, 2),
+        ", catch RMSE=", round(catch_log_rmse, 3),
+        ", catch bias=", round(catch_log_bias, 3), "."
       )
     }
   )
@@ -249,11 +266,13 @@ if (nrow(observation_sensitivity_tbl) > 0) {
     observation_sensitivity_tbl %>%
       select(
         model, looic_decision, max_pareto_k, divergences, treedepth_hits,
-        max_rhat, min_ebfmi, positive_signal_log_rmse, positive_signal_log_bias
+        max_rhat, min_ebfmi, positive_signal_log_rmse, positive_signal_log_bias,
+        catch_log_rmse, catch_log_bias
       ),
     function(
         model, looic_decision, max_pareto_k, divergences, treedepth_hits,
-        max_rhat, min_ebfmi, positive_signal_log_rmse, positive_signal_log_bias
+        max_rhat, min_ebfmi, positive_signal_log_rmse, positive_signal_log_bias,
+        catch_log_rmse, catch_log_bias
     ) {
       paste0(
         "- `", model, "` is an observation-sensitivity candidate: corrected/comparable LOOIC=",
@@ -264,7 +283,9 @@ if (nrow(observation_sensitivity_tbl) > 0) {
         ", min E-BFMI=", round(min_ebfmi, 3),
         ", max Pareto k=", round(max_pareto_k, 3),
         ", positive RMSE=", round(positive_signal_log_rmse, 2),
-        ", positive bias=", round(positive_signal_log_bias, 2), "."
+        ", positive bias=", round(positive_signal_log_bias, 2),
+        ", catch RMSE=", round(catch_log_rmse, 3),
+        ", catch bias=", round(catch_log_bias, 3), "."
       )
     }
   )
@@ -276,11 +297,13 @@ if (nrow(held_process_extension_tbl) > 0) {
     held_process_extension_tbl %>%
       select(
         model, looic_decision, max_pareto_k, n_pareto_k_gt_0_7,
-        positive_signal_log_rmse, positive_signal_log_bias
+        positive_signal_log_rmse, positive_signal_log_bias,
+        catch_log_rmse, catch_log_bias
       ),
     function(
         model, looic_decision, max_pareto_k, n_pareto_k_gt_0_7,
-        positive_signal_log_rmse, positive_signal_log_bias
+        positive_signal_log_rmse, positive_signal_log_bias,
+        catch_log_rmse, catch_log_bias
     ) {
       paste0(
         "- `", model, "` is held: sampler is usable, but the branch does not improve positive-spawn calibration",
@@ -289,7 +312,9 @@ if (nrow(held_process_extension_tbl) > 0) {
         ", max Pareto k=", round(max_pareto_k, 3),
         ", Pareto k > 0.7=", n_pareto_k_gt_0_7,
         ", positive RMSE=", round(positive_signal_log_rmse, 2),
-        ", positive bias=", round(positive_signal_log_bias, 2), ")."
+        ", positive bias=", round(positive_signal_log_bias, 2),
+        ", catch RMSE=", round(catch_log_rmse, 3),
+        ", catch bias=", round(catch_log_bias, 3), ")."
       )
     }
   )
@@ -301,11 +326,13 @@ if (nrow(held_observation_sensitivity_tbl) > 0) {
     held_observation_sensitivity_tbl %>%
       select(
         model, looic_decision, max_pareto_k, n_pareto_k_gt_0_7,
-        positive_signal_log_rmse, positive_signal_log_bias
+        positive_signal_log_rmse, positive_signal_log_bias,
+        catch_log_rmse, catch_log_bias
       ),
     function(
         model, looic_decision, max_pareto_k, n_pareto_k_gt_0_7,
-        positive_signal_log_rmse, positive_signal_log_bias
+        positive_signal_log_rmse, positive_signal_log_bias,
+        catch_log_rmse, catch_log_bias
     ) {
       paste0(
         "- `", model, "` is held: the survey-method sensitivity is sampler-usable, but it does not improve",
@@ -314,7 +341,9 @@ if (nrow(held_observation_sensitivity_tbl) > 0) {
         ", max Pareto k=", round(max_pareto_k, 3),
         ", Pareto k > 0.7=", n_pareto_k_gt_0_7,
         ", positive RMSE=", round(positive_signal_log_rmse, 2),
-        ", positive bias=", round(positive_signal_log_bias, 2), ")."
+        ", positive bias=", round(positive_signal_log_bias, 2),
+        ", catch RMSE=", round(catch_log_rmse, 3),
+        ", catch bias=", round(catch_log_bias, 3), ")."
       )
     }
   )
@@ -368,12 +397,14 @@ if (nrow(loo_unstable_tbl) > 0) {
       select(
         model, max_pareto_k, n_pareto_k_gt_0_7, n_pareto_k_gt_1_0,
         divergences, treedepth_hits, max_rhat, min_ebfmi,
-        positive_signal_log_rmse, positive_signal_log_bias
+        positive_signal_log_rmse, positive_signal_log_bias,
+        catch_log_rmse, catch_log_bias
       ),
     function(
         model, max_pareto_k, n_pareto_k_gt_0_7, n_pareto_k_gt_1_0,
         divergences, treedepth_hits, max_rhat, min_ebfmi,
-        positive_signal_log_rmse, positive_signal_log_bias
+        positive_signal_log_rmse, positive_signal_log_bias,
+        catch_log_rmse, catch_log_bias
     ) {
       paste0(
         "- `", model, "` remains live pending LOO review: divergences=",
@@ -384,7 +415,9 @@ if (nrow(loo_unstable_tbl) > 0) {
         ", Pareto k > 0.7=", n_pareto_k_gt_0_7,
         ", Pareto k > 1=", n_pareto_k_gt_1_0,
         ", positive RMSE=", round(positive_signal_log_rmse, 2),
-        ", positive bias=", round(positive_signal_log_bias, 2), "."
+        ", positive bias=", round(positive_signal_log_bias, 2),
+        ", catch RMSE=", round(catch_log_rmse, 3),
+        ", catch bias=", round(catch_log_bias, 3), "."
       )
     }
   )
@@ -455,6 +488,26 @@ if (nrow(ppc_positive_tbl) > 0) {
     }
   )
   lines <- c(lines, positive_lines)
+}
+
+lines <- c(lines, "", "## Catch Accounting Fit", "")
+
+if (nrow(ppc_catch_tbl) > 0) {
+  catch_lines <- pmap_chr(
+    ppc_catch_tbl,
+    function(model, metric, observed, pred_median, pred_q05, pred_q95) {
+      label <- recode(
+        metric,
+        catch_log_rmse = "catch log RMSE",
+        catch_log_bias = "catch log bias"
+      )
+      paste0(
+        "- `", model, "` ", label, ": median=", round(pred_median, 3),
+        " (90% interval ", round(pred_q05, 3), " to ", round(pred_q95, 3), ")."
+      )
+    }
+  )
+  lines <- c(lines, catch_lines)
 }
 
 lines <- c(lines, "", "## Next Decision", "")
@@ -567,7 +620,7 @@ lines <- c(
   lines,
   "- Do not treat raw LOOIC as comparable across `positive_only` and `surveyed_cells` likelihood units.",
   "- For unresolved LOO-unstable candidates, resolve high Pareto-k points before using PSIS-LOO for promotion.",
-  "- Do not advance richer process structure again unless a new branch first passes the observation-calibration gates."
+  "- Do not advance richer process structure again unless a new branch first passes the observation-calibration and catch-fit gates."
 )
 
 writeLines(lines, file.path(diag_dir, "latest_model_status.md"))
