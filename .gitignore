@@ -54,3 +54,4 @@ Thumbs.db
 _temp*.pptx
 __pycache__/
 cloud/aws_batch_runs/
+cloud/aws_results/

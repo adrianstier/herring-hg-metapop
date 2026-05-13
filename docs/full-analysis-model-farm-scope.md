@@ -99,6 +99,16 @@ Current jobs:
 - `m3_stier_distance`;
 - `m3_stier_distance_reloo` array.
 
+Operational rule:
+
+- run `m3_stier_distance_reloo` only after `m3_stier_distance` has finished and
+  uploaded `Output/posteriors/loo_m3_stier_distance.rds`;
+- do not include exact re-LOO arrays in the same first-round submission as their
+  source fit, because the compact cloud bundle excludes generated `.rds`
+  artifacts.
+- use `cloud/submit_m3_reloo_after_distance.sh` for the follow-up array; it
+  checks the S3 dependency before submitting.
+
 Promotion criteria:
 
 - exact re-LOO resolves high Pareto-k points without revealing catastrophic

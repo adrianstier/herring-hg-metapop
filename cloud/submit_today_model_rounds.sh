@@ -42,7 +42,6 @@ AWS_PROFILE="$AWS_PROFILE" python3 cloud/submit_model_farm.py \
   --job-id smoke_cloud_pipeline \
   --job-id smoke_m5_stier_predation_pressure_reduced \
   --job-id m1_stier_method_sensitivity \
-  --job-id m3_stier_distance_reloo \
   --job-id m5_v5 \
   --job-id m5_combined \
   --include-spot \
@@ -50,6 +49,7 @@ AWS_PROFILE="$AWS_PROFILE" python3 cloud/submit_model_farm.py \
 
 echo "[$(date)] Submitted model rounds."
 echo "S3 prefix: ${S3_PREFIX}"
+echo "Deferred: m3_stier_distance_reloo. Submit it only after m3_stier_distance uploads Output/posteriors/loo_m3_stier_distance.rds."
 echo "Watch with:"
-echo "  AWS_PROFILE=${AWS_PROFILE} python3 cloud/watch_aws_batch_run.py --jobs-csv ${RUN_DIR}/${RUN_DATE}-round1-ondemand.csv --sync-s3 --s3-prefix ${S3_PREFIX}"
-echo "  AWS_PROFILE=${AWS_PROFILE} python3 cloud/watch_aws_batch_run.py --jobs-csv ${RUN_DIR}/${RUN_DATE}-round1-spot.csv --sync-s3 --s3-prefix ${S3_PREFIX}"
+echo "  AWS_PROFILE=${AWS_PROFILE} python3 cloud/watch_aws_batch_run.py --jobs-csv ${RUN_DIR}/${RUN_DATE}-round1-ondemand.csv --out-csv Output/diagnostics/aws_batch_${RUN_DATE}_round1_ondemand.csv --out-json Output/diagnostics/aws_batch_${RUN_DATE}_round1_ondemand.json --sync-s3-prefix ${S3_PREFIX} --sync-local-dir cloud/aws_results/${RUN_DATE}"
+echo "  AWS_PROFILE=${AWS_PROFILE} python3 cloud/watch_aws_batch_run.py --jobs-csv ${RUN_DIR}/${RUN_DATE}-round1-spot.csv --out-csv Output/diagnostics/aws_batch_${RUN_DATE}_round1_spot.csv --out-json Output/diagnostics/aws_batch_${RUN_DATE}_round1_spot.json --sync-s3-prefix ${S3_PREFIX} --sync-local-dir cloud/aws_results/${RUN_DATE}"

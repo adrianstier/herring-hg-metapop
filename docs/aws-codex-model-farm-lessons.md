@@ -471,6 +471,39 @@ The bundle was also tightened after this:
 
 This reduced the bundle from about 353 MB to about 69 MB.
 
+### Dependency Jobs Must Not Launch With Their Source Fits
+
+May 13, 2026 failure:
+
+```text
+m3_stier_distance_reloo: FAILED
+cannot open compressed file 'Output/posteriors/loo_m3_stier_distance.rds'
+```
+
+Cause:
+
+The exact re-LOO array was launched in the same Batch round as
+`m3_stier_distance`, but the compact cloud bundle intentionally excludes
+`Output/` and saved `.rds` artifacts. The re-LOO script needs
+`Output/posteriors/loo_m3_stier_distance.rds`, which only exists after the
+source spatial model finishes and uploads artifacts.
+
+Fix:
+
+- do not include `m3_stier_distance_reloo` in the first-round launcher;
+- submit exact re-LOO only after `m3_stier_distance` succeeds;
+- use `cloud/submit_m3_reloo_after_distance.sh` for the follow-up submission,
+  because it checks for the required S3 artifact before calling Batch;
+- let `Code/04g_m3_stier_distance_exact_reloo.R` fetch the source LOO artifact
+  from `S3_PREFIX/jobs/m3_stier_distance/Output/posteriors/` when it is missing
+  locally;
+- keep dependency-sensitive jobs explicit rather than broad-selecting by
+  `task_type`.
+
+Rule for future projects: manifest `depends_on` metadata is documentation until
+the submitter enforces it. Either make the launcher honor dependencies or keep
+dependent jobs in a separate follow-up script.
+
 ## Current Implementation State
 
 Working:

@@ -20,6 +20,7 @@ rstan_options(auto_write = TRUE)
 reloo_label <- Sys.getenv("M3_DISTANCE_RELOO_LABEL", "exact")
 reloo_holdout_rank <- Sys.getenv("M3_DISTANCE_RELOO_HOLDOUT_RANK", "")
 aws_array_index <- Sys.getenv("AWS_BATCH_JOB_ARRAY_INDEX", "")
+source_job_id <- Sys.getenv("M3_DISTANCE_RELOO_SOURCE_JOB_ID", "m3_stier_distance")
 fit_chains <- as.integer(Sys.getenv("M3_DISTANCE_RELOO_CHAINS", "4"))
 fit_iter <- as.integer(Sys.getenv("M3_DISTANCE_RELOO_ITER", "4500"))
 fit_warmup <- as.integer(Sys.getenv("M3_DISTANCE_RELOO_WARMUP", "2000"))
@@ -39,8 +40,54 @@ diag_dir <- file.path(proj_dir, "Output", "diagnostics")
 dir.create(post_dir, showWarnings = FALSE, recursive = TRUE)
 dir.create(diag_dir, showWarnings = FALSE, recursive = TRUE)
 
+ensure_cloud_dependency <- function(local_path, s3_relative_path) {
+  if (file.exists(local_path)) {
+    return(invisible(local_path))
+  }
+
+  s3_prefix <- sub("/+$", "", Sys.getenv("S3_PREFIX", ""))
+  if (!nzchar(s3_prefix)) {
+    stop(
+      "Required re-LOO dependency is missing locally: `",
+      local_path,
+      "`. Run `m3_stier_distance` first, promote its artifacts locally, ",
+      "or submit this script from AWS Batch with S3_PREFIX set."
+    )
+  }
+
+  s3_path <- paste(s3_prefix, "jobs", source_job_id, s3_relative_path, sep = "/")
+  dir.create(dirname(local_path), showWarnings = FALSE, recursive = TRUE)
+  cat("Required re-LOO dependency missing locally; fetching from S3:\n")
+  cat("  ", s3_path, "\n", sep = "")
+
+  result <- system2(
+    "aws",
+    c("s3", "cp", s3_path, local_path),
+    stdout = TRUE,
+    stderr = TRUE
+  )
+  status <- attr(result, "status")
+  if (!is.null(status) && status != 0) {
+    cat(paste(result, collapse = "\n"), "\n")
+    stop(
+      "Could not fetch required re-LOO dependency from S3. ",
+      "This usually means `",
+      source_job_id,
+      "` has not finished uploading artifacts yet."
+    )
+  }
+  if (!file.exists(local_path)) {
+    stop("S3 dependency fetch reported success but did not create: `", local_path, "`.")
+  }
+
+  invisible(local_path)
+}
+
+loo_path <- file.path(post_dir, "loo_m3_stier_distance.rds")
+ensure_cloud_dependency(loo_path, "Output/posteriors/loo_m3_stier_distance.rds")
+
 load(file.path(data_dir, "jags_model_inputs_v2.RData"))
-loo_obj <- readRDS(file.path(post_dir, "loo_m3_stier_distance.rds"))
+loo_obj <- readRDS(loo_path)
 
 q_idx_stier <- if_else(jags_data$years <= 1987, 1L, 2L)
 method_labels <- c("Surface", "SCUBA/dive")
