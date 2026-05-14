@@ -175,7 +175,9 @@ comparison_tbl <- audit_tbl %>%
     process_extension = model %in% c(
       "m2_stier_site_growth",
       "m3_stier_distance",
-      "m5_stier_predation_pressure"
+      "m5_stier_predation_pressure",
+      "m5_v5",
+      "m5_combined"
     ),
     loo_unstable_live = artifact_current &
       sampler_health_clean &

@@ -48,3 +48,27 @@
   - catch log RMSE is about `0.010`;
   - process/sensitivity branches are held unless they improve data fit without
     creating diagnostics problems.
+
+## Predator branch status
+
+- Refreshed AWS SSO and synced the May 13 S3 model-farm results after the
+  earlier sync expired mid-download.
+- Promoted completed predator artifacts from cloud staging into the local
+  analysis paths for:
+  - `m5_stier_predation_pressure`;
+  - `m5_v5`.
+- Added `m5_v5` and `m5_combined` to the generic audit/PPC registries so
+  predator branches are judged by the same sampler, LOO, spawn-fit, and
+  catch-fit gates as the baseline.
+- Reran the full audit/PPC/comparison/status stack.
+- Current predator conclusions:
+  - `m5_stier_predation_pressure` finished, is sampler-usable, and is held
+    because it does not improve positive-spawn calibration over `m1_stier_11`
+    (`0` divergences, `0` treedepth hits, max R-hat about `1.001`, positive
+    log10 RMSE about `0.564`, catch log RMSE about `0.010`, LOOIC decision
+    about `1953.57`).
+  - `m5_v5` finished but is archived/excluded because it has severe sampler
+    pathologies (`261` divergences and `2449` max-treedepth hits) and poor
+    positive-spawn calibration (positive log10 RMSE about `1.20`).
+  - `m5_combined` is still running on AWS; latest checked state was `RUNNING`,
+    with log output around 50% of 2000 iterations and just entering sampling.
