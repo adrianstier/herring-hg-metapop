@@ -65,3 +65,31 @@
 - Treat manifest artifact names and audit `max_treedepth` settings as part of
   the model contract: mismatches can make cloud summaries or diagnostics look
   healthier than they are.
+
+## May 14 continuation / Saturday talk handoff
+
+- Refreshed AWS state with profile `herring`; `sts get-caller-identity`
+  confirmed account `107094296950` and the `AdministratorAccess` SSO role.
+- Re-polled the May 13 Batch manifests:
+  - on-demand core jobs all remain `SUCCEEDED`;
+  - spot jobs all remain `SUCCEEDED` except `m3_stier_distance_reloo`, which is
+    `FAILED`;
+  - S3 prefix `s3://herring-hg-metapop-107094296950/herring-hg-metapop/2026-05-13`
+    was synced once to local cloud staging.
+- Rebuilt `Output/diagnostics/cloud_model_farm_status.csv` from the synced May
+  13 results, then regenerated the model-decision ledger.
+- No next targeted single-covariate AWS screen is justified before the Saturday
+  May 16 talk:
+  - `m1_stier_11` remains the promoted baseline;
+  - `m5_stier_predation_pressure` is held after the completed cloud result;
+  - timing/substrate remains screen-only because missingness and survey-method
+    confounding are still strong;
+  - density dependence remains weak in descriptive screens;
+  - the failed cloud `m3_stier_distance_reloo` array should not be relaunched
+    now because local exact re-LOO already exists and the branch remains held;
+  - do not spend exact re-LOO or combination-model time on `m5_combined`.
+- Updated the collaborator quickstart to remove stale "run next" language for
+  `m5_stier_predation_pressure`.
+- Added `docs/saturday-talk-readiness-2026-05-16.md` as the current talk
+  handoff: talk spine, model-farm decision, numbers to keep handy, and figure
+  order.

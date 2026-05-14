@@ -1,6 +1,6 @@
 # Current Analysis Quickstart
 
-Updated: 2026-05-11
+Updated: 2026-05-14
 
 This is the short path for collaborators who need the current answer without
 reading every historical model branch.
@@ -9,9 +9,10 @@ reading every historical model branch.
 
 1. `Output/diagnostics/latest_model_status.md`
 2. `Output/diagnostics/promoted_baseline_evidence_package.md`
-3. `Output/diagnostics/covariate_readiness_registry.md`
-4. `Output/diagnostics/may11_autonomous_status.md`
-5. `AGENTS.md`
+3. `Output/diagnostics/model_decision_ledger.md`
+4. `Output/diagnostics/covariate_readiness_registry.md`
+5. `docs/saturday-talk-readiness-2026-05-16.md`
+6. `AGENTS.md`
 
 ## Current Baseline
 
@@ -44,8 +45,9 @@ Baseline interpretation:
 | `m1_stier_method_sensitivity` | Held | Useful q sensitivity; no calibration gain and unstable PSIS points remain. |
 | `m2_stier_site_growth` | Held | Sampler-clean; section-growth heterogeneity did not improve calibration. |
 | `m3_stier_distance` | Spatial context only | Sampler-clean and estimates a plausible distance range, but exact re-LOO had treedepth pressure and calibration gain is small. |
-| `m5_stier_predation_pressure` | Run next | First Stier-aligned predator branch using HG-specific annual predation pressure from the private predator repo. |
-| `m5_v3` / older predator branches | Do not use for inference | Stale/pathological or exploratory; predator work needs a better spatial exposure data product first. |
+| `m5_stier_predation_pressure` | Held | First Stier-aligned predator-pressure branch is sampler-usable, but positive-spawn and catch calibration are effectively baseline-equivalent. |
+| `m5_v5` / `m5_combined` / older predator branches | Archived or no inference use | `m5_v5` has sampler pathologies; `m5_combined` saturated max treedepth and badly worsened calibration; older predator branches are stale/pathological or exploratory. |
+| `m3_stier_distance_reloo` cloud array | Failed/incomplete, no rerun now | Local exact re-LOO already exists and the distance branch remains held. |
 
 ## Headline Numbers To Check Before Reporting
 
@@ -57,7 +59,7 @@ Use the generated diagnostics rather than hand-copying these values:
 - `Output/diagnostics/positive_spawn_fit_caveat.md`
 - `Output/diagnostics/section_action_matrix.md`
 
-Current read from the May 11 refresh:
+Current read from the May 14 refresh:
 
 - all-11 2025 post-fishing biomass median is useful but has a wide upper tail;
 - focal-9 biomass is the cleaner talk number because sparse Tasu/Naden sections
@@ -80,18 +82,21 @@ Current read from the May 11 refresh:
 
 ## Safe Next Analysis Steps
 
-1. Refresh local diagnostics with `Code/08_refresh_may9_analysis_suite.sh` after
+1. Do not submit another AWS model branch unless the model-decision ledger
+   identifies a targeted Stier-aligned single-covariate question that can finish
+   and be explained before the talk.
+2. Current May 14 decision: no new single-covariate AWS submission is justified.
+   Density dependence is weak, timing/substrate are screen-only and confounded
+   with survey method/coverage, predators are held after `m5_stier_predation_pressure`,
+   and `m3_stier_distance_reloo` does not need more cloud time.
+3. Refresh local diagnostics with `Code/08_refresh_may9_analysis_suite.sh` after
    any model artifact changes. The wrapper now ends with
    `Code/09_check_document_references.R`, so stale local file references are
    caught as part of the full refresh.
-2. If AWS credentials are active, submit only smoke jobs first, then write the
+4. If AWS credentials are active, submit only smoke jobs first, then write the
    submission CSV with `cloud/submit_model_farm.py --out-csv ...`.
-3. For the May 12 predator/model-farm round, run:
-   `zsh cloud/submit_today_model_rounds.sh`. It integrates predator repo
-   products, uploads the current bundle, and submits the Stier baseline,
-   site-growth, spatial, and predator-pressure branches.
-4. Use `cloud/watch_aws_batch_run.py` on the submission CSVs to poll and sync cloud results.
-5. Promote no model branch unless it improves calibration, stays sampler-clean,
+5. Use `cloud/watch_aws_batch_run.py` on the submission CSVs to poll and sync cloud results.
+6. Promote no model branch unless it improves calibration, stays sampler-clean,
    and preserves the ambiguous-zero interpretation unless explicitly labeled as
    a sensitivity.
 
