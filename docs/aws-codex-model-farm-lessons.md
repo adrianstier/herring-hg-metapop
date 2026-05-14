@@ -1,6 +1,7 @@
 # AWS + Codex Model-Farm Lessons
 
 Generated: 2026-05-10
+Last updated: 2026-05-14
 
 This is a practical implementation log for connecting Codex to AWS so future
 projects can reuse the working pattern. Keep this updated with what actually
@@ -18,6 +19,31 @@ Use Codex on the local Mac to:
 6. rerun diagnostics and generate the next model-farm round.
 
 ## What Worked
+
+### May 14 Result Sync / Promotion Cycle
+
+Result sync from completed AWS jobs is now proven for the May 13 Batch round.
+After refreshing SSO, `cloud/watch_aws_batch_run.py --once --sync-s3-prefix`
+was able to poll Batch, retrieve job logs/status, sync the May 13 S3 prefix,
+and leave job directories under local `cloud/aws_results/2026-05-13/`.
+
+Promotion from cloud staging is also proven. `cloud/promote_cloud_results.sh`
+successfully copied the completed `m5_combined` artifacts into local analysis
+paths, after which the full audit/PPC/comparison stack could classify the
+branch. The result was a clear archive decision: `m5_combined` completed, but
+all `4000` post-warmup transitions hit max treedepth and positive-spawn/catch
+fit degraded badly.
+
+The model-decision ledger now provides the daily control sheet:
+
+```sh
+Rscript --vanilla Code/07bi_model_decision_ledger.R
+```
+
+It writes:
+
+- `Output/diagnostics/model_decision_ledger.csv`;
+- `Output/diagnostics/model_decision_ledger.md`.
 
 ### AWS IAM Identity Center / SSO
 
@@ -504,6 +530,62 @@ Rule for future projects: manifest `depends_on` metadata is documentation until
 the submitter enforces it. Either make the launcher honor dependencies or keep
 dependent jobs in a separate follow-up script.
 
+### Avoid Duplicate Full-Prefix Syncs
+
+May 14, 2026 issue:
+
+Two watcher commands were run with the same `--sync-s3-prefix` argument while
+polling separate May 13 manifest CSVs. Both tried to sync the same full S3
+prefix. The duplicate sync completed without corrupting results, but it wasted
+time and made terminal state harder to follow.
+
+Future pattern:
+
+- poll every manifest with `cloud/watch_aws_batch_run.py --once`;
+- run one explicit `cloud/sync_model_farm_results.sh <s3-prefix>` after all
+  manifests have terminal statuses; or
+- let exactly one watcher command perform the sync.
+
+### Artifact Names Must Match Script Outputs
+
+May 14, 2026 issue:
+
+The old cloud `m5_combined` run saved its processed fit as
+`Data/processed/m5_fit.rds`, but the current manifest should track the explicit
+branch path `Data/processed/m5_combined_fit.rds`. The completed cloud job was
+usable after promotion because the historical alias existed, but manifest-based
+artifact summaries reported an incomplete bundle under the corrected artifact
+contract.
+
+Fix:
+
+- `Code/03_fit_m5_combined.R` now saves both the historical alias and the
+  explicit `m5_combined` fit path;
+- `cloud/model-farm-manifest.csv` now expects
+  `Data/processed/m5_combined_fit.rds` for future runs.
+
+Rule for future projects: expected artifact paths in the manifest must be
+treated as a source contract. If a branch keeps a legacy alias for compatibility,
+also save an explicit branch-specific artifact.
+
+### Audit Controls Must Match Fit Controls
+
+May 14, 2026 issue:
+
+`m5_combined` was fit with `max_treedepth = 14`, but the audit registry initially
+checked that model against a threshold of `15`. That undercounted treedepth
+saturation and made the first audit pass look cleaner than the sampler really
+was.
+
+Fix:
+
+`Code/03c_bayesian_fit_audit.R` now records `m5_combined` with
+`max_treedepth = 14`.
+
+Rule for future projects: every promoted or evaluated branch needs its audit
+metadata checked against the actual fit-script control settings before model
+decisions are made.
+
 ## Current Implementation State
 
 Working:
@@ -514,11 +596,12 @@ Working:
 - model-farm manifest;
 - result sync/promote scripts;
 - Batch Dockerfile and build script after the `awscli` fix;
-- Batch setup script written and syntax-checked.
+- Batch setup script written and syntax-checked;
+- result sync from completed AWS jobs;
+- local artifact promotion followed by the full diagnostic stack.
 
 Still in progress / not fully proven:
 
-- result sync from a completed AWS job;
 - automatic next-round rerun decision from cloud results.
 
 Proven on 2026-05-10:

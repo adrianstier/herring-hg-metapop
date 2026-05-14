@@ -257,6 +257,9 @@ comparison_tbl <- audit_tbl %>%
       catch_fit_clean &
       looic_rank_within_unit == 1,
     comparison_status = case_when(
+      model == "m5_combined" & !sampler_health_clean ~ "archived_excluded",
+      model == "m5_combined" & !positive_magnitude_clean ~ "archived_excluded",
+      model == "m5_combined" & !catch_fit_clean ~ "archived_excluded",
       !artifact_current ~ "stale_refit_required",
       !sampler_health_clean ~ "archived_excluded",
       observation_sensitivity_no_fit_gain ~ "hold_observation_sensitivity_no_fit_gain",

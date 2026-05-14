@@ -299,9 +299,12 @@ if (delta < -4) {
 # 9. SAVE OUTPUTS
 # ============================================================================
 
-# Overwrite the m5 fit with the better-converged combined version
+# Keep the historical alias, but also save an explicit model-id artifact so
+# cloud manifest checks can distinguish this branch from other M5 fits.
 saveRDS(fit_m5c, here("Data", "processed", "m5_fit.rds"))
+saveRDS(fit_m5c, here("Data", "processed", "m5_combined_fit.rds"))
 cat("\nFit saved to: Data/processed/m5_fit.rds\n")
+cat("Fit saved to: Data/processed/m5_combined_fit.rds\n")
 
 out_dir <- here("Output", "posteriors")
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)

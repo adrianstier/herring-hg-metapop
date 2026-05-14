@@ -32,6 +32,8 @@ branch_tbl <- comparison %>%
       str_detect(model, "method_sensitivity") ~ "observation sensitivity",
       str_detect(model, "site_growth") ~ "site heterogeneity",
       str_detect(model, "distance") ~ "spatial process",
+      model == "m5_stier_predation_pressure" ~ "predators",
+      model == "m5_v5" ~ "predator / archived",
       str_detect(model, "m5|pred") ~ "predator / richer legacy",
       str_detect(model, "v[345]") ~ "legacy / stale branch",
       TRUE ~ "other"
@@ -71,6 +73,12 @@ branch_tbl <- comparison %>%
         } else {
           "Clean spatial distance-decay candidate; plausible range, slight RMSE gain, held pending re-LOO triage."
         },
+      model == "m5_stier_predation_pressure" ~
+        "Stier-aligned predator-pressure branch is sampler-usable, but positive-spawn calibration is indistinguishable from the promoted baseline.",
+      model == "m5_v5" ~
+        "Archived predator branch: current artifact is sampler-pathological despite superficially acceptable PSIS.",
+      model == "m5_combined" ~
+        "Archived combined-predator branch: cloud run had max-treedepth saturation and badly worsened spawn/catch calibration.",
       model == "m5_v3" ~
         "Old predator branch exists but is stale and sampler-pathological; do not use as predator evidence.",
       str_detect(model, "m3_v3|m3_v5") ~
@@ -155,7 +163,8 @@ md_lines <- c(
   } else {
     "- Treat `m3_stier_distance` as a spatial candidate only after re-LOO triage resolves the three high-k points."
   },
-  "- Do not use `m5_v3` or any current predator branch as fitted predator evidence; the available predator model artifact is stale and sampler-pathological.",
+  "- Hold `m5_stier_predation_pressure`; it is the defensible predator-pressure branch, but it does not improve positive-spawn calibration over `m1_stier_11`.",
+  "- Archive `m5_combined` and `m5_v5`; ignore legacy `m5_v3` as predator evidence because these branches are sampler-pathological, stale, or badly miscalibrated.",
   "- Keep `m1_stier_method_sensitivity` and `m2_stier_site_growth` as context/held sensitivity results, not promoted inference models.",
   "",
   "## Files",
