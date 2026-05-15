@@ -93,3 +93,33 @@
 - Added `docs/saturday-talk-readiness-2026-05-16.md` as the current talk
   handoff: talk spine, model-farm decision, numbers to keep handy, and figure
   order.
+
+## Predator integration deep dive
+
+- Reviewed the existing predator stack:
+  - legacy regional indices in `Data/processed/predator_indices.csv`;
+  - audited HG predator-repo products imported by
+    `Code/02c_integrate_hg_predator_repo_products.R`;
+  - the held Stier-aligned branch `m5_stier_predation_pressure`;
+  - section-level exposure and lead-location proximity diagnostics.
+- Pulled the full-fit `m5_stier_predation_pressure` coefficient summary:
+  `predcoef` median about `-0.079`, 90% interval about `-0.136` to `-0.020`;
+  the branch stays held because calibration is effectively unchanged from
+  `m1_stier_11`.
+- Identified the main predator-integration issue: the current Stan covariate
+  `pred_pressure_log_z` is standardized `log(pressure_pct + 1)`, where
+  `pressure_pct = predator consumption / HG spawn`. That is a useful
+  descriptive pressure metric but is partly endogenous as a simple process
+  covariate because the denominator is observed herring spawn.
+- Fixed `Code/07bb_predator_spatial_exposure_prototype.R` so
+  predator-exposure growth correlations join exposure to model biomass by
+  `section_name`, not by raw DFO section code. The previous join only matched
+  the first three model sites; the refreshed 50 km screen now uses all 11
+  sections (`77` harbour seal section-years and `143` Steller sea lion
+  section-years).
+- Reran:
+  - `Rscript --vanilla Code/07bb_predator_spatial_exposure_prototype.R`;
+  - `Rscript --vanilla Code/07bc_section_recovery_covariate_screen.R`.
+- Added `docs/predator-analysis-integration-roadmap.md`, which recommends
+  separating predator demand (`C_total_kt` and group-specific consumption) from
+  predator pressure ratios before any next predator Stan branch.

@@ -35,6 +35,18 @@ series live in a sibling repo:
 > regional HG predation pressure, lagged one year in the biomass process, while
 > retaining ambiguous zeros, two-era q, and no age/size structure.
 
+> 2026-05-14 update. The first Stier-aligned predator branch is now held, not
+> promoted: it is sampler-usable but gives no material calibration gain over
+> `m1_stier_11`. The deeper integration read is in
+> `docs/predator-analysis-integration-roadmap.md`. The key change is to
+> separate predator demand (`C_total_kt` and group-specific consumption) from
+> predator pressure ratios (`consumption / HG spawn`). Pressure ratios are
+> useful descriptive metrics but should not be the first exogenous process
+> covariate because they include observed herring spawn in the denominator. The
+> section exposure prototype also now joins predator exposure to model biomass
+> by `section_name`, fixing a raw-section-code versus model-site-index mismatch
+> in the exposure-growth screen.
+
 ## Headline finding from the literature (revision 2026-05-09)
 
 Three BC-coast-wide reviews now anchor the predator scope:

@@ -52,7 +52,8 @@ centroids <- read_csv(
     coord_years = sum(!is.na(latitude) & !is.na(longitude)),
     .groups = "drop"
   ) %>%
-  filter(is.finite(section_lat), is.finite(section_lon))
+  filter(is.finite(section_lat), is.finite(section_lon)) %>%
+  rename(raw_section = section)
 
 harbour <- read_csv(
   file.path(proj_dir, "Data", "raw", "predators", "Harbour_seal_counts_haulout_locs_BCcoast.csv"),
@@ -140,7 +141,7 @@ exposure <- pred_sites %>%
     distance_km = haversine_km(pred_lon, pred_lat, section_lon, section_lat),
     exposure_contribution = count * exp(-distance_km / range_km)
   ) %>%
-  group_by(predator, range_km, year, section, section_name) %>%
+  group_by(predator, range_km, year, raw_section, section_name) %>%
   summarise(
     exposure = sum(exposure_contribution, na.rm = TRUE),
     nearest_predator_site_km = min(distance_km, na.rm = TRUE),
@@ -149,7 +150,8 @@ exposure <- pred_sites %>%
   ) %>%
   group_by(predator, range_km) %>%
   mutate(exposure_z = as.numeric(scale(log1p(exposure)))) %>%
-  ungroup()
+  ungroup() %>%
+  mutate(section = raw_section)
 
 biomass <- read_csv(file.path(diag_dir, "m1_stier_11_section_biomass_by_year.csv"), show_col_types = FALSE) %>%
   arrange(site, year) %>%
@@ -162,7 +164,7 @@ biomass <- read_csv(file.path(diag_dir, "m1_stier_11_section_biomass_by_year.csv
   select(site, site_name, year, next_year_growth)
 
 exposure_growth <- exposure %>%
-  left_join(biomass, by = c("section" = "site", "section_name" = "site_name", "year")) %>%
+  left_join(biomass, by = c("section_name" = "site_name", "year")) %>%
   filter(is.finite(next_year_growth), is.finite(exposure_z))
 
 cor_summary <- exposure_growth %>%
@@ -170,7 +172,7 @@ cor_summary <- exposure_growth %>%
   summarise(
     n = n(),
     years = n_distinct(year),
-    sections = n_distinct(section),
+    sections = n_distinct(site),
     rho_growth = cor(exposure_z, next_year_growth, method = "spearman", use = "complete.obs"),
     r_growth = cor(exposure_z, next_year_growth, method = "pearson", use = "complete.obs"),
     rho_year = cor(exposure_z, year, method = "spearman", use = "complete.obs"),
@@ -180,7 +182,11 @@ cor_summary <- exposure_growth %>%
 section_exposure <- exposure %>%
   filter(range_km == 50) %>%
   mutate(period = period_for_year(year)) %>%
-  group_by(predator, section, section_name, period) %>%
+  left_join(
+    biomass %>% distinct(site, site_name),
+    by = c("section_name" = "site_name")
+  ) %>%
+  group_by(predator, raw_section, site, section_name, period) %>%
   summarise(
     years = n_distinct(year),
     median_exposure = median(exposure, na.rm = TRUE),
@@ -191,13 +197,14 @@ section_exposure <- exposure %>%
 
 recent_exposure <- section_exposure %>%
   filter(period %in% c("2005-2013 closure", "2014-2016 marine heatwave", "2017-2025 recent closure")) %>%
-  group_by(predator, section, section_name) %>%
+  group_by(predator, raw_section, site, section_name) %>%
   summarise(
     recent_median_exposure = median(median_exposure, na.rm = TRUE),
     recent_median_exposure_z = median(median_exposure_z, na.rm = TRUE),
     nearest_predator_site_km = median(nearest_predator_site_km, na.rm = TRUE),
     .groups = "drop"
   ) %>%
+  mutate(section = raw_section) %>%
   group_by(predator) %>%
   mutate(exposure_rank = min_rank(desc(recent_median_exposure))) %>%
   ungroup()
@@ -220,7 +227,7 @@ p_map <- ggplot() +
   ) +
   geom_text(
     data = centroids,
-    aes(x = section_lon, y = section_lat, label = section),
+    aes(x = section_lon, y = section_lat, label = raw_section),
     size = 2.4, nudge_y = 0.035
   ) +
   coord_equal() +
