@@ -44,6 +44,11 @@ source_registry <- tribble(
   "https://publications.gc.ca/collections/collection_2026/mpo-dfo/Fs143-3-23-2600-eng.pdf",
   "dfo_ifmp_full_2025_2026.pdf",
   "Current full IFMP; Appendix 3 summarizes major-stock model inputs and HG forecast/status.",
+  "dfo_science_response_2025_005", "pdf",
+  "DFO CSAS Science Response 2025/005, Pacific herring status in 2024 and forecast for 2025",
+  "https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/41290963.pdf",
+  "dfo_science_response_2025_005.pdf",
+  "Current public science response for HG, PRD, CC, and WCVI; includes SCA input data windows and HG stock-status summary tables through 2024.",
   "dfo_herring_scad_2018_028", "pdf",
   "DFO CSAS Research Document 2018/028, Pacific herring stock assessment data and model",
   "https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/40944670.pdf",
@@ -61,25 +66,40 @@ source_registry <- tribble(
   "HG-specific rebuilding context, sub-stock structure, ecosystem attributes, and management objectives."
 )
 
+is_pdf_file <- function(path) {
+  if (!file.exists(path) || file.info(path)$size == 0) {
+    return(FALSE)
+  }
+  header <- readBin(path, what = "raw", n = 4)
+  identical(rawToChar(header), "%PDF")
+}
+
 download_pdf <- function(url, dest) {
-  if (file.exists(dest) && file.info(dest)$size > 0) {
-    header <- readBin(dest, what = "raw", n = 4)
-    if (!identical(rawToChar(header), "%PDF")) {
-      return("already_present_not_pdf")
-    }
+  if (is_pdf_file(dest)) {
     return("already_present")
   }
+
+  had_non_pdf_dest <- file.exists(dest) && file.info(dest)$size > 0
+  tmp_dest <- tempfile(fileext = ".pdf")
+
   tryCatch(
     {
-      download.file(url, destfile = dest, mode = "wb", quiet = TRUE)
-      if (!file.exists(dest) || file.info(dest)$size == 0) {
+      download.file(url, destfile = tmp_dest, mode = "wb", quiet = TRUE)
+      if (!file.exists(tmp_dest) || file.info(tmp_dest)$size == 0) {
         return("download_empty")
       }
-      header <- readBin(dest, what = "raw", n = 4)
-      if (!identical(rawToChar(header), "%PDF")) {
+      if (!is_pdf_file(tmp_dest)) {
+        if (had_non_pdf_dest) {
+          return("existing_not_pdf_download_not_pdf_html_or_landing")
+        }
         return("download_not_pdf_html_or_landing")
       }
-      "downloaded"
+      file.copy(tmp_dest, dest, overwrite = TRUE)
+      if (had_non_pdf_dest) {
+        "redownloaded_replaced_non_pdf"
+      } else {
+        "downloaded"
+      }
     },
     error = function(e) paste0("download_failed: ", conditionMessage(e))
   )
@@ -93,8 +113,7 @@ extract_pdf_text <- function(pdf_path, text_path) {
   if (!file.exists(pdf_path) || file.info(pdf_path)$size == 0) {
     return("pdf_missing")
   }
-  header <- readBin(pdf_path, what = "raw", n = 4)
-  if (!identical(rawToChar(header), "%PDF")) {
+  if (!is_pdf_file(pdf_path)) {
     return("pdf_path_not_pdf")
   }
   result <- system2(pdftotext, c(pdf_path, text_path), stdout = TRUE, stderr = TRUE)
@@ -174,6 +193,7 @@ lines <- c(
   "## Next Extraction Targets",
   "",
   "- Use `dfo_herring_scad_2018_028.txt` to extract Appendix B HG number-at-age and weight-at-age tables as the first public test case.",
+  "- Use `dfo_science_response_2025_005.txt` and `Code/02f_extract_newer_dfo_public_pdfs.R` for current public SCA summary tables through 2024.",
   "- Use the 2025/2026 IFMP summary/catalogue record to verify the current assessment data window and HG forecast/status context; if the direct PDF download returns an HTML landing page, save the PDF manually from the Government Publications page or request the alternate format.",
   "- Keep exact table extraction separate from model fitting; do not build an age-structured branch until extracted tables pass schema and provenance checks."
 )

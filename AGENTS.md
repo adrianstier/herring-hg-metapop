@@ -71,6 +71,7 @@ As of 2026-05-15, the Doherty-style WCVI replication path has a data-readiness
 control sheet rather than a new age-structured model branch:
 `Code/02d_fetch_dfo_herring_assessment_sources.R`,
 `Code/02e_extract_dfo_hg_assessment_tables.R`,
+`Code/02f_extract_newer_dfo_public_pdfs.R`,
 `Code/07bk_doherty_hg_data_readiness.R`,
 `Code/07bl_doherty_replication_execution_status.R`, and
 `docs/doherty-style-hg-data-acquisition.md`. Public DFO stock-assessment pages
@@ -83,9 +84,11 @@ and predator selectivity assumptions are extracted and audited.
 `docs/doherty-style-hg-replication-status.md` records the executed state: public
 DFO Appendix B HG catch, spawn, number-at-age, weight-at-age, biosample, and
 maturity tables have been provisionally extracted through 2017; current
-2018-2024 machine-readable biology, length-at-age tables, effective sample-size
-metadata, predator age/size selectivity, and future predator scenarios remain
-unresolved.
+DFO 2025/005 public summary tables have been extracted through 2024 for catch,
+spawn, SCA parameters, recruitment, biomass/depletion, reference points, and
+broad projected age composition. Exact annual 2018-2024 age/weight input
+matrices, length-at-age tables, effective sample-size metadata, predator
+age/size selectivity, and future predator scenarios remain unresolved.
 
 The spawn-index scale audit is in `Output/diagnostics/spawn_index_scale_audit.md`
 and `Output/figures/spawn_index_scale_audit.pdf`. It shows that Stier's legacy

@@ -162,6 +162,30 @@ bio_manifest_summary <- if (nrow(bio_manifest) == 0) {
   )
 }
 
+newer_extract_dir <- file.path(diag_dir, "dfo_newer_public_pdf_extract")
+newer_status <- read_csv_safely(file.path(newer_extract_dir, "dfo_newer_public_pdf_status.csv"))
+newer_table_1 <- read_csv_safely(file.path(newer_extract_dir, "dfo_sr_2025_005_table_1_input_data_windows.csv"))
+newer_table_3 <- read_csv_safely(file.path(newer_extract_dir, "dfo_sr_2025_005_table_3_hg_spawn_2015_2024.csv"))
+newer_table_15 <- read_csv_safely(file.path(newer_extract_dir, "dfo_sr_2025_005_table_15_hg_spawning_biomass_depletion_2015_2024.csv"))
+newer_table_19 <- read_csv_safely(file.path(newer_extract_dir, "dfo_sr_2025_005_table_19_hg_reference_points.csv"))
+
+newer_public_summary <- if (is.null(newer_status)) {
+  "Newer public PDF extraction has not been run."
+} else {
+  paste0(
+    "Code/02f extracted newer public PDF summaries: valid PDFs=",
+    sum(newer_status$pdf_is_valid, na.rm = TRUE), "; DFO 2025/005 rows: input windows=",
+    if_else(is.null(newer_table_1), 0L, nrow(newer_table_1)),
+    ", HG spawn=",
+    if_else(is.null(newer_table_3), 0L, nrow(newer_table_3)),
+    ", HG biomass/depletion=",
+    if_else(is.null(newer_table_15), 0L, nrow(newer_table_15)),
+    ", HG reference points=",
+    if_else(is.null(newer_table_19), 0L, nrow(newer_table_19)),
+    "."
+  )
+}
+
 predator_summary <- if (is.null(pred_covariates) || is.null(pred_group)) {
   "Predator demand covariates are missing."
 } else {
@@ -203,17 +227,17 @@ readiness <- tribble(
   "Local table has catch by gear/section but is not a complete catch-at-age input bundle.",
   "Cross-check against DFO SCA/SISCAH input catch by source and SOK/open-pond categories.",
   "herring_age_composition", "herring", "year x SAR x fleet/source x age", "age-composition likelihood", "extracted_public_provisional",
-  paste("Code/02e extracted Appendix B Table B.15 into provisional HG number-at-age CSVs.", bio_manifest_summary, bio_file_summary),
-  "Public 1951-2017 number-at-age is extracted, but exact SCA/SISCAH input files, current 2018-2024 biology, and effective sample-size metadata are not local.",
-  "Spot-check extracted rows against the source PDF, then request or locate exact machine-readable current input files before modeling.",
+  paste("Code/02e extracted Appendix B Table B.15 into provisional HG number-at-age CSVs.", newer_public_summary, bio_manifest_summary, bio_file_summary),
+  "Public 1951-2017 number-at-age is extracted and DFO 2025/005 confirms age-composition input windows through 2024, but exact annual 2018-2024 number/proportion-at-age tables and effective sample-size metadata are not local.",
+  "Spot-check extracted rows against the source PDFs, then request or locate exact machine-readable current SCA/SISCAH input files before modeling.",
   "herring_weight_at_age", "herring", "year x SAR x age", "spawning biomass and catch-at-age conversion", "extracted_public_provisional",
-  paste("Code/02e extracted Appendix B Table B.22 into provisional HG weight-at-age CSVs.", bio_manifest_summary, bio_file_summary),
-  "Public 1951-2017 weight-at-age is extracted, but current 2018-2024 biology and exact preprocessing metadata are not local.",
-  "Spot-check extracted rows against the source PDF, then request or locate exact machine-readable current input files before modeling.",
+  paste("Code/02e extracted Appendix B Table B.22 into provisional HG weight-at-age CSVs.", newer_public_summary, bio_manifest_summary, bio_file_summary),
+  "Public 1951-2017 weight-at-age is extracted and DFO 2025/005 confirms weight-at-age input windows through 2024, but exact annual 2018-2024 weight-at-age matrices and preprocessing metadata are not local.",
+  "Spot-check extracted rows against the source PDFs, then request or locate exact machine-readable current SCA/SISCAH input files before modeling.",
   "herring_length_at_age", "herring", "year x SAR x age/source", "growth and predator-size vulnerability", "published_extractable",
-  bio_file_summary,
-  "Public assessment documentation describes external length/weight analyses and biological samples, but no usable length-at-age table is present locally.",
-  "Search current public assessment appendices for length-at-age outputs; otherwise request biological sample summaries tied to ageing records.",
+  paste(newer_public_summary, bio_file_summary),
+  "The HG rebuilding plan confirms length-at-age summaries and imputation rules in figures, but no usable machine-readable annual length-at-age table is present locally.",
+  "Use figure captions as provenance only; request biological sample summaries tied to ageing records for any predator-size selectivity work.",
   "herring_maturity_at_age", "herring", "age", "mature biomass and spawning selectivity", "extracted_public_provisional",
   "Code/02e encoded the published fixed maturity schedule: age 2 about 25%, age 3 about 90%, age 4+ mature.",
   "Schedule is encoded from public text but still needs source-PDF spot check before model use.",
@@ -276,6 +300,7 @@ source_registry <- tribble(
   ~dataset_id, ~required_product, ~source_type, ~current_local_path, ~primary_source, ~source_url, ~acquisition_method, ~owner_or_contact, ~status, ~notes,
   "dfo_herring_stock_assessment_landing", "herring_spawn_index;herring_age_composition;herring_weight_at_age;test_fishery_biology", "public_landing_page", NA_character_, "DFO Pacific herring stock assessments", "https://www.pac.dfo-mpo.gc.ca/science/species-especes/herring-hareng/stock-assessments-evaluations-stocks-eng.html", "download_public_open_data_and_assessment_appendices", "DFO Pacific herring stock assessment", "public_entry_point", "Public page confirms biological sampling, spawn surveys, model history, open spawn index data, and stock-assessment regions. Use as the starting point before any direct data request.",
   "dfo_hg_public_appendix_b_extract", "herring_fleet_catch;herring_spawn_index;herring_age_composition;herring_weight_at_age;herring_maturity_at_age", "provisional_public_extract", "Output/diagnostics/dfo_hg_public_extract/", "DFO CSAS Research Document 2018/028 Appendix B", "https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/40944670.pdf", "already_extracted_public_provisional", "DFO CSAS / local extraction script", "extracted_public_provisional", "Generated by Code/02e_extract_dfo_hg_assessment_tables.R; use for schema audit and spot checks only, not direct model fitting.",
+  "dfo_newer_public_pdf_extract", "herring_fleet_catch;herring_spawn_index;herring_age_composition;herring_weight_at_age;herring_length_at_age", "public_summary_extract", "Output/diagnostics/dfo_newer_public_pdf_extract/", "DFO CSAS Science Response 2025/005; 2024/2025 IFMP; HG rebuilding plan", "https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/41290963.pdf", "already_extracted_public_summary", "DFO CSAS / local extraction script", "extracted_public_summary", "Generated by Code/02f_extract_newer_dfo_public_pdfs.R; captures current public summaries through 2024 and biological figure/caption metadata, but not exact SCA/SISCAH input files.",
   "dfo_hg_spawn_index_2025", "herring_spawn_index", "raw_and_processed", "Data/raw/dfo-spawn/Pacific_herring_spawn_index_data_2025_EN.csv", "DFO Pacific herring spawn index data", "https://www.pac.dfo-mpo.gc.ca/science/species-especes/herring-hareng/index-eng.html", "already_local", "DFO Pacific herring stock assessment / Open Canada", "ready", "Maintained DFO tonnes-scale spawn index; keep q scale separate from Stier SHI.",
   "dfo_hg_local_catch_1950_2024", "herring_fleet_catch", "processed", "Data/processed/herring_catch_local_1950_2024.csv", "DFO local catch extracts in repo", "Data/raw/dfo-catch/README_catch_data.txt", "already_local_plus_crosscheck", "DFO / local archive", "partial", "Usable for biomass removals; not a full SCA catch-at-age input bundle.",
   "dfo_herring_input_manifest", "herring_age_composition;herring_weight_at_age;test_fishery_biology", "manifest_only", "Data/raw/dfo-spawn/input-data.csv", "DFO herring model input manifest", "Data/raw/dfo-spawn/input-data.csv", "public_appendix_then_request_raw_tables", "DFO Pacific Biological Station", "published_extractable", "Manifest names biological streams; public assessment appendices should be extracted first, then exact input files requested if needed.",
@@ -360,7 +385,8 @@ lines <- c(
   "",
   "- The current repo has enough data for a biomass-model predator-demand analogue: spawn index, catch removals, and annual HG predator demand are present.",
   "- Public DFO Appendix B HG catch, spawn, number-at-age, weight-at-age, biosample, and maturity tables have now been extracted provisionally through 2017.",
-  "- It does **not** yet have the herring biological inputs needed for a true catch-at-age model in final model-ready local form: current 2018-2024 biology, effective sample-size metadata, length-at-age tables, exact SCA/SISCAH input files, and predator age/size selectivity are still absent or unresolved.",
+  "- Newer public PDFs now add DFO 2025/005 current summary tables through 2024 for HG catch, spawn, SCA parameters, recruitment, biomass/depletion, reference points, and broad projected age proportions.",
+  "- It does **not** yet have the herring biological inputs needed for a true catch-at-age model in final model-ready local form: exact annual 2018-2024 number/proportion-at-age, annual weight-at-age matrices, effective sample-size metadata, length-at-age tables, exact SCA/SISCAH input files, and predator age/size selectivity are still absent or unresolved.",
   "- A direct DFO request is still useful, but it should ask for machine-readable copies and metadata for the published assessment inputs rather than asking whether the inputs exist.",
   "",
   "## Readiness Matrix",
@@ -392,6 +418,7 @@ lines <- c(
   "- `Output/diagnostics/doherty_hg_dfo_data_request_template.md`",
   "- `Output/figures/doherty_hg_data_readiness.pdf`",
   "- `Output/diagnostics/dfo_hg_public_extract/dfo_hg_public_extract_summary.md`",
+  "- `Output/diagnostics/dfo_newer_public_pdf_extract/dfo_newer_public_pdf_extract_summary.md`",
   "- `Output/diagnostics/doherty_hg_replication_execution_status.md`"
 )
 
@@ -404,7 +431,7 @@ writeLines(
     "",
     "Dear DFO Pacific herring assessment team,",
     "",
-    "We are compiling a transparent Haida Gwaii Pacific Herring data bundle to evaluate a Doherty et al.-style predator-removal analogue alongside an existing section-level biomass model. The public DFO stock-assessment page and assessment appendices identify the needed spawn, catch, age-composition, and weight-at-age inputs, and the current local workspace contains spawn index and catch data, but not the biological input tables in model-ready machine-readable form.",
+    "We are compiling a transparent Haida Gwaii Pacific Herring data bundle to evaluate a Doherty et al.-style predator-removal analogue alongside an existing section-level biomass model. The public DFO stock-assessment page, DFO CSAS Science Response 2025/005, and assessment appendices identify the needed spawn, catch, age-composition, and weight-at-age inputs, and the current local workspace contains spawn index, catch data, and public summary tables through 2024, but not the biological input tables in model-ready machine-readable form.",
     "",
     "Could you please share the Haida Gwaii assessment input data, or point us to the public repository / input archive, for the following streams in the form used by SCA/SISCAH?",
     "",

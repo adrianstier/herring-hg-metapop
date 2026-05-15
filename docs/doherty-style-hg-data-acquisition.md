@@ -41,13 +41,19 @@ As of 2026-05-15, the first public extraction pass is implemented:
 - `Code/02e_extract_dfo_hg_assessment_tables.R` extracts provisional HG
   Appendix B catch, spawn, number-at-age, weight-at-age, biosample count, and
   maturity tables from DFO CSAS Research Document 2018/028.
+- `Code/02f_extract_newer_dfo_public_pdfs.R` extracts newer public DFO PDF
+  summaries from DFO CSAS Science Response 2025/005, the 2024/2025 IFMP, and
+  the Haida Gwaii rebuilding plan.
 - `Code/07bl_doherty_replication_execution_status.R` writes the replication
   status, predator crosswalk, and model-gate ledger.
 - `docs/doherty-style-hg-replication-status.md` is the tracked status note.
 
-The extracted public tables cover 1951-2017. Current 2018-2024 machine-readable
-biology, effective sample-size metadata, length-at-age tables, and predator
-age/size selectivity remain unresolved.
+The Appendix B extracted public tables cover 1951-2017. The newer public PDF
+extraction adds DFO 2025/005 summary tables through 2024 for HG catch, spawn,
+SCA parameters, recruitment, biomass/depletion, reference points, and broad
+projected age composition. Exact annual 2018-2024 age/weight input matrices,
+effective sample-size metadata, length-at-age tables, and predator age/size
+selectivity remain unresolved.
 
 ## Acquisition Order
 
@@ -134,5 +140,9 @@ Outputs:
   <https://publications.gc.ca/collections/collection_2026/mpo-dfo/Fs143-3-23-2600-eng.pdf>
 - DFO CSAS Research Document 2018/028:
   <https://www.dfo-mpo.gc.ca/csas-sccs/Publications/ResDocs-DocRech/2018/2018_028-eng.html>
+- DFO CSAS Science Response 2025/005:
+  <https://www.dfo-mpo.gc.ca/csas-sccs/Publications/ScR-RS/2025/2025_005-eng.html>
+- DFO CSAS Science Response 2025/005 PDF:
+  <https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/41290963.pdf>
 - Haida Gwaii Pacific Herring Rebuilding Plan:
   <https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/41284161.pdf>

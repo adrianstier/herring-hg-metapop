@@ -11,6 +11,7 @@ library(knitr)
 proj_dir <- here::here()
 diag_dir <- file.path(proj_dir, "Output", "diagnostics")
 extract_dir <- file.path(diag_dir, "dfo_hg_public_extract")
+newer_extract_dir <- file.path(diag_dir, "dfo_newer_public_pdf_extract")
 dir.create(diag_dir, showWarnings = FALSE, recursive = TRUE)
 
 read_csv_if_exists <- function(path) {
@@ -30,6 +31,7 @@ count_rows <- function(path) {
 
 extract_audit <- read_csv_if_exists(file.path(extract_dir, "dfo_hg_public_extract_audit.csv"))
 gap_ledger <- read_csv_if_exists(file.path(extract_dir, "doherty_hg_schema_gap_ledger.csv"))
+newer_status <- read_csv_if_exists(file.path(newer_extract_dir, "dfo_newer_public_pdf_status.csv"))
 
 pred_species <- read_csv_if_exists(
   file.path(proj_dir, "Data", "processed", "predators", "hg_predator_consumption_by_species_recent.csv")
@@ -50,11 +52,26 @@ rows <- list(
   maturity = count_rows(file.path(extract_dir, "dfo_hg_maturity_schedule.csv"))
 )
 
+newer_rows <- list(
+  sr_2025_input_windows = count_rows(file.path(newer_extract_dir, "dfo_sr_2025_005_table_1_input_data_windows.csv")),
+  sr_2025_major_catch = count_rows(file.path(newer_extract_dir, "dfo_sr_2025_005_table_2_major_catch_2015_2024.csv")),
+  sr_2025_hg_spawn = count_rows(file.path(newer_extract_dir, "dfo_sr_2025_005_table_3_hg_spawn_2015_2024.csv")),
+  sr_2025_hg_parameters = count_rows(file.path(newer_extract_dir, "dfo_sr_2025_005_table_7_hg_key_parameters.csv")),
+  sr_2025_hg_recruitment = count_rows(file.path(newer_extract_dir, "dfo_sr_2025_005_table_11_hg_recruitment_2015_2024.csv")),
+  sr_2025_hg_biomass = count_rows(file.path(newer_extract_dir, "dfo_sr_2025_005_table_15_hg_spawning_biomass_depletion_2015_2024.csv")),
+  sr_2025_hg_reference_points = count_rows(file.path(newer_extract_dir, "dfo_sr_2025_005_table_19_hg_reference_points.csv")),
+  rebuilding_biology_captions = count_rows(file.path(newer_extract_dir, "dfo_hg_rebuilding_plan_biology_caption_catalog.csv"))
+)
+
 execution_status <- tribble(
   ~step, ~doherty_component, ~status, ~evidence, ~remaining_gap, ~model_decision,
   1L, "Public DFO source acquisition", "completed_public_sources",
-  "DFO CSAS 2018/028, 2024/2025 IFMP, and HG rebuilding-plan PDFs were fetched and text-extracted; 2025/2026 full IFMP direct download returns an archived landing page, with catalogue page recorded.",
-  "Need manual/current full IFMP PDF or exact SCA/SISCAH input files for 2018-2024 update.",
+  paste0(
+    "DFO CSAS 2018/028, DFO CSAS Science Response 2025/005, 2024/2025 IFMP, and HG rebuilding-plan PDFs were fetched and text-extracted. Valid newer public PDFs=",
+    if_else(nrow(newer_status) == 0, 0L, sum(newer_status$pdf_is_valid, na.rm = TRUE)),
+    "; 2025/2026 full IFMP direct download returns an archived landing page, with catalogue page recorded."
+  ),
+  "Need manual/current full 2025/2026 IFMP PDF if its Appendix 3 differs from DFO 2025/005, plus exact SCA/SISCAH input files for model-ready biology.",
   "No model change.",
   2L, "HG catch/spawn/age/weight table extraction", "completed_public_provisional",
   paste0(
@@ -67,26 +84,39 @@ execution_status <- tribble(
   ),
   "Tables need source-PDF spot checks and current-year extension before any age-structured fit.",
   "Available for schema audit only, not for fitting.",
-  3L, "Catch-at-age input bundle", "partial_public_1951_2017",
-  "Public HG catch, spawn, number-at-age, weight-at-age, biosamples, and maturity are now in provisional CSV form.",
-  "Exact SCA/SISCAH input files, effective sample sizes, preprocessing rules, selectivity assumptions, and 2018-2024 biology are not local.",
+  3L, "Newer public PDF summary extraction", "completed_public_summary",
+  paste0(
+    "DFO 2025/005 clean extracts: input windows rows=", newer_rows$sr_2025_input_windows,
+    ", major catch rows=", newer_rows$sr_2025_major_catch,
+    ", HG spawn rows=", newer_rows$sr_2025_hg_spawn,
+    ", HG SCA parameter rows=", newer_rows$sr_2025_hg_parameters,
+    ", HG recruitment rows=", newer_rows$sr_2025_hg_recruitment,
+    ", HG biomass/depletion rows=", newer_rows$sr_2025_hg_biomass,
+    ", HG reference-point rows=", newer_rows$sr_2025_hg_reference_points,
+    "; rebuilding biology caption rows=", newer_rows$rebuilding_biology_captions, "."
+  ),
+  "Public summaries confirm data streams through 2024 but do not provide exact annual age/weight matrices, effective sample sizes, or fish-level length-at-age.",
+  "Available for status/reporting and request scoping only, not fitting.",
+  4L, "Catch-at-age input bundle", "partial_public_1951_2024_summaries",
+  "Public HG catch, spawn, number-at-age, weight-at-age, biosamples, maturity, and recent SCA summary tables are now in provisional CSV form.",
+  "Exact SCA/SISCAH input files, effective sample sizes, preprocessing rules, selectivity assumptions, detailed 2018-2024 age/weight tables, and length-at-age are not local.",
   "Do not fit a catch-at-age model yet.",
-  4L, "Predator annual demand/removals", "completed_context",
+  5L, "Predator annual demand/removals", "completed_context",
   paste0(
     "HG predator consumption exists by group/year rows=", nrow(pred_group),
     " and recent species rows=", nrow(pred_species), "."
   ),
   "Annual demand is available, but Doherty-style age-specific removals require predator age/size selectivity.",
   "Use as descriptive/removal-rate context; held Stan demand branch remains context.",
-  5L, "Predator class crosswalk", "partial",
+  6L, "Predator class crosswalk", "partial",
   "HG predator data products cover mammals, fish, salmon, and birds; Steller sea lion/harbour seal spatial sites exist.",
   "Doherty WCVI marine-mammal classes do not map one-to-one to HG fish/bird/salmon predator products; humpback section exposure and all age selectivities are missing.",
   "No richer predator Stan branch.",
-  6L, "Doherty-style predation mortality model", "blocked",
+  7L, "Doherty-style predation mortality model", "blocked",
   "Current repository can compute biomass-scale removal analogues but lacks age-selective predation mortality inputs.",
   "Need predator selectivity-at-age, exact herring catch-at-age inputs, and a deliberate regional model design.",
   "Blocked for fitting.",
-  7L, "Future predator/herring projections", "blocked",
+  8L, "Future predator/herring projections", "blocked",
   "No vetted future predator scenario table is present in the herring repo.",
   "Need future predator abundance scenarios and a promoted/useful predation mortality model first.",
   "Do not launch projections."
@@ -129,22 +159,26 @@ model_gate <- gap_ledger %>%
   bind_rows(
     tibble(
       required_product = c(
+        "newer_public_sca_summary_tables",
         "predator_class_crosswalk",
         "future_predator_scenarios",
         "regional_hg_catch_at_age_model_design"
       ),
-      status = c("partial", "not_found", "not_started"),
+      status = c("extracted_public_summary", "partial", "not_found", "not_started"),
       model_gate = c(
+        "available_for_reporting_and_request_scoping_not_model_fit",
         "available_for_context_not_model_fit",
         "blocks_doherty_style_projection",
         "blocks_doherty_style_model_fit"
       ),
       next_action = c(
+        "Use DFO 2025/005 summaries to scope exact DFO data requests and report current stock status; do not treat them as raw age/weight inputs.",
         "Review predator crosswalk and extract selectivity assumptions before any model branch.",
         "Build scenarios only after predation mortality model is useful.",
         "Design regional HG age-structured model separately from the 11-section Stier biomass model."
       ),
       notes = c(
+        "Code/02f extracts recent HG catch/spawn/SCA summary tables through 2024 from public DFO PDFs.",
         "Crosswalk created from current HG predator products.",
         "No future predator abundance scenario table in herring repo.",
         "The promoted baseline remains section-level biomass, not catch-at-age."
@@ -178,7 +212,8 @@ lines <- c(
   "## Bottom Line",
   "",
   "- Public DFO HG catch, spawn, number-at-age, weight-at-age, biosample count, and maturity schedule tables are now extracted provisionally through 2017.",
-  "- Current 2018-2024 machine-readable biological inputs, effective sample size/preprocessing metadata, length-at-age tables, and predator age selectivity are still not found locally.",
+  "- Newer public PDFs now add DFO 2025/005 HG summary tables through 2024 for catch, spawn, SCA parameters, recruitment, biomass/depletion, reference points, and broad projected age proportions.",
+  "- Exact 2018-2024 machine-readable age/weight input matrices, effective sample size/preprocessing metadata, length-at-age tables, and predator age selectivity are still not found locally.",
   "- The current defensible output is a data bundle and gap ledger. It is still too early to fit a Doherty-style predator-removal catch-at-age model."
 )
 

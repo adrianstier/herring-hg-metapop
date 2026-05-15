@@ -62,10 +62,13 @@ Appendix B tables have been provisionally extracted by
 - fixed maturity-at-age schedule.
 
 The current blocker is not whether those streams exist. The blocker is that the
-repo still lacks current 2018-2024 machine-readable biological inputs, effective
-sample-size/preprocessing metadata, length-at-age tables, and predator
-age/size selectivity. See
-`docs/doherty-style-hg-replication-status.md`.
+repo still lacks current 2018-2024 machine-readable biological inputs,
+effective sample-size/preprocessing metadata, length-at-age tables, and predator
+age/size selectivity. Since that first pass, `Code/02f_extract_newer_dfo_public_pdfs.R`
+also extracts DFO 2025/005 public summaries through 2024 for HG catch, spawn,
+SCA parameters, recruitment, biomass/depletion, reference points, and projected
+broad age composition. Those are status/reporting extracts, not exact raw
+age/weight input matrices. See `docs/doherty-style-hg-replication-status.md`.
 
 ## How This Integrates With Our Model
 

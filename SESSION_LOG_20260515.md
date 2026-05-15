@@ -55,13 +55,25 @@
   number-at-age rows (`72` source-year / `648` age-long), weight-at-age rows
   (`67` year / `603` age-long), biosample rows (`63`), and maturity rows
   (`9`).
+- Added DFO CSAS Science Response 2025/005 to the public-source fetch registry
+  and implemented `Code/02f_extract_newer_dfo_public_pdfs.R`.
+- Newer public PDF extraction now mines DFO 2025/005, the 2024/2025 IFMP, and
+  the Haida Gwaii rebuilding plan. Clean extracts include DFO 2025/005 input
+  data windows (`12` rows), major SAR catch (`10`), HG spawn/sub-stock
+  proportions (`10`), HG SCA key parameters (`11`), HG age-2 recruitment
+  (`10`), HG biomass/depletion (`10`), HG reference points (`13`), 2024/2025
+  IFMP projected biomass/age proportions (`4`), and rebuilding-plan biological
+  captions (`92`).
+- The 2025/2026 full IFMP catalogue confirms a PDF, but command-line direct
+  access still returns an HTML archive page; record this as an access block,
+  not a biological-data absence.
 - Added `docs/doherty-style-hg-replication-status.md` as the tracked status
   note for what has been found versus what remains missing.
-- Remaining missing/not machine-readable locally: current 2018-2024 biological
-  inputs, exact SCA/SISCAH input files, effective sample-size/preprocessing
-  metadata, length-at-age tables, predator age/size selectivity, future
-  predator scenarios, and a regional HG catch-at-age design separate from the
-  11-section Stier biomass model.
+- Remaining missing/not machine-readable locally: exact annual 2018-2024
+  age/weight matrices, exact SCA/SISCAH input files, effective sample-size/
+  preprocessing metadata, length-at-age tables, predator age/size selectivity,
+  future predator scenarios, and a regional HG catch-at-age design separate
+  from the 11-section Stier biomass model.
 - Model implication: do not fit a full 11-section catch-at-age model or another
   predator-removal Stan branch now. First acquire/extract HG age composition,
   weight-at-age, length-at-age, maturity, test-fishery biology, and predator
@@ -69,6 +81,7 @@
 - Verification rerun completed for:
   `Code/02d_fetch_dfo_herring_assessment_sources.R`,
   `Code/02e_extract_dfo_hg_assessment_tables.R`,
+  `Code/02f_extract_newer_dfo_public_pdfs.R`,
   `Code/07bk_doherty_hg_data_readiness.R`,
   `Code/07bl_doherty_replication_execution_status.R`,
   `Code/07bi_model_decision_ledger.R`, and
