@@ -67,6 +67,18 @@ Use `docs/aws-codex-model-farm-lessons.md` as the living implementation log for
 what worked and failed while connecting Codex to AWS; update it immediately
 when new AWS setup issues are discovered.
 
+As of 2026-05-15, the Doherty-style WCVI replication path has a data-readiness
+control sheet rather than a new age-structured model branch:
+`Code/02d_fetch_dfo_herring_assessment_sources.R`,
+`Code/07bk_doherty_hg_data_readiness.R`, and
+`docs/doherty-style-hg-data-acquisition.md`. Public DFO stock-assessment pages
+and appendices are the first acquisition path for HG catch, age composition,
+number/weight/length-at-age, maturity, and test-fishery biology. A DFO request
+should ask for machine-readable copies and metadata for those already-published
+assessment inputs. Do not fit a full 11-section catch-at-age model or a
+Doherty-style predator-removal Stan branch until those herring biological inputs
+and predator selectivity assumptions are extracted and audited.
+
 The spawn-index scale audit is in `Output/diagnostics/spawn_index_scale_audit.md`
 and `Output/figures/spawn_index_scale_audit.pdf`. It shows that Stier's legacy
 SHI and the maintained DFO `spawn_index_tonnes` series are strongly related but

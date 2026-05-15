@@ -47,6 +47,18 @@ series live in a sibling repo:
 > by `section_name`, fixing a raw-section-code versus model-site-index mismatch
 > in the exposure-growth screen.
 
+> 2026-05-15 update. The Doherty-style HG replication path now has an explicit
+> herring-data acquisition control sheet:
+> `Code/02d_fetch_dfo_herring_assessment_sources.R`,
+> `Code/07bk_doherty_hg_data_readiness.R`, and
+> `docs/doherty-style-hg-data-acquisition.md`. The important correction is
+> that the DFO stock-assessment page and public assessment appendices are the
+> first acquisition path for age composition, number/weight/length-at-age, and
+> test-fishery biology. A DFO request should ask for machine-readable copies and
+> metadata for already-published assessment inputs, not ask whether the streams
+> exist. Predator selectivity and Doherty-style removals stay blocked until
+> those herring biological inputs are extracted or received.
+
 ## Headline finding from the literature (revision 2026-05-09)
 
 Three BC-coast-wide reviews now anchor the predator scope:
