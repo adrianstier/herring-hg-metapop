@@ -169,6 +169,7 @@ Purpose:
 Current jobs:
 
 - `m5_stier_predation_pressure`;
+- `m5_stier_predator_demand_total` (planned-gated only);
 - `m5_v5`;
 - `m5_combined`.
 
@@ -180,6 +181,12 @@ pressure from `stier-lab/pacific-herring-predators`. It is still a regional
 annual pressure covariate, not section-specific exposure. The older `m5_v5` and
 `m5_combined` branches remain exploratory until their predator inputs are
 rebuilt from the predator repo.
+
+The May 14 WCVI bridge identified `m5_stier_predator_demand_total` as the
+cleaner next covariate because it uses total predator demand instead of a
+pressure ratio with observed spawn in the denominator. Keep it gated until a
+deliberate reduced smoke and single-covariate AWS screen are requested; do not
+fold it into combination predator models.
 
 Promotion criteria:
 
@@ -199,8 +206,12 @@ Rerun triggers:
 Run after predator repo products are available:
 
 - `m5_stier_predation_pressure`;
+- `m5_stier_predator_demand_total` only after reviewing
+  `Output/diagnostics/wcvi_predation_replication_bridge.md`;
 - `smoke_m5_stier_predation_pressure_reduced` before a long cloud run if the
   image or bundle changed.
+- `smoke_m5_stier_predator_demand_total_reduced` before any demand-branch
+  cloud run.
 
 Goal:
 

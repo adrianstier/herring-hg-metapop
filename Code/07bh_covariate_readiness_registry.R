@@ -20,6 +20,14 @@ read_diag <- function(file) {
   read_csv(path, show_col_types = FALSE)
 }
 
+read_diag_optional <- function(file) {
+  path <- file.path(diag_dir, file)
+  if (!file.exists(path)) {
+    return(tibble())
+  }
+  read_csv(path, show_col_types = FALSE)
+}
+
 fmt <- function(x, digits = 2) {
   format(round(as.numeric(x), digits), nsmall = digits, trim = TRUE)
 }
@@ -34,6 +42,7 @@ distance_tbl <- read_diag("m3_stier_distance_global_parameters.csv")
 predator_tbl <- read_diag("predator_data_confounding.csv")
 predator_availability <- read_diag("predator_spatial_exposure_availability.csv")
 predator_cor <- read_diag("predator_spatial_exposure_growth_correlations.csv")
+predator_demand_screen <- read_diag_optional("wcvi_predator_demand_residual_screen.csv")
 recovery_cov <- read_diag("section_recovery_covariate_correlations.csv")
 local_targets <- read_diag("lead_location_followup_targets.csv")
 location_transition <- read_diag("lead_section_location_transition_summary.csv")
@@ -74,6 +83,18 @@ if (nrow(pred_combined) == 0) {
   pred_combined <- tibble(
     rho_year = NA_real_,
     rho_next_year_growth = NA_real_
+  )
+}
+
+pred_demand_lag1 <- predator_demand_screen %>%
+  filter(predictor == "demand_total_log_z", lag_label == "lag_1") %>%
+  slice(1)
+
+pred_demand_label <- if (nrow(pred_demand_lag1) == 0) {
+  "Run Code/07bj_wcvi_predation_replication_bridge.R to score total predator demand."
+} else {
+  glue(
+    "WCVI bridge total-demand lag-1 rho {fmt(pred_demand_lag1$spearman_rho, 2)}, detrended r {fmt(pred_demand_lag1$detrended_r, 2)}, adjusted beta {fmt(pred_demand_lag1$adjusted_beta, 2)}."
   )
 }
 
@@ -191,6 +212,13 @@ covariate_registry <- tribble(
   "Strong calendar-time confounding; humpbacks not section-specific.",
   "Do not promote predator coefficient from regional index.",
   "not ready",
+  "Predator annual demand",
+  "WCVI-style removals analogue and gated model covariate",
+  "annual regional consumption budget",
+  pred_demand_label,
+  "Total demand is more exogenous than pressure ratio, but still time-confounded and weak after adjustment.",
+  "Use `m5_stier_predator_demand_total` only as a deliberate single-covariate screen; do not submit combinations.",
+  "screen only",
   "Predator spatial exposure",
   "prototype data product",
   "section-year / local-distance exposure",

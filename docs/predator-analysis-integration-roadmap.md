@@ -6,6 +6,10 @@ This note records what the current predator analyses actually show, what is
 weak in the current integration, and how to improve predator data products
 before another Stan branch.
 
+Companion note: `docs/wcvi-predation-replication-bridge.md`. It records the
+Doherty et al. WCVI predator-paper crosswalk and the HG demand/removal analogue
+implemented in `Code/07bj_wcvi_predation_replication_bridge.R`.
+
 ## Current Read
 
 The promoted herring baseline remains `m1_stier_11`. Predator results are
@@ -61,6 +65,13 @@ Current simple screens make the distinction clear:
 The pressure ratio is more strongly tied to biomass because it contains spawn
 in the denominator. PDO remains the cleaner simple regional covariate because
 it is not a monotonic time trend.
+
+The WCVI bridge diagnostic reaches the same conclusion with stronger controls:
+lag-1 total predator demand has Spearman rho about `-0.30` with next-year
+latent growth, but detrended r is only about `-0.05` and the adjusted beta is
+near zero after accounting for PDO, fishing fraction, and year. That supports
+preparing a demand branch, but not treating it as strong evidence before a
+fit-and-compare gate.
 
 ## Spatial Exposure Fix
 
@@ -192,6 +203,10 @@ Only after the above diagnostics are clean:
    - Zeros ambiguous, two-era q, 11 sections.
    - Replace pressure-ratio covariate with lagged total predator demand:
      `z(log1p(C_total_kt))`.
+   - Current status: source prepared and manifest-gated as `planned_model_fit`;
+     local reduced smoke compiled but had treedepth pressure; do not submit
+     automatically because the adjusted demand screen is weak and geometry
+     needs review.
 
 2. Single-group screens, one at a time.
    - `m5_stier_predator_demand_mammals`.

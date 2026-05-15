@@ -70,14 +70,26 @@ group_tbl <- read_csv(group_path, show_col_types = FALSE)
 species_tbl <- read_csv(species_path, show_col_types = FALSE)
 
 years <- 1951:2025
+group_wide <- group_tbl %>%
+  mutate(group = paste0("C_", group, "_kt")) %>%
+  pivot_wider(names_from = group, values_from = C_kt)
+
 covariates <- tibble(year = years) %>%
   left_join(covariate_tbl, by = "year") %>%
+  left_join(pressure_tbl %>% select(year, C_total_kt, HG_spawn_kt, pressure_pct), by = "year") %>%
+  left_join(group_wide, by = "year") %>%
   mutate(
     log_pressure = fill_annual(log_pressure, year),
     log_humpback = fill_annual(log_humpback, year),
+    C_total_kt = fill_annual(C_total_kt, year),
     N_BC = fill_annual(N_BC, year),
     pdo = fill_annual(pdo, year),
     npgo = fill_annual(npgo, year),
+    pred_demand_total_log_z = standardize(log1p(C_total_kt)),
+    pred_demand_birds_log_z = standardize(log1p(C_birds_kt)),
+    pred_demand_fish_log_z = standardize(log1p(C_fish_kt)),
+    pred_demand_mammals_log_z = standardize(log1p(C_mammals_kt)),
+    pred_demand_salmon_log_z = standardize(log1p(C_salmon_kt)),
     pred_pressure_log_z = standardize(log_pressure),
     humpback_log_z = standardize(log_humpback),
     n_bc_z = standardize(N_BC),
@@ -221,9 +233,11 @@ writeLines(
     "## Modeling Decision",
     "",
     paste(
-      "Use `pred_pressure_log_z` as the first HG-specific predator covariate.",
-      "It is an annual regional pressure index, so it is appropriate for a",
-      "Stier-aligned process branch before attempting section-specific predator exposure."
+      "Keep `pred_pressure_log_z` for the completed pressure-ratio branch and",
+      "for descriptive risk figures, but prefer `pred_demand_total_log_z` for",
+      "the next single-covariate predator screen. The demand covariate is based",
+      "on predator consumption only; the pressure ratio includes observed HG spawn",
+      "in its denominator."
     ),
     "",
     paste(

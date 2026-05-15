@@ -241,6 +241,18 @@ The May 11 herring-repo prototype narrows the near-term predator task:
 5. Keep exposure diagnostics separate from effect inference until time trends
    and effort differences are handled.
 
+May 14 WCVI bridge update:
+
+1. `Code/07bj_wcvi_predation_replication_bridge.R` now translates the Doherty
+   et al. WCVI predation approach into the current HG model scale by computing
+   predator-demand and removal-rate analogues against `m1_stier_11` biomass.
+2. `Code/02c_integrate_hg_predator_repo_products.R` now exports total predator
+   demand (`pred_demand_total_log_z`) separately from the observed-spawn
+   pressure ratio (`pred_pressure_log_z`).
+3. `m5_stier_predator_demand_total` is the prepared next single-covariate
+   branch, but it is manifest-gated as `planned_model_fit` because the adjusted
+   total-demand screen is weak.
+
 ## Visualization plan
 
 Multi-panel figure, common 1900-2025 x-axis, four taxon-grouped panels:

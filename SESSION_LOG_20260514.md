@@ -123,3 +123,44 @@
 - Added `docs/predator-analysis-integration-roadmap.md`, which recommends
   separating predator demand (`C_total_kt` and group-specific consumption) from
   predator pressure ratios before any next predator Stan branch.
+
+## WCVI predation-replication bridge
+
+- Identified the relevant WCVI paper as Doherty et al. 2025, *Predation by
+  marine mammals explains recent trends in natural mortality of Pacific
+  Herring and changes expectations for future biomass*, ICES Journal of Marine
+  Science, doi:10.1093/icesjms/fsae183.
+- Added `docs/wcvi-predation-replication-bridge.md` and
+  `Code/07bj_wcvi_predation_replication_bridge.R` to translate the WCVI
+  approach into the HG/Stier model scale without adding unsupported
+  age-structured machinery.
+- The bridge uses audited HG predator consumption as annual demand, computes
+  WCVI-style removal-rate analogues against `m1_stier_11` biomass, and scores
+  predator demand with future-demand negative controls.
+- Current bridge read:
+  - mean 2015-2024 HG predator consumption is about `15.5` kt/yr;
+  - mean 2015-2024 predator-removal analogue is about `25%` against
+    `m1_stier_11` biomass;
+  - lag-1 total predator demand has Spearman rho about `-0.30` with next-year
+    latent growth, but detrended r is only about `-0.05` and adjusted beta is
+    near zero after PDO, fishing fraction, and year.
+- Updated `Code/02c_integrate_hg_predator_repo_products.R` to export
+  `pred_demand_total_log_z` alongside `pred_pressure_log_z`. Total demand is
+  model-ready; group-specific demand remains partially observed and should be
+  screened with explicit missingness rather than silently carried forward.
+- Prepared the gated next model branch:
+  - `inst/stan/herring_metapop_m5_stier_predator_demand_total.stan`;
+  - `Code/03_fit_m5_stier_predator_demand_total.R`;
+  - manifest row `m5_stier_predator_demand_total` as `planned_model_fit`;
+  - smoke row `smoke_m5_stier_predator_demand_total_reduced`.
+- Local reduced smoke completed, confirming the Stan/data contract, but the
+  short smoke had `80` post-warmup max-treedepth hits and low E-BFMI. Treat
+  this as another reason not to submit a heavy AWS run automatically.
+- This branch keeps ambiguous zeros, the Stier two-era q split, all 11
+  sections, and `m1_stier_11` as baseline. It should not be submitted as a
+  heavy AWS job automatically because the adjusted diagnostic signal is weak.
+- Refreshed AWS identity/queue state after preparing the branch:
+  - profile `herring` still resolves to account `107094296950`;
+  - on-demand and spot queues had no `SUBMITTED`, `PENDING`, `RUNNABLE`,
+    `STARTING`, or `RUNNING` jobs;
+  - no new AWS job was submitted.

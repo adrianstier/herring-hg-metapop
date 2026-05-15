@@ -40,6 +40,7 @@ models <- tribble(
   "m2_stier_site_growth",  file.path(proc_dir, "m2_stier_site_growth_fit.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m2_stier_site_growth.stan"), file.path(proj_dir, "Code/03_fit_m2_stier_site_growth.R"),
   "m3_stier_distance",  file.path(proc_dir, "m3_stier_distance_fit.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m3_stier_distance.stan"), file.path(proj_dir, "Code/03_fit_m3_stier_distance.R"),
   "m5_stier_predation_pressure",  file.path(proc_dir, "m5_stier_predation_pressure_fit.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m5_stier_predation_pressure.stan"), file.path(proj_dir, "Code/03_fit_m5_stier_predation_pressure.R"),
+  "m5_stier_predator_demand_total",  file.path(proc_dir, "m5_stier_predator_demand_total_fit.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m5_stier_predator_demand_total.stan"), file.path(proj_dir, "Code/03_fit_m5_stier_predator_demand_total.R"),
   "m5_v5",  file.path(proc_dir, "m5_v5_fit.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m5_v5.stan"), file.path(proj_dir, "Code/03_fit_m5_v5.R"),
   "m5_combined",  file.path(proc_dir, "m5_combined_fit.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m5_combined.stan"), file.path(proj_dir, "Code/03_fit_m5_combined.R"),
   "m1_v4",  file.path(proc_dir, "m1_v4_fit.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m1_v4.stan"), file.path(proj_dir, "Code/03_fit_m1_v4.R"),

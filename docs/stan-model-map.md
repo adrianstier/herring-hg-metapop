@@ -72,6 +72,18 @@ for `m1_stier_11`). Exact re-LOO completed for the three high-k points, but one
 exact refit had treedepth pressure, so the branch remains spatial context
 rather than a promoted inference model.
 
+The prepared May 14 predator-demand branch is:
+
+- [`inst/stan/herring_metapop_m5_stier_predator_demand_total.stan`](/Users/adrianstier/stier-2027-herring-metapopulation/inst/stan/herring_metapop_m5_stier_predator_demand_total.stan)
+- [`Code/03_fit_m5_stier_predator_demand_total.R`](/Users/adrianstier/stier-2027-herring-metapopulation/Code/03_fit_m5_stier_predator_demand_total.R)
+
+`m5_stier_predator_demand_total` keeps the `m1_stier_11` observation layer and
+uses total HG predator demand, `z(log1p(C_total_kt))`, rather than the
+observed-spawn pressure ratio. It is manifest-gated as `planned_model_fit`;
+the WCVI bridge diagnostic supports demand as the cleaner covariate, but the
+adjusted demand signal is weak enough that cloud submission should be a
+deliberate single-covariate screen, not an automatic next run.
+
 Future model branches should preserve the following distinction:
 
 - A **Stier-aligned baseline** should treat zero spawn records as ambiguous/missing, use explicit survey-era `q` terms, and avoid size/age structure.
@@ -134,9 +146,13 @@ Recommended branch order:
 8. `herring_metapop_m5_stier_timing_habitat.stan`
    - lagged spawn timing and substrate covariates,
    - first as observation/reporting or phenology/habitat sensitivity.
-9. `herring_metapop_m6_stier_predator_exposure.stan`
-   - predator covariates only after a spatial exposure data product exists and
-     process/observation calibration remain stable.
+9. `herring_metapop_m5_stier_predator_demand_total.stan`
+    - prepared May 14 as a gated predator-demand screen,
+    - use only as a single-covariate test against `m1_stier_11`,
+    - do not combine predator groups or pressure ratios in this branch.
+10. `herring_metapop_m6_stier_predator_exposure.stan`
+    - predator covariates only after a spatial exposure data product exists and
+      process/observation calibration remain stable.
 
 Keep full section-level age/size structure out of this sequence. Age composition
 and weight-at-age can later inform priors, regional covariates, or external

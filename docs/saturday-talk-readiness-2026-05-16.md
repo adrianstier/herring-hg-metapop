@@ -8,6 +8,9 @@ This is the current handoff for building the Saturday talk from the May 14 model
 - Keep zeros and no-survey cells ambiguous/missing, use the two-era surface/SCUBA `q`, and report all 11 fitted sections with the focal-9 sensitivity.
 - Do not submit another AWS model before the talk unless a new diagnostic creates a specific single-covariate question. The May 14 ledger does not justify one.
 - Treat `m5_stier_predation_pressure`, `m2_stier_site_growth`, `m3_stier_distance`, `m1_stier_obs_hier`, and `m1_stier_method_sensitivity` as held context branches.
+- For predators, use the WCVI bridge as context: predator demand is large, but
+  the prepared `m5_stier_predator_demand_total` branch is gated because the
+  adjusted diagnostic signal is weak.
 - Archive `m5_combined` and `m5_v5`; do not spend exact re-LOO or combination-model time there.
 
 ## Talk Spine
@@ -28,6 +31,9 @@ This is the current handoff for building the Saturday talk from the May 14 model
 - 2025 focal-9 post-fishing biomass median is about 47,640 t.
 - Recent top-three biomass share is about 76% in the current-year summary and about 84% over the recent period portfolio read; use the period-specific figure when discussing portfolio erosion.
 - Survey matrix: 495 positive site-years, 19 zero-record site-years, and 311 missing/unsurveyed site-years.
+- Predator bridge: mean 2015-2024 HG predator consumption is about 15.5 kt/yr;
+  the predator-removal analogue against `m1_stier_11` biomass is about 25%.
+  Treat this as ecological scale, not a promoted predator coefficient.
 
 ## Use These First
 
@@ -50,7 +56,8 @@ This is the current handoff for building the Saturday talk from the May 14 model
 8. `Output/figures/m1_stier_11_positive_spawn_fit_summary.pdf`
 9. `Output/figures/positive_spawn_fit_caveat.pdf`
 10. `Output/figures/lead_location_followup_targets.pdf`
-11. `Output/figures/predator_spatial_exposure_prototype.pdf`
+11. `Output/figures/wcvi_predation_replication_bridge.pdf`
+12. `Output/figures/predator_spatial_exposure_prototype.pdf`
 
 ## Model-Farm Decision
 

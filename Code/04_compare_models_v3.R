@@ -176,6 +176,7 @@ comparison_tbl <- audit_tbl %>%
       "m2_stier_site_growth",
       "m3_stier_distance",
       "m5_stier_predation_pressure",
+      "m5_stier_predator_demand_total",
       "m5_v5",
       "m5_combined"
     ),

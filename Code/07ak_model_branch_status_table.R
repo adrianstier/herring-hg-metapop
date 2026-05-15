@@ -32,7 +32,7 @@ branch_tbl <- comparison %>%
       str_detect(model, "method_sensitivity") ~ "observation sensitivity",
       str_detect(model, "site_growth") ~ "site heterogeneity",
       str_detect(model, "distance") ~ "spatial process",
-      model == "m5_stier_predation_pressure" ~ "predators",
+      model %in% c("m5_stier_predation_pressure", "m5_stier_predator_demand_total") ~ "predators",
       model == "m5_v5" ~ "predator / archived",
       str_detect(model, "m5|pred") ~ "predator / richer legacy",
       str_detect(model, "v[345]") ~ "legacy / stale branch",
@@ -75,6 +75,8 @@ branch_tbl <- comparison %>%
         },
       model == "m5_stier_predation_pressure" ~
         "Stier-aligned predator-pressure branch is sampler-usable, but positive-spawn calibration is indistinguishable from the promoted baseline.",
+      model == "m5_stier_predator_demand_total" ~
+        "Stier-aligned predator-demand branch; uses total predator consumption rather than pressure ratio, and should be judged only against m1_stier_11 after the WCVI bridge diagnostics.",
       model == "m5_v5" ~
         "Archived predator branch: current artifact is sampler-pathological despite superficially acceptable PSIS.",
       model == "m5_combined" ~

@@ -134,6 +134,8 @@ hypothesis_from_id <- function(model_id) {
       "Resolve high Pareto-k points for the distance branch with exact re-LOO array refits.",
     model_id == "m5_stier_predation_pressure" ~
       "Test HG annual predator pressure on the Stier observation layer.",
+    model_id == "m5_stier_predator_demand_total" ~
+      "Test total HG predator demand on the Stier observation layer without dividing by observed spawn.",
     model_id == "m5_v5" ~
       "Legacy predator branch retained only to diagnose sampler failure.",
     model_id == "m5_combined" ~
@@ -156,6 +158,7 @@ covariates_from_id <- function(model_id) {
     model_id == "m2_stier_site_growth" ~ "catch removals; lag-1 PDO; site productivity",
     model_id == "m3_stier_distance" ~ "catch removals; lag-1 PDO; effective-distance covariance",
     model_id == "m5_stier_predation_pressure" ~ "catch removals; lag-1 PDO; HG predator pressure",
+    model_id == "m5_stier_predator_demand_total" ~ "catch removals; lag-1 PDO; total HG predator demand",
     model_id == "m5_combined" ~ "PDO; combined regional predator index; legacy density/spatial terms",
     str_detect(model_id, "m5") ~ "predator covariates",
     str_detect(model_id, "m3") ~ "process extension covariates",
@@ -165,8 +168,8 @@ covariates_from_id <- function(model_id) {
 
 lag_from_id <- function(model_id) {
   case_when(
-    str_detect(model_id, "stier_11|obs_hier|method_sensitivity|site_growth|distance|predation_pressure") ~
-      "PDO lag 1; predator pressure as encoded in HG covariate product where present",
+    str_detect(model_id, "stier_11|obs_hier|method_sensitivity|site_growth|distance|predation_pressure|predator_demand_total") ~
+      "PDO lag 1; predator pressure/demand as encoded in HG covariate product where present",
     model_id == "m5_combined" ~ "legacy annual predator index alignment",
     TRUE ~ "not applicable or branch-specific"
   )
@@ -174,7 +177,7 @@ lag_from_id <- function(model_id) {
 
 observation_from_id <- function(model_id, likelihood_unit) {
   case_when(
-    str_detect(model_id, "m1_stier_11|m1_stier_obs_hier|m1_stier_method_sensitivity|m2_stier_site_growth|m3_stier_distance|m5_stier_predation_pressure") ~
+    str_detect(model_id, "m1_stier_11|m1_stier_obs_hier|m1_stier_method_sensitivity|m2_stier_site_growth|m3_stier_distance|m5_stier_predation_pressure|m5_stier_predator_demand_total") ~
       "Stier-aligned positive-only spawn likelihood; ambiguous zeros skipped; 11 sections",
     likelihood_unit == "surveyed_cells" ~
       "surveyed-cell detection-aware legacy likelihood",
@@ -210,6 +213,8 @@ reason_from_decision <- function(model_id, decision, comparison_status, aws_stat
       "Cloud run completed but saturated max treedepth and badly worsened positive-spawn and catch calibration.",
     model_id == "m5_stier_predation_pressure" ~
       "Sampler is usable, but positive-spawn RMSE and catch fit are effectively baseline-equivalent.",
+    model_id == "m5_stier_predator_demand_total" ~
+      "Planned gated predator-demand screen; WCVI bridge supports demand over pressure ratio, but adjusted diagnostic signal is weak.",
     model_id == "m5_v5" ~
       "Archived because current cloud-promoted artifact has substantial divergences and treedepth hits.",
     model_id == "m5_combined" ~
@@ -234,6 +239,8 @@ next_action_from_decision <- function(model_id, decision) {
       "Refresh AWS SSO, poll Batch, sync S3 results, promote only if artifacts exist, then audit/PPC/compare.",
     model_id == "m5_stier_predation_pressure" ~
       "Hold; do exact re-LOO only if predator interpretation becomes central.",
+    model_id == "m5_stier_predator_demand_total" ~
+      "Keep planned; reduced smoke compiled but had treedepth pressure, so review geometry before any AWS screen.",
     model_id == "m5_v5" ~
       "Archive; do not spend exact re-LOO time.",
     decision == "held_no_fit_gain" ~
@@ -354,6 +361,7 @@ md_lines <- c(
   "",
   "- `m1_stier_11` remains the promoted baseline.",
   "- `m5_stier_predation_pressure` is held: sampler-usable, but no material data-fit gain over baseline.",
+  "- `m5_stier_predator_demand_total` is prepared but gated: demand is cleaner than pressure ratio, yet the adjusted screen is weak and the reduced smoke had treedepth pressure.",
   "- `m5_v5` is archived because sampler pathologies override any apparent LOO improvement.",
   "- `m5_combined` is archived because the completed cloud run saturated max treedepth and badly worsened spawn/catch calibration.",
   "- The `m3_stier_distance_reloo` cloud array failed/incomplete; local exact re-LOO for `m3_stier_distance` is already available and the branch remains held.",
