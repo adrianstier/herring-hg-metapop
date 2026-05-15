@@ -32,6 +32,23 @@ length-at-age, and test-fishery/commercial seine biology. Therefore the next
 step is public extraction first, followed by a narrow DFO request for exact
 machine-readable inputs and metadata if the PDFs cannot be extracted cleanly.
 
+## Execution Update
+
+As of 2026-05-15, the first public extraction pass is implemented:
+
+- `Code/02d_fetch_dfo_herring_assessment_sources.R` fetches and text-extracts
+  public DFO assessment sources into ignored diagnostics space.
+- `Code/02e_extract_dfo_hg_assessment_tables.R` extracts provisional HG
+  Appendix B catch, spawn, number-at-age, weight-at-age, biosample count, and
+  maturity tables from DFO CSAS Research Document 2018/028.
+- `Code/07bl_doherty_replication_execution_status.R` writes the replication
+  status, predator crosswalk, and model-gate ledger.
+- `docs/doherty-style-hg-replication-status.md` is the tracked status note.
+
+The extracted public tables cover 1951-2017. Current 2018-2024 machine-readable
+biology, effective sample-size metadata, length-at-age tables, and predator
+age/size selectivity remain unresolved.
+
 ## Acquisition Order
 
 1. Public DFO landing page and open data:

@@ -47,10 +47,33 @@
   - `Output/diagnostics/dfo_assessment_public_source_inventory.md`;
   - ignored downloaded PDF/text files under
     `Output/diagnostics/dfo_assessment_public_sources/`.
+- Implemented `Code/02e_extract_dfo_hg_assessment_tables.R` and
+  `Code/07bl_doherty_replication_execution_status.R` to execute the first
+  public-data replication layer.
+- Public DFO CSAS 2018/028 Appendix B extraction now produces provisional HG:
+  catch rows (`67` wide / `201` gear-long), spawn rows (`67`),
+  number-at-age rows (`72` source-year / `648` age-long), weight-at-age rows
+  (`67` year / `603` age-long), biosample rows (`63`), and maturity rows
+  (`9`).
+- Added `docs/doherty-style-hg-replication-status.md` as the tracked status
+  note for what has been found versus what remains missing.
+- Remaining missing/not machine-readable locally: current 2018-2024 biological
+  inputs, exact SCA/SISCAH input files, effective sample-size/preprocessing
+  metadata, length-at-age tables, predator age/size selectivity, future
+  predator scenarios, and a regional HG catch-at-age design separate from the
+  11-section Stier biomass model.
 - Model implication: do not fit a full 11-section catch-at-age model or another
   predator-removal Stan branch now. First acquire/extract HG age composition,
   weight-at-age, length-at-age, maturity, test-fishery biology, and predator
   age/size selectivity assumptions.
+- Verification rerun completed for:
+  `Code/02d_fetch_dfo_herring_assessment_sources.R`,
+  `Code/02e_extract_dfo_hg_assessment_tables.R`,
+  `Code/07bk_doherty_hg_data_readiness.R`,
+  `Code/07bl_doherty_replication_execution_status.R`,
+  `Code/07bi_model_decision_ledger.R`, and
+  `Code/09_check_document_references.R`; document references reported zero
+  missing references and `git diff --check` was clean.
 
 ## Current scientific status
 

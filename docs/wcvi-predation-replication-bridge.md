@@ -48,6 +48,25 @@ Current read from that bridge:
 - total predator demand is a cleaner model covariate than pressure ratio, but
   the lag-1 total-demand signal is weak after detrending and adjustment.
 
+## May 15 Data-Execution Update
+
+The herring assessment input side is no longer just a request plan. Public DFO
+Appendix B tables have been provisionally extracted by
+`Code/02e_extract_dfo_hg_assessment_tables.R`:
+
+- HG catch by gear, 1951-2017;
+- HG aggregate spawn index, 1951-2017;
+- HG number-at-age by gear/source, 72 source-year rows;
+- HG weight-at-age, 1951-2017;
+- HG biosample counts;
+- fixed maturity-at-age schedule.
+
+The current blocker is not whether those streams exist. The blocker is that the
+repo still lacks current 2018-2024 machine-readable biological inputs, effective
+sample-size/preprocessing metadata, length-at-age tables, and predator
+age/size selectivity. See
+`docs/doherty-style-hg-replication-status.md`.
+
 ## How This Integrates With Our Model
 
 The current held branch, `m5_stier_predation_pressure`, used a pressure ratio:
