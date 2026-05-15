@@ -17,12 +17,17 @@ rsync_common=(
   --exclude ".git" \
   --exclude ".DS_Store" \
   --exclude "._*" \
+  --exclude "*.rds" \
   --exclude "*.hpp" \
   --exclude "*.o" \
   --exclude "*.so" \
   --exclude "*.dSYM" \
   --exclude "__pycache__" \
   --exclude "*.pyc" \
+  --exclude "aws_results" \
+  --exclude "aws_batch_runs" \
+  --exclude "job_status" \
+  --exclude "logs" \
   --exclude "m*_output.txt" \
   --exclude "*.log"
 )

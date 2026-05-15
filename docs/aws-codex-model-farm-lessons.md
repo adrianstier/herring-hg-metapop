@@ -627,6 +627,30 @@ For future Codex-managed scientific model farms:
 8. Always run local audit/PPC/comparison scripts after promotion.
 9. Document every AWS failure mode as soon as it happens.
 
+## 2026-05-14 Bundle Hygiene Fix
+
+While submitting the gated `m5_stier_predator_demand_total` screen, the first
+bundle upload attempted to send a `10.7` GiB archive. The cause was recursive
+packaging of previous cloud staging output:
+
+- `cloud/aws_results/`;
+- `cloud/aws_batch_runs/`;
+- `cloud/job_status/`;
+- `cloud/logs/`.
+
+Those directories contained old fit artifacts and should never be part of the
+next Batch input bundle. `cloud/make_cloud_bundle.sh` now excludes those
+directories and excludes `.rds` files globally. The corrected predator-demand
+bundle is about `38` MiB.
+
+Before any future upload, sanity-check with:
+
+```sh
+rm -rf /tmp/herring-cloud-bundle /tmp/herring-cloud-bundle.tar.gz
+cloud/make_cloud_bundle.sh
+du -sh /tmp/herring-cloud-bundle /tmp/herring-cloud-bundle.tar.gz
+```
+
 ## Commands To Remember
 
 Verify identity:

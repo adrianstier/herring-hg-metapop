@@ -176,3 +176,20 @@
 - A later AWS refresh attempt failed because the `herring` SSO token expired
   and the browser login could not be completed from this runtime. No AWS
   submission record was created.
+
+## Predator-demand AWS submission
+
+- Refreshed AWS SSO using the device-code flow for profile `herring`;
+  `sts get-caller-identity` again resolved to account `107094296950`.
+- Initial upload attempt for the predator-demand run exposed a packaging bug:
+  `cloud/make_cloud_bundle.sh` copied `cloud/aws_results/` into the next
+  bundle, producing a `10.7` GiB tarball full of old fit artifacts.
+- Fixed `cloud/make_cloud_bundle.sh` so generated cloud staging directories
+  and `.rds` files are excluded globally. The clean bundle is about `38` MiB.
+- Uploaded the clean bundle to:
+  `s3://herring-hg-metapop-107094296950/herring-hg-metapop/2026-05-14-predator-demand-total`.
+- Submitted only `m5_stier_predator_demand_total` through the model-farm
+  manifest with `--include-planned`; no combination branch was submitted.
+- AWS Batch job:
+  `da5908a1-e3f3-4add-be86-b8db55530640`.
+- Started `cloud/watch_aws_batch_run.py`; first observed state was `RUNNABLE`.
