@@ -10,7 +10,7 @@ This is the current handoff for building the Saturday talk from the May 14 model
 - Treat `m5_stier_predation_pressure`, `m2_stier_site_growth`, `m3_stier_distance`, `m1_stier_obs_hier`, and `m1_stier_method_sensitivity` as held context branches.
 - For predators, use the WCVI bridge as context: predator demand is large, but
   the prepared `m5_stier_predator_demand_total` branch is gated because the
-  adjusted diagnostic signal is weak.
+  adjusted diagnostic signal is weak and the model is computationally heavy.
 - Archive `m5_combined` and `m5_v5`; do not spend exact re-LOO or combination-model time there.
 
 ## Talk Spine

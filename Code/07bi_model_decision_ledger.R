@@ -240,7 +240,7 @@ next_action_from_decision <- function(model_id, decision) {
     model_id == "m5_stier_predation_pressure" ~
       "Hold; do exact re-LOO only if predator interpretation becomes central.",
     model_id == "m5_stier_predator_demand_total" ~
-      "Keep planned; reduced smoke compiled but had treedepth pressure, so review geometry before any AWS screen.",
+      "Submit only as a deliberate single-covariate AWS screen after SSO refresh; longer local smoke had baseline-like heavy geometry.",
     model_id == "m5_v5" ~
       "Archive; do not spend exact re-LOO time.",
     decision == "held_no_fit_gain" ~
@@ -361,7 +361,7 @@ md_lines <- c(
   "",
   "- `m1_stier_11` remains the promoted baseline.",
   "- `m5_stier_predation_pressure` is held: sampler-usable, but no material data-fit gain over baseline.",
-  "- `m5_stier_predator_demand_total` is prepared but gated: demand is cleaner than pressure ratio, yet the adjusted screen is weak and the reduced smoke had treedepth pressure.",
+  "- `m5_stier_predator_demand_total` is prepared but gated: demand is cleaner than pressure ratio, yet the adjusted screen is weak; longer local smoke had baseline-like heavy geometry.",
   "- `m5_v5` is archived because sampler pathologies override any apparent LOO improvement.",
   "- `m5_combined` is archived because the completed cloud run saturated max treedepth and badly worsened spawn/catch calibration.",
   "- The `m3_stier_distance_reloo` cloud array failed/incomplete; local exact re-LOO for `m3_stier_distance` is already available and the branch remains held.",

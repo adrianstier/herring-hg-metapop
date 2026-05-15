@@ -79,8 +79,17 @@ This branch preserves the project constraints:
 `planned_model_fit`, not as an automatic run. The diagnostic reason is simple:
 the WCVI bridge supports demand over pressure ratio conceptually, but the
 adjusted demand signal is not strong enough to spend cloud time without an
-explicit decision. A local reduced smoke fit compiled and ran, but showed
-treedepth pressure, so geometry should be reviewed before any full AWS run.
+explicit decision.
 
-Submit it only as a deliberate single-covariate screen, after the reduced smoke
-and geometry warnings are judged acceptable or fixed.
+Local geometry check:
+
+- a short 200-iteration smoke compiled but adapted poorly and hit max
+  treedepth;
+- a longer-warmup smoke (`650` iterations, `550` warmup, one chain) had
+  `0` divergences, `0` treedepth hits at max treedepth `15`, and E-BFMI about
+  `1.03`;
+- all saved draws were at treedepth `14`, which is expensive but consistent
+  with the promoted baseline and full `m5_stier_predation_pressure` fit.
+
+Submit it only as a deliberate single-covariate screen after AWS SSO is
+refreshed. Do not add predator combinations.

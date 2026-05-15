@@ -109,12 +109,14 @@ print_fit_control(fit_control)
 
 make_init_m5_stier_predator_demand_total <- function() {
   list(
-    Umu = 0,
-    pdocoef = 0,
+    # Start near the promoted Stier-layer posterior scale. The branch adds one
+    # covariate but otherwise shares the baseline observation/process geometry.
+    Umu = 0.03,
+    pdocoef = -0.05,
     predcoef = 0,
     sigma_proc = 0.7,
-    sigma_obs = 0.8,
-    log_q = c(-1.2, -0.2),
+    sigma_obs = 1.55,
+    log_q = c(-1.73, -0.88),
     Pc_logit = rep(-2.0, stan_data$N_catch),
     Z_init = rep(5, stan_data$N_sites),
     delta_raw = matrix(0, nrow = stan_data$N_years - 1, ncol = stan_data$N_sites)

@@ -204,9 +204,10 @@ Only after the above diagnostics are clean:
    - Replace pressure-ratio covariate with lagged total predator demand:
      `z(log1p(C_total_kt))`.
    - Current status: source prepared and manifest-gated as `planned_model_fit`;
-     local reduced smoke compiled but had treedepth pressure; do not submit
-     automatically because the adjusted demand screen is weak and geometry
-     needs review.
+     short smoke compiled but adapted poorly; longer-warmup smoke had
+     baseline-like heavy geometry (`0` divergences, `0` max-treedepth hits,
+     E-BFMI about `1.03`, all draws at treedepth `14`). Submit only as a
+     deliberate single-covariate screen after AWS SSO is refreshed.
 
 2. Single-group screens, one at a time.
    - `m5_stier_predator_demand_mammals`.

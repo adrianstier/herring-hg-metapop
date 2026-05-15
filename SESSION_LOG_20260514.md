@@ -156,11 +156,23 @@
 - Local reduced smoke completed, confirming the Stan/data contract, but the
   short smoke had `80` post-warmup max-treedepth hits and low E-BFMI. Treat
   this as another reason not to submit a heavy AWS run automatically.
+- Updated the demand-branch initialization to start near the promoted
+  Stier-layer posterior scale (`sigma_obs`, `log_q`, `Umu`, `pdocoef`) rather
+  than the older low-observation-error smoke values.
+- A longer-warmup local smoke (`HERRING_SMOKE=1`, `STAN_ITER=650`,
+  `STAN_WARMUP=550`, one chain) completed with `0` divergences, `0`
+  max-treedepth hits at max treedepth `15`, E-BFMI about `1.03`, and all `100`
+  saved draws at treedepth `14`. This is expensive but matches the baseline
+  model family's heavy geometry better than the short smoke.
 - This branch keeps ambiguous zeros, the Stier two-era q split, all 11
-  sections, and `m1_stier_11` as baseline. It should not be submitted as a
-  heavy AWS job automatically because the adjusted diagnostic signal is weak.
+  sections, and `m1_stier_11` as baseline. It is technically ready for a
+  deliberate full AWS single-covariate screen, but should not be submitted
+  automatically because the adjusted diagnostic signal is weak.
 - Refreshed AWS identity/queue state after preparing the branch:
   - profile `herring` still resolves to account `107094296950`;
   - on-demand and spot queues had no `SUBMITTED`, `PENDING`, `RUNNABLE`,
     `STARTING`, or `RUNNING` jobs;
   - no new AWS job was submitted.
+- A later AWS refresh attempt failed because the `herring` SSO token expired
+  and the browser login could not be completed from this runtime. No AWS
+  submission record was created.

@@ -82,7 +82,9 @@ uses total HG predator demand, `z(log1p(C_total_kt))`, rather than the
 observed-spawn pressure ratio. It is manifest-gated as `planned_model_fit`;
 the WCVI bridge diagnostic supports demand as the cleaner covariate, but the
 adjusted demand signal is weak enough that cloud submission should be a
-deliberate single-covariate screen, not an automatic next run.
+deliberate single-covariate screen, not an automatic next run. A longer local
+smoke had baseline-like heavy geometry: no divergences, no max-treedepth hits,
+but all draws at treedepth `14`.
 
 Future model branches should preserve the following distinction:
 

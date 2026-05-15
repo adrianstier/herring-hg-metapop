@@ -47,7 +47,7 @@ Baseline interpretation:
 | `m2_stier_site_growth` | Held | Sampler-clean; section-growth heterogeneity did not improve calibration. |
 | `m3_stier_distance` | Spatial context only | Sampler-clean and estimates a plausible distance range, but exact re-LOO had treedepth pressure and calibration gain is small. |
 | `m5_stier_predation_pressure` | Held | First Stier-aligned predator-pressure branch is sampler-usable, but positive-spawn and catch calibration are effectively baseline-equivalent. |
-| `m5_stier_predator_demand_total` | Planned gated screen | Prepared as the WCVI-bridge next step using total predator demand rather than pressure ratio; local smoke compiled but had treedepth pressure, and the adjusted diagnostic signal is weak. |
+| `m5_stier_predator_demand_total` | Planned gated screen | Prepared as the WCVI-bridge next step using total predator demand rather than pressure ratio; longer local smoke was heavy but usable, and the adjusted diagnostic signal is weak. |
 | `m5_v5` / `m5_combined` / older predator branches | Archived or no inference use | `m5_v5` has sampler pathologies; `m5_combined` saturated max treedepth and badly worsened calibration; older predator branches are stale/pathological or exploratory. |
 | `m3_stier_distance_reloo` cloud array | Failed/incomplete, no rerun now | Local exact re-LOO already exists and the distance branch remains held. |
 
@@ -89,8 +89,9 @@ Current read from the May 14 refresh:
    and be explained before the talk.
 2. Current May 14 predator decision: `m5_stier_predator_demand_total` is
    source-prepared and manifest-gated, but no heavy AWS submission is automatic.
-   Run a reduced smoke first, then submit only as a deliberate single-covariate
-   screen.
+   The longer-warmup local smoke had `0` divergences and `0` max-treedepth
+   hits, but all draws sat at treedepth `14`; submit only as a deliberate
+   single-covariate screen after AWS SSO is refreshed.
 3. Refresh local diagnostics with `Code/08_refresh_may9_analysis_suite.sh` after
    any model artifact changes. The wrapper now ends with
    `Code/09_check_document_references.R`, so stale local file references are
