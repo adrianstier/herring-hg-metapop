@@ -5,13 +5,18 @@ Variables across all data sources for the Haida Gwaii herring metapopulation ana
 > Note
 > Raw file headers, cleaned column names, and Stan variable names are intentionally different in some places.
 > Use this file together with [`docs/theory-data-model-integration.md`](/Users/adrianstier/stier-2027-herring-metapopulation/docs/theory-data-model-integration.md) if you need to trace a variable from a raw source into a model.
+> For the current Doherty-style HG public-assessment and predator-source map,
+> use [`docs/doherty-style-hg-source-provenance.md`](/Users/adrianstier/stier-2027-herring-metapopulation/docs/doherty-style-hg-source-provenance.md).
 > The maintained pipeline reads a subset of these sources directly; some "processed file" paths below are reference outputs from earlier or exploratory workflows rather than required inputs to `_targets.R`.
 
 ---
 
 ## 1. Spawn Index Data
 
-**Source:** DFO Pacific Herring spawn survey releases plus the legacy 2019 analysis file
+**Source:** DFO Pacific Herring spawn survey releases, including the public Open
+Canada spawn-index record
+<https://open.canada.ca/data/en/dataset/d892511c-d851-4f85-a0ec-708bc05d2810>,
+plus the legacy 2019 analysis file
 **Maintained source files:** `Data/raw/legacy-2019/HG_Spawn_Survey_1940_2015.csv`, `Data/processed/HG_Spawn_Survey_1951_2025_all_sections.csv`
 **Legacy raw aggregate:** `Data/raw/dfo-spawn/HG_spawn_index_by_section_1951_2025.csv`
 **Coverage:** 1940--2025 across source files; maintained model window is 1951--2025 for 13 DFO statistical sections before section filtering

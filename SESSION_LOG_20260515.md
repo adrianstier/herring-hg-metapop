@@ -69,6 +69,12 @@
   not a biological-data absence.
 - Added `docs/doherty-style-hg-replication-status.md` as the tracked status
   note for what has been found versus what remains missing.
+- Added `docs/doherty-style-hg-source-provenance.md` as the canonical source
+  map for public DFO sources, local herring inputs, sibling predator-repo
+  products, generated registries, and unresolved request items. The rule going
+  forward is that every extracted table retains source document/table/URL,
+  extraction method, and extraction notes; local/private sources must retain
+  local path, upstream catalog, owner/custodian, and model-use status.
 - Remaining missing/not machine-readable locally: exact annual 2018-2024
   age/weight matrices, exact SCA/SISCAH input files, effective sample-size/
   preprocessing metadata, length-at-age tables, predator age/size selectivity,

@@ -69,6 +69,10 @@ also extracts DFO 2025/005 public summaries through 2024 for HG catch, spawn,
 SCA parameters, recruitment, biomass/depletion, reference points, and projected
 broad age composition. Those are status/reporting extracts, not exact raw
 age/weight input matrices. See `docs/doherty-style-hg-replication-status.md`.
+The source map for these herring and predator streams is
+`docs/doherty-style-hg-source-provenance.md`; new assessment or predator data
+products should not enter this bridge unless their source registry row and
+table-level source fields are present.
 
 ## How This Integrates With Our Model
 

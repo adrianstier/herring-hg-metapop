@@ -74,13 +74,16 @@ control sheet rather than a new age-structured model branch:
 `Code/02f_extract_newer_dfo_public_pdfs.R`,
 `Code/07bk_doherty_hg_data_readiness.R`,
 `Code/07bl_doherty_replication_execution_status.R`, and
-`docs/doherty-style-hg-data-acquisition.md`. Public DFO stock-assessment pages
-and appendices are the first acquisition path for HG catch, age composition,
-number/weight/length-at-age, maturity, and test-fishery biology. A DFO request
-should ask for machine-readable copies and metadata for those already-published
-assessment inputs. Do not fit a full 11-section catch-at-age model or a
-Doherty-style predator-removal Stan branch until those herring biological inputs
-and predator selectivity assumptions are extracted and audited.
+`docs/doherty-style-hg-data-acquisition.md`. The source map is
+`docs/doherty-style-hg-source-provenance.md`; update it whenever a public PDF,
+DFO-request result, local herring table, or predator source enters this
+workflow. Public DFO stock-assessment pages and appendices are the first
+acquisition path for HG catch, age composition, number/weight/length-at-age,
+maturity, and test-fishery biology. A DFO request should ask for
+machine-readable copies and metadata for those already-published assessment
+inputs. Do not fit a full 11-section catch-at-age model or a Doherty-style
+predator-removal Stan branch until those herring biological inputs and predator
+selectivity assumptions are extracted and audited.
 `docs/doherty-style-hg-replication-status.md` records the executed state: public
 DFO Appendix B HG catch, spawn, number-at-age, weight-at-age, biosample, and
 maturity tables have been provisionally extracted through 2017; current
@@ -89,6 +92,10 @@ spawn, SCA parameters, recruitment, biomass/depletion, reference points, and
 broad projected age composition. Exact annual 2018-2024 age/weight input
 matrices, length-at-age tables, effective sample-size metadata, predator
 age/size selectivity, and future predator scenarios remain unresolved.
+Every new extracted table should preserve `source_document`, `source_table`,
+`source_url`, `extraction_method`, and `extraction_notes`; local/private
+sources should record local path, upstream catalog, owner/custodian, and
+model-use status.
 
 The spawn-index scale audit is in `Output/diagnostics/spawn_index_scale_audit.md`
 and `Output/figures/spawn_index_scale_audit.pdf`. It shows that Stier's legacy

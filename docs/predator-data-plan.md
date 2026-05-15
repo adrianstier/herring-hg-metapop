@@ -58,6 +58,11 @@ series live in a sibling repo:
 > metadata for already-published assessment inputs, not ask whether the streams
 > exist. Predator selectivity and Doherty-style removals stay blocked until
 > those herring biological inputs are extracted or received.
+> Source provenance for the herring assessment streams, sibling predator
+> products, local paths, generated registries, and unresolved request items is
+> centralized in `docs/doherty-style-hg-source-provenance.md`. Any predator
+> product that re-enters the herring model needs a source row there and
+> table-level provenance fields in the generated output.
 
 ## Headline finding from the literature (revision 2026-05-09)
 

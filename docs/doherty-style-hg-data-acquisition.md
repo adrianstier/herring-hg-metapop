@@ -47,6 +47,8 @@ As of 2026-05-15, the first public extraction pass is implemented:
 - `Code/07bl_doherty_replication_execution_status.R` writes the replication
   status, predator crosswalk, and model-gate ledger.
 - `docs/doherty-style-hg-replication-status.md` is the tracked status note.
+- `docs/doherty-style-hg-source-provenance.md` is the canonical source map for
+  every public, local, sibling-repo, and missing data stream in this workflow.
 
 The Appendix B extracted public tables cover 1951-2017. The newer public PDF
 extraction adds DFO 2025/005 summary tables through 2024 for HG catch, spawn,
@@ -54,6 +56,11 @@ SCA parameters, recruitment, biomass/depletion, reference points, and broad
 projected age composition. Exact annual 2018-2024 age/weight input matrices,
 effective sample-size metadata, length-at-age tables, and predator age/size
 selectivity remain unresolved.
+
+Every extracted table must retain `source_document`, `source_table`,
+`source_url`, `extraction_method`, and `extraction_notes`. Local/private sources
+must name the local path, upstream repository or catalog, owner/custodian, and
+model-use status.
 
 ## Acquisition Order
 
@@ -129,6 +136,10 @@ Outputs:
 - `Output/figures/doherty_hg_data_readiness.pdf`
 
 ## Primary Public Sources
+
+The full source map, including local data paths, sibling predator-repo catalogs,
+source registries, and unresolved request items, is
+`docs/doherty-style-hg-source-provenance.md`.
 
 - DFO Pacific herring stock assessment landing page:
   <https://www.pac.dfo-mpo.gc.ca/science/species-especes/herring-hareng/stock-assessments-evaluations-stocks-eng.html>

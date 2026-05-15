@@ -12,8 +12,9 @@ reading every historical model branch.
 3. `Output/diagnostics/model_decision_ledger.md`
 4. `Output/diagnostics/covariate_readiness_registry.md`
 5. `docs/wcvi-predation-replication-bridge.md`
-6. `docs/saturday-talk-readiness-2026-05-16.md`
-7. `AGENTS.md`
+6. `docs/doherty-style-hg-source-provenance.md`
+7. `docs/saturday-talk-readiness-2026-05-16.md`
+8. `AGENTS.md`
 
 ## Current Baseline
 

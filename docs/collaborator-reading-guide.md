@@ -160,7 +160,9 @@ If you want to check whether you really understand the repository, ask yourself 
 
 1. What exact distinction does the code make between a zero observation and a missing observation?
 2. Which hypotheses are represented by process error, density dependence, predator covariates, and occupancy persistence?
-3. Which raw data source feeds each Stan covariate?
+3. Which raw data source feeds each Stan covariate? Use
+   `docs/data-dictionary.md` and `docs/doherty-style-hg-source-provenance.md`
+   for the current source trail.
 4. Which dimensions and names must match for the models to work?
 5. Which outputs are intended for scientific interpretation versus diagnostics?
 

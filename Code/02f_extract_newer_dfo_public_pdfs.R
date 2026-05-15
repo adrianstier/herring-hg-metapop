@@ -382,6 +382,10 @@ summary_lines <- c(
   "",
   "This report records post-2018 public DFO PDF extraction relevant to a Doherty-style HG data workflow. The outputs are public-summary and audit products; exact SCA/SISCAH input files and effective-sample-size metadata are still not present.",
   "",
+  "## Source Fields",
+  "",
+  "Clean table extracts retain `source_document`, `source_table`, `source_url`, `extraction_method`, and `extraction_notes`. Source status and keyword/caption audits retain `source_id`, `title`, and `source_url`. The tracked source map is `docs/doherty-style-hg-source-provenance.md`.",
+  "",
   "## Source Status",
   "",
   knitr::kable(

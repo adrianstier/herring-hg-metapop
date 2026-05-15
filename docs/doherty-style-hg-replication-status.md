@@ -27,6 +27,22 @@ Current generated outputs are under ignored diagnostics directories:
 - `Output/diagnostics/doherty_hg_predator_class_crosswalk.csv`
 - `Output/diagnostics/doherty_hg_model_gate_ledger.csv`
 
+## Source Provenance
+
+The canonical source map is `docs/doherty-style-hg-source-provenance.md`.
+It records the public DFO URLs, local data paths, sibling predator-repo catalogs,
+generated source registries, and unresolved request items for every data stream
+in this workflow.
+
+All clean public extracts retain `source_document`, `source_table`,
+`source_url`, `extraction_method`, and `extraction_notes`. The main generated
+source controls are:
+
+- `Output/diagnostics/dfo_assessment_public_source_registry.csv`
+- `Output/diagnostics/doherty_hg_source_registry.csv`
+- `Output/diagnostics/dfo_hg_public_extract/dfo_hg_public_extract_audit.csv`
+- `Output/diagnostics/dfo_newer_public_pdf_extract/dfo_newer_public_pdf_status.csv`
+
 ## Herring Tables Extracted From Public DFO Sources
 
 From DFO CSAS Research Document 2018/028 Appendix B, the extractor now creates

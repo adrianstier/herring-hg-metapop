@@ -172,6 +172,8 @@ lines <- c(
   "",
   "This is the public-source acquisition layer for the Doherty-style HG data workflow. It fetches DFO public PDFs and extracts text so the next step can target Appendix/input tables instead of starting from scratch.",
   "",
+  "Tracked source map: `docs/doherty-style-hg-source-provenance.md`. This generated registry records public source URLs, local downloaded filenames, source roles, and fetch/text-extraction status.",
+  "",
   "## Source Registry",
   "",
   knitr::kable(
