@@ -213,8 +213,10 @@ reason_from_decision <- function(model_id, decision, comparison_status, aws_stat
       "Cloud run completed but saturated max treedepth and badly worsened positive-spawn and catch calibration.",
     model_id == "m5_stier_predation_pressure" ~
       "Sampler is usable, but positive-spawn RMSE and catch fit are effectively baseline-equivalent.",
+    model_id == "m5_stier_predator_demand_total" & decision == "held_no_fit_gain" ~
+      "Completed gated predator-demand screen; sampler is clean, but fit gain is too small and PSIS remains unresolved.",
     model_id == "m5_stier_predator_demand_total" ~
-      "Planned gated predator-demand screen; WCVI bridge supports demand over pressure ratio, but adjusted diagnostic signal is weak.",
+      "Gated predator-demand screen; WCVI bridge supports demand over pressure ratio, but adjusted diagnostic signal is weak.",
     model_id == "m5_v5" ~
       "Archived because current cloud-promoted artifact has substantial divergences and treedepth hits.",
     model_id == "m5_combined" ~
@@ -239,6 +241,8 @@ next_action_from_decision <- function(model_id, decision) {
       "Refresh AWS SSO, poll Batch, sync S3 results, promote only if artifacts exist, then audit/PPC/compare.",
     model_id == "m5_stier_predation_pressure" ~
       "Hold; do exact re-LOO only if predator interpretation becomes central.",
+    model_id == "m5_stier_predator_demand_total" & decision == "held_no_fit_gain" ~
+      "Hold; use as context only and prioritize predator data-product refinement before any richer predator model.",
     model_id == "m5_stier_predator_demand_total" ~
       "Submit only as a deliberate single-covariate AWS screen after SSO refresh; longer local smoke had baseline-like heavy geometry.",
     model_id == "m5_v5" ~
@@ -361,7 +365,7 @@ md_lines <- c(
   "",
   "- `m1_stier_11` remains the promoted baseline.",
   "- `m5_stier_predation_pressure` is held: sampler-usable, but no material data-fit gain over baseline.",
-  "- `m5_stier_predator_demand_total` is prepared but gated: demand is cleaner than pressure ratio, yet the adjusted screen is weak; longer local smoke had baseline-like heavy geometry.",
+  "- `m5_stier_predator_demand_total` is held after the completed AWS screen: sampler-clean, but no material calibration gain and unresolved high Pareto-k points.",
   "- `m5_v5` is archived because sampler pathologies override any apparent LOO improvement.",
   "- `m5_combined` is archived because the completed cloud run saturated max treedepth and badly worsened spawn/catch calibration.",
   "- The `m3_stier_distance_reloo` cloud array failed/incomplete; local exact re-LOO for `m3_stier_distance` is already available and the branch remains held.",

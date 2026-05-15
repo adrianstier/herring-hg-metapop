@@ -193,3 +193,41 @@
 - AWS Batch job:
   `da5908a1-e3f3-4add-be86-b8db55530640`.
 - Started `cloud/watch_aws_batch_run.py`; first observed state was `RUNNABLE`.
+- Subsequent poll showed the job `RUNNING` in CloudWatch log group
+  `/aws/batch/herring-hg-metapop`, stream
+  `herring/default/03b24a33956e4da5869b1d4313b0eae0`.
+- Early run log confirmed the intended Stier-aligned data contract:
+  495 positive spawn observations, 19 ambiguous zero records skipped, 311
+  unsurveyed/missing cells skipped, 37 surface-q years, 38 SCUBA/dive-q years,
+  11 fitted sections, and predictor range `-1.585` to `1.584`.
+- Current action: wait for terminal AWS status, sync the single job directory,
+  promote local artifacts only for diagnostics, rerun audit/PPC/comparison and
+  ledger scripts, then commit only source/docs/registry changes.
+
+## Predator-demand AWS result and decision
+
+- The `m5_stier_predator_demand_total` AWS job
+  `da5908a1-e3f3-4add-be86-b8db55530640` reached `SUCCEEDED` and synced from:
+  `s3://herring-hg-metapop-107094296950/herring-hg-metapop/2026-05-14-predator-demand-total`.
+- Promoted the downloaded artifacts locally for diagnostics only; fit artifacts
+  and cloud staging outputs remain uncommitted.
+- Reran:
+  - `Rscript --vanilla Code/03c_bayesian_fit_audit.R`;
+  - `Rscript --vanilla Code/03d_posterior_predictive_checks_v3.R`;
+  - `Rscript --vanilla Code/04_compare_models_v3.R`;
+  - `Rscript --vanilla Code/04b_interpret_model_outputs.R`;
+  - `Rscript --vanilla Code/07ak_model_branch_status_table.R`;
+  - `Rscript --vanilla Code/07bh_covariate_readiness_registry.R`;
+  - `Rscript --vanilla Code/07bi_model_decision_ledger.R`.
+- Result: `m5_stier_predator_demand_total` is sampler-clean (`0`
+  divergences, `0` treedepth hits, max R-hat about `1.001`, min E-BFMI about
+  `0.816`) but held for no material fit gain. Positive-spawn log RMSE is about
+  `0.560` versus `0.565` for `m1_stier_11`; catch log RMSE remains about
+  `0.010`; PSIS has `2` Pareto-k points above `0.7` with max about `0.906`.
+- The demand coefficient is negative (median about `-0.057`, 90% interval about
+  `-0.110` to `-0.003`), but this is context only because the branch does not
+  clear the calibration/LOO gates.
+- Talk decision: keep `m1_stier_11` as the promoted baseline; treat both
+  Stier-aligned predator branches as held context; do not launch predator
+  combinations or exact re-LOO for `m5_stier_predator_demand_total` before the
+  Saturday talk.

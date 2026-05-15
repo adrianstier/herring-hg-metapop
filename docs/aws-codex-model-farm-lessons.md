@@ -1,7 +1,7 @@
 # AWS + Codex Model-Farm Lessons
 
 Generated: 2026-05-10
-Last updated: 2026-05-14
+Last updated: 2026-05-15
 
 This is a practical implementation log for connecting Codex to AWS so future
 projects can reuse the working pattern. Keep this updated with what actually
@@ -33,6 +33,14 @@ paths, after which the full audit/PPC/comparison stack could classify the
 branch. The result was a clear archive decision: `m5_combined` completed, but
 all `4000` post-warmup transitions hit max treedepth and positive-spawn/catch
 fit degraded badly.
+
+The May 15 `m5_stier_predator_demand_total` sync exposed one promotion-detail
+gap: branch-level summary files written directly under `Output/` were not
+copied by `cloud/promote_cloud_results.sh`, even though nested
+`Output/posteriors/` artifacts were copied. The script now promotes top-level
+`Output/*` files as well, so files such as
+`Output/m5_stier_predator_demand_total_parameter_summary.csv` are available
+locally after a cloud sync.
 
 The model-decision ledger now provides the daily control sheet:
 

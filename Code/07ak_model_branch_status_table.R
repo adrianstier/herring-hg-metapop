@@ -76,7 +76,7 @@ branch_tbl <- comparison %>%
       model == "m5_stier_predation_pressure" ~
         "Stier-aligned predator-pressure branch is sampler-usable, but positive-spawn calibration is indistinguishable from the promoted baseline.",
       model == "m5_stier_predator_demand_total" ~
-        "Stier-aligned predator-demand branch; uses total predator consumption rather than pressure ratio, and should be judged only against m1_stier_11 after the WCVI bridge diagnostics.",
+        "Stier-aligned predator-demand branch is sampler-clean, but calibration gain is too small and PSIS remains unresolved.",
       model == "m5_v5" ~
         "Archived predator branch: current artifact is sampler-pathological despite superficially acceptable PSIS.",
       model == "m5_combined" ~
@@ -166,6 +166,7 @@ md_lines <- c(
     "- Treat `m3_stier_distance` as a spatial candidate only after re-LOO triage resolves the three high-k points."
   },
   "- Hold `m5_stier_predation_pressure`; it is the defensible predator-pressure branch, but it does not improve positive-spawn calibration over `m1_stier_11`.",
+  "- Hold `m5_stier_predator_demand_total`; it is the cleaner WCVI-aligned predator-demand screen, but the completed AWS fit does not materially improve calibration.",
   "- Archive `m5_combined` and `m5_v5`; ignore legacy `m5_v3` as predator evidence because these branches are sampler-pathological, stale, or badly miscalibrated.",
   "- Keep `m1_stier_method_sensitivity` and `m2_stier_site_growth` as context/held sensitivity results, not promoted inference models.",
   "",

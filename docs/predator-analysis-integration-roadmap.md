@@ -1,6 +1,6 @@
 # Predator Analysis Integration Roadmap
 
-Updated: 2026-05-14
+Updated: 2026-05-15
 
 This note records what the current predator analyses actually show, what is
 weak in the current integration, and how to improve predator data products
@@ -16,7 +16,8 @@ The promoted herring baseline remains `m1_stier_11`. Predator results are
 context only. The Stier-aligned predator branch,
 `m5_stier_predation_pressure`, is sampler-usable and estimates a negative
 predator coefficient, but it does not improve positive-spawn or catch
-calibration enough to promote.
+calibration enough to promote. The WCVI-aligned demand branch,
+`m5_stier_predator_demand_total`, also completed on AWS and remains held.
 
 Key current numbers:
 
@@ -28,6 +29,13 @@ Key current numbers:
   negative: median about `-0.079`, 90% interval about `-0.136` to `-0.020`.
 - The branch still remains held because the fit gain is negligible and the
   covariate is not cleanly exogenous.
+- `m5_stier_predator_demand_total` is sampler-clean (`0` divergences, `0`
+  treedepth hits, max R-hat about `1.001`, min E-BFMI about `0.816`) and
+  estimates a negative demand coefficient: median about `-0.057`, 90% interval
+  about `-0.110` to `-0.003`.
+- The demand branch is still held because positive-spawn RMSE only moves from
+  about `0.565` to `0.560`, catch RMSE stays about `0.010`, and PSIS is not
+  clean (`2` Pareto-k points above `0.7`, maximum about `0.906`).
 
 ## Main Integration Problem
 
@@ -196,18 +204,18 @@ Do these before spending AWS time on another predator model:
 
 ## Model Roadmap
 
-Only after the above diagnostics are clean:
+Only after the above diagnostics are clean and a single-covariate branch shows
+material calibration gain:
 
 1. `m5_stier_predator_demand_total`
    - Same Stier observation layer as `m1_stier_11`.
    - Zeros ambiguous, two-era q, 11 sections.
    - Replace pressure-ratio covariate with lagged total predator demand:
      `z(log1p(C_total_kt))`.
-   - Current status: source prepared and manifest-gated as `planned_model_fit`;
-     short smoke compiled but adapted poorly; longer-warmup smoke had
-     baseline-like heavy geometry (`0` divergences, `0` max-treedepth hits,
-     E-BFMI about `1.03`, all draws at treedepth `14`). Submit only as a
-     deliberate single-covariate screen after AWS SSO is refreshed.
+   - Current status: completed on AWS Batch as a deliberate single-covariate
+     screen after AWS SSO refresh; local audit/PPC/comparison gates classify it
+     as held for no material fit gain. Use it as context, not promoted
+     evidence.
 
 2. Single-group screens, one at a time.
    - `m5_stier_predator_demand_mammals`.
@@ -237,6 +245,8 @@ For the current talk, say:
   `15.5 kt/yr`, larger than recent spawn deposition;
 - the first Stier-aligned predator branch did not materially improve the
   herring model;
+- the WCVI-aligned total-demand branch also did not materially improve
+  calibration after a full AWS fit;
 - the next scientific step is a better predator data-product integration, not
   a richer combined Stan model.
 

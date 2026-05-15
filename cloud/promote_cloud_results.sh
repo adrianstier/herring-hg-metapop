@@ -25,6 +25,12 @@ fi
 if [[ -d "${job_dir}/Output/posteriors" ]]; then
   rsync -av "${job_dir}/Output/posteriors/" Output/posteriors/
 fi
+if [[ -d "${job_dir}/Output" ]]; then
+  find "${job_dir}/Output" -maxdepth 1 -type f -print0 |
+    while IFS= read -r -d '' output_file; do
+      rsync -av "${output_file}" Output/
+    done
+fi
 if [[ -d "${job_dir}/Output/diagnostics" ]]; then
   rsync -av "${job_dir}/Output/diagnostics/" Output/diagnostics/
 fi

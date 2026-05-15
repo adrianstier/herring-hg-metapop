@@ -1,6 +1,6 @@
 # WCVI Predation Replication Bridge
 
-Updated: 2026-05-14
+Updated: 2026-05-15
 
 The WCVI predator paper to mirror is Doherty et al. 2025, *Predation by
 marine mammals explains recent trends in natural mortality of Pacific Herring
@@ -75,11 +75,11 @@ This branch preserves the project constraints:
 
 ## Cloud Decision
 
-`m5_stier_predator_demand_total` is now in the model-farm manifest as
-`planned_model_fit`, not as an automatic run. The diagnostic reason is simple:
-the WCVI bridge supports demand over pressure ratio conceptually, but the
-adjusted demand signal is not strong enough to spend cloud time without an
-explicit decision.
+`m5_stier_predator_demand_total` completed on AWS on May 15 after being
+submitted on May 14 as a deliberate single-covariate screen. The diagnostic
+reason remains narrow: the WCVI bridge supports demand over pressure ratio
+conceptually, but the completed fit does not justify predator combinations or
+promotion.
 
 Local geometry check:
 
@@ -91,5 +91,17 @@ Local geometry check:
 - all saved draws were at treedepth `14`, which is expensive but consistent
   with the promoted baseline and full `m5_stier_predation_pressure` fit.
 
-Submit it only as a deliberate single-covariate screen after AWS SSO is
-refreshed. Do not add predator combinations.
+Full-run result:
+
+- sampler-clean: `0` divergences, `0` treedepth hits, max R-hat about `1.001`,
+  min E-BFMI about `0.816`;
+- predator-demand coefficient median about `-0.057`, 90% interval about
+  `-0.110` to `-0.003`;
+- positive-spawn log RMSE about `0.560`, versus about `0.565` for
+  `m1_stier_11`;
+- catch log RMSE about `0.010`, effectively unchanged;
+- PSIS is not clean: `2` Pareto-k points above `0.7`, maximum about `0.906`.
+
+Interpret this as a completed-but-held screen. Do not add predator combinations
+or spend exact re-LOO time before the talk unless predator inference becomes
+the central claim.

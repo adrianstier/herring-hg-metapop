@@ -1,16 +1,21 @@
 # Saturday Talk Readiness, May 16 2026
 
-This is the current handoff for building the Saturday talk from the May 14 model-farm state.
+This is the current handoff for building the Saturday talk from the May 14-15
+model-farm state.
 
 ## Bottom Line
 
 - Use `m1_stier_11` as the promoted Stier-aligned baseline.
 - Keep zeros and no-survey cells ambiguous/missing, use the two-era surface/SCUBA `q`, and report all 11 fitted sections with the focal-9 sensitivity.
-- Do not submit another AWS model before the talk unless a new diagnostic creates a specific single-covariate question. The May 14 ledger does not justify one.
-- Treat `m5_stier_predation_pressure`, `m2_stier_site_growth`, `m3_stier_distance`, `m1_stier_obs_hier`, and `m1_stier_method_sensitivity` as held context branches.
+- Do not submit broad AWS model branches before the talk. The deliberate
+  single-covariate `m5_stier_predator_demand_total` screen finished on AWS and
+  is held, not promoted.
+- Treat `m5_stier_predator_demand_total`, `m5_stier_predation_pressure`,
+  `m2_stier_site_growth`, `m3_stier_distance`, `m1_stier_obs_hier`, and
+  `m1_stier_method_sensitivity` as held context branches.
 - For predators, use the WCVI bridge as context: predator demand is large, but
-  the prepared `m5_stier_predator_demand_total` branch is gated because the
-  adjusted diagnostic signal is weak and the model is computationally heavy.
+  the `m5_stier_predator_demand_total` branch did not materially improve
+  calibration and still has unresolved high Pareto-k points.
 - Archive `m5_combined` and `m5_v5`; do not spend exact re-LOO or combination-model time there.
 
 ## Talk Spine
@@ -34,6 +39,11 @@ This is the current handoff for building the Saturday talk from the May 14 model
 - Predator bridge: mean 2015-2024 HG predator consumption is about 15.5 kt/yr;
   the predator-removal analogue against `m1_stier_11` biomass is about 25%.
   Treat this as ecological scale, not a promoted predator coefficient.
+- `m5_stier_predator_demand_total`: 0 divergences, 0 treedepth hits, max R-hat
+  about 1.001, min E-BFMI about 0.816, max Pareto k about 0.906, positive-spawn
+  log RMSE about 0.560, catch log RMSE about 0.010, and `predcoef` median about
+  -0.057 with 90% interval about -0.110 to -0.003. This is context only because
+  the fit gain is too small and PSIS is not clean.
 
 ## Use These First
 
@@ -62,5 +72,13 @@ This is the current handoff for building the Saturday talk from the May 14 model
 ## Model-Farm Decision
 
 AWS was refreshed on May 14 with profile `herring`. The May 13 cloud round is terminal: core Stier branches succeeded, `m3_stier_distance_reloo` failed/incomplete in the cloud array, and local exact re-LOO already covers the distance branch. No S3-synced result changes the promoted baseline.
+
+On May 14-15, `m5_stier_predator_demand_total` completed as a single-covariate
+AWS screen only. It kept ambiguous zeros, two-era q, 11 sections, and
+`m1_stier_11` as the comparison baseline. Local audit/PPC/comparison classified
+it as `hold_process_extension_no_fit_gain`: sampler-clean, slightly lower raw
+LOOIC and RMSE than baseline, but no material calibration gain and 2 Pareto-k
+points above 0.7. Do not spend exact re-LOO time on it before the talk unless
+predator inference becomes the central claim.
 
 Do not run `m5_combined` exact re-LOO, do not relaunch the distance exact-reLOO array before the talk, and do not launch a timing/substrate, density-dependence, or predator combination branch just to have one more model. The talk is stronger with the current branch decisions cleanly separated from future mechanism work.
