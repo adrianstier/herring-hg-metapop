@@ -92,14 +92,17 @@ Current read from the May 14 refresh:
    completed and held. Use `Output/diagnostics/hg_dfo_sca_external_comparison.md`
    and `Output/figures/hg_dfo_sca_external_comparison.pdf` for DFO/predator
    scale context, not as evidence for a promoted predator coefficient.
-3. Refresh local diagnostics with `Code/08_refresh_may9_analysis_suite.sh` after
+3. Use `docs/dfo-hg-biological-input-request-packet.md` for the exact DFO
+   follow-up ask on machine-readable HG biological inputs and SCA/SISCAH
+   metadata.
+4. Refresh local diagnostics with `Code/08_refresh_may9_analysis_suite.sh` after
    any model artifact changes. The wrapper now ends with
    `Code/09_check_document_references.R`, so stale local file references are
    caught as part of the full refresh.
-4. If AWS credentials are active, submit only smoke jobs first, then write the
+5. If AWS credentials are active, submit only smoke jobs first, then write the
    submission CSV with `cloud/submit_model_farm.py --out-csv ...`.
-5. Use `cloud/watch_aws_batch_run.py` on the submission CSVs to poll and sync cloud results.
-6. Promote no model branch unless it improves calibration, stays sampler-clean,
+6. Use `cloud/watch_aws_batch_run.py` on the submission CSVs to poll and sync cloud results.
+7. Promote no model branch unless it improves calibration, stays sampler-clean,
    and preserves the ambiguous-zero interpretation unless explicitly labeled as
    a sensitivity.
 

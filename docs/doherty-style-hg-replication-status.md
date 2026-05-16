@@ -32,6 +32,10 @@ Current generated outputs are under ignored diagnostics directories:
 - `Output/diagnostics/hg_dfo_sca_external_comparison.md`
 - `Output/figures/hg_dfo_sca_external_comparison.pdf`
 
+Tracked request packet:
+
+- `docs/dfo-hg-biological-input-request-packet.md`
+
 ## Source Provenance
 
 The canonical source map is `docs/doherty-style-hg-source-provenance.md`.
@@ -152,6 +156,9 @@ These remain explicitly missing or not machine-readable locally:
 - future predator scenario tables;
 - a regional HG catch-at-age model design that is separate from the 11-section
   Stier biomass model.
+
+The request packet for these missing herring biological inputs is
+`docs/dfo-hg-biological-input-request-packet.md`.
 
 ## Model Decision
 

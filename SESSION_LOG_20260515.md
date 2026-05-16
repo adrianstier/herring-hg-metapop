@@ -114,6 +114,9 @@
   HG predator demand is about 15.5 kt/yr, and the median predator-consumption
   analogue is about 29% against `m1_stier_11` biomass or about 63% against the
   public DFO SCA spawning biomass. Use these only as scale/geography context.
+- Added `docs/dfo-hg-biological-input-request-packet.md` as the tracked DFO
+  request packet for exact machine-readable HG age, weight, length, catch,
+  maturity, and SCA/SISCAH metadata.
 
 ## Current scientific status
 

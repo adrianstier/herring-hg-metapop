@@ -93,6 +93,9 @@ model-farm state.
   and DFO public summaries agree that recent HG spawn is spatially concentrated.
 - Do not imply the DFO SCA and `m1_stier_11` are fitted to identical geography
   or state definitions.
+- `docs/dfo-hg-biological-input-request-packet.md` is ready as the follow-up
+  ask for exact machine-readable HG age, weight, length, catch, maturity, and
+  SCA/SISCAH metadata.
 
 ## Model-Farm Decision
 

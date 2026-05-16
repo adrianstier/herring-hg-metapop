@@ -101,6 +101,8 @@ year ranges, and source-field completeness. `Code/07bn_hg_dfo_sca_external_compa
 adds a talk-facing comparison among `m1_stier_11`, public DFO 2025/005 HG SCA
 summaries, and predator demand. Use it only as scale/geography context; do not
 interpret it as a likelihood comparison or validation residual.
+`docs/dfo-hg-biological-input-request-packet.md` is the tracked follow-up ask
+for exact machine-readable HG SCA/SISCAH biological inputs and metadata.
 
 The spawn-index scale audit is in `Output/diagnostics/spawn_index_scale_audit.md`
 and `Output/figures/spawn_index_scale_audit.pdf`. It shows that Stier's legacy

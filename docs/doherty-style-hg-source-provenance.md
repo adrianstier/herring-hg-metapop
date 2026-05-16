@@ -46,6 +46,8 @@ as evidence that the biological stream does not exist.
 - `Output/diagnostics/hg_dfo_sca_external_comparison_timeseries.csv` is the
   talk-facing external comparison among `m1_stier_11`, public DFO HG SCA
   summaries, and predator demand.
+- `docs/dfo-hg-biological-input-request-packet.md` is the tracked request
+  packet for exact machine-readable DFO HG biological inputs and metadata.
 - `../pacific-herring-predators/docs/data_catalog.csv`,
   `../pacific-herring-predators/docs/data_catalog_HG_only.csv`, and
   `../pacific-herring-predators/docs/predator-coverage-matrix.csv` are the
@@ -87,6 +89,7 @@ as evidence that the biological stream does not exist.
 | Future predator scenarios | Future predator abundance/scenario source not found locally | Not implemented | Blocks Doherty-style projection work. |
 | Public extract QC | All public DFO extracts listed above | `Code/07bm_doherty_public_extract_qc.R`; `Output/diagnostics/doherty_public_extract_qc.md` | Structural/source QC only. Passing QC means traceable and internally consistent, not model-ready. |
 | DFO SCA external comparison | `m1_stier_11` diagnostics, DFO 2025/005 Tables 3 and 15, and HG predator demand | `Code/07bn_hg_dfo_sca_external_comparison.R`; `Output/diagnostics/hg_dfo_sca_external_comparison.md`; `Output/figures/hg_dfo_sca_external_comparison.pdf` | Talk-facing scale context. Do not treat as a likelihood comparison or direct validation residual. |
+| DFO biological input request | Public source evidence and missing input ledger | `docs/dfo-hg-biological-input-request-packet.md` | Acquisition packet for exact HG SCA/SISCAH age, weight, length, catch, maturity, and metadata files. |
 
 ## Documentation Touch Points
 
@@ -95,6 +98,7 @@ data acquisition or predator integration:
 
 - `docs/doherty-style-hg-data-acquisition.md`
 - `docs/doherty-style-hg-replication-status.md`
+- `docs/dfo-hg-biological-input-request-packet.md`
 - `docs/wcvi-predation-replication-bridge.md`
 - `docs/predator-data-plan.md`
 - `docs/data-dictionary.md`
