@@ -103,6 +103,19 @@ summaries, and predator demand. Use it only as scale/geography context; do not
 interpret it as a likelihood comparison or validation residual.
 `docs/dfo-hg-biological-input-request-packet.md` is the tracked follow-up ask
 for exact machine-readable HG SCA/SISCAH biological inputs and metadata.
+For the May 16 talk cycle, `Code/07bo_doherty_proxy_parameter_plan.R` writes
+`Output/diagnostics/doherty_proxy_parameter_plan.md` and
+`Output/figures/doherty_proxy_parameter_plan.pdf`. This is the explicit proxy
+ledger: HG public DFO tables anchor catch, age-composition, weight-at-age,
+maturity, and current-status context where available; WCVI/Doherty values may
+only be shown as provisional analogues for missing length/size/selectivity or
+model-structure pieces. Do not describe WCVI catch-at-age, size-at-age, or
+predator selectivity as estimated Haida Gwaii parameters. Do not fit or promote
+a Doherty-style HG catch-at-age predator-removal model until exact HG biological
+inputs, effective sample sizes/preprocessing rules, and predator selectivity
+assumptions are acquired and audited. The talk-safe wording is: "we have a
+source-traceable Doherty-style bridge and proxy plan, not a completed HG
+catch-at-age predator-removal analysis."
 
 The spawn-index scale audit is in `Output/diagnostics/spawn_index_scale_audit.md`
 and `Output/figures/spawn_index_scale_audit.pdf`. It shows that Stier's legacy

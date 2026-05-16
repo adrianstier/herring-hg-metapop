@@ -30,7 +30,9 @@ Current generated outputs are under ignored diagnostics directories:
 - `Output/diagnostics/doherty_hg_model_gate_ledger.csv`
 - `Output/diagnostics/doherty_public_extract_qc.md`
 - `Output/diagnostics/hg_dfo_sca_external_comparison.md`
+- `Output/diagnostics/doherty_proxy_parameter_plan.md`
 - `Output/figures/hg_dfo_sca_external_comparison.pdf`
+- `Output/figures/doherty_proxy_parameter_plan.pdf`
 
 Tracked request packet:
 
@@ -105,6 +107,28 @@ Clean newer public extracts now include:
 The Science Response confirms that major-stock SCA input windows run through
 2024 for catch, spawn index, age composition, and weight-at-age. It does not
 publish the exact annual age/weight matrices or effective sample sizes.
+
+## Talk-Cycle Proxy Policy
+
+`Code/07bo_doherty_proxy_parameter_plan.R` creates the explicit proxy ledger
+for the May 16 talk. The rule is:
+
+- HG public DFO sources are the first anchor for herring biology: catch context,
+  number/age composition, weight-at-age, maturity, and current public SCA
+  summaries.
+- WCVI/Doherty assumptions can be shown only as provisional analogues for
+  missing length/size/selectivity or model-structure pieces.
+- WCVI catch-at-age, size-at-age, and predator selectivity must not be described
+  as Haida Gwaii-estimated parameters.
+- The output is suitable for a progress/replication-plan slide, not for a claim
+  that a full HG catch-at-age predator-removal analysis has been fitted.
+
+Current proxy output:
+
+- `Output/diagnostics/doherty_proxy_parameter_plan.md`
+- `Output/diagnostics/doherty_proxy_parameter_plan.csv`
+- `Output/figures/doherty_proxy_parameter_plan.pdf`
+- `Output/figures/doherty_proxy_parameter_plan.png`
 
 ## External DFO SCA Comparison
 

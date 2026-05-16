@@ -16,6 +16,10 @@ model-farm state.
 - For predators, use the WCVI bridge as context: predator demand is large, but
   the `m5_stier_predator_demand_total` branch did not materially improve
   calibration and still has unresolved high Pareto-k points.
+- For Doherty-style age/size/catch material, say "proxy bridge" rather than
+  "completed HG catch-at-age analysis": HG public DFO tables anchor herring
+  biology where available, while WCVI/Doherty values are provisional analogues
+  only for missing size/selectivity/model-structure pieces.
 - Archive `m5_combined` and `m5_v5`; do not spend exact re-LOO or combination-model time there.
 
 ## Talk Spine
@@ -78,7 +82,8 @@ model-farm state.
 10. `Output/figures/lead_location_followup_targets.pdf`
 11. `Output/figures/wcvi_predation_replication_bridge.pdf`
 12. `Output/figures/hg_dfo_sca_external_comparison.pdf`
-13. `Output/figures/predator_spatial_exposure_prototype.pdf`
+13. `Output/figures/doherty_proxy_parameter_plan.pdf`
+14. `Output/figures/predator_spatial_exposure_prototype.pdf`
 
 ## Doherty/DFO Context
 
@@ -91,6 +96,14 @@ model-farm state.
   `Output/figures/hg_dfo_sca_external_comparison.pdf` are the safest compact
   bridge to DFO SCA outputs. Use them to say the predator-demand scale is large
   and DFO public summaries agree that recent HG spawn is spatially concentrated.
+- `Output/diagnostics/doherty_proxy_parameter_plan.md` and
+  `Output/figures/doherty_proxy_parameter_plan.pdf` are the explicit caveat
+  slide support. They show what is HG public context, what is only a
+  WCVI/Doherty analogue, and what must be acquired after the talk.
+- Do not call WCVI catch-at-age, length/size-at-age, or predator-selectivity
+  assumptions Haida Gwaii-estimated parameters. The talk-safe claim is that the
+  replication path is source-traceable and close enough to show a bridge, not
+  that the full Doherty model has been run for HG.
 - Do not imply the DFO SCA and `m1_stier_11` are fitted to identical geography
   or state definitions.
 - `docs/dfo-hg-biological-input-request-packet.md` is ready as the follow-up

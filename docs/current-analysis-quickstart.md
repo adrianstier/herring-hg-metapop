@@ -1,6 +1,6 @@
 # Current Analysis Quickstart
 
-Updated: 2026-05-14
+Updated: 2026-05-16
 
 This is the short path for collaborators who need the current answer without
 reading every historical model branch.
@@ -14,7 +14,8 @@ reading every historical model branch.
 5. `docs/wcvi-predation-replication-bridge.md`
 6. `docs/doherty-style-hg-source-provenance.md`
 7. `docs/saturday-talk-readiness-2026-05-16.md`
-8. `AGENTS.md`
+8. `Output/diagnostics/doherty_proxy_parameter_plan.md`
+9. `AGENTS.md`
 
 ## Current Baseline
 

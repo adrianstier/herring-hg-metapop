@@ -62,6 +62,14 @@ Every extracted table must retain `source_document`, `source_table`,
 must name the local path, upstream repository or catalog, owner/custodian, and
 model-use status.
 
+For the May 16 talk cycle, `Code/07bo_doherty_proxy_parameter_plan.R` adds a
+deliberate proxy ledger. The ledger allows a slide-ready Doherty bridge before
+the exact HG input packet arrives, but it keeps the scientific boundary clear:
+HG public DFO tables anchor herring biology where available; WCVI/Doherty
+values are provisional analogues only for missing length/size/selectivity or
+model-structure pieces; and none of those analogues should be described as
+HG-estimated parameters.
+
 ## Acquisition Order
 
 1. Public DFO landing page and open data:
