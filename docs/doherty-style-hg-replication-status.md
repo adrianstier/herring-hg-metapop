@@ -15,6 +15,8 @@ Rscript --vanilla Code/02e_extract_dfo_hg_assessment_tables.R
 Rscript --vanilla Code/02f_extract_newer_dfo_public_pdfs.R
 Rscript --vanilla Code/07bk_doherty_hg_data_readiness.R
 Rscript --vanilla Code/07bl_doherty_replication_execution_status.R
+Rscript --vanilla Code/07bm_doherty_public_extract_qc.R
+Rscript --vanilla Code/07bn_hg_dfo_sca_external_comparison.R
 Rscript --vanilla Code/07bi_model_decision_ledger.R
 ```
 
@@ -26,6 +28,9 @@ Current generated outputs are under ignored diagnostics directories:
 - `Output/diagnostics/doherty_hg_replication_execution_status.md`
 - `Output/diagnostics/doherty_hg_predator_class_crosswalk.csv`
 - `Output/diagnostics/doherty_hg_model_gate_ledger.csv`
+- `Output/diagnostics/doherty_public_extract_qc.md`
+- `Output/diagnostics/hg_dfo_sca_external_comparison.md`
+- `Output/figures/hg_dfo_sca_external_comparison.pdf`
 
 ## Source Provenance
 
@@ -60,6 +65,11 @@ provisional HG tables:
 These are good enough for schema review and source-PDF spot checks. They are
 not final model inputs.
 
+`Code/07bm_doherty_public_extract_qc.R` now checks the public extracts for row
+counts, year ranges, and complete source fields. All 15 tracked products pass
+structural QC. Passing structural QC means the tables are traceable and
+internally consistent; it does not make them final catch-at-age model inputs.
+
 ## Newer Public PDF Extraction
 
 `Code/02f_extract_newer_dfo_public_pdfs.R` now mines post-2018 public DFO PDFs.
@@ -91,6 +101,27 @@ Clean newer public extracts now include:
 The Science Response confirms that major-stock SCA input windows run through
 2024 for catch, spawn index, age composition, and weight-at-age. It does not
 publish the exact annual age/weight matrices or effective sample sizes.
+
+## External DFO SCA Comparison
+
+`Code/07bn_hg_dfo_sca_external_comparison.R` compares the promoted
+`m1_stier_11` all-11 trajectory with public DFO HG SCA biomass/depletion,
+public DFO HG spawn/sub-stock proportions, and the current HG predator-demand
+product. Treat this as talk-facing scale context, not as a model-likelihood
+comparison.
+
+Current 2015-2024 read:
+
+- mean `m1_stier_11` all-11 biomass: about 46.7 kt;
+- mean public DFO HG SCA spawning biomass: about 7.9 kt;
+- mean HG predator demand: about 15.5 kt/yr;
+- median predator-consumption analogue: about 29% against `m1_stier_11` biomass
+  and about 63% against public DFO SCA biomass;
+- public DFO Table 3 shows Juan Perez/Skincuttle reaches up to about 98% of
+  HG spawn-index share, while Louscoone reaches 0% in the public summary.
+
+Use those numbers only with the caveat that the DFO SCA and `m1_stier_11` do
+not have identical geography or state definitions.
 
 ## Predator Crosswalk Status
 

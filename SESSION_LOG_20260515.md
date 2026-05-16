@@ -94,6 +94,27 @@
   `Code/09_check_document_references.R`; document references reported zero
   missing references and `git diff --check` was clean.
 
+## Overnight talk-readiness follow-up
+
+- Added `Code/07bm_doherty_public_extract_qc.R`, which checks public DFO
+  extracts for expected row counts, year ranges, and complete source fields.
+  Current result: all 15 tracked products pass structural QC. This is a
+  traceability check only; it does not promote any table to catch-at-age model
+  input status.
+- Added `Code/07bn_hg_dfo_sca_external_comparison.R`, which builds the
+  talk-facing comparison among `m1_stier_11`, public DFO HG SCA summaries from
+  DFO 2025/005, and HG predator demand.
+- New comparison outputs:
+  `Output/diagnostics/hg_dfo_sca_external_comparison.md`,
+  `Output/diagnostics/hg_dfo_sca_external_comparison_timeseries.csv`,
+  `Output/diagnostics/hg_dfo_sca_external_comparison_summary.csv`, and
+  `Output/figures/hg_dfo_sca_external_comparison.pdf`.
+- Current 2015-2024 external-context read: mean `m1_stier_11` all-11 biomass is
+  about 46.7 kt, mean public DFO HG SCA spawning biomass is about 7.9 kt, mean
+  HG predator demand is about 15.5 kt/yr, and the median predator-consumption
+  analogue is about 29% against `m1_stier_11` biomass or about 63% against the
+  public DFO SCA spawning biomass. Use these only as scale/geography context.
+
 ## Current scientific status
 
 - `m1_stier_11` remains the promoted baseline.

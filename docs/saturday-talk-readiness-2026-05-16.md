@@ -39,6 +39,16 @@ model-farm state.
 - Predator bridge: mean 2015-2024 HG predator consumption is about 15.5 kt/yr;
   the predator-removal analogue against `m1_stier_11` biomass is about 25%.
   Treat this as ecological scale, not a promoted predator coefficient.
+- DFO external context: public DFO 2025/005 HG SCA spawning biomass averages
+  about 7.9 kt over 2015-2024, while the promoted all-11 `m1_stier_11`
+  trajectory averages about 46.7 kt over the same years. Use this only as
+  scale/geography context, not as a direct model-validation residual.
+- Against public DFO SCA biomass, the median predator-consumption analogue is
+  about 63%; against `m1_stier_11` biomass it is about 29%. The key talk point
+  is ecological scale, not a promoted predator effect.
+- DFO Table 3 also supports the spatial-concentration message: Juan
+  Perez/Skincuttle reaches up to about 98% of HG spawn-index share in 2015-2024,
+  while Louscoone is 0% in the public summary.
 - `m5_stier_predator_demand_total`: 0 divergences, 0 treedepth hits, max R-hat
   about 1.001, min E-BFMI about 0.816, max Pareto k about 0.906, positive-spawn
   log RMSE about 0.560, catch log RMSE about 0.010, and `predcoef` median about
@@ -67,7 +77,22 @@ model-farm state.
 9. `Output/figures/positive_spawn_fit_caveat.pdf`
 10. `Output/figures/lead_location_followup_targets.pdf`
 11. `Output/figures/wcvi_predation_replication_bridge.pdf`
-12. `Output/figures/predator_spatial_exposure_prototype.pdf`
+12. `Output/figures/hg_dfo_sca_external_comparison.pdf`
+13. `Output/figures/predator_spatial_exposure_prototype.pdf`
+
+## Doherty/DFO Context
+
+- `Output/diagnostics/doherty_public_extract_qc.md` now checks all public DFO
+  extracts for row counts, year ranges, and complete source fields. All 15
+  tracked products pass structural QC, but the CSAS 2018/028 Appendix B tables
+  remain provisional schema/source-audit products, not model-ready catch-at-age
+  inputs.
+- `Output/diagnostics/hg_dfo_sca_external_comparison.md` and
+  `Output/figures/hg_dfo_sca_external_comparison.pdf` are the safest compact
+  bridge to DFO SCA outputs. Use them to say the predator-demand scale is large
+  and DFO public summaries agree that recent HG spawn is spatially concentrated.
+- Do not imply the DFO SCA and `m1_stier_11` are fitted to identical geography
+  or state definitions.
 
 ## Model-Farm Decision
 

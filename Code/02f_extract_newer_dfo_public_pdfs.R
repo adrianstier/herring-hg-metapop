@@ -354,6 +354,12 @@ rebuilding_biology_caption_catalog <- caption_catalog %>%
       context,
       regex("proportion-at-age|number aged|weight-at-age|length-at-age|biological|spawn index|catch|model", ignore_case = TRUE)
     )
+  ) %>%
+  mutate(
+    source_document = title,
+    source_table = paste(item_type, item_number),
+    extraction_method = "pdftotext caption catalog filtered by biological keywords",
+    extraction_notes = "Caption/provenance audit for HG rebuilding-plan biological figures/tables; not a numeric input table."
   )
 
 source_status <- source_status %>%

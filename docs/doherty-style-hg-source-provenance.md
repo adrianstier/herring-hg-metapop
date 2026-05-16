@@ -41,6 +41,11 @@ as evidence that the biological stream does not exist.
   audits the CSAS 2018/028 Appendix B extraction.
 - `Output/diagnostics/dfo_newer_public_pdf_extract/dfo_newer_public_pdf_status.csv`
   audits the newer public PDF extraction.
+- `Output/diagnostics/doherty_public_extract_qc.csv` checks public extract row
+  counts, year ranges, and source-field completeness.
+- `Output/diagnostics/hg_dfo_sca_external_comparison_timeseries.csv` is the
+  talk-facing external comparison among `m1_stier_11`, public DFO HG SCA
+  summaries, and predator demand.
 - `../pacific-herring-predators/docs/data_catalog.csv`,
   `../pacific-herring-predators/docs/data_catalog_HG_only.csv`, and
   `../pacific-herring-predators/docs/predator-coverage-matrix.csv` are the
@@ -80,6 +85,8 @@ as evidence that the biological stream does not exist.
 | Predator spatial sites/exposure prototype | Sibling repo catalogs plus local `Data/processed/predators/hg_spatial_predator_sites.csv` | `Code/07bb_predator_spatial_exposure_prototype.R`; `Output/diagnostics/predator_spatial_exposure_prototype.md` | Data-product roadmap. Seal and sea-lion exposure is feasible; humpback/fish/bird section exposure and interpolation rules remain incomplete. |
 | Predator age/size selectivity | Doherty supplement, HG diet literature, and predator-repo future selectivity table | Not found locally as a machine-readable table | Blocks Doherty-style predation mortality fitting. Must be extracted into a sourced table before any predator-removal branch. |
 | Future predator scenarios | Future predator abundance/scenario source not found locally | Not implemented | Blocks Doherty-style projection work. |
+| Public extract QC | All public DFO extracts listed above | `Code/07bm_doherty_public_extract_qc.R`; `Output/diagnostics/doherty_public_extract_qc.md` | Structural/source QC only. Passing QC means traceable and internally consistent, not model-ready. |
+| DFO SCA external comparison | `m1_stier_11` diagnostics, DFO 2025/005 Tables 3 and 15, and HG predator demand | `Code/07bn_hg_dfo_sca_external_comparison.R`; `Output/diagnostics/hg_dfo_sca_external_comparison.md`; `Output/figures/hg_dfo_sca_external_comparison.pdf` | Talk-facing scale context. Do not treat as a likelihood comparison or direct validation residual. |
 
 ## Documentation Touch Points
 
@@ -93,6 +100,7 @@ data acquisition or predator integration:
 - `docs/data-dictionary.md`
 - `docs/current-analysis-quickstart.md`
 - `docs/collaborator-reading-guide.md`
+- `docs/saturday-talk-readiness-2026-05-16.md`
 - `AGENTS.md`
 - `SESSION_LOG_20260515.md`
 
