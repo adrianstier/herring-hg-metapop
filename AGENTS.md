@@ -2,6 +2,25 @@
 
 This file captures project-specific modeling decisions that future coding agents should read before editing model code or interpretation docs.
 
+## ⭐ Haida Gwaii Herring Talk — Read First
+
+As of 2026-05-16, there is an active talk-build workstream for the **US–UK
+Royal Society Scientific Forum on Shifts and Tipping Points in Ocean Systems**
+(The Royal Society, London; forum 19–20 May 2026; **Adrian's slot Wed 20 May
+2026, 09:30, Session 5 — Tipping Points in Ecosystem Services; ~25 min**). The
+talk is "related but new" framing relative to the old `m1_stier_11`
+portfolio-talk spine, and is tied to the herring metapopulation paper.
+
+**Any Codex or Claude session touching talk slides, figures, narrative, or
+asset gathering MUST read `docs/HERRING_TALK_ASSETS.md` first.** That file is
+the single source of truth: it indexes every slide, photo, lecture, note,
+dataset, figure, NotebookLM source, and the shared Google Drive folder *in
+place* (nothing is copied into the repo), records the confirmed Talk Target,
+and tracks a **Talk Build State** log. Update that log at the end of every
+working session so the next context window continues cleanly. Do not lock the
+talk narrative or copy assets into the repo without checking that file's
+framing guardrail and index-in-place decision.
+
 ## Current Scientific Direction
 
 The promoted baseline is now Stier-aligned before adding more biological complexity.
@@ -135,6 +154,16 @@ inputs, effective sample sizes/preprocessing rules, and predator selectivity
 assumptions are acquired and audited. The talk-safe wording is: "we have a
 source-traceable Doherty-style bridge and proxy plan, not a completed HG
 catch-at-age predator-removal analysis."
+The next AWS troubleshooting branch for that bridge is
+`m5_stier_doherty_proxy_removals`, with Stan file
+`inst/stan/herring_metapop_m5_stier_doherty_proxy_removals.stan` and fit script
+`Code/03_fit_m5_stier_doherty_proxy_removals.R`. It keeps ambiguous zeros,
+two-era `q`, and all 11 sections, but treats audited annual HG predator demand
+as a scaled catch-like biomass mortality analogue. The first registered screen
+uses `Mp_mid` from the predator repo with `DOHERTY_PROXY_PRED_SCALE=0.05`
+because unscaled and 0.25-scaled mortality offsets were not local-smoke usable.
+This is a low-vulnerability biomass-scale Doherty-style proxy only; it is not
+a full catch-at-age model and does not estimate age/size selectivity.
 
 The spawn-index scale audit is in `Output/diagnostics/spawn_index_scale_audit.md`
 and `Output/figures/spawn_index_scale_audit.pdf`. It shows that Stier's legacy

@@ -63,3 +63,32 @@
   regional model/AWS loop, using the predator repo products for demand,
   pressure, and spatial-site inputs while keeping WCVI selectivity and missing
   HG catch-at-age inputs explicitly labelled as proxies or blockers.
+
+## HG Doherty proxy-removal AWS branch
+
+- Added `inst/stan/herring_metapop_m5_stier_doherty_proxy_removals.stan` and
+  `Code/03_fit_m5_stier_doherty_proxy_removals.R`.
+- Scientific scope: this branch keeps the Stier-aligned observation model
+  (ambiguous zeros skipped, two-era `q`, 11 sections) and treats audited annual
+  HG predator consumption as a catch-like biomass removal-rate analogue. It is
+  not a full age-structured catch-at-age model and does not estimate predator
+  selectivity-at-age.
+- Added `m5_stier_doherty_proxy_removals` and
+  `smoke_m5_stier_doherty_proxy_removals_reduced` to
+  `cloud/model-farm-manifest.csv`.
+- Stabilization note: the unscaled and 0.25-scaled `Mp_mid`
+  natural-mortality offsets were not local-smoke usable, so the registered
+  first-pass screen is explicitly low-vulnerability:
+  `DOHERTY_PROXY_MP_COLUMN=Mp_mid` and `DOHERTY_PROXY_PRED_SCALE=0.05`.
+  A tiny 0.05 local smoke completed with no divergences or treedepth hits, but
+  low E-BFMI and slow longer-warmup behavior mean the branch should start with
+  a cloud smoke before any full fit.
+- Updated `Code/03c_bayesian_fit_audit.R`,
+  `Code/03d_posterior_predictive_checks_v3.R`,
+  `Code/04_compare_models_v3.R`, and `Code/07bi_model_decision_ledger.R` so
+  the branch participates in the normal audit/PPC/comparison/model-farm ledger
+  after local or AWS artifacts exist.
+- Updated `AGENTS.md`, `docs/full-analysis-model-farm-scope.md`,
+  `docs/doherty-style-hg-replication-status.md`, and
+  `docs/wcvi-predation-replication-bridge.md` to mark this as a constrained
+  biomass-scale proxy-removal branch for AWS troubleshooting.

@@ -69,11 +69,17 @@ pressure_path <- file.path(consumption_dir, "HG_predation_pressure_index_AUDITED
 covariate_path <- file.path(consumption_dir, "HG_pressure_climate_predator_covariates.csv")
 group_path <- file.path(consumption_dir, "HG_consumption_by_group_year_AUDITED.csv")
 species_path <- file.path(consumption_dir, "HG_consumption_by_species_year_AUDITED.csv")
+mp_path <- file.path(consumption_dir, "HG_Mp_sensitivity_AUDITED.csv")
 
 pressure_tbl <- read_csv(pressure_path, show_col_types = FALSE)
 covariate_tbl <- read_csv(covariate_path, show_col_types = FALSE)
 group_tbl <- read_csv(group_path, show_col_types = FALSE)
 species_tbl <- read_csv(species_path, show_col_types = FALSE)
+mp_tbl <- if (file.exists(mp_path)) {
+  read_csv(mp_path, show_col_types = FALSE)
+} else {
+  tibble(year = integer(), Mp_low = double(), Mp_mid = double(), Mp_high = double())
+}
 
 years <- 1951:2025
 group_wide <- group_tbl %>%
@@ -83,11 +89,19 @@ group_wide <- group_tbl %>%
 covariates <- tibble(year = years) %>%
   left_join(covariate_tbl, by = "year") %>%
   left_join(pressure_tbl %>% select(year, C_total_kt, HG_spawn_kt, pressure_pct), by = "year") %>%
+  left_join(mp_tbl %>% select(year, Mp_low, Mp_mid, Mp_high), by = "year") %>%
   left_join(group_wide, by = "year") %>%
   mutate(
     log_pressure = fill_annual(log_pressure, year),
     log_humpback = fill_annual(log_humpback, year),
     C_total_kt = fill_annual(C_total_kt, year),
+    HG_spawn_kt = fill_annual(HG_spawn_kt, year),
+    Mp_low = if_else(is.na(Mp_low) & HG_spawn_kt > 0, C_total_kt / (5 * HG_spawn_kt), Mp_low),
+    Mp_mid = if_else(is.na(Mp_mid) & HG_spawn_kt > 0, C_total_kt / (3 * HG_spawn_kt), Mp_mid),
+    Mp_high = if_else(is.na(Mp_high) & HG_spawn_kt > 0, C_total_kt / (1.5 * HG_spawn_kt), Mp_high),
+    Mp_low = fill_annual(Mp_low, year),
+    Mp_mid = fill_annual(Mp_mid, year),
+    Mp_high = fill_annual(Mp_high, year),
     N_BC = fill_annual(N_BC, year),
     pdo = fill_annual(pdo, year),
     npgo = fill_annual(npgo, year),
@@ -97,6 +111,9 @@ covariates <- tibble(year = years) %>%
     pred_demand_mammals_log_z = standardize(log1p(C_mammals_kt)),
     pred_demand_salmon_log_z = standardize(log1p(C_salmon_kt)),
     pred_pressure_log_z = standardize(log_pressure),
+    pred_mortality_low_z = standardize(log1p(Mp_low)),
+    pred_mortality_mid_z = standardize(log1p(Mp_mid)),
+    pred_mortality_high_z = standardize(log1p(Mp_high)),
     humpback_log_z = standardize(log_humpback),
     n_bc_z = standardize(N_BC),
     npgo_z = standardize(npgo),
@@ -166,6 +183,10 @@ write_csv(covariates, file.path(out_dir, "hg_predation_pressure_covariates.csv")
 write_csv(group_tbl, file.path(out_dir, "hg_predator_consumption_by_group_year.csv"))
 write_csv(recent_species, file.path(out_dir, "hg_predator_consumption_by_species_recent.csv"))
 write_csv(spatial_tbl, file.path(out_dir, "hg_spatial_predator_sites.csv"))
+write_csv(
+  covariates %>% select(year, C_total_kt, HG_spawn_kt, Mp_low, Mp_mid, Mp_high),
+  file.path(out_dir, "hg_predator_mp_sensitivity.csv")
+)
 
 recent_pressure <- pressure_tbl %>%
   filter(year >= 2015, year <= 2024) %>%
@@ -204,6 +225,7 @@ writeLines(
     "- `Data/processed/predators/hg_predator_consumption_by_group_year.csv`",
     "- `Data/processed/predators/hg_predator_consumption_by_species_recent.csv`",
     "- `Data/processed/predators/hg_spatial_predator_sites.csv`",
+    "- `Data/processed/predators/hg_predator_mp_sensitivity.csv`",
     "",
     "## Recent HG Predation Pressure",
     "",

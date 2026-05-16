@@ -196,3 +196,15 @@ needed for a defensible Doherty analogue.
 
 The promoted baseline remains `m1_stier_11`: ambiguous zeros, two-era `q`, 11
 sections, and biomass-based section states.
+
+For AWS troubleshooting on May 16, the constrained branch is
+`m5_stier_doherty_proxy_removals`. It is deliberately weaker than the full
+Doherty model: audited annual HG predator mortality proxy values enter the
+Stier biomass model as a scaled catch-like mortality/removal analogue, shared
+across sections by latent biomass. The first registered screen uses `Mp_mid`
+with `DOHERTY_PROXY_PRED_SCALE=0.05`; unscaled and 0.25-scaled `Mp_mid`
+offsets were not local-smoke usable.
+It does not use age composition, weight-at-age, length-at-age, predator
+selectivity-at-age, or future predator scenarios. Treat any output as
+proxy-removal context only until the exact HG biological inputs and selectivity
+registry are complete.

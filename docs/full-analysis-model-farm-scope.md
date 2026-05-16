@@ -210,6 +210,8 @@ Run after predator repo products are available:
 - refresh local predator products with
   `PREDATOR_REPO_PATH=/Users/adrianstier/pacific-herring-predators Rscript --vanilla Code/02c_integrate_hg_predator_repo_products.R`;
 - `m5_stier_predation_pressure`;
+- `m5_stier_doherty_proxy_removals` only after
+  `smoke_m5_stier_doherty_proxy_removals_reduced` has usable geometry;
 - `m5_stier_predator_demand_total` only after reviewing
   `Output/diagnostics/wcvi_predation_replication_bridge.md`;
 - `smoke_m5_stier_predation_pressure_reduced` before a long cloud run if the
@@ -221,10 +223,17 @@ Goal:
 
 - test whether HG annual predation pressure explains residual productivity
   patterns after keeping the Stier observation assumptions fixed.
+- for `m5_stier_doherty_proxy_removals`, test a stricter Doherty-style
+  biomass-removal analogue where predator demand removes biomass rather than
+  acting as a regression covariate. The first registered screen is deliberately
+  low-vulnerability scaled (`Mp_mid`, `DOHERTY_PROXY_PRED_SCALE=0.05`) because
+  unscaled and 0.25-scaled mortality offsets were not local-smoke usable.
 
 Stop if:
 
 - the coefficient is only a calendar-time proxy;
+- the proxy-removal scale collapses to a boundary or forces poor spawn/catch
+  calibration;
 - posterior geometry worsens relative to `m1_stier_11`;
 - positive-spawn calibration worsens without a clear compensating biological
   interpretation.

@@ -1,3 +1,19 @@
+# ⭐ Haida Gwaii Herring Talk — READ FIRST
+
+If this session involves the **Pacific herring / Haida Gwaii talk** (US–UK
+Royal Society *Tipping Points in Ocean Systems* Forum, London, Wed 20 May 2026,
+09:30, Session 5 — Ecosystem Services; ~25 min; tied to the herring
+metapopulation paper):
+
+**Read `docs/HERRING_TALK_ASSETS.md` before doing anything.** It is the single
+source of truth — it indexes every slide, photo, lecture, note, dataset,
+figure, NotebookLM source, and Drive folder for the talk (in place, nothing
+copied), and tracks the cross-session build state. Update its **Talk Build
+State** section at the end of each working session so the next context window
+(Claude or Codex) continues cleanly.
+
+---
+
 # Claude Handoff: Predator Repo Link
 
 This herring metapopulation repo depends on the sibling predator-data repo for

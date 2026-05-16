@@ -131,3 +131,26 @@ Full-run result:
 Interpret this as a completed-but-held screen. Do not add predator combinations
 or spend exact re-LOO time before the talk unless predator inference becomes
 the central claim.
+
+## May 16 HG Proxy-Removal Branch
+
+The next AWS troubleshooting branch is `m5_stier_doherty_proxy_removals`. It is
+the closest current analogue to Doherty's removal logic that does not pretend we
+have final HG catch-at-age inputs:
+
+- the observation layer remains `m1_stier_11` style: ambiguous zeros skipped,
+  two-era `q`, and 11 sections;
+- audited HG predator mortality proxy values from
+  `/Users/adrianstier/pacific-herring-predators` enter as a scaled catch-like
+  biomass mortality analogue;
+- the registered first-pass screen uses `Mp_mid` with
+  `DOHERTY_PROXY_PRED_SCALE=0.05`, after unscaled and 0.25-scaled `Mp_mid`
+  smokes were too slow/pathological for AWS full-fit submission;
+- predator removal is shared across sections in proportion to latent
+  post-fishery biomass;
+- no age composition, weight-at-age, length-at-age, or predator selectivity is
+  fitted.
+
+Use this branch to troubleshoot geometry and sensitivity to catch-like predator
+removals on AWS. Do not describe it as the completed HG Doherty catch-at-age
+model.

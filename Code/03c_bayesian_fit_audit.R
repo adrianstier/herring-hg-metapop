@@ -32,6 +32,7 @@ models <- tribble(
   "m3_stier_distance",  file.path(proc_dir, "m3_stier_distance_fit.rds"),  file.path(post_dir, "loo_m3_stier_distance.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m3_stier_distance.stan"), file.path(proj_dir, "Code/03_fit_m3_stier_distance.R"), 15L,
   "m5_stier_predation_pressure",  file.path(proc_dir, "m5_stier_predation_pressure_fit.rds"),  file.path(post_dir, "loo_m5_stier_predation_pressure.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m5_stier_predation_pressure.stan"), file.path(proj_dir, "Code/03_fit_m5_stier_predation_pressure.R"), 15L,
   "m5_stier_predator_demand_total",  file.path(proc_dir, "m5_stier_predator_demand_total_fit.rds"),  file.path(post_dir, "loo_m5_stier_predator_demand_total.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m5_stier_predator_demand_total.stan"), file.path(proj_dir, "Code/03_fit_m5_stier_predator_demand_total.R"), 15L,
+  "m5_stier_doherty_proxy_removals",  file.path(proc_dir, "m5_stier_doherty_proxy_removals_fit.rds"),  file.path(post_dir, "loo_m5_stier_doherty_proxy_removals.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m5_stier_doherty_proxy_removals.stan"), file.path(proj_dir, "Code/03_fit_m5_stier_doherty_proxy_removals.R"), 15L,
   "m5_v5",  file.path(proc_dir, "m5_v5_fit.rds"),  file.path(post_dir, "loo_m5_v5.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m5_v5.stan"), file.path(proj_dir, "Code/03_fit_m5_v5.R"), 15L,
   "m5_combined",  file.path(proc_dir, "m5_combined_fit.rds"),  file.path(post_dir, "loo_m5_combined.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m5_combined.stan"), file.path(proj_dir, "Code/03_fit_m5_combined.R"), 14L,
   "m1_v4",  file.path(proc_dir, "m1_v4_fit.rds"),  file.path(post_dir, "loo_m1_v4.rds"),  file.path(proj_dir, "inst/stan/herring_metapop_m1_v4.stan"), file.path(proj_dir, "Code/03_fit_m1_v4.R"), 16L,
@@ -96,7 +97,7 @@ audit_one <- function(
   param_rows <- rownames(summ)
   n_log_lik <- sum(grepl("^log_lik\\[", param_rows))
   core <- !grepl(
-    "lp__|log_lik\\[|Y_rep\\[|biomass_pred\\[|fishing_rate\\[|p_below_detection\\[|below_detection_rep\\[|detection_prob\\[|detected_rep\\[|pred_effect_total\\[",
+    "lp__|log_lik\\[|Y_rep\\[|biomass_pred\\[|biomass_after_removals\\[|fishing_rate\\[|p_below_detection\\[|below_detection_rep\\[|detection_prob\\[|detected_rep\\[|pred_effect_total\\[|pred_removed_proxy_kt\\[|pred_removal_rate_pct\\[",
     param_rows
   )
   summ_core <- summ[core, , drop = FALSE]
