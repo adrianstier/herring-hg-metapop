@@ -10,6 +10,7 @@ dir.create(diag_dir, recursive = TRUE, showWarnings = FALSE)
 find_predator_repo <- function() {
   candidates <- c(
     Sys.getenv("PREDATOR_REPO_PATH"),
+    "/Users/adrianstier/pacific-herring-predators",
     file.path(dirname(proj_dir), "pacific-herring-predators"),
     "/private/tmp/pacific-herring-predators"
   )
@@ -47,6 +48,11 @@ if (is.na(repo_dir) || !nzchar(repo_dir)) {
       "",
       "Set `PREDATOR_REPO_PATH` to a checkout of `stier-lab/pacific-herring-predators` ",
       "and rerun `Rscript Code/02c_integrate_hg_predator_repo_products.R`.",
+      "",
+      "Preferred local path: `/Users/adrianstier/pacific-herring-predators`.",
+      "",
+      "See `docs/predator-repo-integration-guide.md` and `CLAUDE.md` for the ",
+      "crosswalk from predator repo products to herring model covariates and figures.",
       "",
       "The main analysis can still run, but predator-pressure model branches should be held."
     ),
@@ -188,6 +194,8 @@ writeLines(
     "# HG Predator Repo Integration",
     "",
     paste0("Source repo: `", repo_dir, "`"),
+    "",
+    "Crosswalk: `docs/predator-repo-integration-guide.md` and `CLAUDE.md`.",
     "",
     "## Outputs",
     "",

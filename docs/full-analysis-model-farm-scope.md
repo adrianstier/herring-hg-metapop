@@ -177,10 +177,12 @@ Important limitation:
 
 `m5_stier_predation_pressure` is the first defensible predator branch to run:
 it keeps the Stier-aligned observation layer and uses annual HG predation
-pressure from `stier-lab/pacific-herring-predators`. It is still a regional
-annual pressure covariate, not section-specific exposure. The older `m5_v5` and
-`m5_combined` branches remain exploratory until their predator inputs are
-rebuilt from the predator repo.
+pressure from `stier-lab/pacific-herring-predators`, locally checked out at
+`/Users/adrianstier/pacific-herring-predators`. It is still a regional annual
+pressure covariate, not section-specific exposure. Use
+`docs/predator-repo-integration-guide.md` before refreshing predator data or
+figures. The older `m5_v5` and `m5_combined` branches remain exploratory until
+their predator inputs are rebuilt from the predator repo.
 
 The May 14 WCVI bridge identified `m5_stier_predator_demand_total` as the
 cleaner next covariate because it uses total predator demand instead of a
@@ -205,6 +207,8 @@ Rerun triggers:
 
 Run after predator repo products are available:
 
+- refresh local predator products with
+  `PREDATOR_REPO_PATH=/Users/adrianstier/pacific-herring-predators Rscript --vanilla Code/02c_integrate_hg_predator_repo_products.R`;
 - `m5_stier_predation_pressure`;
 - `m5_stier_predator_demand_total` only after reviewing
   `Output/diagnostics/wcvi_predation_replication_bridge.md`;

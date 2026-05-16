@@ -92,6 +92,9 @@ model-farm state.
   tracked products pass structural QC, but the CSAS 2018/028 Appendix B tables
   remain provisional schema/source-audit products, not model-ready catch-at-age
   inputs.
+- `docs/predator-repo-integration-guide.md` and `CLAUDE.md` now give the
+  operational link to `/Users/adrianstier/pacific-herring-predators`, including
+  which predator data and figures to use and how to import model covariates.
 - `Output/diagnostics/hg_dfo_sca_external_comparison.md` and
   `Output/figures/hg_dfo_sca_external_comparison.pdf` are the safest compact
   bridge to DFO SCA outputs. Use them to say the predator-demand scale is large

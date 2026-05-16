@@ -7,6 +7,7 @@ dir.create(diag_dir, showWarnings = FALSE, recursive = TRUE)
 md_files <- c(
   "README.md",
   "AGENTS.md",
+  "CLAUDE.md",
   "REVIEW_NOTES.md",
   list.files(file.path(proj_dir, "docs"), pattern = "\\.md$", recursive = TRUE, full.names = FALSE),
   file.path(
@@ -22,6 +23,7 @@ md_files <- setdiff(md_files, file.path("Output", "diagnostics", "document_refer
 path_prefix <- paste(
   c(
     "AGENTS\\.md",
+    "CLAUDE\\.md",
     "README\\.md",
     "REVIEW_NOTES\\.md",
     "SESSION_LOG_[0-9]+\\.md",
@@ -31,6 +33,7 @@ path_prefix <- paste(
     "inst/stan/",
     "Output/",
     "Data/",
+    "\\.\\./pacific-herring-predators/",
     "cloud/"
   ),
   collapse = "|"

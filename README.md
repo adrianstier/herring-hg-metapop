@@ -171,6 +171,24 @@ new `m5_stier_predation_pressure` AWS/model-farm branch. This is the current
 predator branch to test before returning to older `m5_v5` or `m5_combined`
 scripts.
 
+The local predator source repo is
+`/Users/adrianstier/pacific-herring-predators`. For predator data,
+predator-only figures, and source catalogs, use
+`docs/predator-repo-integration-guide.md` and `CLAUDE.md`. The short import is:
+
+```sh
+PREDATOR_REPO_PATH=/Users/adrianstier/pacific-herring-predators \
+  Rscript --vanilla Code/02c_integrate_hg_predator_repo_products.R
+```
+
+The predator repo's canonical outputs include
+`data/processed/consumption_budget/HG_predation_pressure_index_AUDITED.csv`,
+`data/processed/consumption_budget/HG_pressure_climate_predator_covariates.csv`,
+`data/processed/consumption_budget/HG_consumption_by_group_year_AUDITED.csv`,
+and `Output/figures/MASTER_HG_predation_AUDITED.pdf`. After import, this
+herring repo uses local ignored products in `Data/processed/predators/` for
+model covariates and integrated diagnostics.
+
 For spatial predator context, use `Output/diagnostics/predator_spatial_exposure_prototype.md`
 and `Output/figures/predator_spatial_exposure_prototype.pdf`: raw Haida Gwaii
 harbour seal and Steller sea lion records can be converted into rough

@@ -105,6 +105,9 @@ HG-estimated parameters.
 5. Predator integration:
    - keep the sibling predator repo as the source of truth for predator
      abundance, consumption, and spatial exposure products;
+   - use `/Users/adrianstier/pacific-herring-predators` as the local checkout
+     and `docs/predator-repo-integration-guide.md` as the operational crosswalk
+     before searching for predator data or visualizations;
    - map Doherty predator classes to HG classes with explicit flags:
      `direct_HG`, `BC_allocated_to_HG`, `literature_scaled`, or `gap`;
    - encode predator age/size selectivity only after the herring age/weight

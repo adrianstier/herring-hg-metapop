@@ -13,9 +13,10 @@ reading every historical model branch.
 4. `Output/diagnostics/covariate_readiness_registry.md`
 5. `docs/wcvi-predation-replication-bridge.md`
 6. `docs/doherty-style-hg-source-provenance.md`
-7. `docs/saturday-talk-readiness-2026-05-16.md`
-8. `Output/diagnostics/doherty_proxy_parameter_plan.md`
-9. `AGENTS.md`
+7. `docs/predator-repo-integration-guide.md`
+8. `docs/saturday-talk-readiness-2026-05-16.md`
+9. `Output/diagnostics/doherty_proxy_parameter_plan.md`
+10. `AGENTS.md`
 
 ## Current Baseline
 

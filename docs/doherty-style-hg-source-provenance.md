@@ -49,6 +49,9 @@ as evidence that the biological stream does not exist.
 - `Output/diagnostics/doherty_proxy_parameter_plan.csv` is the talk-cycle proxy
   ledger separating HG public biological extracts, sibling predator products,
   WCVI/Doherty analogues, and unresolved acquisition items.
+- `docs/predator-repo-integration-guide.md` is the operational crosswalk from
+  the local predator source repo at `/Users/adrianstier/pacific-herring-predators`
+  to this herring repo's imported predator covariates, diagnostics, and figures.
 - `docs/dfo-hg-biological-input-request-packet.md` is the tracked request
   packet for exact machine-readable DFO HG biological inputs and metadata.
 - `../pacific-herring-predators/docs/data_catalog.csv`,
@@ -87,6 +90,7 @@ as evidence that the biological stream does not exist.
 | Fish ageing/sample data custodian | DFO Pacific Fish Ageing Lab: <https://www.pac.dfo-mpo.gc.ca/science/species-especes/agelab-scalimetrie/index-eng.html> | `Output/diagnostics/doherty_hg_dfo_data_request_template.md` | Data-request lead for ageing, length, weight, and sample metadata. |
 | Doherty WCVI model analogue | Doherty et al. 2025, ICES Journal of Marine Science, fsae183: <https://doi.org/10.1093/icesjms/fsae183> | `docs/wcvi-predation-replication-bridge.md`; `Code/07bj_wcvi_predation_replication_bridge.R` | Model-structure and selectivity reference. Do not copy WCVI parameters directly to HG. |
 | Annual HG predator demand and pressure | Sibling repo `../pacific-herring-predators`; local products `Data/processed/predators/hg_predation_pressure_covariates.csv`, `hg_predator_consumption_by_group_year.csv`, `hg_predator_consumption_by_species_recent.csv` | `Code/02c_integrate_hg_predator_repo_products.R`; `Code/07bj_wcvi_predation_replication_bridge.R` | Usable for biomass-scale predator-demand context and completed held single-covariate screens. Not age-selective predation mortality. |
+| Predator repo integration crosswalk | Local checkout `/Users/adrianstier/pacific-herring-predators`; GitHub `stier-lab/pacific-herring-predators` | `docs/predator-repo-integration-guide.md`; `CLAUDE.md`; `AGENTS.md` | Operational handoff. Use this before looking for predator data or visualizations. |
 | Predator spatial sites/exposure prototype | Sibling repo catalogs plus local `Data/processed/predators/hg_spatial_predator_sites.csv` | `Code/07bb_predator_spatial_exposure_prototype.R`; `Output/diagnostics/predator_spatial_exposure_prototype.md` | Data-product roadmap. Seal and sea-lion exposure is feasible; humpback/fish/bird section exposure and interpolation rules remain incomplete. |
 | Predator age/size selectivity | Doherty supplement, HG diet literature, and predator-repo future selectivity table | Not found locally as a machine-readable table | Blocks Doherty-style predation mortality fitting. Must be extracted into a sourced table before any predator-removal branch. |
 | Future predator scenarios | Future predator abundance/scenario source not found locally | Not implemented | Blocks Doherty-style projection work. |
@@ -105,11 +109,13 @@ data acquisition or predator integration:
 - `docs/dfo-hg-biological-input-request-packet.md`
 - `docs/wcvi-predation-replication-bridge.md`
 - `docs/predator-data-plan.md`
+- `docs/predator-repo-integration-guide.md`
 - `docs/data-dictionary.md`
 - `docs/current-analysis-quickstart.md`
 - `docs/collaborator-reading-guide.md`
 - `docs/saturday-talk-readiness-2026-05-16.md`
 - `AGENTS.md`
+- `CLAUDE.md`
 - `SESSION_LOG_20260515.md`
 - `SESSION_LOG_20260516.md`
 

@@ -64,6 +64,19 @@ series live in a sibling repo:
 > product that re-enters the herring model needs a source row there and
 > table-level provenance fields in the generated output.
 
+> 2026-05-16 update. The operational crosswalk between this herring repo and
+> the local predator source repo is now `docs/predator-repo-integration-guide.md`
+> and `CLAUDE.md`. Use `/Users/adrianstier/pacific-herring-predators` as the
+> local source for predator data, source catalogs, and predator-only figures.
+> The herring repo should import those products with
+> `PREDATOR_REPO_PATH=/Users/adrianstier/pacific-herring-predators Rscript --vanilla Code/02c_integrate_hg_predator_repo_products.R`,
+> not by hand-copying values. The key imported model covariates come from the
+> predator repo's audited
+> `data/processed/consumption_budget/HG_pressure_climate_predator_covariates.csv`,
+> `HG_predation_pressure_index_AUDITED.csv`,
+> `HG_consumption_by_group_year_AUDITED.csv`, and
+> `HG_consumption_by_species_year_AUDITED.csv`.
+
 ## Headline finding from the literature (revision 2026-05-09)
 
 Three BC-coast-wide reviews now anchor the predator scope:

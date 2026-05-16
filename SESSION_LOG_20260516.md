@@ -36,3 +36,30 @@
      products only after source and metadata QC;
   5. smoke-test a separate regional HG catch-at-age scaffold before considering
      any integration with the 11-section `m1_stier_11` biomass model.
+
+## Predator repo integration handoff
+
+- Added `docs/predator-repo-integration-guide.md` as the operational crosswalk
+  between this herring modeling repo and the local predator source repo at
+  `/Users/adrianstier/pacific-herring-predators`.
+- Added `CLAUDE.md` so non-Codex/Claude agents have the same durable handoff:
+  predator synthesis, source catalogs, audited demand/pressure products, and
+  predator-only figures live in the sibling predator repo; this repo imports
+  them for model covariates and integrated diagnostics.
+- Updated `AGENTS.md`, `README.md`, `docs/predator-data-plan.md`,
+  `docs/doherty-style-hg-source-provenance.md`,
+  `docs/doherty-style-hg-data-acquisition.md`,
+  `docs/full-analysis-model-farm-scope.md`,
+  `docs/saturday-talk-readiness-2026-05-16.md`, and
+  `docs/current-analysis-quickstart.md` to point to the integration guide.
+- Updated `Code/02c_integrate_hg_predator_repo_products.R` to explicitly check
+  `/Users/adrianstier/pacific-herring-predators` and to write the integration
+  guide/Claude handoff into its diagnostic report.
+- Updated `Code/09_check_document_references.R` so `CLAUDE.md` is scanned and
+  `CLAUDE.md` references are checked like `AGENTS.md` and `README.md`.
+- Operational import command:
+  `PREDATOR_REPO_PATH=/Users/adrianstier/pacific-herring-predators Rscript --vanilla Code/02c_integrate_hg_predator_repo_products.R`.
+- The next workstream after this wiring is to return to the HG Doherty-style
+  regional model/AWS loop, using the predator repo products for demand,
+  pressure, and spatial-site inputs while keeping WCVI selectivity and missing
+  HG catch-at-age inputs explicitly labelled as proxies or blockers.

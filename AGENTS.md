@@ -63,6 +63,25 @@ pressure from the private `stier-lab/pacific-herring-predators` repo via
 zeros, two-era q, and no age/size structure. Treat it as the first defensible
 predator model to run on AWS, not as a promoted result until audit/PPC/LOO
 clear.
+As of 2026-05-16, the local predator source repo is
+`/Users/adrianstier/pacific-herring-predators`. For predator data or
+predator-only figures, start with `docs/predator-repo-integration-guide.md` and
+`CLAUDE.md`. The canonical predator files live in the sibling repo:
+`../pacific-herring-predators/docs/HG_PREDATION_SYNTHESIS.md`,
+`../pacific-herring-predators/docs/DATA_DICTIONARY.md`,
+`../pacific-herring-predators/docs/data_catalog.csv`,
+`../pacific-herring-predators/docs/data_catalog_HG_only.csv`,
+`../pacific-herring-predators/data/processed/consumption_budget/HG_predation_pressure_index_AUDITED.csv`,
+`../pacific-herring-predators/data/processed/consumption_budget/HG_pressure_climate_predator_covariates.csv`,
+`../pacific-herring-predators/data/processed/consumption_budget/HG_consumption_by_group_year_AUDITED.csv`,
+`../pacific-herring-predators/data/processed/consumption_budget/HG_consumption_by_species_year_AUDITED.csv`,
+and `../pacific-herring-predators/Output/figures/MASTER_HG_predation_AUDITED.pdf`.
+Import them into this repo with
+`PREDATOR_REPO_PATH=/Users/adrianstier/pacific-herring-predators Rscript --vanilla Code/02c_integrate_hg_predator_repo_products.R`.
+That writes ignored local products under `Data/processed/predators/` and
+`Output/diagnostics/hg_predator_repo_integration.md`. Do not hand-copy predator
+CSV values or figures into model docs without naming the sibling source path
+and, when needed for modeling, rerunning the import script.
 Use `docs/aws-codex-model-farm-lessons.md` as the living implementation log for
 what worked and failed while connecting Codex to AWS; update it immediately
 when new AWS setup issues are discovered.
