@@ -154,3 +154,10 @@ have final HG catch-at-age inputs:
 Use this branch to troubleshoot geometry and sensitivity to catch-like predator
 removals on AWS. Do not describe it as the completed HG Doherty catch-at-age
 model.
+
+Cloud smoke outcome: the low-vulnerability smoke (`Mp_mid * 0.05`) completed on
+AWS Batch on 2026-05-16, but it is not full-fit ready. The smoke had 0
+divergences and 0 treedepth hits, yet E-BFMI was about 0.003 and `sigma_proc`
+inflated, showing that the fixed-removal offset is being absorbed by process
+variance. Treat this as a negative geometry result and reparameterize or replace
+the fixed-removal formulation before submitting a full run.

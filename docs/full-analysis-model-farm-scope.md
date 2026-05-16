@@ -227,7 +227,10 @@ Goal:
   biomass-removal analogue where predator demand removes biomass rather than
   acting as a regression covariate. The first registered screen is deliberately
   low-vulnerability scaled (`Mp_mid`, `DOHERTY_PROXY_PRED_SCALE=0.05`) because
-  unscaled and 0.25-scaled mortality offsets were not local-smoke usable.
+  unscaled and 0.25-scaled mortality offsets were not local-smoke usable. The
+  May 16 cloud smoke for the 0.05 branch ran but had poor E-BFMI, so the full
+  fit is gated until the fixed-removal formulation is reparameterized or
+  replaced.
 
 Stop if:
 

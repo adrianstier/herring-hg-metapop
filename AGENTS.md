@@ -163,7 +163,10 @@ as a scaled catch-like biomass mortality analogue. The first registered screen
 uses `Mp_mid` from the predator repo with `DOHERTY_PROXY_PRED_SCALE=0.05`
 because unscaled and 0.25-scaled mortality offsets were not local-smoke usable.
 This is a low-vulnerability biomass-scale Doherty-style proxy only; it is not
-a full catch-at-age model and does not estimate age/size selectivity.
+a full catch-at-age model and does not estimate age/size selectivity. The May
+16 cloud smoke completed but had poor E-BFMI, so do not submit or interpret a
+full `m5_stier_doherty_proxy_removals` fit until the fixed-removal formulation
+is reparameterized or replaced.
 
 The spawn-index scale audit is in `Output/diagnostics/spawn_index_scale_audit.md`
 and `Output/figures/spawn_index_scale_audit.pdf`. It shows that Stier's legacy

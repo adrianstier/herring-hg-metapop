@@ -53,6 +53,22 @@ It writes:
 - `Output/diagnostics/model_decision_ledger.csv`;
 - `Output/diagnostics/model_decision_ledger.md`.
 
+### May 16 Targeted Cloud Smoke Gate
+
+The May 16 low-vulnerability Doherty proxy-removal smoke shows the correct
+cloud gating pattern. Submit a reduced smoke first, sync the artifacts, and read
+the sampler diagnostics before launching a full on-demand fit. The job
+`smoke_m5_stier_doherty_proxy_removals_reduced` succeeded on Batch under:
+
+```text
+s3://herring-hg-metapop-107094296950/herring-hg-metapop/2026-05-16-doherty-proxy-lowvuln
+```
+
+But a successful container is not enough. The synced fit had 0 divergences and
+0 treedepth hits, yet E-BFMI was about 0.003 with inflated process variance.
+Conclusion: keep the full row as `planned_model_fit` and reparameterize or
+replace the fixed-removal formulation before any full fit.
+
 ### AWS IAM Identity Center / SSO
 
 The correct approach was AWS CLI v2 SSO, not long-lived access keys pasted into

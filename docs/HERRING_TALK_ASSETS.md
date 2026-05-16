@@ -186,7 +186,8 @@ the TBD rows in section 1.
   `m5_stier_doherty_proxy_removals`, using `Mp_mid` from the sibling predator
   repo with `DOHERTY_PROXY_PRED_SCALE=0.05`. This is talk-safe only as a
   biomass-scale proxy-removal sensitivity; it is not the completed HG
-  catch-at-age predator model.
+  catch-at-age predator model. AWS smoke completed, but E-BFMI was poor, so
+  no full fit should be shown as a model result yet.
 - **Deck location:** none yet (`Output/presentations/` is empty). Record the
   working deck path here once it exists.
 - **Next actions:** (1) run §5a/§5b to close the pending sources; (2) confirm

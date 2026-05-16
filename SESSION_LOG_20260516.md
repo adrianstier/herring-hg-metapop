@@ -83,6 +83,15 @@
   A tiny 0.05 local smoke completed with no divergences or treedepth hits, but
   low E-BFMI and slow longer-warmup behavior mean the branch should start with
   a cloud smoke before any full fit.
+- AWS smoke result: `smoke_m5_stier_doherty_proxy_removals_reduced` completed
+  on the spot queue under S3 prefix
+  `s3://herring-hg-metapop-107094296950/herring-hg-metapop/2026-05-16-doherty-proxy-lowvuln`
+  as Batch job `bd83b5c9-f6d8-4470-88cd-b0c9f0610198`. Container runtime was
+  about 1.7 minutes with exit code 0, but sampler geometry is not acceptable
+  for a full fit: 0 divergences, 0 treedepth hits, max treedepth 11, but
+  E-BFMI about 0.003 and inflated `sigma_proc`. Keep the full manifest row as
+  `planned_model_fit` until the fixed-removal formulation is reparameterized or
+  replaced.
 - Updated `Code/03c_bayesian_fit_audit.R`,
   `Code/03d_posterior_predictive_checks_v3.R`,
   `Code/04_compare_models_v3.R`, and `Code/07bi_model_decision_ledger.R` so

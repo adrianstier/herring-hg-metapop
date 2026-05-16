@@ -208,3 +208,9 @@ It does not use age composition, weight-at-age, length-at-age, predator
 selectivity-at-age, or future predator scenarios. Treat any output as
 proxy-removal context only until the exact HG biological inputs and selectivity
 registry are complete.
+
+AWS status: the low-vulnerability cloud smoke for this branch succeeded at the
+container level on 2026-05-16, but sampler geometry was poor (E-BFMI about
+0.003 with inflated process variance). Do not submit the full
+`m5_stier_doherty_proxy_removals` fit until the fixed-removal formulation is
+reparameterized or replaced.
