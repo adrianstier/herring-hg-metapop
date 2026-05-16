@@ -101,3 +101,20 @@
   `docs/doherty-style-hg-replication-status.md`, and
   `docs/wcvi-predation-replication-bridge.md` to mark this as a constrained
   biomass-scale proxy-removal branch for AWS troubleshooting.
+
+## HG Doherty Mp-covariate fallback branch
+
+- Added `inst/stan/herring_metapop_m5_stier_doherty_mp_covariate.stan` and
+  `Code/03_fit_m5_stier_doherty_mp_covariate.R` as a fallback after the fixed
+  proxy-removal smoke exposed poor E-BFMI.
+- Scientific scope: this branch keeps ambiguous zeros skipped, the two-era
+  `q`, all 11 sections, and the `m1_stier_11` observation layer. It estimates
+  one annual process coefficient for `pred_mortality_mid_z = z(log1p(Mp_mid))`.
+  It is an Mp time-series screen, not a full catch-at-age Doherty model and not
+  fixed catch-like removals.
+- Added full and smoke rows to `cloud/model-farm-manifest.csv`; keep the full
+  row as `planned_model_fit` until a reduced smoke has acceptable geometry.
+- Local reduced smoke result: 0 divergences but 29/100 post-warmup transitions
+  hit max treedepth, E-BFMI was about 0.008, and `sigma_proc` inflated. The
+  smoke row is therefore `planned_real_smoke`, not an AWS submission candidate,
+  until the Mp covariate branch is reparameterized or detrended.

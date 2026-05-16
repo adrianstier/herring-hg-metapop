@@ -136,6 +136,8 @@ hypothesis_from_id <- function(model_id) {
       "Test HG annual predator pressure on the Stier observation layer.",
     model_id == "m5_stier_predator_demand_total" ~
       "Test total HG predator demand on the Stier observation layer without dividing by observed spawn.",
+    model_id == "m5_stier_doherty_mp_covariate" ~
+      "Test the Doherty-style HG predation-mortality proxy as an estimated single covariate after fixed removals failed geometry.",
     model_id == "m5_stier_doherty_proxy_removals" ~
       "Test scaled audited HG predator mortality as a Doherty-style catch-like biomass removal proxy on the Stier observation layer.",
     model_id == "m5_v5" ~
@@ -161,6 +163,7 @@ covariates_from_id <- function(model_id) {
     model_id == "m3_stier_distance" ~ "catch removals; lag-1 PDO; effective-distance covariance",
     model_id == "m5_stier_predation_pressure" ~ "catch removals; lag-1 PDO; HG predator pressure",
     model_id == "m5_stier_predator_demand_total" ~ "catch removals; lag-1 PDO; total HG predator demand",
+    model_id == "m5_stier_doherty_mp_covariate" ~ "catch removals; lag-1 PDO; z(log1p Mp_mid) predator mortality proxy",
     model_id == "m5_stier_doherty_proxy_removals" ~ "catch removals; lag-1 PDO; scaled HG predator Mp as catch-like proxy removals",
     model_id == "m5_combined" ~ "PDO; combined regional predator index; legacy density/spatial terms",
     str_detect(model_id, "m5") ~ "predator covariates",
@@ -171,7 +174,7 @@ covariates_from_id <- function(model_id) {
 
 lag_from_id <- function(model_id) {
   case_when(
-    str_detect(model_id, "stier_11|obs_hier|method_sensitivity|site_growth|distance|predation_pressure|predator_demand_total|doherty_proxy_removals") ~
+    str_detect(model_id, "stier_11|obs_hier|method_sensitivity|site_growth|distance|predation_pressure|predator_demand_total|doherty_mp_covariate|doherty_proxy_removals") ~
       "PDO lag 1; predator pressure/demand as encoded in HG covariate product where present",
     model_id == "m5_combined" ~ "legacy annual predator index alignment",
     TRUE ~ "not applicable or branch-specific"
@@ -180,7 +183,7 @@ lag_from_id <- function(model_id) {
 
 observation_from_id <- function(model_id, likelihood_unit) {
   case_when(
-    str_detect(model_id, "m1_stier_11|m1_stier_obs_hier|m1_stier_method_sensitivity|m2_stier_site_growth|m3_stier_distance|m5_stier_predation_pressure|m5_stier_predator_demand_total|m5_stier_doherty_proxy_removals") ~
+    str_detect(model_id, "m1_stier_11|m1_stier_obs_hier|m1_stier_method_sensitivity|m2_stier_site_growth|m3_stier_distance|m5_stier_predation_pressure|m5_stier_predator_demand_total|m5_stier_doherty_mp_covariate|m5_stier_doherty_proxy_removals") ~
       "Stier-aligned positive-only spawn likelihood; ambiguous zeros skipped; 11 sections",
     likelihood_unit == "surveyed_cells" ~
       "surveyed-cell detection-aware legacy likelihood",
@@ -222,6 +225,8 @@ reason_from_decision <- function(model_id, decision, comparison_status, aws_stat
       "Completed Doherty-style proxy-removal screen; sampler/data-fit gates do not materially beat the promoted baseline.",
     model_id == "m5_stier_predator_demand_total" ~
       "Gated predator-demand screen; WCVI bridge supports demand over pressure ratio, but adjusted diagnostic signal is weak.",
+    model_id == "m5_stier_doherty_mp_covariate" ~
+      "Local reduced smoke also had poor geometry; tests the Mp series as an estimated process covariate only, but needs reparameterization before AWS.",
     model_id == "m5_stier_doherty_proxy_removals" ~
       "Cloud smoke completed but the low-vulnerability fixed-removal formulation has poor energy geometry; useful as a negative AWS troubleshooting result, not a full catch-at-age predation-mortality model.",
     model_id == "m5_v5" ~
@@ -254,6 +259,8 @@ next_action_from_decision <- function(model_id, decision) {
       "Hold unless diagnostics clearly justify exact re-LOO; treat as proxy-removal context only.",
     model_id == "m5_stier_predator_demand_total" ~
       "Submit only as a deliberate single-covariate AWS screen after SSO refresh; longer local smoke had baseline-like heavy geometry.",
+    model_id == "m5_stier_doherty_mp_covariate" ~
+      "Do not submit to AWS yet; reparameterize or detrend the Mp covariate branch before another reduced smoke.",
     model_id == "m5_stier_doherty_proxy_removals" ~
       "Do not submit the full fit yet; reparameterize or replace the fixed-removal formulation before another cloud smoke.",
     model_id == "m5_v5" ~
@@ -377,6 +384,7 @@ md_lines <- c(
   "- `m1_stier_11` remains the promoted baseline.",
   "- `m5_stier_predation_pressure` is held: sampler-usable, but no material data-fit gain over baseline.",
   "- `m5_stier_predator_demand_total` is held after the completed AWS screen: sampler-clean, but no material calibration gain and unresolved high Pareto-k points.",
+  "- `m5_stier_doherty_mp_covariate` was tested as a fallback estimated Mp screen, but local smoke geometry was poor; do not send it to AWS yet.",
   "- `m5_stier_doherty_proxy_removals` now has a cloud-smoke negative result: the low-vulnerability fixed-removal branch runs, but poor E-BFMI means no full fit yet.",
   "- `m5_v5` is archived because sampler pathologies override any apparent LOO improvement.",
   "- `m5_combined` is archived because the completed cloud run saturated max treedepth and badly worsened spawn/catch calibration.",

@@ -212,6 +212,9 @@ Run after predator repo products are available:
 - `m5_stier_predation_pressure`;
 - `m5_stier_doherty_proxy_removals` only after
   `smoke_m5_stier_doherty_proxy_removals_reduced` has usable geometry;
+- `m5_stier_doherty_mp_covariate` as the fallback after fixed-removal geometry
+  failed; current local smoke is also not AWS-ready, so reparameterize or
+  detrend before submitting;
 - `m5_stier_predator_demand_total` only after reviewing
   `Output/diagnostics/wcvi_predation_replication_bridge.md`;
 - `smoke_m5_stier_predation_pressure_reduced` before a long cloud run if the
@@ -231,6 +234,11 @@ Goal:
   May 16 cloud smoke for the 0.05 branch ran but had poor E-BFMI, so the full
   fit is gated until the fixed-removal formulation is reparameterized or
   replaced.
+- for `m5_stier_doherty_mp_covariate`, test whether the Doherty-style
+  `Mp_mid` time series has signal as a conventional estimated process
+  covariate before trying another fixed-removal formulation. The first local
+  smoke failed geometry gates, so this is a reparameterization target rather
+  than a cloud candidate.
 
 Stop if:
 

@@ -214,3 +214,11 @@ container level on 2026-05-16, but sampler geometry was poor (E-BFMI about
 0.003 with inflated process variance). Do not submit the full
 `m5_stier_doherty_proxy_removals` fit until the fixed-removal formulation is
 reparameterized or replaced.
+
+Fallback status: `m5_stier_doherty_mp_covariate` is the next reduced-smoke
+candidate. It estimates a single coefficient on `z(log1p(Mp_mid))` while
+keeping the Stier observation layer. This tests the Doherty-style Mp time series
+without imposing fixed removals, but it still does not complete the HG
+catch-at-age replication. The first local reduced smoke was not AWS-ready
+(29/100 post-warmup treedepth hits and E-BFMI about 0.008), so stabilize this
+branch before submitting it.

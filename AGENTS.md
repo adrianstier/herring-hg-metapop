@@ -167,6 +167,16 @@ a full catch-at-age model and does not estimate age/size selectivity. The May
 16 cloud smoke completed but had poor E-BFMI, so do not submit or interpret a
 full `m5_stier_doherty_proxy_removals` fit until the fixed-removal formulation
 is reparameterized or replaced.
+The immediate fallback branch is `m5_stier_doherty_mp_covariate`, with Stan
+file `inst/stan/herring_metapop_m5_stier_doherty_mp_covariate.stan` and fit
+script `Code/03_fit_m5_stier_doherty_mp_covariate.R`. It uses
+`pred_mortality_mid_z = z(log1p(Mp_mid))` as an estimated single annual process
+covariate on the same Stier observation layer. This tests whether the
+Doherty-style Mp time series has signal after the fixed-removal formulation
+failed geometry; it is still not a catch-at-age model and must clear a reduced
+smoke before any full AWS fit. The first local reduced smoke did not clear
+geometry (max-treedepth pressure and low E-BFMI), so do not submit it until it
+is reparameterized or detrended.
 
 The spawn-index scale audit is in `Output/diagnostics/spawn_index_scale_audit.md`
 and `Output/figures/spawn_index_scale_audit.pdf`. It shows that Stier's legacy

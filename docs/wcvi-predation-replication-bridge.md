@@ -161,3 +161,21 @@ divergences and 0 treedepth hits, yet E-BFMI was about 0.003 and `sigma_proc`
 inflated, showing that the fixed-removal offset is being absorbed by process
 variance. Treat this as a negative geometry result and reparameterize or replace
 the fixed-removal formulation before submitting a full run.
+
+## May 16 Mp-Covariate Fallback
+
+The fallback branch is `m5_stier_doherty_mp_covariate`. It keeps the same
+Stier-aligned observation layer and uses `pred_mortality_mid_z = z(log1p(Mp_mid))`
+as an estimated annual process covariate. This is less mechanistically strict
+than fixed catch-like removals, but it answers a useful diagnostic question:
+does the Doherty-style HG Mp proxy carry a model signal when it is estimated as
+a normal single covariate rather than imposed as fixed mortality?
+
+Interpretation guardrail: this branch is still not a catch-at-age model. It has
+no age composition, weight-at-age, length-at-age, predator selectivity, or
+future predator scenarios.
+
+Local smoke outcome: the initial `pred_mortality_mid_z` branch is not
+AWS-ready. It had 0 divergences, but 29/100 post-warmup transitions hit max
+treedepth and E-BFMI was about 0.008. Do not submit it to AWS until the Mp
+covariate is reparameterized, detrended, or otherwise stabilized.

@@ -188,6 +188,12 @@ the TBD rows in section 1.
   biomass-scale proxy-removal sensitivity; it is not the completed HG
   catch-at-age predator model. AWS smoke completed, but E-BFMI was poor, so
   no full fit should be shown as a model result yet.
+- **2026-05-16 (Mp fallback):** Added `m5_stier_doherty_mp_covariate` as a
+  fallback screen using `pred_mortality_mid_z = z(log1p(Mp_mid))` as one
+  estimated annual process covariate. This is a diagnostic bridge only; it can
+  support the talk as "we tested whether the Doherty-style Mp proxy carries
+  signal" only after smoke/full diagnostics clear. Initial local smoke did not
+  clear geometry, so do not show this as a model result.
 - **Deck location:** none yet (`Output/presentations/` is empty). Record the
   working deck path here once it exists.
 - **Next actions:** (1) run §5a/§5b to close the pending sources; (2) confirm
