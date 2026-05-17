@@ -166,6 +166,7 @@ lines <- c(
   "- Do not claim a promoted predator coefficient.",
   "- Do not call the humpback scaffold section-level exposure.",
   "- Do not treat salmon demand as adult biomass mortality.",
+  "- Do not treat DFO 2025 age-2 recruitment rows as independent juvenile-survey validation; they are SCA model-output context.",
   "- Do not revive `m5_combined` or launch `m6_stier_predator_exposure_mammals` from the current gates.",
   "",
   "## Gate Summary",
@@ -196,6 +197,7 @@ claim_table <- tibble(
     "predator_effect_not_promoted",
     "humpback_section_exposure_missing",
     "salmon_is_recruitment_context",
+    "sca_recruitment_is_context",
     "post_talk_gate_before_stan"
   ),
   talk_safe_text = c(
@@ -203,6 +205,7 @@ claim_table <- tibble(
     "Current predator branches and exposure screens do not promote a predator coefficient.",
     "Humpback demand exists at HG-wide scale, but section exposure still needs spatial sightings/density.",
     "Salmon demand should be framed as juvenile/recruitment context, not adult SSB mortality.",
+    "Public DFO age-2 recruitment rows are SCA model output, not independent validation data.",
     "Only build an exposure Stan branch after a section-year exposure row clears residual-screen and smoke gates."
   )
 )

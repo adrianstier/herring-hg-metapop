@@ -149,8 +149,9 @@ biomass mortality. Salmon demand is the only annual-demand bridge row that gets
 a follow-up-only label, but it is a juvenile/recruitment pathway, not a clean
 adult SSB removal covariate. The lag-1 adult-growth bridge has `n = 73`,
 Spearman rho about `-0.32`, detrended r about `-0.05`, and adjusted beta about
-`-0.05`. Public 2015-2024 DFO HG recruitment checks are descriptive only
-(same-year rho about `0.15`, lag-1 rho about `0.09`, lag-2 rho about `0.28`).
+`-0.05`. Public 2015-2024 DFO HG age-2 recruitment checks are SCA-output
+context only, not independent juvenile-survey validation (same-year rho about
+`0.15`, lag-1 rho about `0.09`, lag-2 rho about `0.28`).
 Do not submit a salmon adult-biomass Stan branch without age/recruitment
 structure.
 

@@ -388,7 +388,7 @@ lines <- c(
   "",
   "- The current repo has enough data for a biomass-model predator-demand analogue: spawn index, catch removals, and annual HG predator demand are present.",
   "- Public DFO Appendix B HG catch, spawn, number-at-age, weight-at-age, biosample, and maturity tables have now been extracted provisionally through 2017.",
-  "- Newer public PDFs now add DFO 2025/005 current summary tables through 2024 for HG catch, spawn, SCA parameters, recruitment, biomass/depletion, reference points, and broad projected age proportions.",
+  "- Newer public PDFs now add DFO 2025/005 current summary tables through 2024 for HG catch, spawn, SCA parameters, SCA model-output recruitment, biomass/depletion, reference points, and broad projected age proportions.",
   "- It does **not** yet have the herring biological inputs needed for a true catch-at-age model in final model-ready local form: exact annual 2018-2024 number/proportion-at-age, annual weight-at-age matrices, effective sample-size metadata, length-at-age tables, exact SCA/SISCAH input files, and predator age/size selectivity are still absent or unresolved.",
   "- A direct DFO request is still useful, but it should ask for machine-readable copies and metadata for the published assessment inputs rather than asking whether the inputs exist.",
   "- Source provenance is controlled by `docs/doherty-style-hg-source-provenance.md` and `Output/diagnostics/doherty_hg_source_registry.csv`; all extracted tables must retain source document/table/URL, extraction method, and extraction notes.",

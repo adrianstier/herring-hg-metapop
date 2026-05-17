@@ -305,7 +305,7 @@ sr_table_11 <- parse_table_row_numbers(
     source_table = "Table 11",
     source_url = "https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/41290963.pdf",
     extraction_method = "pdftotext -layout row-regex extraction",
-    extraction_notes = "HG age-2 recruitment public SCA summary, 2015-2024."
+    extraction_notes = "HG age-2 recruitment public SCA model-output summary, 2015-2024; context only, not independent juvenile-survey data."
   )
 
 sr_table_15 <- parse_table_row_numbers(
@@ -406,7 +406,7 @@ summary_lines <- c(
   paste0("- DFO 2025/005 Table 2 major catch rows: `", nrow(sr_table_2), "`."),
   paste0("- DFO 2025/005 Table 3 HG spawn/proportion rows: `", nrow(sr_table_3), "`."),
   paste0("- DFO 2025/005 Table 7 HG key-parameter rows: `", nrow(sr_table_7), "`."),
-  paste0("- DFO 2025/005 Table 11 HG recruitment rows: `", nrow(sr_table_11), "`."),
+  paste0("- DFO 2025/005 Table 11 HG SCA-output recruitment rows: `", nrow(sr_table_11), "`."),
   paste0("- DFO 2025/005 Table 15 HG biomass/depletion rows: `", nrow(sr_table_15), "`."),
   paste0("- DFO 2025/005 Table 19 HG reference-point rows: `", nrow(sr_table_19), "`."),
   paste0("- 2024/2025 IFMP Appendix 3 Table 3.1 projected biomass/age rows: `", nrow(ifmp_2024_table_3_1), "`."),
@@ -414,7 +414,7 @@ summary_lines <- c(
   "## Interpretation",
   "",
   "- DFO 2025/005 confirms that the 2024 major-stock SCA input windows run through 2024 for catch, spawn index, age composition, and weight-at-age.",
-  "- The Science Response provides useful public summaries for HG recent catch, spawn, SCA parameters, recruitment, biomass/depletion, reference points, and projected broad age composition.",
+  "- The Science Response provides useful public summaries for HG recent catch, spawn, SCA parameters, SCA model-output recruitment, biomass/depletion, reference points, and projected broad age composition.",
   "- The HG rebuilding plan provides figure captions confirming major and sub-stock age/length/weight summaries and the imputation rule for missing weight/length-at-age values, but it does not provide machine-readable fish-level or annual age-length tables.",
   "- The 2025/2026 IFMP catalogue page confirms a public PDF, but command-line requests to the direct PDF currently return an HTML archive page. Treat it as a public-source access block, not a biological-data absence.",
   "",

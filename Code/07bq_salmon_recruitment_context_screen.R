@@ -113,7 +113,9 @@ recruitment_screen <- if (file.exists(recruitment_path)) {
   recruitment <- read_csv(recruitment_path, show_col_types = FALSE) %>%
     transmute(
       recruitment_year = year,
-      recruitment_millions_median
+      recruitment_millions_median,
+      response_evidence_class = "public_sca_model_output",
+      response_model_use_status = "sca_output_context_only"
     )
 
   crossing(
@@ -126,27 +128,30 @@ recruitment_screen <- if (file.exists(recruitment_path)) {
         filter(is.finite(salmon_demand_log_z), is.finite(recruitment_millions_median))
 
       tibble(
-        response = "public_DFO_HG_recruitment_2015_2024",
+        response = "public_DFO_HG_SCA_age2_recruitment_2015_2024",
+        response_evidence_class = "public_sca_model_output",
+        response_model_use_status = "sca_output_context_only",
         lag_label,
         lag_n,
         n = nrow(dat),
         spearman_rho = safe_cor(dat$salmon_demand_log_z, dat$recruitment_millions_median, "spearman"),
         pearson_r = safe_cor(dat$salmon_demand_log_z, dat$recruitment_millions_median, "pearson"),
-        gate = case_when(
-          nrow(dat) < 10 ~ "descriptive_only_too_few_public_recruitment_years",
-          TRUE ~ "descriptive_only_no_adult_biomass_branch"
-        )
+        gate = "sca_output_context_only",
+        independence_note = "DFO 2025/005 Table 11 is SCA model-estimated age-2 recruitment, not an independent juvenile survey or raw biological input."
       )
     })
 } else {
   tibble(
-    response = "public_DFO_HG_recruitment_2015_2024",
+    response = "public_DFO_HG_SCA_age2_recruitment_2015_2024",
+    response_evidence_class = character(),
+    response_model_use_status = character(),
     lag_label = character(),
     lag_n = integer(),
     n = integer(),
     spearman_rho = double(),
     pearson_r = double(),
-    gate = character()
+    gate = character(),
+    independence_note = character()
   )
 }
 
@@ -215,7 +220,7 @@ bridge_line <- if (nrow(bridge_screen) > 0) {
 recruitment_lines <- if (nrow(recruitment_screen) > 0) {
   recruitment_screen %>%
     mutate(line = paste0(
-      "- Recruitment context `", lag_label, "`: n `", n,
+      "- SCA-output recruitment context `", lag_label, "`: n `", n,
       "`, Spearman rho `", number(spearman_rho, accuracy = 0.01),
       "`, gate `", gate, "`."
     )) %>%
@@ -243,6 +248,7 @@ lines <- c(
   "",
   "- Salmon demand is the only current predator-demand row that looks follow-up-worthy in the bridge gate, but it is not an adult SSB mortality mechanism.",
   "- Treat salmon as juvenile-herring / recruitment context unless the model gains recruitment or age structure.",
+  "- The public DFO 2025/005 age-2 recruitment check is SCA model-output context only; it is not an independent juvenile survey or raw recruitment observation.",
   "- Do not submit a salmon adult-biomass Stan branch from the current screen.",
   bridge_line,
   "",
@@ -256,7 +262,7 @@ lines <- c(
     "`."
   ),
   paste0(
-    "- Public DFO recruitment extract: `",
+    "- Public DFO SCA recruitment-output extract: `",
     recruitment_path,
     "`",
     if (file.exists(recruitment_path)) "." else " (missing in this run)."

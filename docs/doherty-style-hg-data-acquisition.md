@@ -52,10 +52,10 @@ As of 2026-05-15, the first public extraction pass is implemented:
 
 The Appendix B extracted public tables cover 1951-2017. The newer public PDF
 extraction adds DFO 2025/005 summary tables through 2024 for HG catch, spawn,
-SCA parameters, recruitment, biomass/depletion, reference points, and broad
-projected age composition. Exact annual 2018-2024 age/weight input matrices,
-effective sample-size metadata, length-at-age tables, and predator age/size
-selectivity remain unresolved.
+SCA parameters, SCA model-output recruitment, biomass/depletion, reference
+points, and broad projected age composition. Exact annual 2018-2024 age/weight
+input matrices, effective sample-size metadata, length-at-age tables, and
+predator age/size selectivity remain unresolved.
 
 Every extracted table must retain `source_document`, `source_table`,
 `source_url`, `extraction_method`, and `extraction_notes`. Local/private sources

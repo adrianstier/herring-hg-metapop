@@ -72,9 +72,10 @@ repo still lacks current 2018-2024 machine-readable biological inputs,
 effective sample-size/preprocessing metadata, length-at-age tables, and predator
 age/size selectivity. Since that first pass, `Code/02f_extract_newer_dfo_public_pdfs.R`
 also extracts DFO 2025/005 public summaries through 2024 for HG catch, spawn,
-SCA parameters, recruitment, biomass/depletion, reference points, and projected
-broad age composition. Those are status/reporting extracts, not exact raw
-age/weight input matrices. See `docs/doherty-style-hg-replication-status.md`.
+SCA parameters, SCA model-output recruitment, biomass/depletion, reference
+points, and projected broad age composition. Those are status/reporting
+extracts, not exact raw age/weight input matrices. See
+`docs/doherty-style-hg-replication-status.md`.
 The source map for these herring and predator streams is
 `docs/doherty-style-hg-source-provenance.md`; new assessment or predator data
 products should not enter this bridge unless their source registry row and
@@ -232,7 +233,8 @@ talk and post-talk data plan:
   is not model-ready section exposure.
 - `Output/diagnostics/salmon_recruitment_context_screen.md`: salmon demand is
   follow-up-only context for juvenile/recruitment hypotheses, not adult biomass
-  mortality. The public 2015-2024 recruitment checks are descriptive only.
+  mortality. The public 2015-2024 age-2 recruitment checks are SCA-output
+  context only, not independent juvenile-survey validation.
 
 Use these as the bridge between the Doherty-style predator narrative and the
 current HG model result: predation is plausible and large, but the current

@@ -126,10 +126,11 @@ selectivity assumptions are extracted and audited.
 DFO Appendix B HG catch, spawn, number-at-age, weight-at-age, biosample, and
 maturity tables have been provisionally extracted through 2017; current
 DFO 2025/005 public summary tables have been extracted through 2024 for catch,
-spawn, SCA parameters, recruitment, biomass/depletion, reference points, and
-broad projected age composition. Exact annual 2018-2024 age/weight input
-matrices, length-at-age tables, effective sample-size metadata, predator
-age/size selectivity, and future predator scenarios remain unresolved.
+spawn, SCA parameters, SCA model-output recruitment, biomass/depletion,
+reference points, and broad projected age composition. Exact annual 2018-2024
+age/weight input matrices, length-at-age tables, effective sample-size
+metadata, predator age/size selectivity, and future predator scenarios remain
+unresolved.
 Every new extracted table should preserve `source_document`, `source_table`,
 `source_url`, `extraction_method`, and `extraction_notes`; local/private
 sources should record local path, upstream catalog, owner/custodian, and
@@ -303,7 +304,8 @@ The latest non-Stan driver screens add these operational conclusions:
   the only current annual-demand bridge row labelled follow-up-only, but it is
   recruitment/juvenile context, not adult SSB mortality. The lag-1 adult-growth
   gate has n 73, rho about -0.32, detrended r about -0.05, and adjusted beta
-  about -0.05; public 2015-2024 DFO recruitment checks are descriptive only.
+  about -0.05; public 2015-2024 DFO age-2 recruitment checks are SCA-output
+  context only, not independent juvenile-survey validation.
   Do not submit a salmon adult-biomass Stan branch without age/recruitment
   structure.
 - `Output/diagnostics/predator_talk_brief.md`: compact talk-facing predator

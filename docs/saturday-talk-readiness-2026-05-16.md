@@ -69,7 +69,8 @@ model-farm state.
   section weights are uniform and not model-ready.
 - Salmon context: lag-1 adult-growth bridge is follow-up-only, not a branch
   candidate; n 73, rho about -0.32, detrended r about -0.05, adjusted beta
-  about -0.05. Public 2015-2024 DFO recruitment checks are descriptive only.
+  about -0.05. Public 2015-2024 DFO age-2 recruitment checks are SCA-output
+  context only, not independent juvenile-survey validation.
 - Integrated predator mechanism screen: no strict candidate rows. Harbour seal
   exposure has a negative adjusted beta (-0.10, p 0.02), but raw and post-2005
   directions are positive, so it is not a Stan-branch result. Predator x
