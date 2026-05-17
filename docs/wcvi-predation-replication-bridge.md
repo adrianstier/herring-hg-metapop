@@ -175,7 +175,12 @@ Interpretation guardrail: this branch is still not a catch-at-age model. It has
 no age composition, weight-at-age, length-at-age, predator selectivity, or
 future predator scenarios.
 
-Local smoke outcome: the initial `pred_mortality_mid_z` branch is not
+Troubleshooting outcome: the initial `pred_mortality_mid_z` branch was not
 AWS-ready. It had 0 divergences, but 29/100 post-warmup transitions hit max
-treedepth and E-BFMI was about 0.008. Do not submit it to AWS until the Mp
-covariate is reparameterized, detrended, or otherwise stabilized.
+treedepth and E-BFMI was about 0.008. A detrended,
+baseline-anchored version also failed the practical local-smoke gate because it
+remained too slow. The bridge screen now includes raw and detrended `Mp_mid`.
+The detrended lag-1 Mp proxy has weak signal against promoted-baseline growth:
+Spearman rho about 0.09, detrended r about 0.00, and adjusted beta about -0.01.
+Do not submit the Mp Stan branch to AWS until there is a stronger spatial or
+age-selective predator data product.

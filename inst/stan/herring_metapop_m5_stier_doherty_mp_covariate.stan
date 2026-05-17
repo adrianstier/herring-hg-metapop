@@ -4,7 +4,8 @@
 // Stier-aligned Doherty Mp-covariate fallback branch:
 //   1. Keeps the 11-section positive-only, zeros-ambiguous observation model.
 //   2. Keeps the two-era surface/SCUBA q split.
-//   3. Adds lagged annual HG predation-mortality proxy, z(log1p(Mp_mid)).
+//   3. Adds lagged annual HG predation-mortality proxy, detrended
+//      z(log1p(Mp_mid)) by default.
 //   4. This is a single-covariate process screen after the fixed-removal
 //      branch showed poor energy geometry; it is not a catch-at-age model.
 // ============================================================================
@@ -81,15 +82,21 @@ transformed parameters {
 }
 
 model {
-  Umu ~ normal(0, 1);
-  pdocoef ~ normal(0, 1);
-  predcoef ~ normal(0, 1);
-  sigma_proc ~ student_t(3, 0, 2.5);
+  // Baseline-anchored priors keep this branch a targeted residual-process
+  // screen rather than letting the predator term trade off with the full
+  // process and observation scale.
+  Umu ~ normal(0.03, 0.1);
+  pdocoef ~ normal(-0.05, 0.15);
+  // Regularize this time-series screen: a 1-SD Mp residual effect of 0.5 is
+  // already a large annual log-growth shift for a biomass model.
+  predcoef ~ normal(0, 0.5);
+  sigma_proc ~ normal(0.72, 0.2);
 
   // Current DFO tonnes-scale q values should be estimated, not copied from
   // Stier's original spawn-habitat-index scale.
-  sigma_obs ~ normal(0.75, 0.35);
-  log_q ~ normal(0, 2.0);
+  sigma_obs ~ normal(1.56, 0.2);
+  log_q[1] ~ normal(-1.73, 0.5);
+  log_q[2] ~ normal(-0.88, 0.5);
 
   Pc_logit ~ normal(-1.386, 0.707);
   Z_init ~ normal(5, 10);

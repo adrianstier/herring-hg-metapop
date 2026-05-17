@@ -28,6 +28,18 @@ standardize <- function(x) {
   as.numeric((x - mean(x, na.rm = TRUE)) / stats::sd(x, na.rm = TRUE))
 }
 
+detrend_linear_z <- function(x, year) {
+  ok <- is.finite(x) & is.finite(year)
+  if (sum(ok) < 3L) {
+    return(standardize(x))
+  }
+  year_z <- standardize(year)
+  fit <- stats::lm(x[ok] ~ year_z[ok])
+  out <- rep(NA_real_, length(x))
+  out[ok] <- stats::residuals(fit)
+  standardize(out)
+}
+
 fill_annual <- function(x, year) {
   observed <- is.finite(x)
   if (!any(observed)) {
@@ -114,6 +126,9 @@ covariates <- tibble(year = years) %>%
     pred_mortality_low_z = standardize(log1p(Mp_low)),
     pred_mortality_mid_z = standardize(log1p(Mp_mid)),
     pred_mortality_high_z = standardize(log1p(Mp_high)),
+    pred_mortality_low_detrended_z = detrend_linear_z(log1p(Mp_low), year),
+    pred_mortality_mid_detrended_z = detrend_linear_z(log1p(Mp_mid), year),
+    pred_mortality_high_detrended_z = detrend_linear_z(log1p(Mp_high), year),
     humpback_log_z = standardize(log_humpback),
     n_bc_z = standardize(N_BC),
     npgo_z = standardize(npgo),
@@ -184,7 +199,21 @@ write_csv(group_tbl, file.path(out_dir, "hg_predator_consumption_by_group_year.c
 write_csv(recent_species, file.path(out_dir, "hg_predator_consumption_by_species_recent.csv"))
 write_csv(spatial_tbl, file.path(out_dir, "hg_spatial_predator_sites.csv"))
 write_csv(
-  covariates %>% select(year, C_total_kt, HG_spawn_kt, Mp_low, Mp_mid, Mp_high),
+  covariates %>%
+    select(
+      year,
+      C_total_kt,
+      HG_spawn_kt,
+      Mp_low,
+      Mp_mid,
+      Mp_high,
+      pred_mortality_low_z,
+      pred_mortality_mid_z,
+      pred_mortality_high_z,
+      pred_mortality_low_detrended_z,
+      pred_mortality_mid_detrended_z,
+      pred_mortality_high_detrended_z
+    ),
   file.path(out_dir, "hg_predator_mp_sensitivity.csv")
 )
 

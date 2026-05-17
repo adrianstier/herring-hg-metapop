@@ -170,13 +170,17 @@ is reparameterized or replaced.
 The immediate fallback branch is `m5_stier_doherty_mp_covariate`, with Stan
 file `inst/stan/herring_metapop_m5_stier_doherty_mp_covariate.stan` and fit
 script `Code/03_fit_m5_stier_doherty_mp_covariate.R`. It uses
-`pred_mortality_mid_z = z(log1p(Mp_mid))` as an estimated single annual process
-covariate on the same Stier observation layer. This tests whether the
-Doherty-style Mp time series has signal after the fixed-removal formulation
-failed geometry; it is still not a catch-at-age model and must clear a reduced
-smoke before any full AWS fit. The first local reduced smoke did not clear
-geometry (max-treedepth pressure and low E-BFMI), so do not submit it until it
-is reparameterized or detrended.
+`pred_mortality_mid_detrended_z`, a linearly detrended
+`z(log1p(Mp_mid))` residual, as an estimated single annual process covariate on
+the same Stier observation layer. This tests whether the Doherty-style Mp time
+series has signal after the fixed-removal formulation failed geometry; it is
+still not a catch-at-age model and must clear a reduced smoke before any full
+AWS fit. The raw, detrended, and baseline-anchored local smokes did not clear
+practical geometry gates, and the WCVI bridge residual screen shows weak
+lag-1 detrended Mp signal. Do not submit it to AWS yet; use
+`Output/diagnostics/wcvi_predation_replication_bridge.md` and
+`Output/diagnostics/wcvi_predator_demand_residual_screen.csv` as the current
+talk-safe predator diagnostic.
 
 The spawn-index scale audit is in `Output/diagnostics/spawn_index_scale_audit.md`
 and `Output/figures/spawn_index_scale_audit.pdf`. It shows that Stier's legacy

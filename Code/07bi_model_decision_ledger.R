@@ -226,7 +226,7 @@ reason_from_decision <- function(model_id, decision, comparison_status, aws_stat
     model_id == "m5_stier_predator_demand_total" ~
       "Gated predator-demand screen; WCVI bridge supports demand over pressure ratio, but adjusted diagnostic signal is weak.",
     model_id == "m5_stier_doherty_mp_covariate" ~
-      "Local reduced smoke also had poor geometry; tests the Mp series as an estimated process covariate only, but needs reparameterization before AWS.",
+      "Doherty Mp covariate branch is now detrended and baseline-anchored, but local smoke remained too slow and bridge-screen signal is weak.",
     model_id == "m5_stier_doherty_proxy_removals" ~
       "Cloud smoke completed but the low-vulnerability fixed-removal formulation has poor energy geometry; useful as a negative AWS troubleshooting result, not a full catch-at-age predation-mortality model.",
     model_id == "m5_v5" ~
@@ -260,7 +260,7 @@ next_action_from_decision <- function(model_id, decision) {
     model_id == "m5_stier_predator_demand_total" ~
       "Submit only as a deliberate single-covariate AWS screen after SSO refresh; longer local smoke had baseline-like heavy geometry.",
     model_id == "m5_stier_doherty_mp_covariate" ~
-      "Do not submit to AWS yet; reparameterize or detrend the Mp covariate branch before another reduced smoke.",
+      "Do not submit to AWS yet; use the WCVI bridge residual screen for talk evidence and revisit only with stronger spatial/age-selective predator data.",
     model_id == "m5_stier_doherty_proxy_removals" ~
       "Do not submit the full fit yet; reparameterize or replace the fixed-removal formulation before another cloud smoke.",
     model_id == "m5_v5" ~
@@ -384,7 +384,7 @@ md_lines <- c(
   "- `m1_stier_11` remains the promoted baseline.",
   "- `m5_stier_predation_pressure` is held: sampler-usable, but no material data-fit gain over baseline.",
   "- `m5_stier_predator_demand_total` is held after the completed AWS screen: sampler-clean, but no material calibration gain and unresolved high Pareto-k points.",
-  "- `m5_stier_doherty_mp_covariate` was tested as a fallback estimated Mp screen, but local smoke geometry was poor; do not send it to AWS yet.",
+  "- `m5_stier_doherty_mp_covariate` was detrended/baseline-anchored, but the local smoke remained too slow and the bridge screen showed weak lag-1 Mp signal; do not send it to AWS yet.",
   "- `m5_stier_doherty_proxy_removals` now has a cloud-smoke negative result: the low-vulnerability fixed-removal branch runs, but poor E-BFMI means no full fit yet.",
   "- `m5_v5` is archived because sampler pathologies override any apparent LOO improvement.",
   "- `m5_combined` is archived because the completed cloud run saturated max treedepth and badly worsened spawn/catch calibration.",

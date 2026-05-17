@@ -215,10 +215,11 @@ container level on 2026-05-16, but sampler geometry was poor (E-BFMI about
 `m5_stier_doherty_proxy_removals` fit until the fixed-removal formulation is
 reparameterized or replaced.
 
-Fallback status: `m5_stier_doherty_mp_covariate` is the next reduced-smoke
-candidate. It estimates a single coefficient on `z(log1p(Mp_mid))` while
-keeping the Stier observation layer. This tests the Doherty-style Mp time series
-without imposing fixed removals, but it still does not complete the HG
-catch-at-age replication. The first local reduced smoke was not AWS-ready
-(29/100 post-warmup treedepth hits and E-BFMI about 0.008), so stabilize this
-branch before submitting it.
+Fallback status: `m5_stier_doherty_mp_covariate` now uses a detrended
+`z(log1p(Mp_mid))` residual and baseline-anchored priors while keeping the
+Stier observation layer. This tests the Doherty-style Mp time series without
+imposing fixed removals, but it still does not complete the HG catch-at-age
+replication. Local smoke attempts remain not AWS-ready, and the updated bridge
+screen shows weak lag-1 detrended Mp signal. Use the bridge diagnostic for
+talk context; do not submit the Mp Stan branch until a stronger spatial or
+age-selective predator data product exists.

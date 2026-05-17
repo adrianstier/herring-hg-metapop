@@ -80,7 +80,9 @@ needed_pred_cols <- c(
   "C_mammals_kt",
   "C_salmon_kt",
   "pressure_pct",
-  "pred_demand_total_log_z"
+  "pred_demand_total_log_z",
+  "pred_mortality_mid_z",
+  "pred_mortality_mid_detrended_z"
 )
 missing_cols <- setdiff(needed_pred_cols, names(pred_cov))
 if (length(missing_cols) > 0) {
@@ -112,7 +114,9 @@ bridge_ts <- driver_ts %>%
         pred_demand_fish_log_z,
         pred_demand_mammals_log_z,
         pred_demand_salmon_log_z,
-        pred_pressure_log_z
+        pred_pressure_log_z,
+        pred_mortality_mid_z,
+        pred_mortality_mid_detrended_z
       ),
     by = "year"
   ) %>%
@@ -143,6 +147,8 @@ predictor_specs <- tribble(
   "demand_salmon_log_z", "Salmon predator demand", "demand",
   "demand_birds_log_z", "Bird/egg predator demand", "demand",
   "pressure_ratio_log_z", "Predator pressure ratio", "pressure",
+  "pred_mortality_mid_z", "Doherty Mp proxy", "mortality_proxy",
+  "pred_mortality_mid_detrended_z", "Detrended Doherty Mp proxy", "mortality_proxy",
   "pdo", "PDO", "climate"
 )
 
@@ -456,10 +462,12 @@ lines <- c(
   ),
   "- Treat pressure ratio as descriptive because it divides by observed HG spawn; use predator demand for the next model covariate.",
   "- Future-demand rows in `wcvi_predator_demand_residual_screen.csv` are negative controls; a credible branch should not rely only on monotonic calendar time.",
+  "- The screen now includes raw and detrended Doherty-style `Mp_mid` proxies; the detrended row asks whether Mp carries signal after removing its linear calendar trend.",
   "",
   "## Decision",
   "",
   "- Prepare `m5_stier_predator_demand_total` as the next single-covariate predator screen.",
+  "- Treat `m5_stier_doherty_proxy_removals` and `m5_stier_doherty_mp_covariate` as geometry-gated until reparameterized; use this bridge as the talk-safe predator diagnostic.",
   "- Keep zeros ambiguous, use two-era q, fit all 11 sections, and compare only against `m1_stier_11`.",
   "- Do not resurrect `m5_combined`; do not add group combinations until total demand or one group-specific branch improves calibration and remains sampler-clean.",
   "",

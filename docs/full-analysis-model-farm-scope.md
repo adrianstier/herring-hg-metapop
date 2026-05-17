@@ -213,8 +213,9 @@ Run after predator repo products are available:
 - `m5_stier_doherty_proxy_removals` only after
   `smoke_m5_stier_doherty_proxy_removals_reduced` has usable geometry;
 - `m5_stier_doherty_mp_covariate` as the fallback after fixed-removal geometry
-  failed; current local smoke is also not AWS-ready, so reparameterize or
-  detrend before submitting;
+  failed; raw and detrended/baseline-anchored local smokes are not AWS-ready,
+  and the bridge screen shows weak lag-1 detrended Mp signal, so do not submit
+  before a stronger spatial or age-selective predator product exists;
 - `m5_stier_predator_demand_total` only after reviewing
   `Output/diagnostics/wcvi_predation_replication_bridge.md`;
 - `smoke_m5_stier_predation_pressure_reduced` before a long cloud run if the
@@ -237,8 +238,9 @@ Goal:
 - for `m5_stier_doherty_mp_covariate`, test whether the Doherty-style
   `Mp_mid` time series has signal as a conventional estimated process
   covariate before trying another fixed-removal formulation. The first local
-  smoke failed geometry gates, so this is a reparameterization target rather
-  than a cloud candidate.
+  smoke failed geometry gates, the detrended/baseline-anchored smoke remained
+  too slow, and the bridge screen showed weak lag-1 detrended Mp signal. This is
+  now a data-product target rather than a cloud candidate.
 
 Stop if:
 

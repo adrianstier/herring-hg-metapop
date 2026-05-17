@@ -118,3 +118,16 @@
   hit max treedepth, E-BFMI was about 0.008, and `sigma_proc` inflated. The
   smoke row is therefore `planned_real_smoke`, not an AWS submission candidate,
   until the Mp covariate branch is reparameterized or detrended.
+- Troubleshooting update: added detrended Mp residual covariates in
+  `Code/02c_integrate_hg_predator_repo_products.R` and changed
+  `m5_stier_doherty_mp_covariate` to use
+  `pred_mortality_mid_detrended_z` with baseline-anchored priors. The local
+  smoke was still too slow to clear the gate, so this Stan branch remains
+  planned/gated.
+- Ran the bridge diagnostic instead:
+  `Rscript --vanilla Code/07bj_wcvi_predation_replication_bridge.R`. The
+  updated residual screen now includes raw and detrended Doherty-style `Mp_mid`.
+  The talk-relevant result is weak for the detrended lag-1 Mp proxy: Spearman
+  rho about 0.09, detrended r about 0.00, adjusted beta about -0.01. Use the
+  bridge output as the talk-safe predator diagnostic rather than a new Stan
+  result.

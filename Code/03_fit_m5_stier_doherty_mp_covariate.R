@@ -5,9 +5,11 @@
 # Key choices:
 #   - zero spawn records remain ambiguous / skipped,
 #   - survey method uses the original Stier two-era split,
-#   - predator effect enters as lagged annual z(log1p(Mp_mid)),
-#   - this is a single-covariate fallback after fixed proxy removals had poor
-#     energy geometry, not a full catch-at-age predation-mortality model,
+#   - predator effect enters as a lagged annual detrended z(log1p(Mp_mid))
+#     residual by default,
+#   - baseline-anchored priors keep this as a residual-process screen after
+#     fixed proxy removals had poor energy geometry,
+#   - this is not a full catch-at-age predation-mortality model,
 #   - age/size structure is held out of this branch.
 # ============================================================================
 
@@ -50,7 +52,7 @@ if (!file.exists(pred_path)) {
 }
 
 pred_covariates <- read_csv(pred_path, show_col_types = FALSE)
-mp_covariate_name <- Sys.getenv("DOHERTY_MP_COVARIATE", "pred_mortality_mid_z")
+mp_covariate_name <- Sys.getenv("DOHERTY_MP_COVARIATE", "pred_mortality_mid_detrended_z")
 
 if (!mp_covariate_name %in% names(pred_covariates)) {
   stop(
@@ -108,6 +110,7 @@ cat("  q_idx = 1 surface years:", sum(stan_data$q_idx == 1L), "\n")
 cat("  q_idx = 2 SCUBA/dive years:", sum(stan_data$q_idx == 2L), "\n")
 cat("  Mp covariate:", mp_covariate_name, "\n")
 cat("  Mp covariate range:", paste(round(range(stan_data$pred_mp), 3), collapse = " to "), "\n")
+cat("  Mp covariate-year correlation:", round(cor(stan_data$pred_mp, jags_data$years), 3), "\n")
 cat("  Fitted sections:", stan_data$N_sites, "\n")
 cat("  Caveat: annual Mp covariate only; no HG age selectivity or catch-at-age.\n\n")
 print_fit_control(fit_control)
@@ -136,7 +139,7 @@ fit <- stan(
   cores = fit_control$cores,
   refresh = 100,
   init = make_init_m5_stier_doherty_mp_covariate,
-  control = list(adapt_delta = 0.96, max_treedepth = 15),
+  control = list(adapt_delta = 0.95, max_treedepth = 15),
   seed = 154
 )
 
