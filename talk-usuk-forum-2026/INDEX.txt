@@ -1,0 +1,53 @@
+US-UK SCIENTIFIC FORUM 2026 -- PROJECT ARCHIVE
+Exported 16 May 2026, 16:02 (Tahiti time, UTC-10)
+
+----------------------------------------------------------------------
+HOW TO USE
+  Unzip this archive into a folder on your Desktop.
+  The .html files open in any web browser (double-click them).
+  The .pdf files open in any PDF reader.
+----------------------------------------------------------------------
+
+CONTENTS
+
+Trip_Dossier/   [local only, gitignored]
+  trip_dossier_2026-05-16_1602.html
+      The current working trip plan -- flights, watch items, forum
+      programme, forms, accommodation, ground transport, packing,
+      budget, contacts. Open in a browser. This folder is not
+      tracked because it contains private travel/contact details.
+  trip_dossier_project_original.html
+      An earlier dossier version that was already in the project,
+      kept locally for reference.
+
+Forum_Documents/
+  2026_USUK_Forum_Draft_Agenda.pdf
+      The agenda file as it exists in the project. NOTE: this file is
+      actually a zipped image bundle and may not open in a standard
+      PDF reader.
+  2026_USUK_Forum_Draft_Agenda_readable.pdf
+      A normal, openable PDF of the same agenda, rebuilt from the
+      page images. Use this one.
+
+Talk_Materials/
+  herring_haida_gwaii_timeline.html
+      Interactive Haida Gwaii Pacific herring timeline. Open in a
+      browser.
+
+Reference_Papers/
+  Curated cited PDFs (gitignored) plus tracked ACQUISITION_LOG.md:
+    Doherty 2025  -- ICES JMS, marine mammal predation / herring mortality
+    Ingeman 2019  -- Science
+    Levin 2020    -- BioScience
+    Okamoto 2020  -- Ecological Applications
+    Samhouri 2017 -- Nature Ecology & Evolution
+    Selkoe 2015   -- Ecosystem Services
+    Shelton 2014  -- Scientific Reports
+    Stier 2016    -- Science Advances
+    Stier 2020    -- Ecosphere
+
+----------------------------------------------------------------------
+Not included: email attachments that could not be retrieved -- the
+Participant Information PDF and the full Programme Booklet. Add those
+to the folder yourself once you have them.
+----------------------------------------------------------------------

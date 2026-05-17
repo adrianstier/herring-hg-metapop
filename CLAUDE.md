@@ -5,12 +5,36 @@ Royal Society *Tipping Points in Ocean Systems* Forum, London, Wed 20 May 2026,
 09:30, Session 5 — Ecosystem Services; ~25 min; tied to the herring
 metapopulation paper):
 
+**⚠️ The submitted abstract is NOT the talk's guide.** It was just some early
+concepts sent in for the program — do not treat it as a locked spine or
+narrative. The right outline for this tipping-points talk is still open and is
+being worked out with Adrian.
+
 **Read `docs/HERRING_TALK_ASSETS.md` before doing anything.** It is the single
 source of truth — it indexes every slide, photo, lecture, note, dataset,
 figure, NotebookLM source, and Drive folder for the talk (in place, nothing
 copied), and tracks the cross-session build state. Update its **Talk Build
 State** section at the end of each working session so the next context window
 (Claude or Codex) continues cleanly.
+
+Before turning a model result into slide language, read
+`docs/talk-model-claim-control-sheet.md`. It is the safe-language contract for
+baseline, held branches, predators, DFO summaries, and the Doherty-style bridge.
+
+**Talk work lives in `talk-usuk-forum-2026/`** — a TALK-ONLY workspace
+firewalled from the core metapopulation analysis. Never import anything from
+it into the modeling pipeline (`R/`, `inst/stan/`, `Data/`, `Output/`,
+`Code/`, `_targets.R`); talk numbers are pulled *from* the core analysis,
+never the reverse. See `talk-usuk-forum-2026/README.md`. Current direction:
+Spine B (coupled social–ecological tipping points, hysteresis-led, NOT
+portfolio-as-early-warning, solutions-forward).
+
+**For hypotheses / ideas about why HG herring have not recovered** — borrowing
+from other systems (cod, etc.) and the herring literature — the canonical,
+expandable idea bank is **`docs/herring-non-recovery-hypotheses.md`** (mechanism
+menu with HG support ranking, contested-recovery nuance, governance-under-
+uncertainty solutions, and how to expand it via NotebookLM). Consult/extend it
+before reasoning about non-recovery mechanisms or drafting talk narrative.
 
 ---
 

@@ -5,6 +5,8 @@ model-farm state.
 
 ## Bottom Line
 
+- Before turning any model result into slide text, use
+  `docs/talk-model-claim-control-sheet.md`.
 - Use `m1_stier_11` as the promoted Stier-aligned baseline.
 - Keep zeros and no-survey cells ambiguous/missing, use the two-era surface/SCUBA `q`, and report all 11 fitted sections with the focal-9 sensitivity.
 - Do not submit broad AWS model branches before the talk. The deliberate
@@ -34,6 +36,8 @@ model-farm state.
   "completed HG catch-at-age analysis": HG public DFO tables anchor herring
   biology where available, while WCVI/Doherty values are provisional analogues
   only for missing size/selectivity/model-structure pieces.
+- The concise status table for that boundary is
+  `docs/doherty-style-hg-gap-table.md`.
 - Archive `m5_combined` and `m5_v5`; do not spend exact re-LOO or combination-model time there.
 
 ## Talk Spine
@@ -100,6 +104,8 @@ model-farm state.
 
 - `Output/diagnostics/latest_model_status.md`
 - `Output/diagnostics/model_decision_ledger.md`
+- `docs/talk-model-claim-control-sheet.md`
+- `docs/doherty-style-hg-gap-table.md`
 - `Output/diagnostics/promoted_baseline_evidence_package.md`
 - `Output/diagnostics/may10_integrated_evidence_matrix.md`
 - `Output/diagnostics/covariate_readiness_registry.md`

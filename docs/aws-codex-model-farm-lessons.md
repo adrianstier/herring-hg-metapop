@@ -675,6 +675,26 @@ cloud/make_cloud_bundle.sh
 du -sh /tmp/herring-cloud-bundle /tmp/herring-cloud-bundle.tar.gz
 ```
 
+## 2026-05-17 SSO Refresh Limitation
+
+An unattended Codex refresh attempted:
+
+```sh
+aws sts get-caller-identity --profile herring --region us-east-1
+aws sso login --profile herring
+```
+
+The identity check failed because the cached SSO token had expired. The login
+command opened the browser OAuth URL but did not complete without user
+interaction, so the session could not produce a fresh Batch poll. In that
+state, regenerate only the local stale-status summary and do not submit or sync
+jobs.
+
+Operational rule: before planning cloud work in an unattended session, verify
+that `AWS_PROFILE=herring aws sts get-caller-identity` succeeds. If it fails,
+record the block and wait for an interactive SSO login rather than inferring
+anything from stale Batch CSVs.
+
 ## Commands To Remember
 
 Verify identity:

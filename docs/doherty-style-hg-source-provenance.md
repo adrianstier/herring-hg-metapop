@@ -49,6 +49,9 @@ as evidence that the biological stream does not exist.
 - `Output/diagnostics/doherty_proxy_parameter_plan.csv` is the talk-cycle proxy
   ledger separating HG public biological extracts, sibling predator products,
   WCVI/Doherty analogues, and unresolved acquisition items.
+- `docs/doherty-style-hg-gap-table.md` is the concise talk/manuscript gap table
+  for what is present, provisional, missing, and proxy-only relative to a full
+  Doherty-style HG replication.
 - `docs/predator-repo-integration-guide.md` is the operational crosswalk from
   the local predator source repo at `/Users/adrianstier/pacific-herring-predators`
   to this herring repo's imported predator covariates, diagnostics, and figures.

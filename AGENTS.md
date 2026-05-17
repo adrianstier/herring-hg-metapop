@@ -11,6 +11,11 @@ Royal Society Scientific Forum on Shifts and Tipping Points in Ocean Systems**
 talk is "related but new" framing relative to the old `m1_stier_11`
 portfolio-talk spine, and is tied to the herring metapopulation paper.
 
+**⚠️ The abstract Adrian submitted is NOT guiding for this talk.** It was just
+some early concepts sent in for the program — it is explicitly not a locked
+spine or narrative. The correct outline for the tipping-points talk is still
+open and being developed with Adrian; do not build to the submitted abstract.
+
 **Any Codex or Claude session touching talk slides, figures, narrative, or
 asset gathering MUST read `docs/HERRING_TALK_ASSETS.md` first.** That file is
 the single source of truth: it indexes every slide, photo, lecture, note,
@@ -20,6 +25,35 @@ and tracks a **Talk Build State** log. Update that log at the end of every
 working session so the next context window continues cleanly. Do not lock the
 talk narrative or copy assets into the repo without checking that file's
 framing guardrail and index-in-place decision.
+
+Before writing talk claims from the model farm, read
+`docs/talk-model-claim-control-sheet.md`. It is the safe-language contract:
+`m1_stier_11` is the only promoted model, predator branches are held context,
+and Doherty-style HG material is a source-traceable bridge/gap table rather
+than a completed catch-at-age predation-mortality replication.
+
+**Talk work is firewalled in `talk-usuk-forum-2026/`** (a TALK-ONLY workspace,
+moved in from the Desktop 2026-05-16; see its `README.md`). It is **not** part
+of the modeling pipeline: never import its contents into `R/`, `inst/stan/`,
+`Data/`, `Output/`, `Code/`, or `_targets.R`, and never let talk prep alter
+core reproducibility. Talk numbers are pulled *from* the core analysis
+(current `m1_stier_11`), never the reverse. Heavy PDFs there are gitignored
+(same policy as `Literature/`). Current talk direction: **Spine B** — coupled
+social–ecological tipping points, hysteresis-led, **not**
+portfolio-as-early-warning, solutions-forward.
+
+**Hypotheses / cross-system idea bank:** `docs/herring-non-recovery-hypotheses.md`
+is the canonical, expandable reference for *why HG/BC herring have not
+rebounded* — a mechanism menu (depensation, predator pit, bottom-up regime
+shift, recruitment failure, age truncation, portfolio/spatial erosion, habitat
+loss, collective-memory loss), each with herring-literature evidence, a
+cross-system analogue (cod first), and an explicit Haida-Gwaii support ranking
+(portfolio/spatial + PDO/bottom-up strong; classical depensation and the
+predator pit weak for HG). It is **interpretive only** — it does not promote a
+model branch or alter `m1_stier_11`; §6 maps hypotheses to existing held/screen
+work. Consult and extend it (via NotebookLM, §7) before interpreting
+non-recovery or writing talk narrative; do not spin up model branches from it
+outside the model-decision process above.
 
 ## Current Scientific Direction
 

@@ -1,6 +1,6 @@
 # Doherty-Style HG Replication Status
 
-Updated: 2026-05-15
+Updated: 2026-05-17
 
 ## What Is Now Executed
 
@@ -44,6 +44,11 @@ The canonical source map is `docs/doherty-style-hg-source-provenance.md`.
 It records the public DFO URLs, local data paths, sibling predator-repo catalogs,
 generated source registries, and unresolved request items for every data stream
 in this workflow.
+
+The talk/manuscript gap table is `docs/doherty-style-hg-gap-table.md`. It is
+the concise answer to "how far are we from a full Doherty replication?" and
+should be used before any slide or text claims that the HG analysis has
+replicated the WCVI catch-at-age predation-mortality model.
 
 All clean public extracts retain `source_document`, `source_table`,
 `source_url`, `extraction_method`, and `extraction_notes`. The main generated

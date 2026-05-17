@@ -57,3 +57,10 @@ cloud/aws_batch_runs/
 cloud/aws_results/
 cloud/job_status/
 cloud/logs/
+
+# USUK Forum 2026 talk workspace (SEPARATE from core analysis).
+# Track structure + working text/HTML docs; ignore heavy PDFs and private travel
+# logistics, which live on disk + Google Drive.
+talk-usuk-forum-2026/**/*.pdf
+talk-usuk-forum-2026/**/*.pdf.imgzip.bak
+talk-usuk-forum-2026/Trip_Dossier/
