@@ -195,6 +195,47 @@ Stan branch from the current evidence. The next predator work should improve
 the exposure data product, especially humpback section exposure and
 effort/interpolation rules, before another AWS fit.
 
+## Post-Closure Recovery Screen
+
+`Code/07bt_postclosure_recovery_mechanism_screen.R` now widens the predator
+question to the full "why no complete recovery after no fishing?" hypothesis
+set. It uses the promoted `m1_stier_11` state series and separates:
+
+- legacy fishing and recovery residuals;
+- raw spawn-location persistence/recolonization in the lead local-audit
+  sections;
+- post-2005 predator demand, seal/sea-lion exposure, PDO, and marine-heatwave
+  timing;
+- timing/substrate endpoint context;
+- survey coverage and positive-spawn fit caveats.
+
+Current output:
+
+- `Output/diagnostics/postclosure_recovery_mechanism_screen.md`
+- `Output/diagnostics/postclosure_recovery_mechanism_screen.csv`
+- `Output/diagnostics/postclosure_recovery_section_scorecard.csv`
+- `Output/figures/postclosure_recovery_mechanism_screen.pdf`
+
+Current read:
+
+- No post-closure section-year predator/climate row clears the strict candidate
+  gate.
+- The strongest lag-1 row is combined mammal exposure x historical fishing
+  (`beta = -0.26`, `p < 0.01`), but it fails the future-lag negative-control
+  gate.
+- Fish and total predator demand have the expected negative sign, but the lag-1
+  effects are weak and do not justify another Stan branch.
+- Endpoint context ranks worse-than-fishing residual depletion and historical
+  fishing highest. That is useful diagnosis, not causal identification.
+- Section scorecard priorities are now explicit: Skidegate and Louscoone are
+  legacy/portfolio cases, Cumshewa is the clearest site-persistence audit case,
+  and Laskeek/Rennell remain recovery-contrast context.
+
+Decision: for the talk, say that closure was necessary but not sufficient. The
+analysis does not support a single promoted predator coefficient yet; the next
+practical work is section-level humpback exposure, effort/access-aware local
+persistence, and age/recruitment context.
+
 ## What The Predator Data Say Now
 
 The sibling predator repo gives a much richer predator field than the original
@@ -343,6 +384,9 @@ For the current talk, say:
   herring model;
 - the WCVI-aligned total-demand branch also did not materially improve
   calibration after a full AWS fit;
+- the wider post-closure screen still returns no strict predator/climate
+  candidate, so no-fishing should be framed as necessary but not sufficient
+  rather than as proof of one missing covariate;
 - the next scientific step is a better predator data-product integration, not
   a richer combined Stan model.
 

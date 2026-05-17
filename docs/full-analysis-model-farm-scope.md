@@ -204,6 +204,12 @@ predator demand/exposure with historical fishing, PDO, section controls, and
 year controls. It returns zero strict candidates: harbour seal exposure has a
 negative adjusted beta but fails raw/recent direction, and predator x
 historical-fishing interactions are weak.
+The broader post-closure screen
+`Output/diagnostics/postclosure_recovery_mechanism_screen.md` asks why closure
+alone did not restore all local states. It also returns zero strict
+section-year predator/climate candidates; endpoint context points to legacy
+depletion and unresolved local persistence/recolonization rather than a ready
+AWS model branch.
 
 Promotion criteria:
 
@@ -236,6 +242,10 @@ Run after predator repo products are available:
 - `m6_stier_predator_exposure_mammals` only after
   `Output/diagnostics/wcvi_predation_replication_bridge.md` shows a section-year
   exposure row clearing the lag-1 gate;
+- any post-closure predator/climate interaction branch only after
+  `Output/diagnostics/postclosure_recovery_mechanism_screen.md` shows a
+  section-year row that clears expected-sign, raw/recent-direction, and
+  future-lag negative-control gates;
 - `smoke_m5_stier_predation_pressure_reduced` before a long cloud run if the
   image or bundle changed.
 - `smoke_m5_stier_predator_demand_total_reduced` before any demand-branch

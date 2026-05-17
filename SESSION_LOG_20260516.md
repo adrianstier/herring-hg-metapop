@@ -216,3 +216,41 @@
 - Regenerated the covariate readiness registry and model decision ledger. The
   decision remains: no predator x fishing, combined predator, or exposure Stan
   branch should be launched from the current evidence.
+
+## Post-closure recovery mechanism screen
+
+- Added `Code/07bt_postclosure_recovery_mechanism_screen.R` to address the
+  direct question of why Haida Gwaii herring may not have fully recovered after
+  two decades without fishing.
+- The script keeps `m1_stier_11` as the baseline and screens post-2005
+  section-year growth plus section endpoint recovery across five pathways:
+  legacy fishing, raw spawn-location persistence/recolonization, post-closure
+  predator/climate pressure, timing/substrate context, and evidence-quality
+  caveats.
+- New generated outputs:
+  - `Output/diagnostics/postclosure_recovery_mechanism_screen.md`
+  - `Output/diagnostics/postclosure_recovery_mechanism_screen.csv`
+  - `Output/diagnostics/postclosure_recovery_section_scorecard.csv`
+  - `Output/figures/postclosure_recovery_mechanism_screen.pdf`
+- Current result: zero strict post-closure section-year predator/climate
+  candidates. The strongest lag-1 row is combined mammal exposure x historical
+  fishing (beta about -0.26, p < 0.01), but it fails the future-lag negative
+  control. Fish and total predator demand have expected negative signs, but
+  effects are weak.
+- Endpoint context remains most consistent with legacy depletion and unresolved
+  local mechanisms: worse-than-fishing residual depletion has beta about -1.29
+  and rho about -0.72; historical fishing pressure has beta about -0.91 and rho
+  about -0.66. Cumshewa is the clearest site-persistence/recolonization audit
+  case, while Skidegate and Louscoone remain legacy/portfolio mechanism cases.
+- Updated `Code/07bh_covariate_readiness_registry.R`, `README.md`,
+  `docs/current-analysis-quickstart.md`,
+  `docs/predator-analysis-integration-roadmap.md`,
+  `docs/full-analysis-model-farm-scope.md`, and
+  `docs/saturday-talk-readiness-2026-05-16.md` to point to the new gate.
+- Added the new screen to `Code/08_refresh_may9_analysis_suite.sh` immediately
+  before the covariate readiness registry so full refreshes keep the registry
+  synchronized.
+- Regenerated the covariate readiness registry and model decision ledger after
+  the source/documentation update. The decision remains: do not launch another
+  predator/climate Stan branch until a single post-closure row clears the
+  expected-sign, raw/recent-direction, and future-lag gates.

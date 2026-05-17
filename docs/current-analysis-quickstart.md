@@ -17,7 +17,8 @@ reading every historical model branch.
 8. `Output/diagnostics/predator_talk_brief.md`
 9. `docs/saturday-talk-readiness-2026-05-16.md`
 10. `Output/diagnostics/doherty_proxy_parameter_plan.md`
-11. `AGENTS.md`
+11. `Output/diagnostics/postclosure_recovery_mechanism_screen.md`
+12. `AGENTS.md`
 
 ## Current Baseline
 
@@ -71,6 +72,9 @@ Current read from the May 14 refresh:
 - focal-9 biomass is the cleaner talk number because sparse Tasu/Naden sections
   drive most of the all-11 upper-tail uncertainty;
 - historical fishing pressure is the strongest descriptive recovery axis;
+- the direct post-closure screen returns no strict predator/climate
+  section-year candidate, so no-fishing should be framed as necessary but not
+  sufficient rather than as proof of one unmodeled predator coefficient;
 - Cumshewa and Louscoone remain the clearest mechanism cases;
 - predator, timing, substrate, and local spawn-location screens are data-product
   and targeting work before they are promoted model covariates.
@@ -89,6 +93,7 @@ Current read from the May 14 refresh:
 | Humpback missing-data scaffold | `Output/figures/humpback_section_exposure_proxy.pdf` |
 | Salmon recruitment context | `Output/figures/salmon_recruitment_context_screen.pdf` |
 | Predator mechanism integration | `Output/figures/predator_mechanism_integration_screen.pdf` |
+| Post-closure mechanism screen | `Output/figures/postclosure_recovery_mechanism_screen.pdf` |
 
 ## Safe Next Analysis Steps
 
@@ -109,17 +114,21 @@ Current read from the May 14 refresh:
    current answer to predator integration with fishing/PDO/timing ideas. It
    returns zero strict candidates, so do not launch a predator x fishing or
    combined predator Stan branch from the current evidence.
-5. Use `docs/dfo-hg-biological-input-request-packet.md` for the exact DFO
+5. Use `Output/diagnostics/postclosure_recovery_mechanism_screen.md` as the
+   current answer to "why not recovered after closure." It returns zero strict
+   post-closure section-year predator/climate candidates; endpoint context
+   points to legacy depletion and unresolved local persistence/recolonization.
+6. Use `docs/dfo-hg-biological-input-request-packet.md` for the exact DFO
    follow-up ask on machine-readable HG biological inputs and SCA/SISCAH
    metadata.
-6. Refresh local diagnostics with `Code/08_refresh_may9_analysis_suite.sh` after
+7. Refresh local diagnostics with `Code/08_refresh_may9_analysis_suite.sh` after
    any model artifact changes. The wrapper now ends with
    `Code/09_check_document_references.R`, so stale local file references are
    caught as part of the full refresh.
-7. If AWS credentials are active, submit only smoke jobs first, then write the
+8. If AWS credentials are active, submit only smoke jobs first, then write the
    submission CSV with `cloud/submit_model_farm.py --out-csv ...`.
-8. Use `cloud/watch_aws_batch_run.py` on the submission CSVs to poll and sync cloud results.
-9. Promote no model branch unless it improves calibration, stays sampler-clean,
+9. Use `cloud/watch_aws_batch_run.py` on the submission CSVs to poll and sync cloud results.
+10. Promote no model branch unless it improves calibration, stays sampler-clean,
    and preserves the ambiguous-zero interpretation unless explicitly labeled as
    a sensitivity.
 

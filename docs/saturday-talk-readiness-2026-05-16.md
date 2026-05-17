@@ -21,6 +21,10 @@ model-farm state.
   exposure still missing at section scale, and salmon belongs in the
   recruitment/juvenile pathway unless the model gains age/recruitment
   structure.
+- Use `Output/diagnostics/postclosure_recovery_mechanism_screen.md` for the
+  direct "why no full recovery after closure?" answer: closure is necessary but
+  not sufficient, and no post-closure predator/climate section-year row clears
+  the strict model-entry gate.
 - For Doherty-style age/size/catch material, say "proxy bridge" rather than
   "completed HG catch-at-age analysis": HG public DFO tables anchor herring
   biology where available, while WCVI/Doherty values are provisional analogues
@@ -65,6 +69,12 @@ model-farm state.
   exposure has a negative adjusted beta (-0.10, p 0.02), but raw and post-2005
   directions are positive, so it is not a Stan-branch result. Predator x
   historical fishing interactions are weak.
+- Post-closure recovery mechanism screen: no strict section-year
+  predator/climate candidates. The strongest lag-1 row is combined mammal
+  exposure x historical fishing (beta about -0.26), but it fails the future-lag
+  negative-control gate. Endpoint context is strongest for worse-than-fishing
+  residual depletion (beta about -1.29, rho about -0.72) and historical fishing
+  pressure (beta about -0.91, rho about -0.66).
 - DFO Table 3 also supports the spatial-concentration message: Juan
   Perez/Skincuttle reaches up to about 98% of HG spawn-index share in 2015-2024,
   while Louscoone is 0% in the public summary.
@@ -85,6 +95,7 @@ model-farm state.
 - `Output/diagnostics/humpback_section_exposure_proxy.md`
 - `Output/diagnostics/salmon_recruitment_context_screen.md`
 - `Output/diagnostics/predator_mechanism_integration_screen.md`
+- `Output/diagnostics/postclosure_recovery_mechanism_screen.md`
 - `Output/diagnostics/section_action_matrix.md`
 
 ## Figure Order
@@ -106,6 +117,7 @@ model-farm state.
 15. `Output/figures/humpback_section_exposure_proxy.pdf`
 16. `Output/figures/salmon_recruitment_context_screen.pdf`
 17. `Output/figures/predator_mechanism_integration_screen.pdf`
+18. `Output/figures/postclosure_recovery_mechanism_screen.pdf`
 
 ## Doherty/DFO Context
 
