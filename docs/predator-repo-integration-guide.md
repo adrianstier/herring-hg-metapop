@@ -74,7 +74,7 @@ The import writes local, ignored herring products under
 | `Output/diagnostics/hg_predator_repo_integration.md` | Confirms import source path, local outputs, recent pressure, group demand, and top recent species. |
 | `Output/diagnostics/wcvi_predation_replication_bridge.md` and `Output/figures/wcvi_predation_replication_bridge.pdf` | WCVI/Doherty-style predator-demand bridge against `m1_stier_11` biomass. |
 | `Output/diagnostics/hg_dfo_sca_external_comparison.md` and `Output/figures/hg_dfo_sca_external_comparison.pdf` | Talk-facing scale context among `m1_stier_11`, public DFO HG SCA biomass, and predator demand. |
-| `Output/diagnostics/predator_spatial_exposure_prototype.md` and `Output/figures/predator_spatial_exposure_prototype.pdf` | Section-level seal/sea-lion exposure prototype. |
+| `Output/diagnostics/predator_spatial_exposure_prototype.md`, `Output/diagnostics/predator_spatial_exposure_section_year.csv`, and `Output/figures/predator_spatial_exposure_prototype.pdf` | Section-year seal/sea-lion exposure product with kernels, count sensitivities, and extrapolation flags. |
 | `Output/diagnostics/lead_spawn_location_predator_proximity.md` and `Output/figures/lead_spawn_location_predator_proximity.pdf` | Lead-location proximity to predator sites. |
 | `Output/diagnostics/doherty_proxy_parameter_plan.md` and `Output/figures/doherty_proxy_parameter_plan.pdf` | Explicit proxy/caveat slide support for the current talk cycle. |
 

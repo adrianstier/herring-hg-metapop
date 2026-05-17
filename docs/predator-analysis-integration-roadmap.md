@@ -1,6 +1,6 @@
 # Predator Analysis Integration Roadmap
 
-Updated: 2026-05-15
+Updated: 2026-05-16
 
 This note records what the current predator analyses actually show, what is
 weak in the current integration, and how to improve predator data products
@@ -83,8 +83,9 @@ fit-and-compare gate.
 
 ## Spatial Exposure Fix
 
-The first predator spatial exposure prototype had a join mismatch in its
-growth-correlation screen. Predator exposure used raw DFO section codes:
+The predator spatial exposure product is now a formal section-year data product
+rather than only a plotted prototype. An earlier version had a join mismatch in
+its growth-correlation screen. Predator exposure used raw DFO section codes:
 
 ```text
 1, 2, 3, 5, 6, 12, 21, 22, 23, 24, 25
@@ -100,16 +101,28 @@ So the prototype's exposure-growth join only matched the first three sections.
 `Code/07bb_predator_spatial_exposure_prototype.R` now joins to model biomass by
 `section_name`, while preserving raw section codes as metadata.
 
-After the fix, the 50 km kernel screen uses all 11 sections:
+After the first fix, the 50 km kernel screen used all 11 sections. The May 16
+implementation adds source spans, count sensitivities, exposure-weighted
+interpolation/extrapolation shares, and 25/50/100 km kernels. Growth screens
+exclude section-years where edge-held counts dominate exposure.
 
 |predator|section-years|years|sections|rho exposure-growth|rho exposure-year|
 |---|---:|---:|---:|---:|---:|
-|Harbour seal|`77`|`7`|`11`|`0.20`|`0.14`|
-|Steller sea lion|`143`|`13`|`11`|`-0.05`|`0.59`|
+|Harbour seal|`196`|`26`|`11`|`0.02`|`-0.59`|
+|Steller sea lion filled total|`473`|`43`|`11`|`0.04`|`0.57`|
+|Steller sea lion raw non-pup|`473`|`43`|`11`|`0.03`|`0.63`|
 
-This does not promote a predator effect. It makes the exposure prototype a
-better data product and reinforces the current conclusion: section-level
-predator exposure is feasible, but still weak and time/effort-confounded.
+This does not promote a predator effect. It makes the exposure product a better
+input for future screens and reinforces the current conclusion: section-level
+predator exposure is feasible, but the current seal/sea-lion signals are weak
+or time-confounded, and humpback exposure is still not section-level.
+
+The WCVI bridge now includes the exposure rows in the same lag-1 gate as annual
+demand. The best 50 km section-exposure row is harbour seal exposure
+(`n = 196`, `11` sections), but it fails because the raw rho is near zero,
+the detrended signal is positive rather than negative, and the future-lag
+negative control is not beaten. Do not submit `m6_stier_predator_exposure`
+from this screen.
 
 ## What The Predator Data Say Now
 
@@ -225,8 +238,10 @@ material calibration gain:
 
 3. `m6_stier_predator_exposure`
    - Section-year exposure for one predator group/species only.
-   - Start with Steller sea lion or harbour seal because spatial locations
-     exist, but include raw/fill flags.
+   - Start with harbour seal or Steller sea lion only if a refreshed
+     section-year exposure product passes the lag-1 screen.
+   - Include raw/fill flags and exposure-weighted extrapolation shares in the
+     Stan data prep and diagnostics.
    - Do not add humpback exposure until there is a Haida Gwaii or section-level
      spatial product; the current basin-wide abundance is not enough.
 

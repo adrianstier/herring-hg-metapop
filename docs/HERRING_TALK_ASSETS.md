@@ -11,7 +11,7 @@ tracks the cross-session build state.
 > **Talk Build State** section at the bottom so the next context window picks up
 > cleanly.
 
-Last updated: 2026-05-16.
+Last updated: 2026-05-16 (abstract confirmed; Drive folder + Gmail indexed; gws auth fixed durably).
 
 ---
 
@@ -24,20 +24,54 @@ Last updated: 2026-05-16.
 | Venue | The Royal Society, 6–9 Carlton House Terrace, St James's, London SW1Y 5AG |
 | Forum dates | 19–20 May 2026 (welcome reception Mon 18 May, One Great George Street) |
 | **Speaker slot** | **Wed 20 May 2026, 9:30 am** — Session 5: *Tipping Points in Ecosystem Services* |
-| Slot length | ~25 min incl. Q&A (slots: Cavan 9:05, **Stier 9:30**, White 9:55) — CONFIRM in Gmail invite |
-| Session chair | Ida Kubiszewski (UCL); Forum co-chair Corinne Le Quéré |
+| Slot length | ~25 min incl. Q&A (Cavan 9:05, **Stier 9:30**, White 9:55) |
+| Session chair | **Ida Kubiszewski** (UCL, ida.kub@gmail.com); Forum co-chair Corinne Le Quéré |
+| Chair's steer | Abstract reviewed, "fits the session well"; one explicit ask: **"focus on solutions as much as possible."** |
 | Audience | ~40 leading ocean/climate/marine-ecology scientists (Pinsky, Will White, Dan Smale, Emma Cavan, Chris Costello, etc.) |
-| Working title | **TBD — confirm from Gmail invite** (agenda lists the slot with no title yet) |
-| Abstract | **TBD — confirm from Gmail invite** |
-| Framing | "Related but new" — *not* the repo's old `m1_stier_11` portfolio-talk spine. The herring metapopulation analysis + Haida Gwaii predator/portfolio/governance story is **raw material** for an ecosystem-services tipping-points talk. Spine to be developed across sessions. |
-| Linked paper | The herring metapopulation paper (this repo, `stier-2027-herring-metapopulation`). Talk and paper share evidence; keep claims consistent. |
-| Source agenda | `~/Downloads/Full Agenda_ 2026 US-UK Forum on Tipping Points in Ocean Systems.docx` |
+| Working title | Not in the program (slot shows abstract only, no title line). Confirm whether a title is required from the final booklet PDF (Gmail msg `19e21e7b74b30c97`). |
+| Recording | Forum recorded; video posted online 2–3 weeks after. Tell organizers if any unpublished result must not be public. |
+| Slides | **Send final `.pptx` to `scientific.meetings@royalsociety.org`.** Stated deadline COB Mon 11 May 2026 → **OVERDUE; send ASAP.** Royal Society PC, PowerPoint. |
+| Linked paper | The herring metapopulation paper (this repo). Talk tipping-point #2 = this repo's portfolio-erosion result; keep numbers consistent. |
+| Source agenda | Gmail-shared Doc id `1zoEvxKL2G1oovUt9acsuPBvTdXgMQ-d2`; local `~/Downloads/Full Agenda_ 2026 US-UK Forum on Tipping Points in Ocean Systems.docx` |
 
-**Framing guardrail:** index assets neutrally. The strongest narrative
-candidate currently on disk is the "Who gets the herring? / Herring in the
-Anthropocene" allocation-and-collapse arc (`~/Downloads/herring-outline-2026.docx`),
-which maps cleanly onto "Tipping Points in Ecosystem Services." Treat it as a
-candidate spine, not a decision, until confirmed with Adrian.
+### Confirmed abstract (verbatim, as submitted to the program)
+
+> Pacific herring in Haida Gwaii, British Columbia, offer a diagnostic case of
+> coupled social-ecological tipping points. A 65-year spatially explicit time
+> series across 11 subpopulations reveals not biomass collapse but portfolio
+> erosion — the synchronization of formerly asynchronous subpopulations, with
+> realized growth rates depressed in seven of nine focal stocks since the 1994
+> fishery closure. A parallel tipping point operates on the social side:
+> cognitive-map elicitation from 27 regional experts reveals two structurally
+> distinct mental models that predict opposite ecosystem responses to herring
+> recovery, while archaeological and qualitative evidence indicate that the
+> abundance required to sustain Haida k'aaw harvest practice has fallen below
+> its threshold for the first time in approximately 10,000 years. The
+> Archipelago Management Board — a co-governance arrangement between the Council
+> of the Haida Nation, Parks Canada, and Fisheries and Oceans Canada — operates
+> as a structural intervention on these coupled tipping points. I close with
+> three transferable lessons for forage-fish management in the US and UK.
+
+### Locked spine (the abstract IS the narrative — build to this)
+
+1. **Setup:** HG herring as a diagnostic case of *coupled* social-ecological tipping points.
+2. **Ecological tipping point:** not biomass collapse but **portfolio erosion** — synchronization of formerly asynchronous subpopulations; realized growth depressed in **7 of 9 focal stocks since the 1994 closure**. *(Evidence = this repo: §3a/§3b.)*
+3. **Social tipping point:** cognitive-map elicitation from **27 experts** → two mental models predicting opposite recovery responses; Haida **k'aaw** harvest below its sustaining threshold for the first time in **~10,000 years**.
+4. **Intervention / solution:** the **Archipelago Management Board** (Council of the Haida Nation + Parks Canada + DFO) as a structural co-governance intervention on both tipping points.
+5. **Close:** three transferable lessons for US/UK forage-fish management. *(Lead with solutions — chair's explicit ask.)*
+
+**Framing note:** this resolves the earlier open framing question. "Related but
+new" relative to the old `m1_stier_11` model-status talk: the metapopulation
+analysis supplies **tipping point #2 only**. The "Who gets the herring?"
+outline (LEC-04) and EEMB242 tipping-points lecture (LEC-03) are **supporting
+raw material**, not the spine.
+
+**Evidence gaps for the confirmed spine** (NOT in this modeling repo — locate /
+confirm sources before drafting those slides): cognitive-map data + the two
+mental models (27 experts); Haida k'aaw ~10,000-yr threshold (archaeological +
+qualitative); Archipelago Management Board governance material. Likely homes:
+Drive `assets/03-indigenous-cultural`, `12-publications`, `DRV-LIT`,
+`DRV-SCRIPT` (§3f). Track findings in Talk Build State.
 
 ---
 
@@ -194,6 +228,14 @@ the TBD rows in section 1.
   still did not clear practical geometry gates. The updated WCVI bridge screen
   is the talk-safe output: lag-1 detrended Mp has weak growth signal, so do not
   show the Mp Stan branch as a model result.
+- **2026-05-16 (predator exposure gate):** Upgraded the seal/sea-lion spatial
+  exposure work into a formal section-year data product with 25/50/100 km
+  kernels, count sensitivities, and exposure-weighted extrapolation shares.
+  The WCVI bridge now screens annual demand and section-year exposure together.
+  No exposure row clears the lag-1 gate; the best row is harbour seal exposure
+  but its rho is near zero and detrended direction is not a credible predator
+  effect. Use this as a talk-safe explanation for why predation remains a
+  plausible mechanism/data-product target, not a promoted model result.
 - **Deck location:** none yet (`Output/presentations/` is empty). Record the
   working deck path here once it exists.
 - **Next actions:** (1) run §5a/§5b to close the pending sources; (2) confirm

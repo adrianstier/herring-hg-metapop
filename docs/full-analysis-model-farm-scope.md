@@ -169,7 +169,8 @@ Purpose:
 Current jobs:
 
 - `m5_stier_predation_pressure`;
-- `m5_stier_predator_demand_total` (planned-gated only);
+- `m5_stier_predator_demand_total` (completed/held);
+- future `m6_stier_predator_exposure_mammals` (data-product gated only);
 - `m5_v5`;
 - `m5_combined`.
 
@@ -185,10 +186,13 @@ figures. The older `m5_v5` and `m5_combined` branches remain exploratory until
 their predator inputs are rebuilt from the predator repo.
 
 The May 14 WCVI bridge identified `m5_stier_predator_demand_total` as the
-cleaner next covariate because it uses total predator demand instead of a
-pressure ratio with observed spawn in the denominator. Keep it gated until a
-deliberate reduced smoke and single-covariate AWS screen are requested; do not
-fold it into combination predator models.
+cleaner covariate because it uses total predator demand instead of a pressure
+ratio with observed spawn in the denominator. That branch has now completed and
+is held for no material fit gain. The May 16 bridge also screens section-year
+seal/sea-lion exposure from `Output/diagnostics/predator_spatial_exposure_section_year.csv`;
+all exposure rows fail the lag-1 residual-screen gate, so do not submit
+`m6_stier_predator_exposure_mammals` until a refreshed exposure product
+survives detrending, section controls, and future-lag negative controls.
 
 Promotion criteria:
 
@@ -216,8 +220,11 @@ Run after predator repo products are available:
   failed; raw and detrended/baseline-anchored local smokes are not AWS-ready,
   and the bridge screen shows weak lag-1 detrended Mp signal, so do not submit
   before a stronger spatial or age-selective predator product exists;
-- `m5_stier_predator_demand_total` only after reviewing
-  `Output/diagnostics/wcvi_predation_replication_bridge.md`;
+- `m5_stier_predator_demand_total` is completed/held; do not rerun or extend it
+  without a stronger residual-screen reason;
+- `m6_stier_predator_exposure_mammals` only after
+  `Output/diagnostics/wcvi_predation_replication_bridge.md` shows a section-year
+  exposure row clearing the lag-1 gate;
 - `smoke_m5_stier_predation_pressure_reduced` before a long cloud run if the
   image or bundle changed.
 - `smoke_m5_stier_predator_demand_total_reduced` before any demand-branch
@@ -241,6 +248,10 @@ Goal:
   smoke failed geometry gates, the detrended/baseline-anchored smoke remained
   too slow, and the bridge screen showed weak lag-1 detrended Mp signal. This is
   now a data-product target rather than a cloud candidate.
+- for `m6_stier_predator_exposure_mammals`, wait. The implemented section-year
+  exposure data product is useful, but current harbour seal and Steller sea
+  lion exposure rows are weak or time-confounded and fail the residual-screen
+  gate.
 
 Stop if:
 

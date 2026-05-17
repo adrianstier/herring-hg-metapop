@@ -1,6 +1,6 @@
 # WCVI Predation Replication Bridge
 
-Updated: 2026-05-15
+Updated: 2026-05-16
 
 The WCVI predator paper to mirror is Doherty et al. 2025, *Predation by
 marine mammals explains recent trends in natural mortality of Pacific Herring
@@ -36,6 +36,9 @@ near-term replication:
 - keeps observed-spawn pressure ratios as descriptive only;
 - screens total and group-specific predator demand against promoted-baseline
   latent growth, including future-demand negative controls;
+- screens 50 km harbour seal and Steller sea lion section-year exposure rows
+  against section-level promoted-baseline growth, with section controls and
+  exposure-weighted extrapolation flags;
 - writes the control diagnostic:
   `Output/diagnostics/wcvi_predation_replication_bridge.md`.
 
@@ -47,6 +50,9 @@ Current read from that bridge:
   about 25%;
 - total predator demand is a cleaner model covariate than pressure ratio, but
   the lag-1 total-demand signal is weak after detrending and adjustment.
+- no current section-year exposure candidate clears the gate; the best row is
+  harbour seal exposure, but lag-1 Spearman rho is near zero and the detrended
+  direction is not a credible predator effect.
 
 ## May 15 Data-Execution Update
 
@@ -184,3 +190,31 @@ The detrended lag-1 Mp proxy has weak signal against promoted-baseline growth:
 Spearman rho about 0.09, detrended r about 0.00, and adjusted beta about -0.01.
 Do not submit the Mp Stan branch to AWS until there is a stronger spatial or
 age-selective predator data product.
+
+## May 16 Section-Exposure Gate
+
+`Code/07bb_predator_spatial_exposure_prototype.R` now writes a formal
+section-year exposure product at
+`Output/diagnostics/predator_spatial_exposure_section_year.csv`. The table
+includes source spans, count sensitivities, observed/interpolated/extrapolated
+flags, exposure-weighted extrapolation shares, nearest predator-site distance,
+and 25/50/100 km kernels.
+
+`Code/07bj_wcvi_predation_replication_bridge.R` now consumes that table and
+screens harbour seal, Steller sea lion raw non-pup, Steller sea lion filled
+total, and combined mammal exposure at the section-year grain. The current
+lag-1 gate fails for all exposure rows:
+
+- harbour seal exposure: n 196 section-years, 11 sections, rho about -0.02,
+  detrended r about 0.05, adjusted beta about -0.12;
+- Steller sea lion filled-total exposure: n 473 section-years, 11 sections,
+  rho about 0.06, detrended r about 0.04;
+- Steller sea lion raw non-pup exposure: n 473 section-years, 11 sections,
+  rho about 0.05, detrended r about 0.00;
+- combined mammal exposure: n 517 section-years, 11 sections, rho about 0.08,
+  detrended r about 0.07.
+
+Do not submit `m6_stier_predator_exposure_mammals` from the current screen. The
+implemented output is a better talk-safe explanation of why predation remains a
+plausible mechanism and a data-product target, while the promoted model stays
+`m1_stier_11`.

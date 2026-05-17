@@ -131,3 +131,31 @@
   rho about 0.09, detrended r about 0.00, adjusted beta about -0.01. Use the
   bridge output as the talk-safe predator diagnostic rather than a new Stan
   result.
+
+## Predator exposure product and gate
+
+- Implemented the next predator-hypothesis step without launching another Stan
+  branch. `Code/07bb_predator_spatial_exposure_prototype.R` now writes a
+  section-year exposure product rather than just a prototype figure:
+  `Output/diagnostics/predator_spatial_exposure_section_year.csv`.
+- The exposure product includes harbour seal, Steller sea lion raw non-pup, and
+  Steller sea lion filled-total sensitivities; 25, 50, and 100 km kernels;
+  source spans; source files; nearest predator-site distance; observed,
+  interpolated, and extrapolated flags; and exposure-weighted extrapolation
+  shares.
+- `Code/07bj_wcvi_predation_replication_bridge.R` now screens 50 km
+  section-year exposure rows alongside annual predator demand/Mp rows, with
+  future-lag negative controls, detrending, section controls, lag-1 gate labels,
+  and median extrapolated-exposure shares.
+- Current gate result: no section-year exposure row clears the lag-1 gate.
+  Harbour seal exposure is the strongest exposure row numerically, but it still
+  fails because lag-1 rho is about -0.02, detrended r is about 0.05, and the
+  future negative control is not beaten. Steller sea lion filled-total and raw
+  non-pup exposure are weak/time-confounded.
+- Current annual-demand gate result: salmon demand is a follow-up-only
+  descriptive row, not an adult-biomass Stan branch; total/mammal/fish demand
+  and raw/detrended Mp rows fail the sign/detrending/future-control gates.
+- Decision: use the predator/Doherty bridge and spatial exposure product for
+  talk-safe mechanism context. Do not submit `m6_stier_predator_exposure_mammals`
+  or another annual predator branch until a refreshed product clears the
+  residual-screen gate.

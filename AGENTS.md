@@ -274,12 +274,13 @@ The latest non-Stan driver screens add these operational conclusions:
   covariates are regional, highly collinear, and strongly time-confounded
   (combined predator index versus year rho about 0.96); do not launch a predator
   Stan branch before a separate spatial exposure data product exists.
-- `Output/diagnostics/predator_spatial_exposure_prototype.md`: first spatial
-  exposure prototype from raw Haida Gwaii harbour seal and Steller sea lion
-  locations/counts. It shows that section-level exposure covariates are
-  feasible, but the current screen is still time-confounded and lacks humpback
-  section exposure, so it is a data-product roadmap rather than predator-effect
-  evidence.
+- `Output/diagnostics/predator_spatial_exposure_prototype.md`: section-year
+  predator exposure product from raw Haida Gwaii harbour seal and Steller sea
+  lion locations/counts. It now records source spans, count sensitivities,
+  exposure-weighted interpolation/extrapolation shares, and 25/50/100 km
+  kernels. The 50 km screen remains gated: harbour seal exposure has weak
+  lag-1 growth signal and Steller sea lion exposure remains time-confounded, so
+  this is a data product and pre-Stan screen, not predator-effect evidence.
 - `Output/diagnostics/section_recovery_covariate_screen.md`: descriptive n=11
   screen combining recovery ratio, historical fishing pressure, survey
   coverage, positive-spawn fit caveats, timing/substrate shifts, and prototype
@@ -388,9 +389,12 @@ Recommended sequence:
    - predator data now have a feasibility audit; current seal/SSL data can
      support future spatial exposure work, but the humpback series is basin-wide
      and not a Haida Gwaii section-level exposure series,
-   - predator spatial exposure now has a prototype for harbour seals and
-     Steller sea lions; refine effort correction, interpolation rules, and
-     biologically defensible distance kernels before any predator Stan branch,
+  - predator spatial exposure now has a formal section-year product for harbour
+    seals and Steller sea lions, including raw/fill sensitivities and
+    exposure-weighted extrapolation flags; no exposure row clears the
+    lag-1 residual-screen gate, so do not submit `m6_stier_predator_exposure`
+    until a section-year signal survives detrending, section controls, and
+    future-lag negative controls,
    - the combined section recovery covariate screen still ranks historical
      fishing pressure as the cleanest section-level axis; use predator,
      timing, and substrate screens to guide data work, not causal claims,

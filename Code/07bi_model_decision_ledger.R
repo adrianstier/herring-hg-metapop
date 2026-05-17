@@ -384,6 +384,7 @@ md_lines <- c(
   "- `m1_stier_11` remains the promoted baseline.",
   "- `m5_stier_predation_pressure` is held: sampler-usable, but no material data-fit gain over baseline.",
   "- `m5_stier_predator_demand_total` is held after the completed AWS screen: sampler-clean, but no material calibration gain and unresolved high Pareto-k points.",
+  "- A future `m6_stier_predator_exposure_mammals` branch remains data-product gated: the section-year seal/sea-lion exposure screen does not clear lag-1 sign, detrending, section-control, or future-lag gates.",
   "- `m5_stier_doherty_mp_covariate` was detrended/baseline-anchored, but the local smoke remained too slow and the bridge screen showed weak lag-1 Mp signal; do not send it to AWS yet.",
   "- `m5_stier_doherty_proxy_removals` now has a cloud-smoke negative result: the low-vulnerability fixed-removal branch runs, but poor E-BFMI means no full fit yet.",
   "- `m5_v5` is archived because sampler pathologies override any apparent LOO improvement.",

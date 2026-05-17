@@ -23,6 +23,8 @@ dir.create(fig_dir, showWarnings = FALSE, recursive = TRUE)
 
 required_files <- c(
   file.path(diag_dir, "m1_stier_11_driver_screening_timeseries.csv"),
+  file.path(diag_dir, "m1_stier_11_section_biomass_by_year.csv"),
+  file.path(diag_dir, "predator_spatial_exposure_section_year.csv"),
   file.path(pred_dir, "hg_predation_pressure_covariates.csv"),
   file.path(pred_dir, "hg_predator_consumption_by_group_year.csv")
 )
@@ -61,11 +63,62 @@ coef_or_na <- function(fit, term, column) {
   unname(coefs[term, column])
 }
 
+gate_lag1_screens <- function(tbl) {
+  future_scores <- tbl %>%
+    filter(lag_label == "future_1_negative_control") %>%
+    transmute(label, class, grain, future_score = robust_score)
+
+  tbl %>%
+    left_join(future_scores, by = c("label", "class", "grain")) %>%
+    mutate(
+      future_score = replace_na(future_score, Inf),
+      expected_negative = class %in% c(
+        "demand",
+        "pressure",
+        "mortality_proxy",
+        "spatial_exposure",
+        "climate"
+      ),
+      expected_sign_ok = !expected_negative | (
+        is.finite(spearman_rho) &
+          is.finite(detrended_r) &
+          is.finite(adjusted_beta) &
+          spearman_rho < 0 &
+          detrended_r < 0 &
+          adjusted_beta < 0
+      ),
+      beats_future_negative_control = robust_score > future_score + 0.05,
+      gate = case_when(
+        lag_label != "lag_1" ~ screen_role,
+        n < 20 ~ "fail_too_sparse",
+        !expected_sign_ok ~ "fail_expected_sign_or_detrend",
+        !beats_future_negative_control ~ "fail_future_negative_control",
+        abs(detrended_r) < 0.05 ~ "fail_weak_detrended_signal",
+        TRUE ~ "candidate_followup_only"
+      )
+    )
+}
+
 driver_ts <- read_csv(
   file.path(diag_dir, "m1_stier_11_driver_screening_timeseries.csv"),
   show_col_types = FALSE
 ) %>%
   arrange(year)
+
+section_biomass <- read_csv(
+  file.path(diag_dir, "m1_stier_11_section_biomass_by_year.csv"),
+  show_col_types = FALSE
+) %>%
+  arrange(site_name, year) %>%
+  group_by(site_name) %>%
+  mutate(next_year_growth = log(lead(median) / median)) %>%
+  ungroup() %>%
+  select(section_name = site_name, site, year, next_year_growth)
+
+exposure_tbl <- read_csv(
+  file.path(diag_dir, "predator_spatial_exposure_section_year.csv"),
+  show_col_types = FALSE
+)
 
 pred_cov <- read_csv(
   file.path(pred_dir, "hg_predation_pressure_covariates.csv"),
@@ -237,9 +290,199 @@ screen_tbl <- crossing(predictor_specs, lag_specs) %>%
     score_one(predictor, label, class, lag_label, lag_n, screen_role)
   }) %>%
   mutate(
+    grain = "annual",
     robust_score = abs(spearman_rho) + abs(detrended_r) + abs(adjusted_beta),
     main_candidate = predictor == "demand_total_log_z" & lag_label == "lag_1"
+  )
+
+exposure_candidates <- exposure_tbl %>%
+  filter(
+    kernel_km == 50,
+    !extrapolated_dominant_flag,
+    predator_species_or_source %in% c(
+      "Harbour seal",
+      "Steller sea lion raw non-pup",
+      "Steller sea lion filled total"
+    )
   ) %>%
+  transmute(
+    section_name,
+    year,
+    predictor = exposure_z,
+    predictor_id = paste0(
+      "exposure_",
+      str_replace_all(str_to_lower(predator_species_or_source), "[^a-z0-9]+", "_")
+    ),
+    label = paste0(predator_species_or_source, " exposure"),
+    class = "spatial_exposure",
+    grain = "section_year",
+    observed_count_flag,
+    interpolated_flag,
+    extrapolated_exposure_share,
+    source_site_count
+  )
+
+combined_mammal_exposure <- exposure_tbl %>%
+  filter(
+    kernel_km == 50,
+    !extrapolated_dominant_flag,
+    predator_species_or_source %in% c("Harbour seal", "Steller sea lion filled total")
+  ) %>%
+  group_by(section_name, year) %>%
+  summarise(
+    extrapolated_exposure_share = sum(extrapolated_exposure_share * exposure, na.rm = TRUE) /
+      pmax(sum(exposure, na.rm = TRUE), 1e-12),
+    exposure = sum(exposure, na.rm = TRUE),
+    observed_count_flag = any(observed_count_flag),
+    interpolated_flag = any(interpolated_flag),
+    source_site_count = sum(source_site_count, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    predictor = z(log1p(exposure)),
+    predictor_id = "exposure_combined_mammal",
+    label = "Combined mammal exposure",
+    class = "spatial_exposure",
+    grain = "section_year"
+  ) %>%
+  select(
+    section_name,
+    year,
+    predictor,
+    predictor_id,
+    label,
+    class,
+    grain,
+    observed_count_flag,
+    interpolated_flag,
+    extrapolated_exposure_share,
+    source_site_count
+  )
+
+exposure_candidates <- bind_rows(exposure_candidates, combined_mammal_exposure)
+
+score_exposure_one <- function(pred_id, pred_label, pred_class, pred_grain, lag_label, lag_n, screen_role) {
+  dat <- exposure_candidates %>%
+    filter(predictor_id == pred_id) %>%
+    mutate(growth_year = year + lag_n) %>%
+    inner_join(
+      section_biomass,
+      by = c("section_name", "growth_year" = "year")
+    ) %>%
+    left_join(
+      bridge_ts %>%
+        select(year, period, pdo_lag1_z, fishing_lag1_z, year_z),
+      by = c("growth_year" = "year")
+    ) %>%
+    transmute(
+      year = growth_year,
+      section_name,
+      site,
+      period,
+      growth = next_year_growth,
+      predictor,
+      pdo_lag1_z,
+      fishing_lag1_z,
+      year_z,
+      post_2005 = growth_year >= 2005,
+      observed_count_flag,
+      interpolated_flag,
+      extrapolated_exposure_share,
+      source_site_count
+    ) %>%
+    filter(is.finite(growth), is.finite(predictor), is.finite(year_z))
+
+  if (nrow(dat) < 20 || sd(dat$growth) == 0 || sd(dat$predictor) == 0) {
+    return(tibble(
+      predictor = pred_id,
+      label = pred_label,
+      class = pred_class,
+      grain = pred_grain,
+      lag_label,
+      lag_n,
+      screen_role,
+      n = nrow(dat),
+      n_sections = n_distinct(dat$section_name),
+      n_years = n_distinct(dat$year),
+      observed_share = mean(dat$observed_count_flag, na.rm = TRUE),
+      interpolated_share = mean(dat$interpolated_flag, na.rm = TRUE),
+      median_extrapolated_exposure_share = median(dat$extrapolated_exposure_share, na.rm = TRUE),
+      spearman_rho = NA_real_,
+      pearson_r = NA_real_,
+      detrended_r = NA_real_,
+      adjusted_beta = NA_real_,
+      adjusted_p = NA_real_,
+      adjusted_r2 = NA_real_,
+      post_2005_rho = NA_real_
+    ))
+  }
+
+  detrended_growth <- lm(growth ~ year_z + section_name, data = dat)
+  detrended_predictor <- lm(predictor ~ year_z + section_name, data = dat)
+
+  adj_dat <- dat %>%
+    mutate(
+      predictor_z = z(predictor),
+      pdo_lag1_z = replace_na(pdo_lag1_z, 0),
+      fishing_lag1_z = replace_na(fishing_lag1_z, 0)
+    )
+  adjusted <- lm(
+    growth ~ predictor_z + pdo_lag1_z + fishing_lag1_z + year_z + section_name,
+    data = adj_dat
+  )
+
+  tibble(
+    predictor = pred_id,
+    label = pred_label,
+    class = pred_class,
+    grain = pred_grain,
+    lag_label,
+    lag_n,
+    screen_role,
+    n = nrow(dat),
+    n_sections = n_distinct(dat$section_name),
+    n_years = n_distinct(dat$year),
+    observed_share = mean(dat$observed_count_flag, na.rm = TRUE),
+    interpolated_share = mean(dat$interpolated_flag, na.rm = TRUE),
+    median_extrapolated_exposure_share = median(dat$extrapolated_exposure_share, na.rm = TRUE),
+    spearman_rho = safe_cor(dat$growth, dat$predictor, "spearman"),
+    pearson_r = safe_cor(dat$growth, dat$predictor, "pearson"),
+    detrended_r = safe_cor(resid(detrended_growth), resid(detrended_predictor), "pearson"),
+    adjusted_beta = coef_or_na(adjusted, "predictor_z", "Estimate"),
+    adjusted_p = coef_or_na(adjusted, "predictor_z", "Pr(>|t|)"),
+    adjusted_r2 = summary(adjusted)$adj.r.squared,
+    post_2005_rho = safe_cor(
+      dat$growth[dat$post_2005],
+      dat$predictor[dat$post_2005],
+      "spearman"
+    )
+  )
+}
+
+exposure_specs <- exposure_candidates %>%
+  distinct(predictor_id, label, class, grain)
+
+exposure_screen_tbl <- crossing(exposure_specs, lag_specs) %>%
+  pmap_dfr(function(predictor_id, label, class, grain, lag_label, lag_n, screen_role) {
+    score_exposure_one(predictor_id, label, class, grain, lag_label, lag_n, screen_role)
+  }) %>%
+  mutate(
+    robust_score = abs(spearman_rho) + abs(detrended_r) + abs(adjusted_beta),
+    main_candidate = FALSE
+  )
+
+screen_tbl <- bind_rows(
+  screen_tbl %>%
+    mutate(
+      n_sections = NA_integer_,
+      n_years = n,
+      observed_share = NA_real_,
+      interpolated_share = NA_real_,
+      median_extrapolated_exposure_share = NA_real_
+    ),
+  exposure_screen_tbl
+) %>%
+  gate_lag1_screens() %>%
   arrange(desc(main_candidate), desc(robust_score))
 
 removal_period <- bridge_ts %>%
@@ -277,6 +520,33 @@ main_screen <- screen_tbl %>%
   filter(main_candidate) %>%
   slice(1)
 
+exposure_lag1 <- screen_tbl %>%
+  filter(class == "spatial_exposure", lag_label == "lag_1") %>%
+  arrange(gate, desc(robust_score))
+
+best_exposure <- exposure_lag1 %>%
+  slice_max(robust_score, n = 1, with_ties = FALSE)
+
+screen_gate_md <- screen_tbl %>%
+  filter(lag_label == "lag_1", class %in% c("demand", "spatial_exposure", "mortality_proxy")) %>%
+  arrange(class, gate, desc(robust_score)) %>%
+  transmute(
+    predictor = label,
+    grain,
+    n,
+    `n sections` = n_sections,
+    `rho` = number(spearman_rho, accuracy = 0.01),
+    `detrended r` = number(detrended_r, accuracy = 0.01),
+    `adjusted beta` = number(adjusted_beta, accuracy = 0.01),
+    `median extrapolated exposure` = if_else(
+      is.na(median_extrapolated_exposure_share),
+      NA_character_,
+      percent(median_extrapolated_exposure_share, accuracy = 1)
+    ),
+    `future control beaten` = if_else(beats_future_negative_control, "yes", "no"),
+    gate
+  )
+
 p_removals <- bridge_ts %>%
   select(year, period, predator_removal_rate, fishery_removal_rate, predator_plus_fishery_rate) %>%
   pivot_longer(
@@ -313,7 +583,7 @@ p_removals <- bridge_ts %>%
 p_screen <- screen_tbl %>%
   filter(lag_label %in% c("future_1_negative_control", "lag_1")) %>%
   mutate(
-    label = paste0(label, " (", lag_label, ")"),
+    label = paste0(label, " / ", grain, " (", lag_label, ")"),
     spearman_plot = replace_na(spearman_rho, 0),
     label = fct_reorder(label, spearman_plot)
   ) %>%
@@ -394,6 +664,9 @@ method_crosswalk <- tribble(
   "Predation mortality compared with random-walk natural mortality",
   "Conceptually mirrored by comparing predator-demand screens against the promoted m1_stier_11 process and PDO.",
   "Fit one demand branch against m1_stier_11; do not combine predator groups unless a single branch clears gates.",
+  "Section-level predator overlap / spatial exposure",
+  "Partly replicated for harbour seal and Steller sea lion through 25/50/100 km distance-kernel exposure products.",
+  "Use section-year exposure as a gated future branch only if it survives detrending, section controls, and future-lag negative controls.",
   "Future predator scenarios and unfished-equilibrium projections",
   "Not currently replicated.",
   "After a promoted or clearly useful predator process, build scenario projections; otherwise keep for discussion only."
@@ -413,6 +686,7 @@ lines <- c(
   "- WCVI paper: Doherty et al. 2025, ICES Journal of Marine Science, doi:10.1093/icesjms/fsae183.",
   "- Core idea: estimate predator consumption externally, then treat predator consumption as catch-like removals/predation mortality inside a herring assessment.",
   "- HG analogue here: use audited HG predator consumption as annual demand, compute removal-rate analogues against `m1_stier_11` biomass, and screen demand covariates before fitting another single-covariate branch.",
+  "- Added HG spatial-exposure analogue: harbour seal and Steller sea lion site/count exposure is screened at the section-year grain before any section-level predator Stan branch.",
   "",
   "## Method Crosswalk",
   "",
@@ -464,9 +738,34 @@ lines <- c(
   "- Future-demand rows in `wcvi_predator_demand_residual_screen.csv` are negative controls; a credible branch should not rely only on monotonic calendar time.",
   "- The screen now includes raw and detrended Doherty-style `Mp_mid` proxies; the detrended row asks whether Mp carries signal after removing its linear calendar trend.",
   "",
+  "## Exposure And Demand Gates",
+  "",
+  "Lag-1 rows are the only model-candidate rows. Future-lag rows remain in the CSV as negative controls, and section-year exposure rows exclude years where edge-held counts dominate exposure.",
+  "",
+  knitr::kable(screen_gate_md, format = "pipe"),
+  "",
+  paste0(
+    "- Best 50 km section-exposure lag-1 row: `",
+    best_exposure$label,
+    "`, n `",
+    best_exposure$n,
+    "`, sections `",
+    best_exposure$n_sections,
+    "`, Spearman rho `",
+    fmt(best_exposure$spearman_rho, 2),
+    "`, detrended r `",
+    fmt(best_exposure$detrended_r, 2),
+    "`, adjusted beta `",
+    fmt(best_exposure$adjusted_beta, 2),
+    "`, gate `",
+    best_exposure$gate,
+    "`."
+  ),
+  "",
   "## Decision",
   "",
-  "- Prepare `m5_stier_predator_demand_total` as the next single-covariate predator screen.",
+  "- Treat `m5_stier_predator_demand_total` as completed/held and do not submit another annual predator branch without a stronger residual-screen gate.",
+  "- Prepare future `m6_stier_predator_exposure_mammals` only as a gated candidate; do not submit it until a section-year exposure signal survives detrending and future-lag controls.",
   "- Treat `m5_stier_doherty_proxy_removals` and `m5_stier_doherty_mp_covariate` as geometry-gated until reparameterized; use this bridge as the talk-safe predator diagnostic.",
   "- Keep zeros ambiguous, use two-era q, fit all 11 sections, and compare only against `m1_stier_11`.",
   "- Do not resurrect `m5_combined`; do not add group combinations until total demand or one group-specific branch improves calibration and remains sampler-clean.",
