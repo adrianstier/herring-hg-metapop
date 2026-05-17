@@ -248,3 +248,25 @@
   explicit: do not use shared-spawn-normalized proxies or SCA recruitment
   outputs as independent predator validation before exact DFO
   age-composition/recruitment inputs are acquired.
+
+## Royal Society talk 20-slide expansion
+
+- Expanded `talk-usuk-forum-2026/Talk_Materials/talk_production_plan.md` from
+  the 15-slide production concept into a 20-slide working deck outline.
+- Added per-slide asset targets for all 20 slides, keeping the promoted
+  `m1_stier_11` model contract and the predator/Doherty claim boundaries from
+  `docs/talk-model-claim-control-sheet.md`.
+- Added 8 backup/Q&A slides for likely questions on predators, Doherty
+  replication limits, zero treatment, DFO recruitment circularity, baseline
+  robustness, lagged recruitment hypotheses, Strait of Georgia, and management
+  action under uncertainty.
+- Closed the talk's Gap A for sourcing: the value-layer asset is the 2024
+  Haida Gwaii Herring Rebuilding Plan Figures 31/32, documented in
+  `talk-usuk-forum-2026/Talk_Materials/S8_landed_value_provenance.md`, with
+  rendered figure crops/provenance in `talk-usuk-forum-2026/Talk_Materials/figs/`.
+- Corrected the old unsupported landed-value wording in the production plan
+  and timeline events: do not use "1993 / ~$40M / 93%" unless raw DFO
+  fish-slip data are pulled and checked.
+- Updated `docs/HERRING_TALK_ASSETS.md` so the 20-slide plan is the canonical
+  talk outline and the remaining source gap is Gap B: Athlii Gwaii / Lyell
+  Island blockade and 2024 rebuilding-plan signing imagery.

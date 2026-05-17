@@ -11,7 +11,7 @@ tracks the cross-session build state.
 > **Talk Build State** section at the bottom so the next context window picks up
 > cleanly.
 
-Last updated: 2026-05-17 (model-claim guardrails and Dougherty gap table added; predator talk framing corrected).
+Last updated: 2026-05-17 (20-slide production plan, S8 value provenance, and talk backup/Q&A slides added).
 
 ---
 
@@ -60,10 +60,16 @@ Last updated: 2026-05-17 (model-claim guardrails and Dougherty gap table added; 
 > as a structural intervention on these coupled tipping points. I close with
 > three transferable lessons for forage-fish management in the US and UK.
 
-### Talk outline — OPEN (to be figured out)
+### Current talk outline — 20-slide production plan
 
-The right narrative for a 25-min tipping-points talk to ~40 expert ocean
-scientists is **not yet decided**. Constraints to honor while developing it:
+The canonical talk sequence is now
+`talk-usuk-forum-2026/Talk_Materials/talk_production_plan.md`: a 20-slide
+working plan for the Royal Society ecosystem-services session, plus backup
+slides for likely questions. Older `talk_outline_v1.md` and
+`talk_outline_v2.md` remain useful for citation maps and rigor corrections,
+but they no longer control slide order.
+
+Constraints that still govern the deck:
 
 - Audience = tipping-points/regime-shift experts (not undergrads, not a
   fisheries-management crowd) — Session 5 is *Tipping Points in Ecosystem
@@ -76,8 +82,8 @@ scientists is **not yet decided**. Constraints to honor while developing it:
   tipping-points content available; the social/governance material is the
   differentiator for this audience.
 
-Candidate angles and the chosen outline get recorded in Talk Build State as
-they are decided. Until then, no session should "build to the abstract."
+No session should "build to the abstract." Build to the canonical production
+plan and the claim-control sheet.
 
 ---
 
@@ -118,6 +124,7 @@ they are decided. Until then, no session should "build to the abstract."
 | TP-11 | doc | **Herring non-recovery hypotheses & cross-system idea bank** | `docs/herring-non-recovery-hypotheses.md` | ready | mechanism menu (cod + herring lit), HG support ranking, contested-recovery nuance, governance-under-uncertainty solutions; **the place for talk hypotheses/ideas** |
 | TP-12 | doc | **Talk model claim control sheet** | `docs/talk-model-claim-control-sheet.md` | ready | safe/unsafe language for every model, predator, recovery, DFO, and Doherty claim |
 | TP-13 | doc | **Doherty-style HG gap table** | `docs/doherty-style-hg-gap-table.md` | ready | concise replication-gap table: present vs provisional vs missing vs proxy-only |
+| TP-14 | doc | **20-slide talk production plan + backup/Q&A slides** | `talk-usuk-forum-2026/Talk_Materials/talk_production_plan.md` | ready | canonical slide order, treatment rhythm, asset wiring, likely-question backup slides |
 
 ### 3b. Figures (this repo)
 
@@ -202,6 +209,9 @@ tracked. **This is the home for the talk outline / drafts / deck.**
 | FRM-TRIP | html | Trip dossier (flights, programme, forms, contacts) | `talk-usuk-forum-2026/Trip_Dossier/` | local-only | logistics — not talk content; gitignored because private |
 | FRM-PAPERS | pdf/doc | Curated cited papers + acquisition log (PDFs gitignored) | `talk-usuk-forum-2026/Reference_Papers/` | raw-material | Doherty 2025, Ingeman 2019, Levin 2020, Okamoto 2020, Samhouri 2017, Selkoe 2015, Shelton 2014, Stier 2016, Stier 2020, plus newly acquired forum papers; source state in `ACQUISITION_LOG.md` |
 | FRM-WORK | dir | **Talk outline / slide drafts / deck go here** | `talk-usuk-forum-2026/Talk_Materials/` | draft | working talk build location |
+| FRM-PROD | doc | **Canonical 20-slide production plan** | `talk-usuk-forum-2026/Talk_Materials/talk_production_plan.md` | ready | current slide sequence, treatment rhythm, asset wiring, backup/Q&A slides |
+| FRM-S8 | doc | **S8/S12 landed-value provenance** | `talk-usuk-forum-2026/Talk_Materials/S8_landed_value_provenance.md` | ready | source-corrected value-layer claim; Rebuilding Plan Figs 31/32; closes Gap A |
+| FRM-VALUEFIGS | png/doc | **Rebuilding Plan value figure crops** | `talk-usuk-forum-2026/Talk_Materials/figs/` | ready | rendered Fig 31/32 landed-value crops plus provenance for S12 value-layer slide |
 
 ---
 
@@ -294,17 +304,16 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
   Stier 2016 *Sci Adv* cognitive maps), repo figures to regenerate from current
   `m1_stier_11`, and a numbers-to-verify list. Awaiting Adrian on: title,
   the 3 lessons (S16), deck mechanics, and go-ahead to build figures.
-- **2026-05-16 (outline v2 + acquisition list):** **`talk_outline_v2.md`** is
-  now canonical (v1 superseded, kept for its asset map). v2 applies all 8
-  corrections + the Lenton/Scheffer/Rocha theory spine; new S5 (Cleary 2024
-  HG-exception), S7 non-identifiability, S7b objection→rebuttal, S9 Rocha-2018
-  coupled-feedback backbone, S11 split cod/forage-fish analogues, S15 honest
-  co-governance. Papers Adrian must fetch listed in
+- **2026-05-16 (outline v2 + acquisition list):** **`talk_outline_v2.md`**
+  superseded v1 and applied all 8 corrections + the Lenton/Scheffer/Rocha
+  theory spine. It is now retained for its citation map and rigor corrections;
+  the canonical slide order is the later 20-slide production plan. Papers
+  Adrian must fetch listed in
   **`talk-usuk-forum-2026/Talk_Materials/papers_to_acquire.md`** (7 must-get).
 - **Deck location:** none yet. Canonical outline =
-  `talk-usuk-forum-2026/Talk_Materials/talk_outline_v2.md`; build the deck in
-  `talk-usuk-forum-2026/Talk_Materials/`. Record the working `.pptx` path here
-  once it exists.
+  `talk-usuk-forum-2026/Talk_Materials/talk_production_plan.md`; build the deck
+  in `talk-usuk-forum-2026/Talk_Materials/`. Record the working `.pptx` path
+  here once it exists.
 - **2026-05-16 (content audit — gap analysis vs. locked spine):** Read
   `DRV-SCRIPT` (LECTURE_SCRIPT.md), `DRV-ASSETS` inventory (235 files), and
   `DRV-OUTLINE`. Finding: the Drive library is a fully-built **50-min,
@@ -403,17 +412,16 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
   the talk workspace policy so private `Trip_Dossier/` files stay local and
   gitignored.
 - **2026-05-17 (canonical production plan + asset wiring):** Adrian supplied a
-  full **production plan** → now canonical:
+  full **production plan** → canonical and later expanded to 20 slides:
   `talk-usuk-forum-2026/Talk_Materials/talk_production_plan.md` (separability /
-  three-layer / management-window thesis; 15 slides; 4 dynamic builds; 5
+  three-layer / management-window thesis; 20 slides; 4 dynamic builds; 5
   treatments). `talk_outline_v2.md` demoted to citation-map/rigor-constraints.
   Appended an **Asset wiring** section mapping every slide/build to concrete
   catalogued assets (repo figures, `DRV-ASSETS` photos/videos, predator-repo
   products, acquired papers, the `herring_haida_gwaii_timeline.html` design
-  language). **Two real sourcing gaps:** (A) coastwide herring landed value
-  1985-2010 — the S8 keystone datum, not in catalogue; (B) Athlii Gwaii / 2024
-  signing photos. The predator rigor flag is now resolved by the 2026-05-17
-  model-claim guardrail entry above.
+  language). Gap A was later closed by the Rebuilding Plan value provenance;
+  Gap B remains Athlii Gwaii / 2024 signing photos. The predator rigor flag is
+  now resolved by the 2026-05-17 model-claim guardrail entry above.
 - **Acquisition final:** 17 valid PDFs + Rebuilding Plan in the dossier. Rocha
   2018, Chavez 2003, Möllmann 2009 **persistently fail** the publisher route
   (UCSB SSO not carried by `~/.chrome-debug-profile`; re-run reproduced 536-B
@@ -421,22 +429,34 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
   Points / cod notebooks; get PDFs later via UCSB library proxy or Zotero if a
   figure is needed. Cleary/DFO SR 2025/005 is source-resolved in the core
   extraction workflow.
+- **2026-05-17 (Gap A resolved — S8 landed value sourced):** The S8 keystone
+  value series is the **2024 HG Rebuilding Plan, Figures 31 (roe gillnet) & 32
+  (roe seine) landed value, BC coastwide + Haida Gwaii, 2020$**, basis = DFO
+  fish-slip records. Full verbatim provenance + quotes in
+  `talk-usuk-forum-2026/Talk_Materials/S8_landed_value_provenance.md`. **⚠️
+  Discrepancy corrected:** the older "1993 peak / ~$40M" language was **not**
+  supported — the source says BC roe value **peaked in the 1980s**, high to
+  mid-1990s, declined 1995–2005 & 2008–present. State it the sourced way
+  unless raw DFO fish-slip data are pulled for an exact peak.
+- **2026-05-17 (20-slide expansion + Q&A backups):** Expanded the canonical
+  production plan to **20 content slides** with per-slide assets and 8
+  likely-question backup slides. Corrected the S8/S12 value-layer claim using
+  the Rebuilding Plan provenance and removed the unsupported "1993 / ~$40M /
+  93%" language from the production plan and timeline events. Gap A is closed
+  for sourcing; Gap B remains co-governance/direct-action/signing imagery.
 - **Open / next actions (priority order):**
-  0. Close **gap A** (landed-value series, S8 keystone) and **gap B** (Athlii
-     Gwaii / 2024 signing photos).
-  1. **Finalize Spine B outline** — apply the v1 review corrections; resolve
-     the two open questions, then the 5-beat → ~16-slide map (solutions-forward,
-     hysteresis-led, no EWS claim, non-identifiability framing).
-  2. **Decide deck approach:** adapt/cut `DRV-DECK` 35→~16 vs. lean fresh
+  0. Close **gap B** (Athlii Gwaii / Lyell Island blockade + 2024
+     rebuilding-plan signing photos).
+  1. **Decide deck approach:** adapt/cut `DRV-DECK` 35→20 vs. lean fresh
      deck reusing `DRV-ASSETS`; build in `talk-usuk-forum-2026/Talk_Materials/`.
-  3. **Reconcile the portfolio-erosion numbers** to the current `m1_stier_11`
+  2. **Reconcile the portfolio-erosion numbers** to the current `m1_stier_11`
      analysis (TP-01/§3b) — never the early abstract's phrasing.
-  4. **Author the close / transferable lessons** (solutions payload).
-  5. **Source Beat 3a figure** — **Stier et al. 2016 *Conservation
+  3. **Author the close / transferable lessons** (solutions payload for S20).
+  4. **Source S15 cognitive-map figure** — **Stier et al. 2016 *Conservation
      Letters* 10(1):67-76** cognitive-map figure (N=27). The clean ConsLett
      PDF is in the dossier as `Stier_2016_ExpertPerceptionsFoodWeb.pdf`; the
      older `Stier_et_al__Science_Advances_2016.pdf` is a different paper.
-  6. **Slides OVERDUE to `scientific.meetings@royalsociety.org`** (.pptx) —
+  5. **Slides OVERDUE to `scientific.meetings@royalsociety.org`** (.pptx) —
      send as soon as a draft exists.
-  7. Confirm whether a talk **title** is required (booklet PDF, Gmail
+  6. Confirm whether a talk **title** is required (booklet PDF, Gmail
      `19e21e7b74b30c97`).
