@@ -78,7 +78,8 @@ Current read from the May 14 refresh:
   sufficient rather than as proof of one unmodeled predator coefficient;
 - the future-lag audit keeps immediate adult mortality separate from delayed
   age-3 recruitment-return mechanisms; the delayed hypothesis is plausible, but
-  current public age/recruitment rows are audit targets rather than model-ready
+  current Appendix B age-composition rows are provisional audit targets, while
+  shared-spawn and SCA-output rows are context rather than model-ready
   covariates;
 - Cumshewa and Louscoone remain the clearest mechanism cases;
 - predator, timing, substrate, and local spawn-location screens are data-product
@@ -126,7 +127,9 @@ Current read from the May 14 refresh:
    points to legacy depletion and unresolved local persistence/recolonization.
 6. Use `Output/diagnostics/future_lag_negative_control_audit.md` for the
    timing caveat. Adult lag-1 and biomass-growth age-3 rows do not clear gates;
-   public age/recruitment rows are audit targets only until exact DFO
+   public Appendix B age-composition rows are provisional audit targets only.
+   Spawn-normalized rows share the adult-spawn input stream, and DFO 2025
+   age-2 recruitment is SCA model-output context until exact DFO
    age-composition/recruitment inputs are available.
 7. Use `docs/dfo-hg-biological-input-request-packet.md` for the exact DFO
    follow-up ask on machine-readable HG biological inputs and SCA/SISCAH

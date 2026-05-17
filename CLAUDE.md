@@ -69,6 +69,13 @@ predator repo files to herring repo diagnostics, figures, and model covariates.
 - Salmon context: `Output/diagnostics/salmon_recruitment_context_screen.md`.
   Treat salmon as juvenile/recruitment context unless the model gains age or
   recruitment structure.
+- Future-lag / age screens:
+  `Output/diagnostics/future_lag_negative_control_audit.md`.
+  Appendix B number-at-age is provisional assessment-input context from
+  biological samples; Appendix B spawn shares the adult-spawn observation stream
+  used by `m1_stier_11`; DFO 2025 age-2 recruitment is SCA model output. Do not
+  treat shared-spawn-normalized or SCA-output rows as independent predator
+  validation.
 
 ## Modeling Caveat
 

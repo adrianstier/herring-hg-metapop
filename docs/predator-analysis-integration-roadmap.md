@@ -259,10 +259,17 @@ Current read:
   combined mammal exposure (`beta = -0.04`, rho about `-0.12`), and it fails
   the weak-effect gate.
 - The DFO 2025 age-2 recruitment table is short because it is a recent
-  2015-2024 SCA summary, not the full biological input matrix.
+  2015-2024 SCA output summary, not the full biological input matrix.
 - Longer public age data do exist in CSAS 2018/028 Appendix B Table B.15
   (`1951-2017` number-at-age) and Table B.22 (`1951-2017` weight-at-age), but
   these are provisional PDF extracts and schema checks, not final model inputs.
+- Appendix B Table B.8 spawn is raw assessment input and not q-scaled, but it
+  is the same adult spawn observation stream used by `m1_stier_11`; any
+  spawn-normalized age proxy is shared-input context rather than independent
+  recruitment evidence.
+- DFO 2025 Table 11 age-2 recruitment is estimated inside the SCA model from
+  catch, spawn, age composition, and weight-at-age, so it is model-output
+  context only.
 - Spawn habitat index / spawn index is spawning output or egg deposition. It
   can be used as brood-year parent-output context or a coarse return proxy, but
   it is not pure recruitment because it mixes survival, age composition, repeat
@@ -424,7 +431,8 @@ For the current talk, say:
   candidate, so no-fishing should be framed as necessary but not sufficient
   rather than as proof of one missing covariate;
 - an age-3 recruitment-return lag is plausible, but current biomass-growth and
-  public age/recruitment proxy screens are audit targets, not inference;
+  public age-composition proxy screens are audit targets, while shared-spawn
+  and SCA-output rows are context only;
 - the next scientific step is a better predator data-product integration, not
   a richer combined Stan model.
 

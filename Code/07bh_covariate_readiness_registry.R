@@ -163,7 +163,6 @@ future_lag_age3_n <- future_lag_summary %>%
 public_age_targets <- public_age_lag_screen %>%
   filter(gate %in% c(
     "age3_public_proxy_audit_target",
-    "short_sca_age2_audit_target",
     "delayed_public_proxy_audit_target"
   ))
 
@@ -176,10 +175,10 @@ future_lag_label <- if (nrow(future_lag_best_age3) == 0) {
   "Run Code/07bu_future_lag_negative_control_audit.R to score future controls and age-3 lags."
 } else {
   public_part <- if (nrow(public_age_best) == 0) {
-    "no public age/recruitment audit target rows"
+    "no public age-composition audit target rows"
   } else {
     glue(
-      "public age/recruitment audit targets {nrow(public_age_targets)}; strongest {public_age_best$label} beta {fmt(public_age_best$beta, 2)}, rho {fmt(public_age_best$raw_rho, 2)}, gate {public_age_best$gate}"
+      "public age-composition audit targets {nrow(public_age_targets)}; strongest {public_age_best$label} beta {fmt(public_age_best$beta, 2)}, rho {fmt(public_age_best$raw_rho, 2)}, gate {public_age_best$gate}"
     )
   }
   glue(
@@ -355,10 +354,10 @@ covariate_registry <- tribble(
   "screen only",
   "Future-lag and age-3 recruitment audit",
   "pre-Stan timing gate",
-  "adult-growth lags, age-3 biomass-growth proxy, and public age/recruitment proxies",
+  "adult-growth lags, age-3 biomass-growth proxy, public age-composition proxies, and SCA-output context",
   future_lag_label,
-  "Biomass-growth age-3 proxy is weak; public age/recruitment targets are provisional because Appendix B is a PDF extraction and the current SCA recruitment table has only 10 recent rows.",
-  "Use this to justify cohort-aligned age/recruitment data work; do not convert it into a predator Stan branch before exact age-composition/recruitment inputs are available.",
+  "Biomass-growth age-3 proxy is weak; Appendix B number-at-age rows are provisional PDF-extracted inputs; spawn-normalized rows share the same spawn observation stream as m1_stier_11; DFO 2025 age-2 recruitment is SCA model output.",
+  "Use this to justify cohort-aligned age/recruitment data work; do not convert shared-spawn proxies or SCA recruitment outputs into independent predator-response evidence before exact age-composition/recruitment inputs are available.",
   "screen only",
   "Local spawn-location persistence",
   "descriptive local mechanism target",
@@ -422,7 +421,7 @@ lines <- c(
   "- The promoted model already includes catch removals, lag-1 PDO, surface/SCUBA q, ambiguous zeros, and all 11 sections.",
   "- Historical fishing is the strongest descriptive recovery axis, but the model should not double-count it as a new covariate without a specific contrast.",
   "- The post-closure recovery screen supports a conservative interpretation: no-fishing alone has not restored all local states, but predator/climate rows do not yet clear model-entry gates.",
-  "- Future-lag and age-3 screens separate immediate adult mortality from delayed recruitment-return hypotheses; public age/recruitment rows are audit targets, not model-ready covariates.",
+  "- Future-lag and age-3 screens separate immediate adult mortality from delayed recruitment-return hypotheses; public Appendix B age-composition rows are provisional audit targets, while shared-spawn-normalized rows and SCA recruitment outputs are context only.",
   "- Predator, timing, substrate, and local location signals are better treated as data products and local follow-up targets before Stan coefficients.",
   "- Age/size structure remains held for this talk cycle."
 )

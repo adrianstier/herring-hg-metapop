@@ -139,6 +139,15 @@ year ranges, and source-field completeness. `Code/07bn_hg_dfo_sca_external_compa
 adds a talk-facing comparison among `m1_stier_11`, public DFO 2025/005 HG SCA
 summaries, and predator demand. Use it only as scale/geography context; do not
 interpret it as a likelihood comparison or validation residual.
+For public age/recruitment timing screens, keep the evidence classes separate:
+CSAS 2018/028 Appendix B Table B.15 number-at-age is assessment input derived
+from biological samples, but still provisional because it is a PDF extraction;
+Appendix B Table B.8 spawn is raw, not-q-scaled assessment input, but it is the
+same adult-spawn observation stream used by `m1_stier_11`; DFO 2025/005 Table
+11 age-2 recruitment is SCA model output estimated from the assessment model.
+Therefore Appendix B age-composition rows are provisional audit targets, while
+spawn-normalized rows and SCA recruitment rows are context only and must not be
+used as independent predator-response validation.
 `docs/dfo-hg-biological-input-request-packet.md` is the tracked follow-up ask
 for exact machine-readable HG SCA/SISCAH biological inputs and metadata.
 For the May 16 talk cycle, `Code/07bo_doherty_proxy_parameter_plan.R` writes

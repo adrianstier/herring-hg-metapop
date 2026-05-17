@@ -591,21 +591,34 @@ recent_sca_recruitment <- read_csv(
   )
 
 age_responses <- tribble(
-  ~response_col, ~response_label, ~response_transform, ~response_expected_sign, ~min_n,
-  "age3_prop", "Public Appendix B age-3 proportion", "direct", "negative", 20L,
-  "young_2_3_prop", "Public Appendix B age-2/3 proportion", "direct", "negative", 20L,
-  "age3_per_spawn_proxy", "Public age-3 per brood-year spawn proxy", "spawn_normalized_age3", "negative", 20L,
-  "sca_age2_recruitment_millions", "DFO 2025 age-2 recruitment", "log1p", "negative", 8L
+  ~response_col, ~response_label, ~response_transform, ~response_expected_sign, ~min_n, ~response_evidence_class, ~response_model_use_status,
+  "age3_prop", "Public Appendix B age-3 proportion", "direct", "negative", 20L, "observed_public_age_composition_input", "provisional_age_composition_screen",
+  "young_2_3_prop", "Public Appendix B age-2/3 proportion", "direct", "negative", 20L, "observed_public_age_composition_input", "provisional_age_composition_screen",
+  "age3_per_spawn_proxy", "Public age-3 per brood-year spawn proxy", "spawn_normalized_age3", "negative", 20L, "age_composition_divided_by_shared_spawn_input", "shared_spawn_input_context_only",
+  "sca_age2_recruitment_millions", "DFO 2025 age-2 recruitment", "log1p", "negative", 8L, "public_sca_model_output", "sca_output_context_only"
 )
 
 score_public_age <- function(predictor, label, pathway, expected_sign, source_data,
                              response_col, response_label, response_transform,
-                             response_expected_sign, min_n) {
+                             response_expected_sign, min_n, response_evidence_class,
+                             response_model_use_status) {
   response_tbl <- if (response_col == "sca_age2_recruitment_millions") {
     recent_sca_recruitment
   } else {
     public_age_comp %>%
       mutate(sca_age2_recruitment_millions = NA_real_)
+  }
+
+  response_source_files <- if (response_col == "sca_age2_recruitment_millions") {
+    "Output/diagnostics/dfo_newer_public_pdf_extract/dfo_sr_2025_005_table_11_hg_recruitment_2015_2024.csv"
+  } else if (response_transform == "spawn_normalized_age3") {
+    paste(
+      "Output/diagnostics/dfo_hg_public_extract/dfo_hg_appendix_b15_number_at_age_long.csv",
+      "Output/diagnostics/dfo_hg_public_extract/dfo_hg_appendix_b8_spawn.csv",
+      sep = "; "
+    )
+  } else {
+    "Output/diagnostics/dfo_hg_public_extract/dfo_hg_appendix_b15_number_at_age_long.csv"
   }
 
   dat <- crossing(
@@ -675,11 +688,13 @@ score_public_age <- function(predictor, label, pathway, expected_sign, source_da
     fit %>%
       mutate(
         test_id = paste0("public_age_", response_col, "_", predictor),
-        pathway = paste0(pathway, " -> public age/recruitment proxy"),
+        pathway = paste0(pathway, " -> public age-composition/SCA context"),
         label = paste0(response_label, " vs ", label),
         predictor,
         response_col,
         response_label,
+        response_evidence_class,
+        response_model_use_status,
         expected_sign = if_else(expected_sign == "screen_only", "screen_only", response_expected_sign),
         grain = if_else(
           response_col == "sca_age2_recruitment_millions",
@@ -693,9 +708,7 @@ score_public_age <- function(predictor, label, pathway, expected_sign, source_da
         raw_rho = safe_cor(lag_dat$response_value, lag_dat$predictor_value, "spearman", min_n = min_n),
         source_data = paste(
           source_data,
-          "Output/diagnostics/dfo_hg_public_extract/dfo_hg_appendix_b15_number_at_age_long.csv",
-          "Output/diagnostics/dfo_hg_public_extract/dfo_hg_appendix_b8_spawn.csv",
-          "Output/diagnostics/dfo_newer_public_pdf_extract/dfo_sr_2025_005_table_11_hg_recruitment_2015_2024.csv",
+          response_source_files,
           sep = "; "
         )
       )
@@ -718,7 +731,8 @@ public_age_screen <- crossing(
 ) %>%
   pmap_dfr(function(predictor, label, pathway, expected_sign, source_data,
                     response_col, response_label, response_transform,
-                    response_expected_sign, min_n) {
+                    response_expected_sign, min_n, response_evidence_class,
+                    response_model_use_status) {
     score_public_age(
       predictor,
       label,
@@ -729,7 +743,9 @@ public_age_screen <- crossing(
       response_label,
       response_transform,
       response_expected_sign,
-      min_n
+      min_n,
+      response_evidence_class,
+      response_model_use_status
     )
   }) %>%
   mutate(
@@ -745,6 +761,8 @@ public_age_screen <- crossing(
       TRUE ~ TRUE
     ),
     gate = case_when(
+      response_model_use_status == "shared_spawn_input_context_only" ~ "shared_spawn_input_context_only",
+      response_model_use_status == "sca_output_context_only" ~ "sca_model_output_context_only",
       fit_note != "fit_ok" ~ paste0("fail_", fit_note),
       expected_sign == "screen_only" ~ "screen_only_no_directional_gate",
       !expected_sign_ok ~ "fail_expected_sign",
@@ -752,13 +770,12 @@ public_age_screen <- crossing(
       abs_beta < 0.05 ~ "fail_weak_effect_size",
       p > 0.20 ~ "fail_uncertain_public_proxy",
       lag_years == 3 & str_detect(grain, "appendix_b") ~ "age3_public_proxy_audit_target",
-      lag_years == 2 & str_detect(grain, "sca_age2") ~ "short_sca_age2_audit_target",
       TRUE ~ "delayed_public_proxy_audit_target"
     )
   ) %>%
   arrange(desc(gate %in% c(
     "age3_public_proxy_audit_target",
-    "short_sca_age2_audit_target"
+    "delayed_public_proxy_audit_target"
   )), desc(abs_beta))
 
 write_csv(public_age_screen, file.path(diag_dir, "public_age_recruitment_lag_proxy_screen.csv"))
@@ -824,13 +841,14 @@ public_age_top <- public_age_screen %>%
   filter(is.finite(abs_beta)) %>%
   arrange(desc(gate %in% c(
     "age3_public_proxy_audit_target",
-    "short_sca_age2_audit_target"
+    "delayed_public_proxy_audit_target"
   )), desc(abs_beta)) %>%
   slice_head(n = 14)
 
 public_age_md <- public_age_top %>%
   transmute(
     grain,
+    response_model_use_status,
     lag_years,
     label,
     n,
@@ -843,7 +861,6 @@ public_age_md <- public_age_top %>%
 public_age_followup_n <- public_age_screen %>%
   filter(gate %in% c(
     "age3_public_proxy_audit_target",
-    "short_sca_age2_audit_target",
     "delayed_public_proxy_audit_target"
   )) %>%
   nrow()
@@ -851,7 +868,7 @@ public_age_followup_n <- public_age_screen %>%
 candidate_lines <- c(
   paste0("- Adult lag-1 follow-up rows: `", nrow(candidate_adult), "`."),
   paste0("- Age-3 biomass-growth proxy follow-up rows: `", nrow(candidate_age3), "`."),
-  paste0("- Public age/recruitment proxy audit-target rows: `", public_age_followup_n, "`.")
+  paste0("- Public age-composition proxy audit-target rows: `", public_age_followup_n, "`.")
 )
 
 best_age3_line <- if (nrow(best_age3) == 0) {
@@ -959,9 +976,12 @@ p_public_age <- public_age_screen %>%
     gate_group = case_when(
       gate %in% c(
         "age3_public_proxy_audit_target",
-        "short_sca_age2_audit_target",
         "delayed_public_proxy_audit_target"
-      ) ~ "public proxy audit target",
+      ) ~ "public age-comp audit target",
+      gate %in% c(
+        "shared_spawn_input_context_only",
+        "sca_model_output_context_only"
+      ) ~ "shared/model-output context",
       TRUE ~ "failed gate"
     )
   ) %>%
@@ -1013,12 +1033,14 @@ lines <- c(
   "- This diagnostic uses `m1_stier_11` posterior-median biomass growth into each year: `log(B[year] / B[year - 1])`.",
   "- Lag is defined as `response year - predictor year`. Lags `<= 0` are same/future-return-year controls, lag `1` is the adult growth interval, and lag `3` is the age-3 recruitment-return hypothesis.",
   "- Adult predation should show a fast lag; egg/juvenile/recruitment pathways can plausibly appear around lag 3 because many herring return to spawn about three years after birth.",
-  "- The public DFO 2025 recruitment table is short because it is a recent SCA summary for 2015-2024. The longer public age-composition extract is CSAS 2018/028 Appendix B Table B.15, covering 1951-2017, but it remains a provisional PDF extraction and schema screen.",
+  "- CSAS 2018/028 Appendix B Table B.15 is a public number-at-age input table derived from biological samples, not a model-estimated recruitment series; it is still provisional because it is a PDF extraction and lacks the exact current SCA/SISCAH input metadata.",
+  "- CSAS 2018/028 Appendix B Table B.8 is raw spawn-index input and explicitly not scaled by q, but it is the same adult spawn observation stream used by the biomass model. Any spawn-normalized age proxy is therefore shared-input context, not independent evidence.",
+  "- DFO 2025/005 Table 11 age-2 recruitment is a short 2015-2024 public SCA output summary. Because it is estimated from the assessment model fitted to catch, spawn, age composition, and weight-at-age, it is SCA-output context only.",
   "- Spawn habitat index / spawn index is an egg-deposition or spawning-output index, not a pure recruitment index. It can be used as brood-year parent-output context or as a coarse return proxy, but it mixes survival, age composition, repeat spawning, q, and survey method.",
   candidate_lines,
   best_age3_line,
   timing_takeaway,
-  "- Treat any positive age-3 result as a proxy only until exact age-3 recruitment, catch-at-age, or age-composition data are integrated.",
+  "- Treat any positive age-3 result as a proxy only until exact age-3 recruitment, catch-at-age, or age-composition data are integrated. Do not use shared-spawn-normalized proxies or SCA recruitment outputs as independent validation data.",
   "",
   "## Predictor Summary",
   "",

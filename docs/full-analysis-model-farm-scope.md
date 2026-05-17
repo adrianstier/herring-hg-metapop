@@ -213,10 +213,11 @@ AWS model branch.
 The lag-specific companion
 `Output/diagnostics/future_lag_negative_control_audit.md` separates immediate
 adult-growth effects from delayed age-3 recruitment-return hypotheses. It finds
-zero adult lag-1 or biomass-growth age-3 follow-up rows; public age/recruitment
-rows are audit targets only because the long Appendix B age composition is a
-provisional PDF extract and the current SCA recruitment summary has only 10
-recent rows.
+zero adult lag-1 or biomass-growth age-3 follow-up rows. Public Appendix B
+age-composition rows are provisional audit targets, spawn-normalized rows share
+the adult-spawn input stream used by `m1_stier_11`, and the current DFO
+age-2 recruitment summary is SCA model-output context rather than an
+independent response series.
 
 Promotion criteria:
 

@@ -27,8 +27,9 @@ model-farm state.
   the strict model-entry gate.
 - Use `Output/diagnostics/future_lag_negative_control_audit.md` for the timing
   caveat: a 3-year recruitment-return lag is biologically plausible, but the
-  current biomass-growth and public age/recruitment proxy screens are not
-  model-ready.
+  current biomass-growth proxy is weak; Appendix B age-composition rows are
+  provisional, spawn-normalized rows share the model's spawn input, and DFO
+  age-2 recruitment is SCA output.
 - For Doherty-style age/size/catch material, say "proxy bridge" rather than
   "completed HG catch-at-age analysis": HG public DFO tables anchor herring
   biology where available, while WCVI/Doherty values are provisional analogues
@@ -82,8 +83,9 @@ model-farm state.
 - Future-lag / age-3 audit: adult lag-1 and biomass-growth age-3 rows have zero
   follow-up candidates. The strongest biomass-growth age-3 row is combined
   mammal exposure (beta about -0.04, rho about -0.12) and fails the weak-effect
-  gate. Public age/recruitment rows are audit targets only: the 2025 age-2 SCA
-  table has 10 rows, while Appendix B age composition is longer but provisional.
+  gate. Appendix B age-composition rows are provisional audit targets only;
+  spawn-normalized rows share the adult-spawn input stream, and the 2025
+  age-2 recruitment table is SCA model-output context.
 - DFO Table 3 also supports the spatial-concentration message: Juan
   Perez/Skincuttle reaches up to about 98% of HG spawn-index share in 2015-2024,
   while Louscoone is 0% in the public summary.

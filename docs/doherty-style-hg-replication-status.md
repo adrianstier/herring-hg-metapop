@@ -62,8 +62,8 @@ provisional HG tables:
 | Product | Source | Rows extracted | Status |
 |---|---|---:|---|
 | catch by gear | Appendix B Table B.1 | 67 wide / 201 long | provisional public extraction |
-| spawn index | Appendix B Table B.8 | 67 | provisional public extraction |
-| number-at-age | Appendix B Table B.15 | 72 source-year / 648 age rows | provisional public extraction |
+| spawn index | Appendix B Table B.8 | 67 | provisional public extraction; raw, not-q-scaled assessment input but shared with the adult-spawn observation stream |
+| number-at-age | Appendix B Table B.15 | 72 source-year / 648 age rows | provisional public extraction of assessment input from biological samples |
 | weight-at-age | Appendix B Table B.22 | 67 year / 603 age rows | provisional public extraction |
 | biosample counts | Appendix B Table B.29 | 63 | provisional public extraction |
 | maturity-at-age | Section 2.1.4 | 9 | manually encoded from published text |
@@ -98,7 +98,7 @@ Clean newer public extracts now include:
 | major SAR catch | DFO 2025/005 Table 2 | 10 | public summary |
 | HG spawn index / sub-stock proportions | DFO 2025/005 Table 3 | 10 | public summary |
 | HG SCA key parameters | DFO 2025/005 Table 7 | 11 | public summary |
-| HG age-2 recruitment | DFO 2025/005 Table 11 | 10 | public summary |
+| HG age-2 recruitment | DFO 2025/005 Table 11 | 10 | public SCA model-output summary; context only |
 | HG spawning biomass and depletion | DFO 2025/005 Table 15 | 10 | public summary |
 | HG reference points / 2025 projection | DFO 2025/005 Table 19 | 13 | public summary |
 | projected 2025 biomass / broad age proportions | 2024/2025 IFMP Table 3.1 | 4 | public summary |

@@ -231,3 +231,20 @@
   Stier-aligned predator branches as held context; do not launch predator
   combinations or exact re-LOO for `m5_stier_predator_demand_total` before the
   Saturday talk.
+
+## Public age/recruitment circularity audit
+
+- Rechecked the DFO source text behind the public HG age/recruitment timing
+  screen. CSAS 2018/028 Appendix B Table B.8 is raw, not-q-scaled spawn index
+  input, but it is the same adult-spawn observation stream used by
+  `m1_stier_11`; Table B.15 is number-at-age assessment input derived from
+  biological samples; DFO 2025/005 Table 11 is SCA model-estimated age-2
+  recruitment.
+- Updated `Code/07bu_future_lag_negative_control_audit.R` so Appendix B
+  age-composition rows remain provisional audit targets, while
+  spawn-normalized rows and SCA recruitment rows are forced to context-only
+  gates rather than treated as independent response evidence.
+- Updated the covariate registry and source docs to make the circularity rule
+  explicit: do not use shared-spawn-normalized proxies or SCA recruitment
+  outputs as independent predator validation before exact DFO
+  age-composition/recruitment inputs are acquired.
