@@ -18,6 +18,11 @@ context only. The Stier-aligned predator branch,
 predator coefficient, but it does not improve positive-spawn or catch
 calibration enough to promote. The WCVI-aligned demand branch,
 `m5_stier_predator_demand_total`, also completed on AWS and remains held.
+The generated `Output/diagnostics/model_decision_ledger.md` and
+`Output/diagnostics/model_branch_status_table.md` now carry the all-branch
+guardrails: promoted baseline, held sensitivity/context, archived/do-not-use,
+zero-treatment sensitivity, or planning-only. Use those classes before
+turning any predator coefficient into manuscript language.
 
 Key current numbers:
 
@@ -376,6 +381,11 @@ Do these before spending AWS time on another predator model:
    - Include future predator demand as a negative control.
    - Check whether the signal survives removing a linear year trend.
    - Check whether the signal survives within the post-2005 closure period.
+   - For recruitment-return hypotheses, also check lag `3` and confirm that
+     the signal is not stronger in same/future-return-year controls.
+   - Treat public SCA-output recruitment rows and shared-spawn-normalized
+     proxies as context only; they cannot be the independent response that
+     promotes a predator branch.
 
 ## Model Roadmap
 

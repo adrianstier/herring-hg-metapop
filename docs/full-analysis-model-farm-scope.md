@@ -168,22 +168,24 @@ Purpose:
 
 Current jobs:
 
-- `m5_stier_predation_pressure`;
+- `m5_stier_predation_pressure` (completed/held);
 - `m5_stier_predator_demand_total` (completed/held);
 - future `m6_stier_predator_exposure_mammals` (data-product gated only);
-- `m5_v5`;
-- `m5_combined`.
+- `m5_v5` (archived/do-not-use);
+- `m5_combined` (archived/do-not-use).
 
 Important limitation:
 
-`m5_stier_predation_pressure` is the first defensible predator branch to run:
-it keeps the Stier-aligned observation layer and uses annual HG predation
-pressure from `stier-lab/pacific-herring-predators`, locally checked out at
-`/Users/adrianstier/pacific-herring-predators`. It is still a regional annual
-pressure covariate, not section-specific exposure. Use
-`docs/predator-repo-integration-guide.md` before refreshing predator data or
-figures. The older `m5_v5` and `m5_combined` branches remain exploratory until
-their predator inputs are rebuilt from the predator repo.
+`m5_stier_predation_pressure` was the first defensible Stier-layer predator
+branch. It keeps the Stier-aligned observation layer and uses annual HG
+predation pressure from `stier-lab/pacific-herring-predators`, locally checked
+out at `/Users/adrianstier/pacific-herring-predators`. It has now completed
+and remains held because it does not materially improve positive-spawn or catch
+calibration. It is also a regional annual pressure-ratio covariate, not
+section-specific exposure, and the pressure ratio includes observed spawn in
+the denominator. Use `docs/predator-repo-integration-guide.md` before
+refreshing predator data or figures. The older `m5_v5` and `m5_combined`
+branches are not predator evidence.
 
 The May 14 WCVI bridge identified `m5_stier_predator_demand_total` as the
 cleaner covariate because it uses total predator demand instead of a pressure
@@ -234,11 +236,13 @@ Rerun triggers:
 
 ### Round 2b: Predator-Pressure Branch
 
-Run after predator repo products are available:
+Run only when a strict pre-Stan gate gives a new reason:
 
 - refresh local predator products with
   `PREDATOR_REPO_PATH=/Users/adrianstier/pacific-herring-predators Rscript --vanilla Code/02c_integrate_hg_predator_repo_products.R`;
-- `m5_stier_predation_pressure`;
+- `m5_stier_predation_pressure` is already completed/held; do not rerun unless
+  the pressure-ratio interpretation itself becomes central and a new audit
+  justifies exact re-LOO or refitting;
 - `m5_stier_doherty_proxy_removals` only after
   `smoke_m5_stier_doherty_proxy_removals_reduced` has usable geometry;
 - `m5_stier_doherty_mp_covariate` as the fallback after fixed-removal geometry
@@ -257,10 +261,10 @@ Run after predator repo products are available:
 - any recruitment-lag predator branch only after
   `Output/diagnostics/future_lag_negative_control_audit.md` is replaced or
   confirmed with exact SCA/SISCAH age-composition or recruitment inputs;
-- `smoke_m5_stier_predation_pressure_reduced` before a long cloud run if the
-  image or bundle changed.
-- `smoke_m5_stier_predator_demand_total_reduced` before any demand-branch
-  cloud run.
+- `smoke_m5_stier_predation_pressure_reduced` only if a future source/data
+  change makes rerunning the held pressure branch necessary.
+- `smoke_m5_stier_predator_demand_total_reduced` only if a stricter gate
+  justifies rerunning the held demand branch.
 
 Goal:
 

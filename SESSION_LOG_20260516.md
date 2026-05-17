@@ -284,3 +284,44 @@
 - Added `Code/07bu_future_lag_negative_control_audit.R` to
   `Code/08_refresh_may9_analysis_suite.sh` before the covariate registry, and
   updated the registry/docs to keep this as a pre-Stan timing gate.
+
+## All-model guardrail tightening
+
+- Tightened the all-branch model documentation so the current state is explicit
+  for every fitted/planned model family, not just the newest predator screens.
+- Updated `Code/07bi_model_decision_ledger.R` to add `use_class` and
+  `interpretation_guardrail` fields. The generated ledger now separates
+  `primary_baseline`, `context_or_sensitivity_only`, `do_not_interpret`,
+  `zero_treatment_sensitivity_only`, `diagnostic_refit_only`, and
+  `planning_only_no_result`.
+- Updated `Code/07ak_model_branch_status_table.R` with a matching use-class
+  column and branch-level guardrails. The generated table now makes it clear
+  that `m1_stier_11` is the only promoted baseline; `m1_stier_obs_hier`,
+  `m1_stier_method_sensitivity`, `m2_stier_site_growth`, `m3_stier_distance`,
+  `m5_stier_predation_pressure`, and `m5_stier_predator_demand_total` are held
+  context/sensitivities; `m5_v5` and `m5_combined` are archived; and legacy
+  surveyed-cell branches are zero-treatment sensitivities, not comparable
+  headline models.
+- Updated `Code/04b_interpret_model_outputs.R` so
+  `Output/diagnostics/latest_model_status.md` now includes an
+  "All-Model Interpretation Guardrails" section.
+- Updated `Code/07bh_covariate_readiness_registry.R` so predator annual demand
+  is described as a completed held screen, not a next branch to submit.
+- Updated `README.md`, `AGENTS.md`, `CLAUDE.md`,
+  `docs/stan-model-map.md`, `docs/predator-data-plan.md`,
+  `docs/full-analysis-model-farm-scope.md`,
+  `docs/cloud-model-running-setup.md`, and
+  `docs/predator-analysis-integration-roadmap.md` to remove stale wording that
+  implied `m5_stier_predation_pressure` or
+  `m5_stier_predator_demand_total` still needed first submission. Both are now
+  completed/held; no predator coefficient is promoted.
+- Regenerated the strict predator gates and the all-model diagnostics:
+  `predator_mechanism_integration_screen`, `postclosure_recovery_mechanism_screen`,
+  `future_lag_negative_control_audit`, `model_branch_status_table`,
+  `latest_model_status`, `covariate_readiness_registry`, and
+  `model_decision_ledger`.
+- Scientific state after this pass: do not launch another predator or
+  combination Stan branch. The next model must be a single Stier-layer
+  covariate branch justified by sign, effect-size, section-control,
+  detrending/year context, future-lag negative-control, provenance,
+  positive-spawn, catch-fit, and sampler gates.

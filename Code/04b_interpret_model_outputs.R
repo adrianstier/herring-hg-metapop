@@ -510,6 +510,18 @@ if (nrow(ppc_catch_tbl) > 0) {
   lines <- c(lines, catch_lines)
 }
 
+lines <- c(
+  lines,
+  "",
+  "## All-Model Interpretation Guardrails",
+  "",
+  "- `m1_stier_11` is the only promoted baseline. Use it for headline biomass, recovery, portfolio, and branch-comparison claims.",
+  "- Held process and observation branches are context or sensitivity results. Do not interpret their coefficients as promoted mechanisms unless a future branch clears sampler, positive-spawn, catch-fit, and PSIS/exact-reLOO gates.",
+  "- Predator branches are especially gated: pressure ratios can include the herring response in the denominator, total demand is regional and time-confounded, and section-year exposure still lacks model-ready humpback surfaces.",
+  "- Legacy `v3`/`v4`/`v5` and surveyed-cell branches have different zero-treatment and/or likelihood units; raw LOOIC is not directly comparable to the positive-only Stier-layer models.",
+  "- Doherty-style proxy branches are troubleshooting/data-product bridges only until exact HG age/weight/effective-sample-size inputs and predator selectivity assumptions are acquired and audited."
+)
+
 lines <- c(lines, "", "## Next Decision", "")
 
 if (nrow(surveyed_unit_candidate) == 1) {

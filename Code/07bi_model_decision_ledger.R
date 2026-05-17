@@ -277,6 +277,68 @@ next_action_from_decision <- function(model_id, decision) {
   )
 }
 
+use_class_from_decision <- function(model_id, decision, likelihood_unit) {
+  case_when(
+    decision == "promoted_baseline" ~
+      "primary_baseline",
+    decision == "held_no_fit_gain" ~
+      "context_or_sensitivity_only",
+    decision %in% c("archived_sampler_pathology", "archived_bad_data_fit") ~
+      "do_not_interpret",
+    decision %in% c("running", "queued") ~
+      "uninterpretable_until_audited",
+    likelihood_unit == "surveyed_cells" ~
+      "zero_treatment_sensitivity_only",
+    str_detect(model_id, "_reloo$") ~
+      "diagnostic_refit_only",
+    decision == "planned" ~
+      "planning_only_no_result",
+    TRUE ~ "review_before_use"
+  )
+}
+
+interpretation_guardrail_from_id <- function(model_id, decision, likelihood_unit, model_family) {
+  case_when(
+    model_id == "m1_stier_11" ~
+      "Use for headline biomass, recovery, portfolio, and branch comparisons; keep zero-spawn records ambiguous and report 11-section plus focal-9 sensitivities.",
+    model_id == "m1_stier_method_sensitivity" ~
+      "Use only to show the two-era q baseline is robust to a three-era method sensitivity; do not replace the baseline.",
+    model_id == "m1_stier_obs_hier" ~
+      "Use as a negative observation-calibration result; extra observation variance worsened positive-spawn calibration.",
+    model_id == "m2_stier_site_growth" ~
+      "Use as a held site-productivity sensitivity; it does not explain recovery enough to promote.",
+    model_id == "m3_stier_distance" ~
+      "Use as spatial-process context only; exact re-LOO completed but one exact refit had treedepth pressure and fit gain is small.",
+    model_id == "m3_stier_distance_reloo" ~
+      "Use local exact re-LOO notes for the distance branch; do not spend more cloud array time unless the distance branch becomes central.",
+    model_id == "m5_stier_predation_pressure" ~
+      "Use as a held predator-pressure screen; the pressure ratio includes observed spawn in its denominator and should not be treated as clean exogenous predator evidence.",
+    model_id == "m5_stier_predator_demand_total" ~
+      "Use as a held WCVI-aligned total-demand screen; do not rerun or split predator groups until residual, lag, and exposure gates improve.",
+    model_id == "m5_stier_doherty_proxy_removals" ~
+      "Use only as a geometry-gated proxy-removal troubleshooting result; it is not a completed HG catch-at-age predation-mortality analysis.",
+    model_id == "m5_stier_doherty_mp_covariate" ~
+      "Use only as a detrended Mp covariate design note; local smokes and bridge screens do not justify AWS submission.",
+    model_id == "m5_combined" ~
+      "Do not use for inference; archived after max-treedepth saturation and poor spawn/catch calibration.",
+    model_id == "m5_v5" ~
+      "Do not use for inference; archived because sampler pathologies override any apparent comparison metric.",
+    model_id == "m5_v3" ~
+      "Do not use as predator evidence; legacy stale/pathological branch superseded by Stier-layer predator screens.",
+    likelihood_unit == "surveyed_cells" ~
+      "Use only as a detection-aware zero-treatment sensitivity; raw LOOIC is not comparable to positive-only Stier-layer models.",
+    str_detect(model_id, "^m1_v") ~
+      "Legacy observation artifact superseded by m1_stier_11; refit only for a specific sensitivity question.",
+    str_detect(model_id, "^m3_v|m3_dd_global") ~
+      "Legacy or planned density/process branch; do not submit or interpret without a current Stier-layer diagnostic reason.",
+    model_family == "predators" ~
+      "Predator branch is not model-ready unless a single covariate clears sign, effect-size, section-control, future-lag, and data-provenance gates.",
+    decision == "planned" ~
+      "No fitted result exists; keep as roadmap only.",
+    TRUE ~ "Review likelihood unit, zero treatment, sampler health, data-fit gates, and provenance before use."
+  )
+}
+
 ledger <- model_ids %>%
   left_join(manifest, by = "model_id") %>%
   left_join(comparison_rows, by = "model_id") %>%
@@ -303,7 +365,14 @@ ledger <- model_ids %>%
     looic_decision = as.character(looic_decision),
     decision = decision_from_status(model_id, comparison_status, aws_status, task_type),
     reason = reason_from_decision(model_id, decision, comparison_status, aws_status),
-    next_action = next_action_from_decision(model_id, decision)
+    next_action = next_action_from_decision(model_id, decision),
+    use_class = use_class_from_decision(model_id, decision, likelihood_unit),
+    interpretation_guardrail = interpretation_guardrail_from_id(
+      model_id,
+      decision,
+      likelihood_unit,
+      model_family
+    )
   ) %>%
   transmute(
     model_id,
@@ -327,7 +396,9 @@ ledger <- model_ids %>%
     catch_log_rmse,
     catch_log_bias,
     decision,
+    use_class,
     reason,
+    interpretation_guardrail,
     next_action
   ) %>%
   arrange(
@@ -370,6 +441,14 @@ md_tbl <- ledger %>%
     next_action
   )
 
+guardrail_tbl <- ledger %>%
+  transmute(
+    model_id,
+    decision,
+    use_class,
+    guardrail = interpretation_guardrail
+  )
+
 md_lines <- c(
   "# Model Decision Ledger",
   "",
@@ -379,9 +458,16 @@ md_lines <- c(
   "",
   knitr::kable(md_tbl, format = "pipe"),
   "",
+  "## Interpretation Guardrails",
+  "",
+  "These rows are the model-use contract. A fitted branch can be sampler-usable and still be context-only if it does not improve the promoted baseline or if its data product is not independent enough for the claim.",
+  "",
+  knitr::kable(guardrail_tbl, format = "pipe"),
+  "",
   "## Current Read",
   "",
   "- `m1_stier_11` remains the promoted baseline.",
+  "- All fitted Stier-layer process extensions currently remain held or archived; no non-baseline coefficient is promoted as a mechanism.",
   "- `m5_stier_predation_pressure` is held: sampler-usable, but no material data-fit gain over baseline.",
   "- `m5_stier_predator_demand_total` is held after the completed AWS screen: sampler-clean, but no material calibration gain and unresolved high Pareto-k points.",
   "- A future `m6_stier_predator_exposure_mammals` branch remains data-product gated: the section-year seal/sea-lion exposure screen does not clear lag-1 sign, detrending, section-control, or future-lag gates.",
@@ -390,6 +476,7 @@ md_lines <- c(
   "- `m5_v5` is archived because sampler pathologies override any apparent LOO improvement.",
   "- `m5_combined` is archived because the completed cloud run saturated max treedepth and badly worsened spawn/catch calibration.",
   "- The `m3_stier_distance_reloo` cloud array failed/incomplete; local exact re-LOO for `m3_stier_distance` is already available and the branch remains held.",
+  "- Legacy surveyed-cell and detection-aware zero branches are sensitivity/context only because their likelihood unit differs from `m1_stier_11`.",
   "- Do not launch broader combination models until single-covariate branches clear both computational and data-fit gates.",
   "",
   "## Files",

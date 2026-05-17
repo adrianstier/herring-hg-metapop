@@ -31,9 +31,11 @@ series live in a sibling repo:
 > `PREDATOR_REPO_PATH` pointing to the predator checkout. The script writes
 > `Data/processed/predators/hg_predation_pressure_covariates.csv` and a short
 > report at `Output/diagnostics/hg_predator_repo_integration.md`. The first
-> model branch using this product is `m5_stier_predation_pressure`: annual
+> model branch using this product was `m5_stier_predation_pressure`: annual
 > regional HG predation pressure, lagged one year in the biomass process, while
-> retaining ambiguous zeros, two-era q, and no age/size structure.
+> retaining ambiguous zeros, two-era q, and no age/size structure. That branch
+> is now completed/held, not promoted, because it did not materially improve
+> calibration over `m1_stier_11`.
 
 > 2026-05-14 update. The first Stier-aligned predator branch is now held, not
 > promoted: it is sampler-usable but gives no material calibration gain over
@@ -235,12 +237,15 @@ keep them separate.
 ## How this connects back to the herring manuscript
 
 The modeling roadmap in `docs/analysis-plan.md` and `AGENTS.md` now separates
-two predator uses:
+predator uses by evidentiary status:
 
-1. `m5_stier_predation_pressure`: a direct annual HG predation-pressure process
-   branch that should be run on AWS and judged by the same sampler/PPC/LOO gates
-   as other branches.
-2. Section-level predator exposure: still a data-product roadmap, because seal
+1. `m5_stier_predation_pressure`: completed/held annual HG pressure-ratio
+   branch. It is context only because fit gain is negligible and the pressure
+   ratio includes observed spawn in the denominator.
+2. `m5_stier_predator_demand_total`: completed/held annual demand branch. It is
+   the cleaner WCVI-style annual covariate, but still has no material
+   calibration gain.
+3. Section-level predator exposure: still a data-product roadmap, because seal
    and Steller spatial products are available but humpback exposure and
    time/effort confounding remain unresolved.
 
@@ -248,13 +253,15 @@ So the predator database is:
 
 1. The provenance of the annual HG pressure covariate used by
    `m5_stier_predation_pressure`.
-2. The provenance of any section-level predator covariate that eventually re-enters the
-   model after `m6_stier_predators`.
-3. A descriptive figure that shows how the predator field surrounding herring
+2. The provenance of the annual HG demand covariates used by
+   `m5_stier_predator_demand_total`.
+3. The provenance of any section-level predator covariate that eventually
+   re-enters the model after a strict pre-Stan gate.
+4. A descriptive figure that shows how the predator field surrounding herring
    has changed across the same 1951-2025 window the spawn data cover. That
    figure can sit in the manuscript Introduction independently of whether
    predator covariates are in the final fit.
-4. A literature/citation backbone (NotebookLM + Zotero) that any agent doing
+5. A literature/citation backbone (NotebookLM + Zotero) that any agent doing
    manuscript work can query.
 
 The May 11 herring-repo prototype narrows the near-term predator task:
@@ -279,9 +286,10 @@ May 14 WCVI bridge update:
 2. `Code/02c_integrate_hg_predator_repo_products.R` now exports total predator
    demand (`pred_demand_total_log_z`) separately from the observed-spawn
    pressure ratio (`pred_pressure_log_z`).
-3. `m5_stier_predator_demand_total` is the prepared next single-covariate
-   branch, but it is manifest-gated as `planned_model_fit` because the adjusted
-   total-demand screen is weak.
+3. `m5_stier_predator_demand_total` has now completed as a single-covariate
+   screen and is held for no material calibration gain. Do not rerun it, split
+   predator groups, or submit combinations until a residual/lag/exposure gate
+   gives a stronger reason.
 
 ## Visualization plan
 

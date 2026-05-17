@@ -166,10 +166,13 @@ For predator work, first run
 `Rscript Code/02c_integrate_hg_predator_repo_products.R` with
 `PREDATOR_REPO_PATH` pointing to a checkout of the private
 `stier-lab/pacific-herring-predators` repo. That creates
-`Data/processed/predators/hg_predation_pressure_covariates.csv`, which feeds the
-new `m5_stier_predation_pressure` AWS/model-farm branch. This is the current
-predator branch to test before returning to older `m5_v5` or `m5_combined`
-scripts.
+`Data/processed/predators/hg_predation_pressure_covariates.csv`, which feeds
+the completed `m5_stier_predation_pressure` and
+`m5_stier_predator_demand_total` screens. Both are held for no material
+calibration gain, and older `m5_v5` / `m5_combined` branches are archived or
+not interpretable. Do not run another predator Stan branch until the strict
+residual, lag, section-control, future-control, and provenance gates point to a
+single covariate.
 
 The local predator source repo is
 `/Users/adrianstier/pacific-herring-predators`. For predator data,
@@ -227,6 +230,12 @@ is the strongest section-level recovery axis. For model-scope decisions, use
 already in the promoted model from descriptive screens, prototype data products,
 and held ideas such as age/size. Predator exposure, timing/substrate, and
 survey coverage remain descriptive/context variables.
+For all fitted and planned model branches, use
+`Output/diagnostics/model_decision_ledger.md` and
+`Output/diagnostics/model_branch_status_table.md`. These generated diagnostics
+include interpretation guardrails so a branch is not accidentally upgraded from
+held sensitivity, archived artifact, zero-treatment sensitivity, or
+planning-only design into headline evidence.
 For the current biomass number, also use
 `Output/diagnostics/current_biomass_uncertainty_decomposition.md` and
 `Output/figures/current_biomass_uncertainty_decomposition.pdf`: the 2025

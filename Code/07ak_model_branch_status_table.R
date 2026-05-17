@@ -24,6 +24,51 @@ if (file.exists(m3_reloo_path)) {
   m3_reloo_treedepth_hits <- sum(m3_reloo$treedepth_hits, na.rm = TRUE)
 }
 
+model_use_class <- function(model, comparison_status, likelihood_unit) {
+  case_when(
+    comparison_status == "promoted_baseline" ~ "primary baseline",
+    comparison_status %in% c(
+      "hold_process_extension_no_fit_gain",
+      "hold_observation_sensitivity_no_fit_gain"
+    ) ~ "context / held sensitivity",
+    comparison_status == "archived_excluded" ~ "archived - do not interpret",
+    str_detect(coalesce(comparison_status, ""), "stale") ~ "stale - refit before use",
+    likelihood_unit == "surveyed_cells" ~ "zero-treatment sensitivity only",
+    str_detect(model, "doherty|predator|predation|m5") ~ "predator gate only",
+    TRUE ~ "review before use"
+  )
+}
+
+branch_guardrail <- function(model, comparison_status, likelihood_unit) {
+  case_when(
+    model == "m1_stier_11" ~
+      "Headline baseline; zeros ambiguous, two-era q, 11 fitted sections, focal-9 reporting sensitivity.",
+    model == "m1_stier_method_sensitivity" ~
+      "Survey-method sensitivity only; three-era q does not replace the Stier two-era baseline.",
+    model == "m1_stier_obs_hier" ~
+      "Observation-variance negative result; do not use extra variance to claim better fit.",
+    model == "m2_stier_site_growth" ~
+      "Site-productivity sensitivity only; no material calibration gain.",
+    model == "m3_stier_distance" ~
+      "Spatial context only; exact re-LOO completed but one exact refit had treedepth pressure.",
+    model == "m5_stier_predation_pressure" ~
+      "Held predator-pressure screen; pressure ratio partly contains observed spawn and is not clean exogenous evidence.",
+    model == "m5_stier_predator_demand_total" ~
+      "Held total-demand screen; no group split or rerun without stronger residual, lag, and exposure gates.",
+    model == "m5_combined" ~
+      "Archived; do not use or spend exact re-LOO/combo-model time.",
+    model == "m5_v5" ~
+      "Archived; sampler pathologies override any apparent comparison benefit.",
+    model == "m5_v3" ~
+      "Legacy stale/pathological predator branch; not predator evidence.",
+    likelihood_unit == "surveyed_cells" ~
+      "Detection-aware sensitivity; raw LOOIC is not comparable to positive-only Stier-layer fits.",
+    str_detect(coalesce(comparison_status, ""), "stale") ~
+      "Historical artifact; do not use until refit and re-audited.",
+    TRUE ~ "Check likelihood unit, zero treatment, sampler health, positive-spawn fit, catch fit, and provenance before interpretation."
+  )
+}
+
 branch_tbl <- comparison %>%
   mutate(
     model_family = case_when(
@@ -53,6 +98,8 @@ branch_tbl <- comparison %>%
       str_detect(comparison_status, "stale") ~ "no - stale/refit required",
       TRUE ~ "no"
     ),
+    model_use_class = model_use_class(model, comparison_status, likelihood_unit),
+    interpretation_guardrail = branch_guardrail(model, comparison_status, likelihood_unit),
     short_read = case_when(
       model == "m1_stier_11" ~
         "Promoted Stier-aligned 11-section baseline; exact re-LOO resolved its high-k point.",
@@ -99,6 +146,7 @@ branch_tbl <- comparison %>%
     finished,
     fit_ok,
     use_for_monday,
+    model_use_class,
     comparison_status,
     divergences,
     treedepth_hits,
@@ -109,6 +157,7 @@ branch_tbl <- comparison %>%
     loo_resolved,
     positive_signal_log_rmse = round(positive_signal_log_rmse, 3),
     positive_signal_log_bias = round(positive_signal_log_bias, 3),
+    interpretation_guardrail,
     short_read
   ) %>%
   arrange(
@@ -135,6 +184,7 @@ md_tbl <- branch_tbl %>%
     finished,
     fit_ok,
     `Monday use` = use_for_monday,
+    `use class` = model_use_class,
     `div/td` = paste0(divergences, "/", treedepth_hits),
     `max k` = max_pareto_k,
     `pos RMSE` = positive_signal_log_rmse,
@@ -169,6 +219,8 @@ md_lines <- c(
   "- Hold `m5_stier_predator_demand_total`; it is the cleaner WCVI-aligned predator-demand screen, but the completed AWS fit does not materially improve calibration.",
   "- Archive `m5_combined` and `m5_v5`; ignore legacy `m5_v3` as predator evidence because these branches are sampler-pathological, stale, or badly miscalibrated.",
   "- Keep `m1_stier_method_sensitivity` and `m2_stier_site_growth` as context/held sensitivity results, not promoted inference models.",
+  "- Treat detection-aware surveyed-cell branches as zero-treatment sensitivities only; their raw LOOIC is not directly comparable with the positive-only Stier-layer fits.",
+  "- No predator coefficient is currently promoted. Predator branches must clear data-product provenance, future-lag control, section-control, positive-spawn, catch-fit, and sampler gates before interpretation.",
   "",
   "## Files",
   "",

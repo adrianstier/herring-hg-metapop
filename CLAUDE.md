@@ -84,3 +84,8 @@ pressure, spatial-site prototypes, and talk figures. They are not
 age-selective Doherty-style natural mortality. The promoted herring baseline
 remains `m1_stier_11`, and predator model branches remain held unless the
 model-decision ledger says otherwise.
+For all model interpretation, check `Output/diagnostics/model_decision_ledger.md`
+and `Output/diagnostics/model_branch_status_table.md` first. They classify
+branches as promoted, held/context, archived/do-not-use, zero-treatment
+sensitivity, or planning-only so old or gated predator branches are not
+accidentally upgraded into evidence.

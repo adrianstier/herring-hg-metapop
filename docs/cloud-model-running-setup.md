@@ -225,15 +225,19 @@ Recommended queue split:
 - `herring-spot`: smoke tests, exact re-LOO children, archived/debug branches,
   and sensitivity grids.
 
-The current farm manifest includes all major families we are actively
-considering:
+The current farm manifest includes historical, held, and planned rows. Check
+`Output/diagnostics/model_decision_ledger.md` before submitting any row:
 
 - baseline: `m1_stier_11`;
 - observation: `m1_stier_obs_hier`, `m1_stier_method_sensitivity`;
 - site growth: `m2_stier_site_growth`;
 - spatial process: `m3_stier_distance` plus `m3_stier_distance_reloo` array;
 - density dependence: `m3_dd_global`, archived `m3_v5`;
-- predators: `m5_v5`, `m5_combined`;
+- predators: `m5_stier_predation_pressure` and
+  `m5_stier_predator_demand_total` are completed/held;
+  `m5_stier_doherty_proxy_removals` and
+  `m5_stier_doherty_mp_covariate` are geometry/data-product gated;
+  `m5_v5` and `m5_combined` are archived/do-not-use;
 - time-varying productivity: `m6_timevarying`;
 - smoke test: `smoke_m1_stier_obs_hier`.
 

@@ -325,11 +325,11 @@ covariate_registry <- tribble(
   "Do not promote predator coefficient from regional index.",
   "not ready",
   "Predator annual demand",
-  "WCVI-style removals analogue and gated model covariate",
+  "completed held WCVI-style demand screen",
   "annual regional consumption budget",
   pred_demand_label,
   "Total demand is more exogenous than pressure ratio, but still time-confounded and weak after adjustment.",
-  "Use `m5_stier_predator_demand_total` only as a deliberate single-covariate screen; do not submit combinations.",
+  "Keep `m5_stier_predator_demand_total` held; do not rerun, split groups, or submit combinations without a stronger residual, lag, and section-exposure gate.",
   "screen only",
   "Predator spatial exposure",
   "prototype data product",
@@ -422,6 +422,7 @@ lines <- c(
   "- Historical fishing is the strongest descriptive recovery axis, but the model should not double-count it as a new covariate without a specific contrast.",
   "- The post-closure recovery screen supports a conservative interpretation: no-fishing alone has not restored all local states, but predator/climate rows do not yet clear model-entry gates.",
   "- Future-lag and age-3 screens separate immediate adult mortality from delayed recruitment-return hypotheses; public Appendix B age-composition rows are provisional audit targets, while shared-spawn-normalized rows and SCA recruitment outputs are context only.",
+  "- Existing predator Stan branches are held or archived; no predator coefficient is promoted, and the next predator model must be a single-covariate branch justified by the strict pre-Stan gates.",
   "- Predator, timing, substrate, and local location signals are better treated as data products and local follow-up targets before Stan coefficients.",
   "- Age/size structure remains held for this talk cycle."
 )

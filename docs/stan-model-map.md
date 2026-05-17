@@ -72,19 +72,45 @@ for `m1_stier_11`). Exact re-LOO completed for the three high-k points, but one
 exact refit had treedepth pressure, so the branch remains spatial context
 rather than a promoted inference model.
 
-The prepared May 14 predator-demand branch is:
+The completed Stier-layer predator-pressure branch is:
+
+- [`inst/stan/herring_metapop_m5_stier_predation_pressure.stan`](/Users/adrianstier/stier-2027-herring-metapopulation/inst/stan/herring_metapop_m5_stier_predation_pressure.stan)
+- [`Code/03_fit_m5_stier_predation_pressure.R`](/Users/adrianstier/stier-2027-herring-metapopulation/Code/03_fit_m5_stier_predation_pressure.R)
+
+`m5_stier_predation_pressure` keeps the `m1_stier_11` observation layer and
+uses annual HG predator pressure from the sibling predator repo. It is
+sampler-usable but held, not promoted: positive-spawn RMSE and catch RMSE are
+effectively baseline-equivalent. Its covariate is also a pressure ratio with
+observed spawn in the denominator, so it is not clean exogenous predator
+evidence.
+
+The completed May 15 predator-demand branch is:
 
 - [`inst/stan/herring_metapop_m5_stier_predator_demand_total.stan`](/Users/adrianstier/stier-2027-herring-metapopulation/inst/stan/herring_metapop_m5_stier_predator_demand_total.stan)
 - [`Code/03_fit_m5_stier_predator_demand_total.R`](/Users/adrianstier/stier-2027-herring-metapopulation/Code/03_fit_m5_stier_predator_demand_total.R)
 
 `m5_stier_predator_demand_total` keeps the `m1_stier_11` observation layer and
 uses total HG predator demand, `z(log1p(C_total_kt))`, rather than the
-observed-spawn pressure ratio. It is manifest-gated as `planned_model_fit`;
-the WCVI bridge diagnostic supports demand as the cleaner covariate, but the
-adjusted demand signal is weak enough that cloud submission should be a
-deliberate single-covariate screen, not an automatic next run. A longer local
-smoke had baseline-like heavy geometry: no divergences, no max-treedepth hits,
-but all draws at treedepth `14`.
+observed-spawn pressure ratio. It completed on AWS as a deliberate
+single-covariate screen and is also held: sampler diagnostics are usable, but
+the calibration gain is too small for promotion and PSIS still has unresolved
+Pareto-k points. Do not rerun it, split predator groups, or add combinations
+until a stricter residual/lag/exposure gate gives a new reason.
+
+The current Doherty-style predator branches are troubleshooting designs, not
+completed HG catch-at-age predator-removal analyses:
+
+- [`inst/stan/herring_metapop_m5_stier_doherty_proxy_removals.stan`](/Users/adrianstier/stier-2027-herring-metapopulation/inst/stan/herring_metapop_m5_stier_doherty_proxy_removals.stan)
+- [`Code/03_fit_m5_stier_doherty_proxy_removals.R`](/Users/adrianstier/stier-2027-herring-metapopulation/Code/03_fit_m5_stier_doherty_proxy_removals.R)
+- [`inst/stan/herring_metapop_m5_stier_doherty_mp_covariate.stan`](/Users/adrianstier/stier-2027-herring-metapopulation/inst/stan/herring_metapop_m5_stier_doherty_mp_covariate.stan)
+- [`Code/03_fit_m5_stier_doherty_mp_covariate.R`](/Users/adrianstier/stier-2027-herring-metapopulation/Code/03_fit_m5_stier_doherty_mp_covariate.R)
+
+`m5_stier_doherty_proxy_removals` is geometry-gated after the low-vulnerability
+cloud smoke showed poor E-BFMI. `m5_stier_doherty_mp_covariate` is not
+AWS-ready because local smokes and the WCVI bridge residual screen did not
+justify submission. Both preserve ambiguous zeros, two-era q, and 11 sections,
+but neither estimates the age/size selectivity or catch-at-age dynamics of the
+Doherty WCVI model.
 
 Future model branches should preserve the following distinction:
 
@@ -148,11 +174,16 @@ Recommended branch order:
 8. `herring_metapop_m5_stier_timing_habitat.stan`
    - lagged spawn timing and substrate covariates,
    - first as observation/reporting or phenology/habitat sensitivity.
-9. `herring_metapop_m5_stier_predator_demand_total.stan`
-    - prepared May 14 as a gated predator-demand screen,
-    - use only as a single-covariate test against `m1_stier_11`,
-    - do not combine predator groups or pressure ratios in this branch.
-10. `herring_metapop_m6_stier_predator_exposure.stan`
+9. `herring_metapop_m5_stier_predation_pressure.stan`
+    - completed and held,
+    - pressure ratio branch; useful as context only because fit gain is
+      negligible and the covariate includes observed spawn in the denominator.
+10. `herring_metapop_m5_stier_predator_demand_total.stan`
+    - completed and held after AWS,
+    - cleaner than pressure ratio because it uses total demand, but still has no
+      material calibration gain,
+    - do not combine predator groups or rerun it without a stronger gate.
+11. `herring_metapop_m6_stier_predator_exposure.stan`
     - predator covariates only after a spatial exposure data product exists and
       process/observation calibration remain stable.
 

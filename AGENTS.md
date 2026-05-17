@@ -73,15 +73,17 @@ Use `docs/full-analysis-model-farm-scope.md` for the iterative
 run/collect/audit/rerun decision framework. Every branch should end as
 `promoted`, `supporting_sensitivity`, `needs_rerun`, `archived_excluded`, or
 `data_blocked`.
-As of 2026-05-12, predator work has a new Stier-aligned process branch:
+As of 2026-05-16, predator work has completed but not promoted the
+Stier-aligned pressure branch:
 `m5_stier_predation_pressure`, with Stan file
 `inst/stan/herring_metapop_m5_stier_predation_pressure.stan` and fit script
 `Code/03_fit_m5_stier_predation_pressure.R`. It uses annual HG predation
 pressure from the private `stier-lab/pacific-herring-predators` repo via
 `Code/02c_integrate_hg_predator_repo_products.R`. This branch keeps ambiguous
-zeros, two-era q, and no age/size structure. Treat it as the first defensible
-predator model to run on AWS, not as a promoted result until audit/PPC/LOO
-clear.
+zeros, two-era q, and no age/size structure. Treat it as held context: sampler
+usable, but no material positive-spawn/catch calibration gain over
+`m1_stier_11`, and the pressure ratio is not a clean exogenous predator
+covariate because observed spawn is in the denominator.
 As of 2026-05-16, the local predator source repo is
 `/Users/adrianstier/pacific-herring-predators`. For predator data or
 predator-only figures, start with `docs/predator-repo-integration-guide.md` and
@@ -465,8 +467,12 @@ Recommended sequence:
 5. Do not launch a redundant PDO-only branch because `m1_stier_11` already
    includes lagged PDO. If more climate work is needed, test PDO lag/window
    sensitivity before predator covariates because PDO is less time-confounded.
-6. Revisit predator covariates only after the process branch is sampler-clean and
-   the positive spawn/catch fits remain calibrated.
+6. Revisit predator covariates only after the pre-Stan gate identifies one
+   source-traceable covariate that survives expected sign, section controls,
+   detrending/year context, future-lag negative controls, and data-product
+   provenance checks; then fit only one Stier-layer covariate branch at a time
+   and require positive-spawn/catch calibration to remain at least baseline
+   quality.
 7. Keep full age/size structure out of the section-level model for now. Use age
    and weight-at-age later as regional covariates or cross-checks, not as the
    next Stan state dimension.
