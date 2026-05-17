@@ -25,6 +25,10 @@ model-farm state.
   direct "why no full recovery after closure?" answer: closure is necessary but
   not sufficient, and no post-closure predator/climate section-year row clears
   the strict model-entry gate.
+- Use `Output/diagnostics/future_lag_negative_control_audit.md` for the timing
+  caveat: a 3-year recruitment-return lag is biologically plausible, but the
+  current biomass-growth and public age/recruitment proxy screens are not
+  model-ready.
 - For Doherty-style age/size/catch material, say "proxy bridge" rather than
   "completed HG catch-at-age analysis": HG public DFO tables anchor herring
   biology where available, while WCVI/Doherty values are provisional analogues
@@ -75,6 +79,11 @@ model-farm state.
   negative-control gate. Endpoint context is strongest for worse-than-fishing
   residual depletion (beta about -1.29, rho about -0.72) and historical fishing
   pressure (beta about -0.91, rho about -0.66).
+- Future-lag / age-3 audit: adult lag-1 and biomass-growth age-3 rows have zero
+  follow-up candidates. The strongest biomass-growth age-3 row is combined
+  mammal exposure (beta about -0.04, rho about -0.12) and fails the weak-effect
+  gate. Public age/recruitment rows are audit targets only: the 2025 age-2 SCA
+  table has 10 rows, while Appendix B age composition is longer but provisional.
 - DFO Table 3 also supports the spatial-concentration message: Juan
   Perez/Skincuttle reaches up to about 98% of HG spawn-index share in 2015-2024,
   while Louscoone is 0% in the public summary.
@@ -96,6 +105,7 @@ model-farm state.
 - `Output/diagnostics/salmon_recruitment_context_screen.md`
 - `Output/diagnostics/predator_mechanism_integration_screen.md`
 - `Output/diagnostics/postclosure_recovery_mechanism_screen.md`
+- `Output/diagnostics/future_lag_negative_control_audit.md`
 - `Output/diagnostics/section_action_matrix.md`
 
 ## Figure Order
@@ -118,6 +128,7 @@ model-farm state.
 16. `Output/figures/salmon_recruitment_context_screen.pdf`
 17. `Output/figures/predator_mechanism_integration_screen.pdf`
 18. `Output/figures/postclosure_recovery_mechanism_screen.pdf`
+19. `Output/figures/future_lag_negative_control_audit.pdf`
 
 ## Doherty/DFO Context
 

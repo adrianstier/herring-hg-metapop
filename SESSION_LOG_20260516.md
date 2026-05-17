@@ -254,3 +254,33 @@
   the source/documentation update. The decision remains: do not launch another
   predator/climate Stan branch until a single post-closure row clears the
   expected-sign, raw/recent-direction, and future-lag gates.
+
+## Future-lag negative-control and age-3 audit
+
+- Added `Code/07bu_future_lag_negative_control_audit.R` to separate immediate
+  adult-growth predator tests from delayed recruitment-return tests. This
+  explicitly addresses the age-3 biology: if predators act on eggs/juveniles,
+  the signal could appear about three years later when recruits return to spawn.
+- New generated outputs:
+  - `Output/diagnostics/future_lag_negative_control_audit.md`
+  - `Output/diagnostics/future_lag_negative_control_audit.csv`
+  - `Output/diagnostics/future_lag_negative_control_summary.csv`
+  - `Output/diagnostics/age3_recruitment_lag_screen.csv`
+  - `Output/diagnostics/public_age_recruitment_lag_proxy_screen.csv`
+  - `Output/figures/future_lag_negative_control_audit.pdf`
+- Current result: adult lag-1 biomass-growth rows and biomass-growth age-3 rows
+  both have zero follow-up candidates. The strongest age-3 biomass-growth row
+  is combined mammal exposure (beta about -0.04, rho about -0.12) and fails the
+  weak-effect gate.
+- Clarified the public-data distinction: DFO 2025/005 Table 11 is short because
+  it is a 2015-2024 public SCA age-2 recruitment summary. The longer public
+  age-composition data are CSAS 2018/028 Appendix B Table B.15
+  (`1951-2017` number-at-age) and Table B.22 (`1951-2017` weight-at-age), but
+  those are provisional PDF extracts and schema checks, not final model inputs.
+- Clarified that spawn habitat index / spawn index is an egg-deposition or
+  spawning-output index, not pure recruitment. It can be used as brood-year
+  parent-output context or as a coarse return proxy, but it mixes survival, age
+  composition, repeat spawning, q, and survey method.
+- Added `Code/07bu_future_lag_negative_control_audit.R` to
+  `Code/08_refresh_may9_analysis_suite.sh` before the covariate registry, and
+  updated the registry/docs to keep this as a pre-Stan timing gate.

@@ -210,6 +210,13 @@ alone did not restore all local states. It also returns zero strict
 section-year predator/climate candidates; endpoint context points to legacy
 depletion and unresolved local persistence/recolonization rather than a ready
 AWS model branch.
+The lag-specific companion
+`Output/diagnostics/future_lag_negative_control_audit.md` separates immediate
+adult-growth effects from delayed age-3 recruitment-return hypotheses. It finds
+zero adult lag-1 or biomass-growth age-3 follow-up rows; public age/recruitment
+rows are audit targets only because the long Appendix B age composition is a
+provisional PDF extract and the current SCA recruitment summary has only 10
+recent rows.
 
 Promotion criteria:
 
@@ -246,6 +253,9 @@ Run after predator repo products are available:
   `Output/diagnostics/postclosure_recovery_mechanism_screen.md` shows a
   section-year row that clears expected-sign, raw/recent-direction, and
   future-lag negative-control gates;
+- any recruitment-lag predator branch only after
+  `Output/diagnostics/future_lag_negative_control_audit.md` is replaced or
+  confirmed with exact SCA/SISCAH age-composition or recruitment inputs;
 - `smoke_m5_stier_predation_pressure_reduced` before a long cloud run if the
   image or bundle changed.
 - `smoke_m5_stier_predator_demand_total_reduced` before any demand-branch

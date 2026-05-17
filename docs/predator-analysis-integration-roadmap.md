@@ -236,6 +236,42 @@ analysis does not support a single promoted predator coefficient yet; the next
 practical work is section-level humpback exposure, effort/access-aware local
 persistence, and age/recruitment context.
 
+## Future-Lag And Age-3 Audit
+
+`Code/07bu_future_lag_negative_control_audit.R` now separates immediate adult
+mortality tests from delayed recruitment-return tests. This matters because an
+adult predation effect should appear quickly, while egg/juvenile or recruitment
+effects could plausibly show up when age-3 fish return to spawn.
+
+Current output:
+
+- `Output/diagnostics/future_lag_negative_control_audit.md`
+- `Output/diagnostics/future_lag_negative_control_audit.csv`
+- `Output/diagnostics/future_lag_negative_control_summary.csv`
+- `Output/diagnostics/age3_recruitment_lag_screen.csv`
+- `Output/diagnostics/public_age_recruitment_lag_proxy_screen.csv`
+- `Output/figures/future_lag_negative_control_audit.pdf`
+
+Current read:
+
+- Adult lag-1 biomass-growth rows: zero follow-up rows.
+- Biomass-growth age-3 proxy rows: zero follow-up rows. The strongest is
+  combined mammal exposure (`beta = -0.04`, rho about `-0.12`), and it fails
+  the weak-effect gate.
+- The DFO 2025 age-2 recruitment table is short because it is a recent
+  2015-2024 SCA summary, not the full biological input matrix.
+- Longer public age data do exist in CSAS 2018/028 Appendix B Table B.15
+  (`1951-2017` number-at-age) and Table B.22 (`1951-2017` weight-at-age), but
+  these are provisional PDF extracts and schema checks, not final model inputs.
+- Spawn habitat index / spawn index is spawning output or egg deposition. It
+  can be used as brood-year parent-output context or a coarse return proxy, but
+  it is not pure recruitment because it mixes survival, age composition, repeat
+  spawning, observation scale, and survey method.
+
+Decision: the age-3 lag hypothesis is biologically credible and worth keeping,
+but the next step is exact age-composition/recruitment input integration, not a
+new predator Stan branch.
+
 ## What The Predator Data Say Now
 
 The sibling predator repo gives a much richer predator field than the original
@@ -387,6 +423,8 @@ For the current talk, say:
 - the wider post-closure screen still returns no strict predator/climate
   candidate, so no-fishing should be framed as necessary but not sufficient
   rather than as proof of one missing covariate;
+- an age-3 recruitment-return lag is plausible, but current biomass-growth and
+  public age/recruitment proxy screens are audit targets, not inference;
 - the next scientific step is a better predator data-product integration, not
   a richer combined Stan model.
 

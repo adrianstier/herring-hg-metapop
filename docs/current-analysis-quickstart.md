@@ -18,7 +18,8 @@ reading every historical model branch.
 9. `docs/saturday-talk-readiness-2026-05-16.md`
 10. `Output/diagnostics/doherty_proxy_parameter_plan.md`
 11. `Output/diagnostics/postclosure_recovery_mechanism_screen.md`
-12. `AGENTS.md`
+12. `Output/diagnostics/future_lag_negative_control_audit.md`
+13. `AGENTS.md`
 
 ## Current Baseline
 
@@ -75,6 +76,10 @@ Current read from the May 14 refresh:
 - the direct post-closure screen returns no strict predator/climate
   section-year candidate, so no-fishing should be framed as necessary but not
   sufficient rather than as proof of one unmodeled predator coefficient;
+- the future-lag audit keeps immediate adult mortality separate from delayed
+  age-3 recruitment-return mechanisms; the delayed hypothesis is plausible, but
+  current public age/recruitment rows are audit targets rather than model-ready
+  covariates;
 - Cumshewa and Louscoone remain the clearest mechanism cases;
 - predator, timing, substrate, and local spawn-location screens are data-product
   and targeting work before they are promoted model covariates.
@@ -94,6 +99,7 @@ Current read from the May 14 refresh:
 | Salmon recruitment context | `Output/figures/salmon_recruitment_context_screen.pdf` |
 | Predator mechanism integration | `Output/figures/predator_mechanism_integration_screen.pdf` |
 | Post-closure mechanism screen | `Output/figures/postclosure_recovery_mechanism_screen.pdf` |
+| Future-lag / age-3 audit | `Output/figures/future_lag_negative_control_audit.pdf` |
 
 ## Safe Next Analysis Steps
 
@@ -118,17 +124,21 @@ Current read from the May 14 refresh:
    current answer to "why not recovered after closure." It returns zero strict
    post-closure section-year predator/climate candidates; endpoint context
    points to legacy depletion and unresolved local persistence/recolonization.
-6. Use `docs/dfo-hg-biological-input-request-packet.md` for the exact DFO
+6. Use `Output/diagnostics/future_lag_negative_control_audit.md` for the
+   timing caveat. Adult lag-1 and biomass-growth age-3 rows do not clear gates;
+   public age/recruitment rows are audit targets only until exact DFO
+   age-composition/recruitment inputs are available.
+7. Use `docs/dfo-hg-biological-input-request-packet.md` for the exact DFO
    follow-up ask on machine-readable HG biological inputs and SCA/SISCAH
    metadata.
-7. Refresh local diagnostics with `Code/08_refresh_may9_analysis_suite.sh` after
+8. Refresh local diagnostics with `Code/08_refresh_may9_analysis_suite.sh` after
    any model artifact changes. The wrapper now ends with
    `Code/09_check_document_references.R`, so stale local file references are
    caught as part of the full refresh.
-8. If AWS credentials are active, submit only smoke jobs first, then write the
+9. If AWS credentials are active, submit only smoke jobs first, then write the
    submission CSV with `cloud/submit_model_farm.py --out-csv ...`.
-9. Use `cloud/watch_aws_batch_run.py` on the submission CSVs to poll and sync cloud results.
-10. Promote no model branch unless it improves calibration, stays sampler-clean,
+10. Use `cloud/watch_aws_batch_run.py` on the submission CSVs to poll and sync cloud results.
+11. Promote no model branch unless it improves calibration, stays sampler-clean,
    and preserves the ambiguous-zero interpretation unless explicitly labeled as
    a sensitivity.
 

@@ -45,6 +45,8 @@ predator_cor <- read_diag("predator_spatial_exposure_growth_correlations.csv")
 predator_demand_screen <- read_diag_optional("wcvi_predator_demand_residual_screen.csv")
 predator_integration_screen <- read_diag_optional("predator_mechanism_integration_screen.csv")
 postclosure_mechanism_screen <- read_diag_optional("postclosure_recovery_mechanism_screen.csv")
+future_lag_summary <- read_diag_optional("future_lag_negative_control_summary.csv")
+public_age_lag_screen <- read_diag_optional("public_age_recruitment_lag_proxy_screen.csv")
 recovery_cov <- read_diag("section_recovery_covariate_correlations.csv")
 local_targets <- read_diag("lead_location_followup_targets.csv")
 location_transition <- read_diag("lead_section_location_transition_summary.csv")
@@ -142,6 +144,46 @@ postclosure_label <- if (nrow(postclosure_best_lag1) == 0 || nrow(postclosure_be
 } else {
   glue(
     "Post-closure candidates {postclosure_candidate_n}; strongest lag-1 row {postclosure_best_lag1$label} beta {fmt(postclosure_best_lag1$beta, 2)}, gate {postclosure_best_lag1$gate}; strongest endpoint {postclosure_best_endpoint$label} beta {fmt(postclosure_best_endpoint$beta, 2)}, rho {fmt(postclosure_best_endpoint$raw_rho, 2)}."
+  )
+}
+
+future_lag_best_age3 <- future_lag_summary %>%
+  filter(is.finite(age3_lag_beta)) %>%
+  arrange(desc(abs(age3_lag_beta))) %>%
+  slice(1)
+
+future_lag_adult_n <- future_lag_summary %>%
+  filter(adult_lag1_gate == "adult_lag_followup_only") %>%
+  nrow()
+
+future_lag_age3_n <- future_lag_summary %>%
+  filter(age3_lag_gate == "age3_lag_followup_only") %>%
+  nrow()
+
+public_age_targets <- public_age_lag_screen %>%
+  filter(gate %in% c(
+    "age3_public_proxy_audit_target",
+    "short_sca_age2_audit_target",
+    "delayed_public_proxy_audit_target"
+  ))
+
+public_age_best <- public_age_targets %>%
+  filter(is.finite(abs_beta)) %>%
+  arrange(desc(abs_beta)) %>%
+  slice(1)
+
+future_lag_label <- if (nrow(future_lag_best_age3) == 0) {
+  "Run Code/07bu_future_lag_negative_control_audit.R to score future controls and age-3 lags."
+} else {
+  public_part <- if (nrow(public_age_best) == 0) {
+    "no public age/recruitment audit target rows"
+  } else {
+    glue(
+      "public age/recruitment audit targets {nrow(public_age_targets)}; strongest {public_age_best$label} beta {fmt(public_age_best$beta, 2)}, rho {fmt(public_age_best$raw_rho, 2)}, gate {public_age_best$gate}"
+    )
+  }
+  glue(
+    "Adult lag-1 follow-up rows {future_lag_adult_n}; biomass-growth age-3 follow-up rows {future_lag_age3_n}; strongest biomass-growth age-3 row {future_lag_best_age3$label} beta {fmt(future_lag_best_age3$age3_lag_beta, 2)}, gate {future_lag_best_age3$age3_lag_gate}; {public_part}."
   )
 }
 
@@ -311,6 +353,13 @@ covariate_registry <- tribble(
   "No strict section-year predator/climate row clears the gate; endpoint associations are descriptive and partly constructed from residual recovery context.",
   "For the talk, frame closure as necessary but not sufficient; next data work should target section-level humpback exposure, effort/access-aware location persistence, and age/recruitment context before another predator Stan branch.",
   "screen only",
+  "Future-lag and age-3 recruitment audit",
+  "pre-Stan timing gate",
+  "adult-growth lags, age-3 biomass-growth proxy, and public age/recruitment proxies",
+  future_lag_label,
+  "Biomass-growth age-3 proxy is weak; public age/recruitment targets are provisional because Appendix B is a PDF extraction and the current SCA recruitment table has only 10 recent rows.",
+  "Use this to justify cohort-aligned age/recruitment data work; do not convert it into a predator Stan branch before exact age-composition/recruitment inputs are available.",
+  "screen only",
   "Local spawn-location persistence",
   "descriptive local mechanism target",
   "raw spawn location within lead sections",
@@ -373,6 +422,7 @@ lines <- c(
   "- The promoted model already includes catch removals, lag-1 PDO, surface/SCUBA q, ambiguous zeros, and all 11 sections.",
   "- Historical fishing is the strongest descriptive recovery axis, but the model should not double-count it as a new covariate without a specific contrast.",
   "- The post-closure recovery screen supports a conservative interpretation: no-fishing alone has not restored all local states, but predator/climate rows do not yet clear model-entry gates.",
+  "- Future-lag and age-3 screens separate immediate adult mortality from delayed recruitment-return hypotheses; public age/recruitment rows are audit targets, not model-ready covariates.",
   "- Predator, timing, substrate, and local location signals are better treated as data products and local follow-up targets before Stan coefficients.",
   "- Age/size structure remains held for this talk cycle."
 )

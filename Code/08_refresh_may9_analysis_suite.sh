@@ -54,6 +54,7 @@ log_file="may9_analysis_suite_refresh.log"
   Rscript Code/07bg_lead_location_followup_targets.R
   Rscript Code/07bc_section_recovery_covariate_screen.R
   Rscript Code/07bt_postclosure_recovery_mechanism_screen.R
+  Rscript Code/07bu_future_lag_negative_control_audit.R
   Rscript Code/07bh_covariate_readiness_registry.R
 
   Rscript Code/03c_bayesian_fit_audit.R
