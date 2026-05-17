@@ -11,7 +11,7 @@ tracks the cross-session build state.
 > **Talk Build State** section at the bottom so the next context window picks up
 > cleanly.
 
-Last updated: 2026-05-17 (20-slide production plan, S8 value provenance, and talk backup/Q&A slides added).
+Last updated: 2026-05-17 (talk blockers resolved/bounded; deck approach, S15, S19, S20, and portfolio-number provenance documented).
 
 ---
 
@@ -28,7 +28,7 @@ Last updated: 2026-05-17 (20-slide production plan, S8 value provenance, and tal
 | Session chair | **Ida Kubiszewski** (UCL, ida.kub@gmail.com); Forum co-chair Corinne Le Quéré |
 | Chair's steer | Abstract reviewed, "fits the session well"; one explicit ask: **"focus on solutions as much as possible."** |
 | Audience | ~40 leading ocean/climate/marine-ecology scientists (Pinsky, Will White, Dan Smale, Emma Cavan, Chris Costello, etc.) |
-| Working title | Not in the program (slot shows abstract only, no title line). Confirm whether a title is required from the final booklet PDF (Gmail msg `19e21e7b74b30c97`). |
+| Working title | Programme booklet has no separate talk-title line; use **"Coupled Tipping Points in Pacific Herring & Haida Gwaii"** unless Adrian supplies a shorter final title. |
 | Recording | Forum recorded; video posted online 2–3 weeks after. Tell organizers if any unpublished result must not be public. |
 | Slides | **Send final `.pptx` to `scientific.meetings@royalsociety.org`.** Stated deadline COB Mon 11 May 2026 → **OVERDUE; send ASAP.** Royal Society PC, PowerPoint. |
 | Linked paper | The herring metapopulation paper (this repo). If the talk uses the portfolio-erosion result, keep numbers consistent with the current `m1_stier_11` analysis (not the early abstract's phrasing). |
@@ -212,6 +212,13 @@ tracked. **This is the home for the talk outline / drafts / deck.**
 | FRM-PROD | doc | **Canonical 20-slide production plan** | `talk-usuk-forum-2026/Talk_Materials/talk_production_plan.md` | ready | current slide sequence, treatment rhythm, asset wiring, backup/Q&A slides |
 | FRM-S8 | doc | **S8/S12 landed-value provenance** | `talk-usuk-forum-2026/Talk_Materials/S8_landed_value_provenance.md` | ready | source-corrected value-layer claim; Rebuilding Plan Figs 31/32; closes Gap A |
 | FRM-VALUEFIGS | png/doc | **Rebuilding Plan value figure crops** | `talk-usuk-forum-2026/Talk_Materials/figs/` | ready | rendered Fig 31/32 landed-value crops plus provenance for S12 value-layer slide |
+| FRM-BUILD1 | html | **Three-layer spine build** | `talk-usuk-forum-2026/Talk_Materials/build1_spine.html` | draft | recurring SPINE visual for slides 2, 12, and 20; structurally complete, still needs browser/render QA |
+| FRM-NUMBERS | doc | **Portfolio-number provenance** | `talk-usuk-forum-2026/Talk_Materials/numbers_provenance.md` | ready | reconciles current `m1_stier_11` metrics versus Stier 2020 published annotations |
+| FRM-DECKDEC | doc | **Deck build decision** | `talk-usuk-forum-2026/Talk_Materials/deck_build_decision.md` | ready | decision to build a fresh 20-slide expert deck, using Drive assets as source material |
+| FRM-S15 | png/doc | **S15 cognitive-map figure crops and provenance** | `talk-usuk-forum-2026/Talk_Materials/S15_cognitive_map_provenance.md`, `talk-usuk-forum-2026/Talk_Materials/figs/cognitive_maps/` | ready | Stier 2016 cognitive-map proof object; preferred Figure 5 crop plus Figure 2 backup |
+| FRM-S19 | doc | **S19 co-governance imagery provenance** | `talk-usuk-forum-2026/Talk_Materials/S19_cogovernance_imagery_provenance.md` | ready | official AMB image source, blockade/history source, signing-photo caveats |
+| FRM-S20 | doc | **S20 solution payload** | `talk-usuk-forum-2026/Talk_Materials/S20_solution_payload.md` | ready | final three-part close: measure structure, manage exposure, build missing data spine |
+| FRM-BLOCK | doc | **Talk blocker resolution log** | `talk-usuk-forum-2026/Talk_Materials/blocker_resolution_2026-05-17.md` | ready | compact handoff of resolved/bounded blockers and remaining production work |
 
 ---
 
@@ -310,10 +317,14 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
   the canonical slide order is the later 20-slide production plan. Papers
   Adrian must fetch listed in
   **`talk-usuk-forum-2026/Talk_Materials/papers_to_acquire.md`** (7 must-get).
-- **Deck location:** none yet. Canonical outline =
-  `talk-usuk-forum-2026/Talk_Materials/talk_production_plan.md`; build the deck
-  in `talk-usuk-forum-2026/Talk_Materials/`. Record the working `.pptx` path
-  here once it exists.
+- **Deck location:** build phase started. Canonical outline =
+  `talk-usuk-forum-2026/Talk_Materials/talk_production_plan.md`. **First built
+  artifact: `talk-usuk-forum-2026/Talk_Materials/build1_spine.html`** — the
+  recurring three-layer SPINE (slides 2/12/20), event-driven, timeline visual
+  language, on-slide provenance, schematic curves clearly labelled, reconciled
+  numbers + correct Stier-2020 attribution. Built & structurally complete;
+  **not yet browser-verified**. Remaining builds: #2 hysteresis, #3 portfolio,
+  #4 predator-demand, + charts/photos.
 - **2026-05-16 (content audit — gap analysis vs. locked spine):** Read
   `DRV-SCRIPT` (LECTURE_SCRIPT.md), `DRV-ASSETS` inventory (235 files), and
   `DRV-OUTLINE`. Finding: the Drive library is a fully-built **50-min,
@@ -444,19 +455,51 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
   the Rebuilding Plan provenance and removed the unsupported "1993 / ~$40M /
   93%" language from the production plan and timeline events. Gap A is closed
   for sourcing; Gap B remains co-governance/direct-action/signing imagery.
+- **2026-05-17 (🟡 portfolio numbers reconciled):** BUILD #1/#3 + asset-wiring
+  in the production plan corrected. Current `m1_stier_11` numbers (synchrony
+  0.63 all-11 / 0.70 focal-9; Simpson eff. sections 3.26/3.31; recent-period
+  top-3 share 84%) now cite `Output/diagnostics/m1_stier_11_portfolio_metrics.md`.
+  "2.1×" and "65% vs 4%" identified as **Stier et al. 2020 published results**
+  (not m1_stier_11 outputs) and re-labelled accordingly — not blended into a
+  current number. Durable mapping:
+  `talk-usuk-forum-2026/Talk_Materials/numbers_provenance.md`. The last
+  unsourced numbers are now out of the live plan.
+- **2026-05-17 (blockers resolved/bounded for deck production):**
+  - **Title:** final programme booklet contains the speaker slot, bio, and
+    abstract, but no separate talk-title line. Use "Coupled Tipping Points in
+    Pacific Herring & Haida Gwaii" unless Adrian supplies a shorter title.
+  - **Deck approach:** resolved in
+    `talk-usuk-forum-2026/Talk_Materials/deck_build_decision.md` — build a
+    fresh 20-slide expert deck using `DRV-ASSETS` and the timeline visual
+    language; do not cut the 35-slide EEMB142C deck into the final talk.
+  - **S15:** Stier 2016 *Conservation Letters* cognitive-map figures rendered
+    into `talk-usuk-forum-2026/Talk_Materials/figs/cognitive_maps/`; preferred
+    proof object and caveats documented in `S15_cognitive_map_provenance.md`.
+  - **S19 / Gap B:** source-bounded in
+    `S19_cogovernance_imagery_provenance.md`. Use the official Parks Canada
+    AMB/Gwaii Haanas image as the safe main slide image; blockade/history and
+    2024 signing-news images are rights/label-sensitive backups. No clearly
+    reusable herring-rebuilding-plan signing photo was found in bounded search.
+  - **S20:** solution close authored in `S20_solution_payload.md`: measure
+    structure, manage exposure, build the missing data spine.
+  - **Blocker log:** see
+    `talk-usuk-forum-2026/Talk_Materials/blocker_resolution_2026-05-17.md`.
+- **2026-05-17 (Cleary PDF in dossier):** found in `~/Downloads/41290963.pdf`;
+  clean 52-pp `Cleary_DFO_SR2025-005_PacificHerringStatus2024.pdf` now in the
+  dossier (S17/S18 source fully in hand; dossier = 18 PDFs). ACQUISITION_LOG
+  updated.
+- **2026-05-17 (build1_spine.html VERIFIED):** Playwright smoke test —
+  0 console/page errors, all 4 steps render correctly in the timeline visual
+  language (scaffold → eco+value+window → all-three → close), on-slide
+  provenance shows the reconciled/attributed numbers. QA scratch removed.
+  Minor cosmetic polish noted (title top-padding / footer-hint overlap at
+  small viewports; fine fullscreen). Next-action #1 done; this artifact now
+  serves S2/S12/S20.
 - **Open / next actions (priority order):**
-  0. Close **gap B** (Athlii Gwaii / Lyell Island blockade + 2024
-     rebuilding-plan signing photos).
-  1. **Decide deck approach:** adapt/cut `DRV-DECK` 35→20 vs. lean fresh
-     deck reusing `DRV-ASSETS`; build in `talk-usuk-forum-2026/Talk_Materials/`.
-  2. **Reconcile the portfolio-erosion numbers** to the current `m1_stier_11`
-     analysis (TP-01/§3b) — never the early abstract's phrasing.
-  3. **Author the close / transferable lessons** (solutions payload for S20).
-  4. **Source S15 cognitive-map figure** — **Stier et al. 2016 *Conservation
-     Letters* 10(1):67-76** cognitive-map figure (N=27). The clean ConsLett
-     PDF is in the dossier as `Stier_2016_ExpertPerceptionsFoodWeb.pdf`; the
-     older `Stier_et_al__Science_Advances_2016.pdf` is a different paper.
-  5. **Slides OVERDUE to `scientific.meetings@royalsociety.org`** (.pptx) —
-     send as soon as a draft exists.
-  6. Confirm whether a talk **title** is required (booklet PDF, Gmail
-     `19e21e7b74b30c97`).
+  1. Render/QA `build1_spine.html`; then use it for S2/S12/S20.
+  2. Build the remaining heavy proof objects: S7 portfolio, S10 predator
+     demand, S14 hysteresis.
+  3. Assemble/render the `.pptx` in
+     `talk-usuk-forum-2026/Talk_Materials/`.
+  4. **Slides OVERDUE to `scientific.meetings@royalsociety.org`** (.pptx) —
+     send as soon as the draft deck passes contact-sheet QA.

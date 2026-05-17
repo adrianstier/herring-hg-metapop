@@ -82,3 +82,14 @@ core repo and the DFO WAVES URL in the source-provenance docs.
   `https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/41290963.pdf`.
   Extracted tables live under
   `Output/diagnostics/dfo_newer_public_pdf_extract/`.
+
+## UPDATE 2026-05-17 — Cleary clean PDF now in the dossier
+
+✅ **Cleary / DFO CSAS Science Response 2025/005** — clean original PDF located
+in `~/Downloads/41290963.pdf` (WAVES id confirms provenance; identical dup
+`41290963-2.pdf` ignored). Copied to dossier as
+`Cleary_DFO_SR2025-005_PacificHerringStatus2024.pdf` (52 pp, %PDF-, verified;
+"Procedures for Pacific Herring (Clupea pallasii) in BC: Status in 2024 and
+Forecast for 2025"). Dossier now 18 PDFs. This is the S17 (SoG negative
+control) / S18 (zero-below-LRP) source — now fully in hand alongside the repo
+extraction + Tables 11/15/19 CSVs under `dfo_newer_public_pdf_extract/`.

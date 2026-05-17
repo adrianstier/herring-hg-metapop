@@ -11,6 +11,11 @@ beats only if most slides are visual resets, proof objects, or one-sentence
 claims. A room of senior scientists remembers three images and two phrases.
 Every finding gets a treatment — most are not charts.
 
+**Deck build decision (2026-05-17):** build a fresh 20-slide expert deck in
+this workspace, reusing `DRV-ASSETS` and the timeline visual language rather
+than cutting down the 35-slide EEMB142C teaching deck. Source:
+`deck_build_decision.md`.
+
 ## The argument in one frame
 
 **Thesis.** Ecological tipping points and ecosystem-service tipping points are
@@ -74,7 +79,7 @@ Heavy proof objects stay separated by PHOTO/TEXT reset slides.
 | 16 | Coupled feedbacks | DIAGRAM | L | Ecological state, service delivery, value, knowledge, and governance reinforce or dampen each other | new simplified feedback diagram; Rocha 2018 theory anchor |
 | 17 | The negative control | CHART | L | Strait of Georgia shows this is not "all herring everywhere" | DFO 2025/005; HG-vs-SoG comparison figure |
 | 18 | Zero, and still below the line | CHART | H | 2025 HG forecast/reference-point context under no fishing | DFO SR 2025/005 Tables 15/19; external-comparison figure |
-| 19 | Co-governance as structural intervention | PHOTO | L | AMB / Gwaii Haanas / 2024 rebuilding plan as decision architecture under uncertainty | Rebuilding Plan; Gwaii Haanas agreement assets; photo gap B |
+| 19 | Co-governance as structural intervention | PHOTO | L | AMB / Gwaii Haanas / 2024 rebuilding plan as decision architecture under uncertainty | Rebuilding Plan; Gwaii Haanas agreement assets; S19 imagery provenance |
 | 20 | What changes Monday | SPINE (final) + TEXT | H | Measure structure, manage exposure, invest in missing data, and act before service windows close | final three-layer spine; solution bullets |
 | — | Egg vs. adult harvest | CHART | – | Backup — economics bridge if time | Shelton et al. 2014 |
 
@@ -107,9 +112,16 @@ live inside the Build #1 artifact as the mechanism layer.
 
 **BUILD #3 — portfolio comes apart (7).** Nine subpopulation biomass lines
 fanned (independent) in early decades; on click time runs, post-1994 lines
-braid into one strand; asynchrony index 1→0 counter ticks down. Wire-in: nine
-focal subpop series + asynchrony index, 65-yr span. Annotations on reveal:
-2.1× more stable than homogeneous metapop; local harvest 65% vs archipelago 4%.
+braid into one strand; the on-screen counter shows the **current
+`m1_stier_11`** metrics, not an unlabeled index. Wire-in: focal-9 posterior
+series, ≈65-yr span, from `m1_stier_11`. **On-screen current numbers (cite
+`Output/diagnostics/m1_stier_11_portfolio_metrics.md`):** recent synchrony
+**0.63** all-11 / **0.70** focal-9; Simpson effective sections **3.26** /
+**3.31**; recent-period top-three biomass share **84%**. **Motivation
+annotations — label as Stier et al. 2020 (published, not the current refit):**
+"~2.1× more stable than a homogeneous metapopulation" and "local harvest 65%
+vs archipelago-wide 4%" (the scale-mismatch result). Full reconciliation:
+`talk-usuk-forum-2026/Talk_Materials/numbers_provenance.md`.
 
 **BUILD #4 — a bigger mouth is not a coefficient (10).** Year scrubber
 1970→2025; stacked pressure/demand context updates live. Commercial removals
@@ -171,10 +183,11 @@ Pitcher 2015 and the current model ledger as the guardrail. Caption:
   bones, 99% ubiquity, temporal variance < ±10% across the record.
 - **S13 — named bays.** Photographs of Burnaby Narrows, Skidegate Inlet,
   Louscoone, paired with the roll-call TEXT. A dotted map is the weaker option.
-- **S19 — co-governance.** No org chart. AMB table, Athlii Gwaii / Lyell
-  Island blockade, the 2024 iináang|iinang rebuilding-plan signing. One line:
-  six seats (3 federal, 3 Haida), consensus not majority, first ecosystem-based
-  rebuilding plan in BC.
+- **S19 — co-governance.** No org chart. Use the official AMB/Gwaii Haanas
+  photo as the safe main image, with the 2024 iináang|iinang rebuilding plan as
+  document evidence. Athlii Gwaii / Lyell Island blockade and 2024 signing-news
+  images are rights/label-sensitive backups. One line: six seats (3 federal, 3
+  Haida), consensus not majority, first ecosystem-based rebuilding plan in BC.
 
 ## Text slides
 
@@ -273,11 +286,15 @@ positive-tipping keynote — both acquired. Worth one explicit citation in S2/S2
 so the thesis reads as connected to the forum's own vocabulary.
 
 **Wire-in data dependencies (must come from the core analysis, not the early
-abstract — firewall):** Build #1/#3 synchrony + nine focal subpop series + the
-"2.1×", "65% local vs 4% archipelago", asynchrony index → from current
-`m1_stier_11` / Stier 2020; reconcile exact numbers via
-`docs/saturday-talk-readiness-2026-05-16.md` before they go on a slide. S18
-LRP / 37.8%-below-LRP / "0 t" → from Cleary 2024 SR 2025/005.
+abstract — firewall): RECONCILED.** Current-analysis numbers (synchrony
+0.63 all-11 / 0.70 focal-9; Simpson effective sections 3.26 / 3.31; recent-
+period top-three share 84%) → cite `Output/diagnostics/m1_stier_11_portfolio_metrics.md`.
+The "2.1×" and "65% local vs 4% archipelago" are **Stier et al. 2020 published
+results**, NOT `m1_stier_11` outputs — keep them labelled "(Stier et al.
+2020)", never as current. Do not use the early abstract's "7 of 9 since 1994"
+phrasing as a current number. Full mapping:
+`talk-usuk-forum-2026/Talk_Materials/numbers_provenance.md`. S18 LRP /
+37.8%-below-LRP / "0 t" → from Cleary 2024 SR 2025/005.
 
 **Cross-refs:** narrative/citation map = `talk_outline_v2.md`; hypotheses &
 counter-arguments = `docs/herring-non-recovery-hypotheses.md`; assets =
@@ -311,7 +328,7 @@ narrative to lift from — do not rebuild from scratch.
 | S4 Ten thousand years | `DRV-ASSETS/01-biology/aerial_herring_spawn_turquoise_water.jpeg`, `herring_spawn_on_kelp_substrate_highres.png`; `Reference_Papers/McKechnie_et_al_2014_PNAS_*`; `08-field-photos/stier_herring_eggs_in_hand.jpeg` | 🟢 |
 | S5 1967 collapse | `DRV-ASSETS/05-data-graphs/dfo_biomass_timeseries_with_threshold.png`; repo `Output/figures/fishing_closure_response.pdf`; catch numbers from `docs/saturday-talk-readiness-2026-05-16.md` | 🟡 |
 | S6 Closure is not recovery | `Output/diagnostics/fishing_closure_response.md`, `Output/figures/fishing_closure_response.pdf`, `Output/diagnostics/postclosure_recovery_mechanism_screen.md` | 🟢/🟡 |
-| S7 Portfolio build | Stier 2020 Ecosphere PDF; repo `R/05_portfolio.R` + `Output/figures/portfolio_metrics_combined.pdf`; `DRV-ASSETS/06-recovery-regime/portfolio_biomass_colored_substocks.png`; focal-9 posterior series and asynchrony from current `m1_stier_11`, not early abstract values | 🟡 |
+| S7 Portfolio build | current numbers (synchrony 0.63/0.70, Simpson 3.26/3.31, top-3 84%) = `Output/diagnostics/m1_stier_11_portfolio_metrics.md` + `Output/figures/portfolio_metrics_combined.pdf` + `R/05_portfolio.R`; "2.1×" & "65% vs 4%" = **Stier 2020 Ecosphere** (labelled, not current); `DRV-ASSETS/06-recovery-regime/portfolio_biomass_colored_substocks.png`. Reconciled — see `numbers_provenance.md` | 🟢 |
 | S8 Loss geography | `Output/diagnostics/section_action_matrix.md`; `Output/diagnostics/lead_location_followup_targets.md`; `Output/figures/lead_location_followup_targets.pdf`; `Output/diagnostics/current_biomass_uncertainty_decomposition.md` | 🟢 |
 | S9 Mechanism menu | `docs/talk-model-claim-control-sheet.md`; `docs/herring-non-recovery-hypotheses.md`; `Output/diagnostics/model_decision_ledger.md`; `Output/diagnostics/covariate_readiness_registry.md`; `Output/diagnostics/postclosure_recovery_mechanism_screen.md` | 🟢 |
 | S10 Predator build | `Reference_Papers/Doherty_2025_*`; `Reference_Papers/Surma_2015_*`; predator repo `data/processed/consumption_budget/HG_consumption_by_group_year_AUDITED.csv`; predator repo `Output/figures/MASTER_HG_predation_AUDITED.pdf`; repo `Output/diagnostics/predator_talk_brief.md` and `model_decision_ledger.md` | 🟢/🟡 |
@@ -319,12 +336,12 @@ narrative to lift from — do not rebuild from scratch.
 | S12 Value layer | biomass = current `m1_stier_11` portfolio/state series; value = 2024 HG Rebuilding Plan Figs 31/32; provenance = `talk-usuk-forum-2026/Talk_Materials/S8_landed_value_provenance.md`; **Gap A closed for sourcing** | 🟢/🟡 |
 | S13 Named bays | `DRV-ASSETS/09-collaborator-photos/levin_burnaby_narrows_intertidal.jpg`; `08-field-photos/stier_fishing_nets_trees_on_wharf.jpeg`; `03-indigenous-cultural/*`; place names from `Output/diagnostics/lead_*` and `section_action_matrix.md`; Gerrard 2014 backup | 🟢 |
 | S14 Hysteresis build | conceptual build; theory grounding = Scheffer/Lenton/Rocha; `docs/herring-non-recovery-hypotheses.md` contested-recovery section | 🟢 |
-| S15 Mental models | `Reference_Papers/Stier_2016_ExpertPerceptionsFoodWeb.pdf` (*Conservation Letters*, N=27; exact 182/78/89% figures from the paper) | 🟢 |
+| S15 Mental models | `Reference_Papers/Stier_2016_ExpertPerceptionsFoodWeb.pdf` (*Conservation Letters*, N=27); rendered crops in `figs/cognitive_maps/`; preferred proof object = `Stier2016_Fig5_herring_response_barplot.png`; provenance = `S15_cognitive_map_provenance.md` | 🟢 |
 | S16 Coupled feedbacks | new simplified diagram; theory anchor = Rocha et al. 2018 coupled/cascading regime shifts; use same six-domain colors as timeline | 🟡 |
 | S17 SoG negative control | Cleary/DFO 2025/005 source PDF/text under `Output/diagnostics/dfo_assessment_public_sources/`; repo `Output/figures/hg_dfo_sca_external_comparison.pdf` | 🟢/🟡 |
 | S18 Zero / LRP | DFO 2025/005 Tables 15 and 19, extracted under `Output/diagnostics/dfo_newer_public_pdf_extract/`; `Output/figures/hg_dfo_sca_external_comparison.pdf`; `Output/diagnostics/dfo_newer_public_pdf_extract/` notes | 🟢/🟡 |
-| S19 Co-governance | `Reference_Papers/HG_Herring_Rebuilding_Plan_2024_*.pdf`; `DRV-ASSETS/09-collaborator-photos/levin_*gwaii_haanas*`; `12-publications/Gwaii_Haanas_2010_Marine_Agreement.pdf`; Athlii Gwaii / 2024 signing photos = **Gap B** | 🟢/🔴 |
-| S20 Final spine / solutions | shared three-layer SVG from S2/S12; solution language from `docs/herring-non-recovery-hypotheses.md`, `docs/talk-model-claim-control-sheet.md`, and 2024 Rebuilding Plan objectives | 🟢/🟡 |
+| S19 Co-governance | `Reference_Papers/HG_Herring_Rebuilding_Plan_2024_*.pdf`; `DRV-ASSETS/09-collaborator-photos/levin_*gwaii_haanas*`; `12-publications/Gwaii_Haanas_2010_Marine_Agreement.pdf`; official Parks Canada AMB image + blockade/signing caveats documented in `S19_cogovernance_imagery_provenance.md` | 🟢/🟡 |
+| S20 Final spine / solutions | shared three-layer spine = `build1_spine.html`; solution language = `S20_solution_payload.md` plus `docs/herring-non-recovery-hypotheses.md`, `docs/talk-model-claim-control-sheet.md`, and 2024 Rebuilding Plan objectives | 🟢 |
 | Backup egg/adult | `Reference_Papers/Shelton_et_al__Nature_Scientific_Reports_2014.pdf` + Stier et al. 2014 Sci Rep (`DRV-ASSETS/12-publications/Stier_et_al_2014_SciReports_*`) | 🟢 |
 | Backup Moorea/kelp | MCR LTER / SBC LTER — Adrian's other workstreams; external, Q&A only | 🟢 |
 
@@ -341,8 +358,11 @@ narrative to lift from — do not rebuild from scratch.
   use the older unsourced "1993 / ~$40M / 93%" wording unless raw DFO fish-slip
   data are pulled and checked.
 - **Gap B — Athlii Gwaii / Lyell Island blockade + 2024 rebuilding-plan
-  signing photographs** (S19). Archival/press images; user or a bounded image
-  search.
+  signing photographs** (S19) is source-bounded. Use the official Parks Canada
+  AMB/Gwaii Haanas image as the safe main slide image; blockade/history and
+  2024 signing-news images are rights/label-sensitive backups. No clearly
+  reusable public herring-rebuilding-plan signing photo was found in bounded
+  search. See `S19_cogovernance_imagery_provenance.md`.
 
 Everything else for the talk is already on disk or in a queryable notebook.
 Do not re-gather; reconcile 🟡 numbers to `m1_stier_11` before the deck is
