@@ -488,13 +488,20 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
   clean 52-pp `Cleary_DFO_SR2025-005_PacificHerringStatus2024.pdf` now in the
   dossier (S17/S18 source fully in hand; dossier = 18 PDFs). ACQUISITION_LOG
   updated.
-- **2026-05-17 (build1_spine.html VERIFIED):** Playwright smoke test —
-  0 console/page errors, all 4 steps render correctly in the timeline visual
-  language (scaffold → eco+value+window → all-three → close), on-slide
-  provenance shows the reconciled/attributed numbers. QA scratch removed.
-  Minor cosmetic polish noted (title top-padding / footer-hint overlap at
-  small viewports; fine fullscreen). Next-action #1 done; this artifact now
-  serves S2/S12/S20.
+- **2026-05-17 (build1_spine.html structural smoke):** local HTTP smoke check
+  serves `build1_spine.html` successfully; on-slide provenance carries the
+  reconciled/attributed numbers. Browser/render QA and contact-sheet review
+  are still required before final `.pptx` export.
+- **2026-05-17 (Cleary plug-point map):** Read SR 2025/005 + extracted tables;
+  wrote `talk-usuk-forum-2026/Talk_Materials/cleary_sr2025005_plug_points.md`
+  - per-slide map with exact table provenance. Highlights: **S6** non-recovery
+  thesis in DFO's own words; **S18 keystone** Table 19 confirms
+  **P(SB2025<LRP)=0.378 (37.8%) no-catch** and adds
+  **P(SB2025<0.75 x SB_Prod)=0.95**; **S7/S8** independent spatial
+  concentration (Juan Perez-Skincuttle 85-98%, Louscoone about 0; Table 3);
+  **S17** SoG fished 5-25 kt/yr vs HG 0 t (Table 2); **S9/S10** M about 0.45
+  (Table 7). Caveat recorded: SR 2025/005 = aggregate SCA, NOT `m1_stier_11`
+  metapop; keep separately attributed.
 - **Open / next actions (priority order):**
   1. Render/QA `build1_spine.html`; then use it for S2/S12/S20.
   2. Build the remaining heavy proof objects: S7 portfolio, S10 predator
