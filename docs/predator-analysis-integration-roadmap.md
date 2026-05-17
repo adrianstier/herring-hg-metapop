@@ -159,6 +159,42 @@ structure.
 `Output/diagnostics/predator_talk_claims.csv`, and the slide-asset list.
 Use that note for the one-slide predator message.
 
+## Integrated Mechanism Screen
+
+`Code/07bs_predator_mechanism_integration_screen.R` now implements the
+pre-Stan integration screen requested after the predator roadmap discussion. It
+tests `m1_stier_11` section-year growth against annual predator demand,
+section-year seal/sea-lion exposure, historical fishing pressure, PDO, annual
+fishing, section controls, and year controls. It also checks section endpoint
+context for historical fishing, recent predator exposure, and timing/substrate
+change.
+
+Current output:
+
+- `Output/diagnostics/predator_mechanism_integration_screen.md`
+- `Output/diagnostics/predator_mechanism_integration_screen.csv`
+- `Output/diagnostics/predator_mechanism_section_endpoint_screen.csv`
+- `Output/figures/predator_mechanism_integration_screen.pdf`
+
+Current read:
+
+- No integrated predator row clears the strict lag-1 candidate gate.
+- The strongest adjusted exposure row is harbour seal exposure
+  (`beta = -0.10`, `p = 0.02`), but it fails because the raw and post-2005
+  directions are positive rather than negative.
+- The strongest predator x historical-fishing row is combined mammal exposure
+  x historical fishing (`beta = -0.02`, `p = 0.16`), but it fails the effect
+  size gate.
+- Section endpoint context still ranks historical fishing as the clearest
+  recovery axis (`beta = -0.91`, rho about `-0.66`). Recent Steller sea lion
+  exposure is negative descriptively (`beta = -0.73`, rho about `-0.42`), but
+  this is n = 11 endpoint context, not a model-ready effect.
+
+Decision: do not launch a combined predator Stan model or a predator x fishing
+Stan branch from the current evidence. The next predator work should improve
+the exposure data product, especially humpback section exposure and
+effort/interpolation rules, before another AWS fit.
+
 ## What The Predator Data Say Now
 
 The sibling predator repo gives a much richer predator field than the original
@@ -230,6 +266,9 @@ Do these before spending AWS time on another predator model:
    - Predictors should include lagged total demand, group demand, pressure
      ratio, PDO, fishing fraction, and year.
    - Report raw, detrended, and era-restricted correlations.
+   - Current status: implemented as
+     `Code/07bs_predator_mechanism_integration_screen.R`; no predator
+     integration row clears the strict gate.
 
 3. Split observed versus filled predator exposure.
    - Harbour seal: preserve complex-year collapsing; do not sum repeated

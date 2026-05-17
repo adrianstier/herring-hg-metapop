@@ -189,3 +189,30 @@
   default, and 100 km is a broader-foraging sensitivity.
 - Regenerated the model decision ledger after the source changes. The decision
   remains: no new predator Stan/AWS branch from the current gates.
+
+## Predator mechanism integration screen
+
+- Added `Code/07bs_predator_mechanism_integration_screen.R` as the end-to-end
+  pre-Stan screen for integrating predator hypotheses with historical fishing,
+  PDO, annual fishing, section controls, and timing/substrate endpoint context.
+- New generated outputs:
+  - `Output/diagnostics/predator_mechanism_integration_screen.md`
+  - `Output/diagnostics/predator_mechanism_integration_screen.csv`
+  - `Output/diagnostics/predator_mechanism_section_endpoint_screen.csv`
+  - `Output/figures/predator_mechanism_integration_screen.pdf`
+- Current result: zero strict lag-1 candidates. Harbour seal exposure has a
+  negative adjusted coefficient (beta about -0.10, p about 0.02), but it fails
+  the tightened gate because raw and post-2005 directions are positive.
+  Predator x historical-fishing interactions are weak; the strongest is
+  combined mammal exposure x historical fishing (beta about -0.02, p about
+  0.16), which fails the effect-size gate.
+- Section endpoint context still supports historical fishing as the clearest
+  section-level recovery axis (beta about -0.91, rho about -0.66). Recent
+  Steller sea lion exposure is negative descriptively at n = 11, but this is
+  endpoint context only, not a model-ready effect.
+- Updated `Code/07bh_covariate_readiness_registry.R` so the covariate registry
+  includes the integrated predator-mechanism gate and tolerates the current
+  `predator_species_or_source` exposure-column names.
+- Regenerated the covariate readiness registry and model decision ledger. The
+  decision remains: no predator x fishing, combined predator, or exposure Stan
+  branch should be launched from the current evidence.

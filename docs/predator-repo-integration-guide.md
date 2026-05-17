@@ -80,6 +80,7 @@ The import writes local, ignored herring products under
 | `Output/diagnostics/humpback_section_exposure_proxy.md`, `Output/diagnostics/humpback_section_exposure_proxy.csv`, and `Output/figures/humpback_section_exposure_proxy.pdf` | HG-wide humpback demand scaffold. Explicitly not model-ready section exposure because the current weights are uniform across sections. |
 | `Output/diagnostics/salmon_recruitment_context_screen.md`, `Output/diagnostics/salmon_recruitment_context_screen.csv`, and `Output/figures/salmon_recruitment_context_screen.pdf` | Salmon demand screen framed as recruitment/juvenile context rather than adult SSB mortality. |
 | `Output/diagnostics/predator_talk_brief.md` and `Output/diagnostics/predator_talk_claims.csv` | Talk-ready predator claims and guardrails from the current bridge, exposure, humpback, and salmon diagnostics. |
+| `Output/diagnostics/predator_mechanism_integration_screen.md`, `Output/diagnostics/predator_mechanism_integration_screen.csv`, and `Output/figures/predator_mechanism_integration_screen.pdf` | Pre-Stan gate for predator demand/exposure integrated with historical fishing, PDO, section controls, and timing/substrate endpoint context. |
 | `Output/diagnostics/lead_spawn_location_predator_proximity.md` and `Output/figures/lead_spawn_location_predator_proximity.pdf` | Lead-location proximity to predator sites. |
 | `Output/diagnostics/doherty_proxy_parameter_plan.md` and `Output/figures/doherty_proxy_parameter_plan.pdf` | Explicit proxy/caveat slide support for the current talk cycle. |
 
@@ -118,8 +119,10 @@ Rscript --vanilla Code/07bj_wcvi_predation_replication_bridge.R
 Rscript --vanilla Code/07bp_humpback_section_exposure_proxy.R
 Rscript --vanilla Code/07bq_salmon_recruitment_context_screen.R
 Rscript --vanilla Code/07br_predator_talk_brief.R
+Rscript --vanilla Code/07bs_predator_mechanism_integration_screen.R
 Rscript --vanilla Code/07bn_hg_dfo_sca_external_comparison.R
 Rscript --vanilla Code/07bo_doherty_proxy_parameter_plan.R
+Rscript --vanilla Code/07bh_covariate_readiness_registry.R
 Rscript --vanilla Code/07bi_model_decision_ledger.R
 Rscript --vanilla Code/09_check_document_references.R
 ```

@@ -61,6 +61,10 @@ model-farm state.
 - Salmon context: lag-1 adult-growth bridge is follow-up-only, not a branch
   candidate; n 73, rho about -0.32, detrended r about -0.05, adjusted beta
   about -0.05. Public 2015-2024 DFO recruitment checks are descriptive only.
+- Integrated predator mechanism screen: no strict candidate rows. Harbour seal
+  exposure has a negative adjusted beta (-0.10, p 0.02), but raw and post-2005
+  directions are positive, so it is not a Stan-branch result. Predator x
+  historical fishing interactions are weak.
 - DFO Table 3 also supports the spatial-concentration message: Juan
   Perez/Skincuttle reaches up to about 98% of HG spawn-index share in 2015-2024,
   while Louscoone is 0% in the public summary.
@@ -80,6 +84,7 @@ model-farm state.
 - `Output/diagnostics/predator_talk_brief.md`
 - `Output/diagnostics/humpback_section_exposure_proxy.md`
 - `Output/diagnostics/salmon_recruitment_context_screen.md`
+- `Output/diagnostics/predator_mechanism_integration_screen.md`
 - `Output/diagnostics/section_action_matrix.md`
 
 ## Figure Order
@@ -100,6 +105,7 @@ model-farm state.
 14. `Output/figures/predator_spatial_exposure_prototype.pdf`
 15. `Output/figures/humpback_section_exposure_proxy.pdf`
 16. `Output/figures/salmon_recruitment_context_screen.pdf`
+17. `Output/figures/predator_mechanism_integration_screen.pdf`
 
 ## Doherty/DFO Context
 

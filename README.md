@@ -198,7 +198,10 @@ predator-effect result. The talk-ready predator summary is
 `Output/diagnostics/predator_talk_brief.md`. For missing predator-data pieces,
 use `Output/diagnostics/humpback_section_exposure_proxy.md` for the HG-wide
 humpback scaffold and `Output/diagnostics/salmon_recruitment_context_screen.md`
-for salmon as juvenile/recruitment context.
+for salmon as juvenile/recruitment context. The integrated predator mechanism
+gate is `Output/diagnostics/predator_mechanism_integration_screen.md`; it
+tests predator demand/exposure with historical fishing, PDO, section controls,
+and timing/substrate context and currently returns no strict Stan candidate.
 For the most compact combined covariate read, use
 `Output/diagnostics/section_recovery_covariate_screen.md` and
 `Output/figures/section_recovery_covariate_screen.pdf`: historical fishing

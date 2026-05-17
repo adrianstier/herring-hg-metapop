@@ -88,6 +88,7 @@ Current read from the May 14 refresh:
 | Predator talk brief | `Output/diagnostics/predator_talk_brief.md` |
 | Humpback missing-data scaffold | `Output/figures/humpback_section_exposure_proxy.pdf` |
 | Salmon recruitment context | `Output/figures/salmon_recruitment_context_screen.pdf` |
+| Predator mechanism integration | `Output/figures/predator_mechanism_integration_screen.pdf` |
 
 ## Safe Next Analysis Steps
 
@@ -104,17 +105,21 @@ Current read from the May 14 refresh:
    missing-data scaffold, not model-ready section exposure. Treat
    `Output/diagnostics/salmon_recruitment_context_screen.md` as
    juvenile/recruitment context, not adult biomass mortality.
-4. Use `docs/dfo-hg-biological-input-request-packet.md` for the exact DFO
+4. Use `Output/diagnostics/predator_mechanism_integration_screen.md` as the
+   current answer to predator integration with fishing/PDO/timing ideas. It
+   returns zero strict candidates, so do not launch a predator x fishing or
+   combined predator Stan branch from the current evidence.
+5. Use `docs/dfo-hg-biological-input-request-packet.md` for the exact DFO
    follow-up ask on machine-readable HG biological inputs and SCA/SISCAH
    metadata.
-5. Refresh local diagnostics with `Code/08_refresh_may9_analysis_suite.sh` after
+6. Refresh local diagnostics with `Code/08_refresh_may9_analysis_suite.sh` after
    any model artifact changes. The wrapper now ends with
    `Code/09_check_document_references.R`, so stale local file references are
    caught as part of the full refresh.
-6. If AWS credentials are active, submit only smoke jobs first, then write the
+7. If AWS credentials are active, submit only smoke jobs first, then write the
    submission CSV with `cloud/submit_model_farm.py --out-csv ...`.
-7. Use `cloud/watch_aws_batch_run.py` on the submission CSVs to poll and sync cloud results.
-8. Promote no model branch unless it improves calibration, stays sampler-clean,
+8. Use `cloud/watch_aws_batch_run.py` on the submission CSVs to poll and sync cloud results.
+9. Promote no model branch unless it improves calibration, stays sampler-clean,
    and preserves the ambiguous-zero interpretation unless explicitly labeled as
    a sensitivity.
 

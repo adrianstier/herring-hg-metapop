@@ -43,6 +43,7 @@ predator_tbl <- read_diag("predator_data_confounding.csv")
 predator_availability <- read_diag("predator_spatial_exposure_availability.csv")
 predator_cor <- read_diag("predator_spatial_exposure_growth_correlations.csv")
 predator_demand_screen <- read_diag_optional("wcvi_predator_demand_residual_screen.csv")
+predator_integration_screen <- read_diag_optional("predator_mechanism_integration_screen.csv")
 recovery_cov <- read_diag("section_recovery_covariate_correlations.csv")
 local_targets <- read_diag("lead_location_followup_targets.csv")
 location_transition <- read_diag("lead_section_location_transition_summary.csv")
@@ -98,7 +99,34 @@ pred_demand_label <- if (nrow(pred_demand_lag1) == 0) {
   )
 }
 
-pred_exposure_label <- predator_cor %>%
+pred_integrated_lag1 <- predator_integration_screen %>%
+  filter(lag_label == "lag_1")
+
+pred_integrated_best <- pred_integrated_lag1 %>%
+  filter(is.finite(abs_beta)) %>%
+  arrange(desc(abs_beta)) %>%
+  slice(1)
+
+pred_integrated_candidate_n <- pred_integrated_lag1 %>%
+  filter(gate == "candidate_followup_only") %>%
+  nrow()
+
+pred_integrated_label <- if (nrow(pred_integrated_best) == 0) {
+  "Run Code/07bs_predator_mechanism_integration_screen.R to score integrated predator mechanisms."
+} else {
+  glue(
+    "Integrated screen candidates {pred_integrated_candidate_n}; strongest lag-1 row {pred_integrated_best$label} beta {fmt(pred_integrated_best$term_beta, 2)}, p {fmt(pred_integrated_best$term_p, 2)}, gate {pred_integrated_best$gate}."
+  )
+}
+
+predator_cor_for_label <- predator_cor
+if (!"predator" %in% names(predator_cor_for_label) &&
+  "predator_species_or_source" %in% names(predator_cor_for_label)) {
+  predator_cor_for_label <- predator_cor_for_label %>%
+    mutate(predator = predator_species_or_source)
+}
+
+pred_exposure_label <- predator_cor_for_label %>%
   filter(range_km == 50) %>%
   transmute(label = paste0(
     predator,
@@ -110,7 +138,24 @@ pred_exposure_label <- predator_cor %>%
   pull(label) %>%
   paste(collapse = "; ")
 
-pred_availability_label <- predator_availability %>%
+predator_availability_for_label <- predator_availability
+if (!"predator" %in% names(predator_availability_for_label) &&
+  "predator_species_or_source" %in% names(predator_availability_for_label)) {
+  predator_availability_for_label <- predator_availability_for_label %>%
+    mutate(predator = predator_species_or_source)
+}
+if (!"first_year" %in% names(predator_availability_for_label) &&
+  "first_source_year" %in% names(predator_availability_for_label)) {
+  predator_availability_for_label <- predator_availability_for_label %>%
+    mutate(first_year = first_source_year)
+}
+if (!"last_year" %in% names(predator_availability_for_label) &&
+  "last_source_year" %in% names(predator_availability_for_label)) {
+  predator_availability_for_label <- predator_availability_for_label %>%
+    mutate(last_year = last_source_year)
+}
+
+pred_availability_label <- predator_availability_for_label %>%
   transmute(label = paste0(
     predator,
     " ",
@@ -226,6 +271,13 @@ covariate_registry <- tribble(
   "Effort, movement, interpolation, and historical exposure assumptions are unresolved.",
   "Refine data product before Stan predator branch; use local proximity only as targeting.",
   "prototype",
+  "Predator integrated mechanism screen",
+  "pre-Stan residual gate",
+  "section-year growth with annual demand, section exposure, historical fishing, PDO, and section/year controls",
+  pred_integrated_label,
+  "Predator main-effect rows fail raw/recent direction or effect-size gates; predator x historical fishing interactions are weak.",
+  "Do not launch a combined predator Stan branch; use this gate to target exposure-data refinement or a future single-covariate smoke only if a row clears all screens.",
+  "screen only",
   "Local spawn-location persistence",
   "descriptive local mechanism target",
   "raw spawn location within lead sections",

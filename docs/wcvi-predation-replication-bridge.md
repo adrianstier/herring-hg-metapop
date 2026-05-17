@@ -239,3 +239,21 @@ current HG model result: predation is plausible and large, but the current
 integrated model does not promote a predator coefficient. The next step is
 better spatial exposure, especially humpbacks, plus age/recruitment data if the
 salmon pathway is pursued.
+
+## May 16 Integrated Predator-Mechanism Gate
+
+`Code/07bs_predator_mechanism_integration_screen.R` now tests whether predator
+demand or section exposure becomes stronger when integrated with historical
+fishing pressure, PDO, annual fishing, section controls, and year controls.
+The strict lag-1 gate returns no candidate rows:
+
+- harbour seal exposure has a negative adjusted coefficient (`beta = -0.10`,
+  `p = 0.02`), but fails because raw and post-2005 correlations are positive;
+- combined mammal exposure x historical fishing is the strongest interaction,
+  but its effect is small (`beta = -0.02`, `p = 0.16`);
+- salmon and fish annual demand remain weak follow-up context rather than Stan
+  branch candidates.
+
+Use `Output/diagnostics/predator_mechanism_integration_screen.md` as the
+current decision note. It strengthens the rationale for not launching a broad
+predator or predator x fishing model before better exposure data are available.

@@ -198,6 +198,12 @@ The May 16 talk package adds `Output/diagnostics/predator_talk_brief.md`,
 `Output/diagnostics/salmon_recruitment_context_screen.md`. Humpbacks are now
 represented only as an HG-wide uniform section scaffold, and salmon is
 recruitment/juvenile context, not an adult-biomass Stan covariate.
+The integrated pre-Stan screen
+`Output/diagnostics/predator_mechanism_integration_screen.md` now checks
+predator demand/exposure with historical fishing, PDO, section controls, and
+year controls. It returns zero strict candidates: harbour seal exposure has a
+negative adjusted beta but fails raw/recent direction, and predator x
+historical-fishing interactions are weak.
 
 Promotion criteria:
 
@@ -259,6 +265,9 @@ Goal:
   gate. Humpback section exposure is still missing, and salmon demand should
   wait for age/recruitment structure rather than being added to an adult SSB
   branch.
+- for a predator x historical-fishing branch, wait. The integrated mechanism
+  screen found no strict candidate; the strongest combined mammal exposure x
+  historical-fishing row is too small for a Stan branch.
 
 Stop if:
 
