@@ -193,6 +193,11 @@ seal/sea-lion exposure from `Output/diagnostics/predator_spatial_exposure_sectio
 all exposure rows fail the lag-1 residual-screen gate, so do not submit
 `m6_stier_predator_exposure_mammals` until a refreshed exposure product
 survives detrending, section controls, and future-lag negative controls.
+The May 16 talk package adds `Output/diagnostics/predator_talk_brief.md`,
+`Output/diagnostics/humpback_section_exposure_proxy.md`, and
+`Output/diagnostics/salmon_recruitment_context_screen.md`. Humpbacks are now
+represented only as an HG-wide uniform section scaffold, and salmon is
+recruitment/juvenile context, not an adult-biomass Stan covariate.
 
 Promotion criteria:
 
@@ -251,7 +256,9 @@ Goal:
 - for `m6_stier_predator_exposure_mammals`, wait. The implemented section-year
   exposure data product is useful, but current harbour seal and Steller sea
   lion exposure rows are weak or time-confounded and fail the residual-screen
-  gate.
+  gate. Humpback section exposure is still missing, and salmon demand should
+  wait for age/recruitment structure rather than being added to an adult SSB
+  branch.
 
 Stop if:
 

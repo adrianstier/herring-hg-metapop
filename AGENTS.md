@@ -278,9 +278,29 @@ The latest non-Stan driver screens add these operational conclusions:
   predator exposure product from raw Haida Gwaii harbour seal and Steller sea
   lion locations/counts. It now records source spans, count sensitivities,
   exposure-weighted interpolation/extrapolation shares, and 25/50/100 km
-  kernels. The 50 km screen remains gated: harbour seal exposure has weak
+  working kernels. The kernels are not literature-validated movement kernels.
+  The 50 km screen remains gated: harbour seal exposure has weak
   lag-1 growth signal and Steller sea lion exposure remains time-confounded, so
   this is a data product and pre-Stan screen, not predator-effect evidence.
+- `Output/diagnostics/humpback_section_exposure_proxy.md`: HG-wide humpback
+  demand scaffold from `/Users/adrianstier/pacific-herring-predators`. It
+  averages about 5.12 kt/yr and 307 feeding-substantive humpbacks over
+  2015-2024, but the section weights are uniform across the 11 modeled
+  sections. It is explicitly `not_model_ready_no_section_exposure`; do not use
+  it as a section-level predator covariate until PRISMM/BCCSN or comparable
+  effort-corrected humpback sightings/density are mapped to HG sections and
+  season.
+- `Output/diagnostics/salmon_recruitment_context_screen.md`: salmon demand is
+  the only current annual-demand bridge row labelled follow-up-only, but it is
+  recruitment/juvenile context, not adult SSB mortality. The lag-1 adult-growth
+  gate has n 73, rho about -0.32, detrended r about -0.05, and adjusted beta
+  about -0.05; public 2015-2024 DFO recruitment checks are descriptive only.
+  Do not submit a salmon adult-biomass Stan branch without age/recruitment
+  structure.
+- `Output/diagnostics/predator_talk_brief.md`: compact talk-facing predator
+  package. Current one-slide message: predation is large and plausible, but no
+  predator coefficient is promoted; use better spatial exposure, especially
+  humpbacks, as the next scientific step.
 - `Output/diagnostics/section_recovery_covariate_screen.md`: descriptive n=11
   screen combining recovery ratio, historical fishing pressure, survey
   coverage, positive-spawn fit caveats, timing/substrate shifts, and prototype
@@ -389,12 +409,18 @@ Recommended sequence:
    - predator data now have a feasibility audit; current seal/SSL data can
      support future spatial exposure work, but the humpback series is basin-wide
      and not a Haida Gwaii section-level exposure series,
-  - predator spatial exposure now has a formal section-year product for harbour
-    seals and Steller sea lions, including raw/fill sensitivities and
-    exposure-weighted extrapolation flags; no exposure row clears the
-    lag-1 residual-screen gate, so do not submit `m6_stier_predator_exposure`
-    until a section-year signal survives detrending, section controls, and
-    future-lag negative controls,
+   - predator spatial exposure now has a formal section-year product for
+     harbour seals and Steller sea lions, including raw/fill sensitivities and
+     exposure-weighted extrapolation flags; no exposure row clears the lag-1
+     residual-screen gate, so do not submit `m6_stier_predator_exposure` until
+     a section-year signal survives detrending, section controls, and
+     future-lag negative controls,
+   - humpback demand is now captured as an HG-wide 11-section scaffold only; it
+     is not section-level exposure, so it belongs in talk scale/context and the
+     missing-data plan rather than a Stan branch,
+   - salmon demand belongs in a recruitment/juvenile pathway unless a future
+     model adds age or recruitment structure; do not treat salmon as adult
+     biomass mortality,
    - the combined section recovery covariate screen still ranks historical
      fishing pressure as the cleanest section-level axis; use predator,
      timing, and substrate screens to guide data work, not causal claims,

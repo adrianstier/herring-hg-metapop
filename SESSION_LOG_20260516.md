@@ -159,3 +159,33 @@
   talk-safe mechanism context. Do not submit `m6_stier_predator_exposure_mammals`
   or another annual predator branch until a refreshed product clears the
   residual-screen gate.
+
+## Predator talk package, humpback scaffold, and salmon context
+
+- Added `Code/07bp_humpback_section_exposure_proxy.R` to create an explicit
+  HG-wide humpback scaffold from the sibling predator repo. It writes
+  `Output/diagnostics/humpback_section_exposure_proxy.md/.csv` and
+  `Output/figures/humpback_section_exposure_proxy.pdf/.png`.
+- Current humpback read: the predator repo has HG-wide humpback abundance and
+  consumption, but no section-level sightings/density surface. The scaffold
+  distributes demand uniformly across the 11 modeled sections and is explicitly
+  `not_model_ready_no_section_exposure`. Recent 2015-2024 mean demand is about
+  5.12 kt/yr, with about 307 feeding-substantive individuals.
+- Added `Code/07bq_salmon_recruitment_context_screen.R` to keep salmon demand
+  out of adult biomass mortality branches. The lag-1 adult-growth bridge is
+  follow-up-only (n 73, rho about -0.32, detrended r about -0.05, adjusted beta
+  about -0.05), while public 2015-2024 DFO recruitment checks are descriptive
+  only. Treat salmon as juvenile/recruitment context unless age/recruitment
+  structure is added.
+- Added `Code/07br_predator_talk_brief.R` to write the talk-facing predator
+  package at `Output/diagnostics/predator_talk_brief.md` and
+  `Output/diagnostics/predator_talk_claims.csv`. The one-slide message is:
+  predation is large and plausible, but no predator coefficient is promoted;
+  the next scientific step is better spatial exposure, especially humpbacks.
+- Updated `Code/07bb_predator_spatial_exposure_prototype.R` so seal/sea-lion
+  kernels have explicit working biology labels. These are working defaults, not
+  literature-validated movement kernels: harbour seal 25 km is the local
+  haulout default, Steller sea lion 50 km is the working haulout-foraging
+  default, and 100 km is a broader-foraging sensitivity.
+- Regenerated the model decision ledger after the source changes. The decision
+  remains: no new predator Stan/AWS branch from the current gates.

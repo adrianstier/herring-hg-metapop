@@ -16,6 +16,11 @@ model-farm state.
 - For predators, use the WCVI bridge as context: predator demand is large, but
   the `m5_stier_predator_demand_total` branch did not materially improve
   calibration and still has unresolved high Pareto-k points.
+- Use `Output/diagnostics/predator_talk_brief.md` for the compact predator
+  slide. It adds the key guardrails: no promoted predator coefficient, humpback
+  exposure still missing at section scale, and salmon belongs in the
+  recruitment/juvenile pathway unless the model gains age/recruitment
+  structure.
 - For Doherty-style age/size/catch material, say "proxy bridge" rather than
   "completed HG catch-at-age analysis": HG public DFO tables anchor herring
   biology where available, while WCVI/Doherty values are provisional analogues
@@ -50,6 +55,12 @@ model-farm state.
 - Against public DFO SCA biomass, the median predator-consumption analogue is
   about 63%; against `m1_stier_11` biomass it is about 29%. The key talk point
   is ecological scale, not a promoted predator effect.
+- Humpback demand scaffold: 2015-2024 mean HG-wide humpback demand is about
+  5.12 kt/yr and about 307 feeding-substantive individuals, but the current
+  section weights are uniform and not model-ready.
+- Salmon context: lag-1 adult-growth bridge is follow-up-only, not a branch
+  candidate; n 73, rho about -0.32, detrended r about -0.05, adjusted beta
+  about -0.05. Public 2015-2024 DFO recruitment checks are descriptive only.
 - DFO Table 3 also supports the spatial-concentration message: Juan
   Perez/Skincuttle reaches up to about 98% of HG spawn-index share in 2015-2024,
   while Louscoone is 0% in the public summary.
@@ -66,6 +77,9 @@ model-farm state.
 - `Output/diagnostics/promoted_baseline_evidence_package.md`
 - `Output/diagnostics/may10_integrated_evidence_matrix.md`
 - `Output/diagnostics/covariate_readiness_registry.md`
+- `Output/diagnostics/predator_talk_brief.md`
+- `Output/diagnostics/humpback_section_exposure_proxy.md`
+- `Output/diagnostics/salmon_recruitment_context_screen.md`
 - `Output/diagnostics/section_action_matrix.md`
 
 ## Figure Order
@@ -84,6 +98,8 @@ model-farm state.
 12. `Output/figures/hg_dfo_sca_external_comparison.pdf`
 13. `Output/figures/doherty_proxy_parameter_plan.pdf`
 14. `Output/figures/predator_spatial_exposure_prototype.pdf`
+15. `Output/figures/humpback_section_exposure_proxy.pdf`
+16. `Output/figures/salmon_recruitment_context_screen.pdf`
 
 ## Doherty/DFO Context
 

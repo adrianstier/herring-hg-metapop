@@ -192,9 +192,13 @@ model covariates and integrated diagnostics.
 For spatial predator context, use `Output/diagnostics/predator_spatial_exposure_prototype.md`
 and `Output/figures/predator_spatial_exposure_prototype.pdf`: raw Haida Gwaii
 harbour seal and Steller sea lion records can be converted into rough
-section-level exposure covariates, but the current screen is still
+section-level exposure covariates, but the current screen is still weak or
 time-confounded and should be treated as a data-product roadmap, not a
-predator-effect result.
+predator-effect result. The talk-ready predator summary is
+`Output/diagnostics/predator_talk_brief.md`. For missing predator-data pieces,
+use `Output/diagnostics/humpback_section_exposure_proxy.md` for the HG-wide
+humpback scaffold and `Output/diagnostics/salmon_recruitment_context_screen.md`
+for salmon as juvenile/recruitment context.
 For the most compact combined covariate read, use
 `Output/diagnostics/section_recovery_covariate_screen.md` and
 `Output/figures/section_recovery_covariate_screen.pdf`: historical fishing

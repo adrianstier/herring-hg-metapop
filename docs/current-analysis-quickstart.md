@@ -14,9 +14,10 @@ reading every historical model branch.
 5. `docs/wcvi-predation-replication-bridge.md`
 6. `docs/doherty-style-hg-source-provenance.md`
 7. `docs/predator-repo-integration-guide.md`
-8. `docs/saturday-talk-readiness-2026-05-16.md`
-9. `Output/diagnostics/doherty_proxy_parameter_plan.md`
-10. `AGENTS.md`
+8. `Output/diagnostics/predator_talk_brief.md`
+9. `docs/saturday-talk-readiness-2026-05-16.md`
+10. `Output/diagnostics/doherty_proxy_parameter_plan.md`
+11. `AGENTS.md`
 
 ## Current Baseline
 
@@ -84,27 +85,36 @@ Current read from the May 14 refresh:
 | Spawn/catch fit caveat | `Output/figures/positive_spawn_fit_caveat.pdf` |
 | Local follow-up targets | `Output/figures/lead_location_followup_targets.pdf` |
 | Covariate readiness | `Output/diagnostics/covariate_readiness_registry.md` |
+| Predator talk brief | `Output/diagnostics/predator_talk_brief.md` |
+| Humpback missing-data scaffold | `Output/figures/humpback_section_exposure_proxy.pdf` |
+| Salmon recruitment context | `Output/figures/salmon_recruitment_context_screen.pdf` |
 
 ## Safe Next Analysis Steps
 
 1. Do not submit another AWS model branch unless the model-decision ledger
    identifies a targeted Stier-aligned single-covariate question that can finish
    and be explained before the talk.
-2. Current May 14 predator decision: `m5_stier_predator_demand_total` is
-   completed and held. Use `Output/diagnostics/hg_dfo_sca_external_comparison.md`
-   and `Output/figures/hg_dfo_sca_external_comparison.pdf` for DFO/predator
-   scale context, not as evidence for a promoted predator coefficient.
-3. Use `docs/dfo-hg-biological-input-request-packet.md` for the exact DFO
+2. Current May 16 predator decision: `m5_stier_predator_demand_total` is
+   completed and held, and no seal/sea-lion exposure row clears the lag-1 gate.
+   Use `Output/diagnostics/predator_talk_brief.md`,
+   `Output/diagnostics/hg_dfo_sca_external_comparison.md`, and
+   `Output/figures/hg_dfo_sca_external_comparison.pdf` for DFO/predator scale
+   context, not as evidence for a promoted predator coefficient.
+3. Treat `Output/diagnostics/humpback_section_exposure_proxy.md` as a
+   missing-data scaffold, not model-ready section exposure. Treat
+   `Output/diagnostics/salmon_recruitment_context_screen.md` as
+   juvenile/recruitment context, not adult biomass mortality.
+4. Use `docs/dfo-hg-biological-input-request-packet.md` for the exact DFO
    follow-up ask on machine-readable HG biological inputs and SCA/SISCAH
    metadata.
-4. Refresh local diagnostics with `Code/08_refresh_may9_analysis_suite.sh` after
+5. Refresh local diagnostics with `Code/08_refresh_may9_analysis_suite.sh` after
    any model artifact changes. The wrapper now ends with
    `Code/09_check_document_references.R`, so stale local file references are
    caught as part of the full refresh.
-5. If AWS credentials are active, submit only smoke jobs first, then write the
+6. If AWS credentials are active, submit only smoke jobs first, then write the
    submission CSV with `cloud/submit_model_farm.py --out-csv ...`.
-6. Use `cloud/watch_aws_batch_run.py` on the submission CSVs to poll and sync cloud results.
-7. Promote no model branch unless it improves calibration, stays sampler-clean,
+7. Use `cloud/watch_aws_batch_run.py` on the submission CSVs to poll and sync cloud results.
+8. Promote no model branch unless it improves calibration, stays sampler-clean,
    and preserves the ambiguous-zero interpretation unless explicitly labeled as
    a sensitivity.
 

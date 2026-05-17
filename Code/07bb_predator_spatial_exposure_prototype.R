@@ -312,6 +312,15 @@ exposure <- pred_sites %>%
   mutate(
     section = raw_section,
     kernel_km = range_km,
+    kernel_role = case_when(
+      predator_species_or_source == "Harbour seal" & kernel_km == 25 ~ "working_default_local_haulout",
+      predator_species_or_source == "Harbour seal" & kernel_km %in% c(50, 100) ~ "broader_foraging_sensitivity",
+      str_detect(predator_species_or_source, "Steller sea lion") & kernel_km == 50 ~ "working_default_ssl_haulout_foraging",
+      str_detect(predator_species_or_source, "Steller sea lion") & kernel_km == 25 ~ "near_haulout_sensitivity",
+      str_detect(predator_species_or_source, "Steller sea lion") & kernel_km == 100 ~ "broader_foraging_sensitivity",
+      TRUE ~ "unclassified_kernel_sensitivity"
+    ),
+    kernel_status = "working_default_not_literature_validated",
     observed_exposure_share = observed_exposure / pmax(exposure, 1e-12),
     interpolated_exposure_share = interpolated_exposure / pmax(exposure, 1e-12),
     extrapolated_exposure_share = extrapolated_exposure / pmax(exposure, 1e-12),
@@ -351,7 +360,14 @@ exposure_growth <- exposure %>%
   filter(is.finite(next_year_growth), is.finite(exposure_z))
 
 cor_summary <- exposure_growth %>%
-  group_by(predator_group, predator_species_or_source, count_sensitivity, range_km) %>%
+  group_by(
+    predator_group,
+    predator_species_or_source,
+    count_sensitivity,
+    range_km,
+    kernel_role,
+    kernel_status
+  ) %>%
   summarise(
     n = n(),
     years = n_distinct(year),
@@ -416,17 +432,19 @@ write_csv(
       predator_species_or_source,
       count_sensitivity,
       kernel_km,
+      kernel_role,
+      kernel_status,
       exposure,
-    exposure_z,
-    nearest_site_km = nearest_predator_site_km,
-    weighted_mean_distance_km,
-    observed_exposure_share,
-    interpolated_exposure_share,
-    extrapolated_exposure_share,
-    observed_count_flag,
-    interpolated_flag,
-    extrapolated_flag,
-    extrapolated_dominant_flag,
+      exposure_z,
+      nearest_site_km = nearest_predator_site_km,
+      weighted_mean_distance_km,
+      observed_exposure_share,
+      interpolated_exposure_share,
+      extrapolated_exposure_share,
+      observed_count_flag,
+      interpolated_flag,
+      extrapolated_flag,
+      extrapolated_dominant_flag,
       exposure_data_status,
       source_site_count,
       observed_site_count,
@@ -544,6 +562,7 @@ cor_md <- cor_summary %>%
   transmute(
     predator = predator_species_or_source,
     sensitivity = count_sensitivity,
+    `kernel role` = kernel_role,
     `n section-years` = n,
     years,
     sections,
@@ -579,8 +598,16 @@ lines <- c(
   "- A section-level exposure product is now explicit about source spans, count sensitivities, annual interpolation, edge extrapolation, and provenance.",
   "- Harbour seal complex-year counts remain collapsed to one complex-year record so repeated subsite rows do not inflate exposure.",
   "- Steller sea lions are split into a raw non-pup sensitivity and a filled-total sensitivity that uses source interpolated/extrapolated fields where present.",
+  "- Kernel ranges are working defaults, not literature-validated movement kernels: 25 km is the harbour-seal local-haulout default, 50 km is the Steller sea-lion working default, and 100 km is a broader-foraging sensitivity.",
   "- Growth screens below exclude section-years where edge-held counts dominate exposure; remaining screens still do not justify promoting a predator coefficient yet.",
   "- Humpback exposure remains the weak link because the current abundance series is basin-scale rather than section-level.",
+  "",
+  "## Source Files",
+  "",
+  "- Harbour seal counts: `Data/raw/predators/Harbour_seal_counts_haulout_locs_BCcoast.csv`.",
+  "- Steller sea lion counts: `Data/raw/predators/Steller_Sea_Lion_Summer_counts_from_Haulout_Locations.csv`.",
+  "- Herring section centroids: `Data/processed/HG_Spawn_Survey_1951_2025_all_sections.csv`.",
+  "- Promoted-baseline biomass for screens: `Output/diagnostics/m1_stier_11_section_biomass_by_year.csv`.",
   "",
   "## Source And Fill Availability",
   "",

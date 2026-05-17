@@ -58,6 +58,18 @@ diagnostic `Output/diagnostics/hg_predator_repo_integration.md`.
 Use `docs/predator-repo-integration-guide.md` for the complete crosswalk from
 predator repo files to herring repo diagnostics, figures, and model covariates.
 
+## Herring-Side Predator Outputs
+
+- Talk brief: `Output/diagnostics/predator_talk_brief.md`.
+- Seal/sea-lion exposure: `Output/diagnostics/predator_spatial_exposure_prototype.md`
+  and `Output/diagnostics/predator_spatial_exposure_section_year.csv`.
+- Humpback scaffold: `Output/diagnostics/humpback_section_exposure_proxy.md`.
+  This is HG-wide demand distributed uniformly across sections, not
+  model-ready section exposure.
+- Salmon context: `Output/diagnostics/salmon_recruitment_context_screen.md`.
+  Treat salmon as juvenile/recruitment context unless the model gains age or
+  recruitment structure.
+
 ## Modeling Caveat
 
 Predator repo products currently support biomass-scale predator demand,

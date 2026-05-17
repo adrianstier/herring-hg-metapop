@@ -124,6 +124,41 @@ the detrended signal is positive rather than negative, and the future-lag
 negative control is not beaten. Do not submit `m6_stier_predator_exposure`
 from this screen.
 
+## Humpback And Salmon Additions
+
+`Code/07bp_humpback_section_exposure_proxy.R` now turns the sibling predator
+repo's HG-wide humpback demand products into a traceable 11-section scaffold:
+`Output/diagnostics/humpback_section_exposure_proxy.md`,
+`Output/diagnostics/humpback_section_exposure_proxy.csv`, and
+`Output/figures/humpback_section_exposure_proxy.pdf`.
+
+The main read is deliberately conservative:
+
+- the source products are HG-wide abundance/consumption, not section-level
+  sightings or density;
+- the current scaffold distributes demand uniformly across the 11 modeled
+  sections;
+- recent humpback demand averages about `5.12 kt/yr` and about `307`
+  feeding-substantive individuals over 2015-2024;
+- the file is `not_model_ready_no_section_exposure` until PRISMM/BCCSN or
+  comparable effort-corrected humpback sightings/density are mapped to
+  Haida Gwaii sections and season.
+
+`Code/07bq_salmon_recruitment_context_screen.R` now separates salmon from adult
+biomass mortality. Salmon demand is the only annual-demand bridge row that gets
+a follow-up-only label, but it is a juvenile/recruitment pathway, not a clean
+adult SSB removal covariate. The lag-1 adult-growth bridge has `n = 73`,
+Spearman rho about `-0.32`, detrended r about `-0.05`, and adjusted beta about
+`-0.05`. Public 2015-2024 DFO HG recruitment checks are descriptive only
+(same-year rho about `0.15`, lag-1 rho about `0.09`, lag-2 rho about `0.28`).
+Do not submit a salmon adult-biomass Stan branch without age/recruitment
+structure.
+
+`Code/07br_predator_talk_brief.R` writes the compact talk package:
+`Output/diagnostics/predator_talk_brief.md`,
+`Output/diagnostics/predator_talk_claims.csv`, and the slide-asset list.
+Use that note for the one-slide predator message.
+
 ## What The Predator Data Say Now
 
 The sibling predator repo gives a much richer predator field than the original
@@ -170,6 +205,8 @@ Keep four predator layers separate:
      observed-year flags, kernel radius, source predator site count.
    - Model role: future `m6_stier_predator_exposure`, after effort/interpolation
      and biological kernel decisions.
+   - Current caveat: seal/sea-lion kernels are working defaults; humpbacks still
+     lack section-level exposure.
 
 4. **Spawn-location local audit**
    - Grain: raw spawn location.
@@ -208,6 +245,7 @@ Do these before spending AWS time on another predator model:
    - Birds / egg predators: should connect to spawn timing/substrate and egg
      loss, not adult biomass mortality.
    - Salmon: juvenile-herring predation context, not adult SSB removal.
+   - Humpbacks: large HG-wide demand, but no section-level exposure yet.
 
 5. Use negative controls before model fitting.
    - Compare lag `-1`, `0`, `1`, and `2`.
@@ -258,6 +296,10 @@ For the current talk, say:
 - predator recovery is ecologically plausible and quantitatively large;
 - the best current HG predator product estimates recent consumption around
   `15.5 kt/yr`, larger than recent spawn deposition;
+- HG-wide humpback demand alone is about `5.12 kt/yr` recently, but we do not
+  yet have a model-ready section exposure surface;
+- salmon demand belongs in the juvenile/recruitment story, not adult SSB
+  mortality, until age/recruitment structure is added;
 - the first Stier-aligned predator branch did not materially improve the
   herring model;
 - the WCVI-aligned total-demand branch also did not materially improve

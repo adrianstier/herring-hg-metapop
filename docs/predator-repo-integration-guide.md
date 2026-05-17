@@ -44,11 +44,13 @@ The import writes local, ignored herring products under
 | Herring-model predator covariates | `data/processed/consumption_budget/HG_pressure_climate_predator_covariates.csv` |
 | Audited group consumption | `data/processed/consumption_budget/HG_consumption_by_group_year_AUDITED.csv` |
 | Audited species consumption | `data/processed/consumption_budget/HG_consumption_by_species_year_AUDITED.csv` |
+| HG humpback feeding-substantive demand | `data/processed/consumption_budget/HG_humpback_consumption_feeding_substantive_1910-2022.csv` |
 | Predator share provenance | `data/processed/consumption_budget/HG_share_factors_audited.csv` |
 | Doherty-style Mp sensitivity | `data/processed/consumption_budget/HG_Mp_sensitivity_AUDITED.csv` |
 | Predator attribution model selection | `data/processed/consumption_budget/HG_attribution_model_selection.csv` |
 | Functional-response selection | `data/processed/consumption_budget/HG_FR_model_selection.csv` |
 | Future humpback projection | `data/processed/consumption_budget/HG_humpback_projection_2022-2050.csv` |
+| Humpback HG photo-ID trajectory | `data/processed/haida_gwaii/cheeseman_2024_humpback_HG_photo_id_2001-2022.csv`, `data/processed/haida_gwaii/HG_humpback_trajectory_1910-2022.csv` |
 | HG harbour seal sites | `data/processed/haida_gwaii/harbour_seal_HG_haulouts_1986-2019.csv` |
 | HG Steller sea lion sites | `data/processed/haida_gwaii/steller_sea_lion_HG_breeding_1971-2021.csv`, `data/processed/haida_gwaii/steller_sea_lion_HG_non_breeding_1971-2021.csv` |
 | Predator-only master figure | `Output/figures/MASTER_HG_predation_AUDITED.pdf`, `Output/figures/MASTER_HG_predation_AUDITED.png` |
@@ -75,6 +77,9 @@ The import writes local, ignored herring products under
 | `Output/diagnostics/wcvi_predation_replication_bridge.md` and `Output/figures/wcvi_predation_replication_bridge.pdf` | WCVI/Doherty-style predator-demand bridge against `m1_stier_11` biomass. |
 | `Output/diagnostics/hg_dfo_sca_external_comparison.md` and `Output/figures/hg_dfo_sca_external_comparison.pdf` | Talk-facing scale context among `m1_stier_11`, public DFO HG SCA biomass, and predator demand. |
 | `Output/diagnostics/predator_spatial_exposure_prototype.md`, `Output/diagnostics/predator_spatial_exposure_section_year.csv`, and `Output/figures/predator_spatial_exposure_prototype.pdf` | Section-year seal/sea-lion exposure product with kernels, count sensitivities, and extrapolation flags. |
+| `Output/diagnostics/humpback_section_exposure_proxy.md`, `Output/diagnostics/humpback_section_exposure_proxy.csv`, and `Output/figures/humpback_section_exposure_proxy.pdf` | HG-wide humpback demand scaffold. Explicitly not model-ready section exposure because the current weights are uniform across sections. |
+| `Output/diagnostics/salmon_recruitment_context_screen.md`, `Output/diagnostics/salmon_recruitment_context_screen.csv`, and `Output/figures/salmon_recruitment_context_screen.pdf` | Salmon demand screen framed as recruitment/juvenile context rather than adult SSB mortality. |
+| `Output/diagnostics/predator_talk_brief.md` and `Output/diagnostics/predator_talk_claims.csv` | Talk-ready predator claims and guardrails from the current bridge, exposure, humpback, and salmon diagnostics. |
 | `Output/diagnostics/lead_spawn_location_predator_proximity.md` and `Output/figures/lead_spawn_location_predator_proximity.pdf` | Lead-location proximity to predator sites. |
 | `Output/diagnostics/doherty_proxy_parameter_plan.md` and `Output/figures/doherty_proxy_parameter_plan.pdf` | Explicit proxy/caveat slide support for the current talk cycle. |
 
@@ -90,6 +95,11 @@ The import writes local, ignored herring products under
 - Predator repo outputs are not age-specific natural mortality. Do not describe
   them as Doherty-style age-selective predation mortality until predator
   selectivity and HG catch-at-age inputs are acquired and audited.
+- Humpback products currently support HG-wide demand and trajectory context,
+  not section-level exposure. The herring-side proxy scaffold is a missing-data
+  placeholder until spatial sightings/density surfaces are sectionized.
+- Salmon consumption should be interpreted as juvenile/recruitment context
+  unless the herring model gains age or recruitment structure.
 - The promoted herring baseline remains `m1_stier_11`. Predator branches are
   held context unless they clear the model-decision ledger gates.
 
@@ -103,7 +113,11 @@ The import writes local, ignored herring products under
 3. Regenerate affected herring diagnostics:
 
 ```sh
+Rscript --vanilla Code/07bb_predator_spatial_exposure_prototype.R
 Rscript --vanilla Code/07bj_wcvi_predation_replication_bridge.R
+Rscript --vanilla Code/07bp_humpback_section_exposure_proxy.R
+Rscript --vanilla Code/07bq_salmon_recruitment_context_screen.R
+Rscript --vanilla Code/07br_predator_talk_brief.R
 Rscript --vanilla Code/07bn_hg_dfo_sca_external_comparison.R
 Rscript --vanilla Code/07bo_doherty_proxy_parameter_plan.R
 Rscript --vanilla Code/07bi_model_decision_ledger.R

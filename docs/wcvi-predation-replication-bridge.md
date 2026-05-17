@@ -218,3 +218,24 @@ Do not submit `m6_stier_predator_exposure_mammals` from the current screen. The
 implemented output is a better talk-safe explanation of why predation remains a
 plausible mechanism and a data-product target, while the promoted model stays
 `m1_stier_11`.
+
+## May 16 Talk-Ready Predator Package
+
+The predator branch now has three small supporting products for the Saturday
+talk and post-talk data plan:
+
+- `Output/diagnostics/predator_talk_brief.md`: one-slide predator message and
+  claim guardrails.
+- `Output/diagnostics/humpback_section_exposure_proxy.md`: HG-wide humpback
+  demand scaffold. Recent mean demand is about `5.12 kt/yr` and about `307`
+  feeding-substantive individuals, but the section weights are uniform, so this
+  is not model-ready section exposure.
+- `Output/diagnostics/salmon_recruitment_context_screen.md`: salmon demand is
+  follow-up-only context for juvenile/recruitment hypotheses, not adult biomass
+  mortality. The public 2015-2024 recruitment checks are descriptive only.
+
+Use these as the bridge between the Doherty-style predator narrative and the
+current HG model result: predation is plausible and large, but the current
+integrated model does not promote a predator coefficient. The next step is
+better spatial exposure, especially humpbacks, plus age/recruitment data if the
+salmon pathway is pursued.
