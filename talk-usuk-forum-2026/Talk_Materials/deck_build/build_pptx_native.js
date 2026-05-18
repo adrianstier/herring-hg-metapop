@@ -85,10 +85,12 @@ function photo(s,file){ s.addImage({path:file,x:0,y:0,w:W,h:H,sizing:{type:'cove
 }
 /* S5 — Two collapses (REAL archipelago spawn-index figure inserted) */ {
   const s=base(true); s.addImage({path:path.join(DA,'05_two_collapses.png'),x:0,y:0,w:W,h:H});
+  masthead(s,true); title(s,'Two collapses, two outcomes',true);
   s.addNotes('The engine of the talk — REAL spawn-index data. Reduction fishery 1930s; 1960s collapse rebounded ~5 yr (the control). Roe fishery 1972; closed 1994; still ~10% of historic, has not recovered. Land the contrast: one came back, one did not.');
 }
 /* S6 — climate/PDO (REAL R figure inserted) */ {
   const s=base(true); s.addImage({path:path.join(DA,'06_climate_pdo.png'),x:0,y:0,w:W,h:H});
+  masthead(s,true); title(s,'Ocean productivity is a first-order driver',true);
   s.addNotes('Bayesian state-space models separate drivers. Ocean productivity is a first-order driver — necessary, not sufficient. Guardrail: no promoted predator coefficient for HG (claim-control sheet). Transition: "so we looked at space."');
 }
 
@@ -114,10 +116,12 @@ function photo(s,file){ s.addImage({path:file,x:0,y:0,w:W,h:H,sizing:{type:'cove
 }
 /* S8 — realized growth (REAL R figure inserted) */ {
   const s=base(true); s.addImage({path:path.join(DA,'08_realized_growth.png'),x:0,y:0,w:W,h:H});
+  masthead(s,true); title(s,'Population growth collapsed, cove by cove',true);
   s.addNotes('At the cove scale realized growth fell in nearly every section — the aggregate looked survivable, the cove signal did not. Structural, system-wide, invisible at the management scale.');
 }
 /* S9 — synchrony / portfolio (REAL R figure inserted) */ {
   const s=base(true); s.addImage({path:path.join(DA,'09_synchrony.png'),x:0,y:0,w:W,h:H});
+  masthead(s,true); title(s,'The portfolio eroded',true);
   s.addNotes('Coves used to keep their own rhythm — a portfolio. Synchrony up >60% since the mid-1990s (Stier 2020, measured). Then offer the EWS reading as a PROPOSAL, not a finding — the leading-indicator analysis is not done.');
 }
 /* S10 — predators */ {
@@ -182,6 +186,7 @@ function photo(s,file){ s.addImage({path:file,x:0,y:0,w:W,h:H,sizing:{type:'cove
 }
 /* DFO corroboration — Cleary SR 2025/005 spawning biomass (REAL extract) */ {
   const s=base(true); s.addImage({path:path.join(DA,'dfo_spawning_biomass.png'),x:0,y:0,w:W,h:H});
+  masthead(s,true); title(s,'Spawning biomass at the limit reference point',true);
   s.addNotes("DFO's own assessment confirms it, independently. Aggregate single-stock SCA (Cleary SR 2025/005, distinct from m1_stier_11). HG spawning biomass sits at the Limit Reference Point (~6.45 kt = 0.3*SB0; SB0 ~21.5 kt). Even at zero catch (HG=0 t since 2002), P(SB2025<LRP)=0.38, P(SB2025<0.75*SB_Prod)=0.95 — the keystone number, and it's DFO's, not ours. Real Table 15/19 data, 2015-2024 + 2025 forecast (the full 1951-2024 series is a figure-only digitization, handed off).");
 }
 /* S14 — close */ {
