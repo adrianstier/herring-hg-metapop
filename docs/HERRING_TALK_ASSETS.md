@@ -11,7 +11,7 @@ tracks the cross-session build state.
 > **Talk Build State** section at the bottom so the next context window picks up
 > cleanly.
 
-Last updated: 2026-05-17 (talk blockers resolved/bounded; deck approach, S15, S19, S20, and portfolio-number provenance documented).
+Last updated: 2026-05-18 (14-slide architecture confirmed; systematic per-slide asset audit; slide→asset map FRM-MAP wired; S12/S10/number gaps flagged).
 
 ---
 
@@ -219,6 +219,8 @@ tracked. **This is the home for the talk outline / drafts / deck.**
 | FRM-S19 | doc | **S19 co-governance imagery provenance** | `talk-usuk-forum-2026/Talk_Materials/S19_cogovernance_imagery_provenance.md` | ready | official AMB image source, blockade/history source, signing-photo caveats |
 | FRM-S20 | doc | **S20 solution payload** | `talk-usuk-forum-2026/Talk_Materials/S20_solution_payload.md` | ready | final three-part close: measure structure, manage exposure, build missing data spine |
 | FRM-BLOCK | doc | **Talk blocker resolution log** | `talk-usuk-forum-2026/Talk_Materials/blocker_resolution_2026-05-17.md` | ready | compact handoff of resolved/bounded blockers and remaining production work |
+| FRM-ARCH | html | **Confirmed 14-slide talk architecture (3 parts)** | `talk-usuk-forum-2026/Talk_Materials/talk_architecture_{1_outline,2_speaker_notes,3_figures_layout}.html` | ready | the current confirmed spine: acts/timings, per-slide say/cue/transition, per-slide wireframe + asset manifest |
+| FRM-MAP | doc | **Slide → asset map (14-slide spine)** | `talk-usuk-forum-2026/Talk_Materials/slide_asset_map.md` | ready | production checklist: every slide wired to concrete asset files + guardrail + action; gaps and build order |
 
 ---
 
@@ -502,11 +504,34 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
   **S17** SoG fished 5-25 kt/yr vs HG 0 t (Table 2); **S9/S10** M about 0.45
   (Table 7). Caveat recorded: SR 2025/005 = aggregate SCA, NOT `m1_stier_11`
   metapop; keep separately attributed.
+- **2026-05-18 (14-slide architecture + systematic asset audit + slide→asset
+  map):** Three-part **confirmed 14-slide architecture** committed
+  (`talk_architecture_{1,2,3}.html`, FRM-ARCH) — supersedes the 20-slide
+  `talk_production_plan.md` as the working spine. Ran a systematic per-slide
+  asset audit against disk: McKechnie 2014 PDF is in repo (`Literature/`);
+  `Output/figures/stier2020_updated/fig5/fig6` are the current-refit growth +
+  portfolio figures (slides 8/9); the 142C/242 lecture assets are fully
+  extracted into `DRV-ASSETS` (235 files, 13 categories) and now wired
+  slide-by-slide in **`talk-usuk-forum-2026/Talk_Materials/slide_asset_map.md`**
+  (FRM-MAP). **Findings:** (1) `herring_decoupling_figure.html` (S12, the
+  payoff) **does not exist** — only the 3-layer `build1_spine.html`; S12 needs
+  a 4-layer build. (2) S7 two-scale is **not** a from-scratch build — a 142C
+  teaching version exists (`DRV-ASSETS 05-data-graphs/`). (3) No
+  humpback-feeding photo exists in any 142C/242 library (S10 gap; Adrian
+  sources). (4) Number corrections required before slides: S11 "$40M→$2.78M"
+  is unsourced; S9 use m1_stier_11 0.63/0.70 with ">60%/2.1×/65%-vs-4%"
+  attributed to Stier 2020; S5 catch peaks. **No new model analysis needed.**
+  **Open for Adrian:** confirm the 14-slide spine is final (it drops the
+  Stier-2016 cognitive-map / AMB social beat that this index calls the
+  audience differentiator) or fold that beat back in.
 - **Open / next actions (priority order):**
-  1. Render/QA `build1_spine.html`; then use it for S2/S12/S20.
-  2. Build the remaining heavy proof objects: S7 portfolio, S10 predator
-     demand, S14 hysteresis.
-  3. Assemble/render the `.pptx` in
-     `talk-usuk-forum-2026/Talk_Materials/`.
-  4. **Slides OVERDUE to `scientific.meetings@royalsociety.org`** (.pptx) —
+  1. **Build S12 four-layer decoupling figure** (extend `build1_spine.html`) —
+     the payoff slide; currently missing.
+  2. Build S7 two-scale (adapt 142C teaching fig, Stier-2020 attribution),
+     S5 annotated two-collapse timeline.
+  3. S4 McKechnie crop + callout verification; S6 figure pick;
+     S9/S11 number corrections; S13 typographic layout.
+  4. Adrian: pull/choose S1/S2/S3/S10/S14 photos from `DRV-ASSETS`.
+  5. Assemble/render the `.pptx` in `talk-usuk-forum-2026/Talk_Materials/`.
+  6. **Slides OVERDUE to `scientific.meetings@royalsociety.org`** (.pptx) —
      send as soon as the draft deck passes contact-sheet QA.
