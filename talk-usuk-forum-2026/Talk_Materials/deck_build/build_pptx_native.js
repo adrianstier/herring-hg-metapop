@@ -52,7 +52,9 @@ function photo(s,file){ s.addImage({path:file,x:0,y:0,w:W,h:H,sizing:{type:'cove
 }
 /* S2 — The shore comes alive */ {
   const s=base(true);
-  s.addMedia({ type:'video', path:path.join(PH,'s02_shore.mp4'), x:0, y:0, w:W, h:H });
+  s.addMedia({ type:'video', path:path.join(PH,'s02_shore.mp4'),
+    cover:'data:image/jpeg;base64,'+fs.readFileSync(path.join(PH,'s02_shore.jpg')).toString('base64'),
+    x:0, y:0, w:W, h:H });
   s.addText('~10,000 years ago',{x:0.6,y:6.6,w:6,h:0.5,fontFace:MONO,fontSize:18,color:C.amber});
   s.addNotes('Cold open — do not rush. Quiet shores, then each spring the water turns — silver bait balls offshore. What a forage fish is. It pulls the ecosystem shoreward. Transition: "and they pulled in people."');
 }
