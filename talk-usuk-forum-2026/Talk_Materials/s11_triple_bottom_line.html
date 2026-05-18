@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Slide 11 — A system in a new state</title>
+<!--
+  Talk artifact, US-UK Royal Society forum (Session 5, 20 May 2026).
+  SLIDE 11 = the triple bottom line, hit on three clocks. Text-led, three
+  columns. Visual language = build1_spine.html / herring_decoupling_figure.html.
+
+  DATA HONESTY: do NOT assert "$40M -> $2.78M" (unsourced). The sourced wording
+  is the 2024 HG Rebuilding Plan Figs 31/32 (DFO fish slips): BC roe value
+  peaked in the 1980s, high to the mid-1990s, declined 1995-2005 & post-2008
+  (S8_landed_value_provenance.md). The cultural axis has NO quantitative k'aaw
+  tonnage threshold (qa_backup_slides B18; herring-non-recovery-hypotheses
+  §11.2) -- frame it as spatial contraction + lost intergenerational knowledge
+  against the ~10,000-yr baseline, not a number. "~10% of historic" is current
+  m1_stier_11 / DFO SR 2025/005 state context.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff; --ink:#111111; --ink-soft:#4a4a4a; --rule:#d8d8d8;
+    --accent-rust:#8b3a23; --accent-marine:#1c3a52; --accent-kelp:#4a5d3a;
+    --accent-amber:#a07028; --accent-plum:#5d3d52;
+    --eco:var(--accent-kelp); --people:var(--accent-plum); --econ:var(--accent-rust);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0e0e0e; --ink:#f0eee9; --ink-soft:#a8a59f; --rule:#2e2c28;
+      --accent-rust:#d9714f; --accent-marine:#6e9bc4; --accent-kelp:#8aa074;
+      --accent-amber:#cfa055; --accent-plum:#b685a8;}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--ink);
+    font-family:"IBM Plex Sans",-apple-system,sans-serif;
+    display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .stage{width:min(1160px,95vw)}
+  .masthead{font-family:"IBM Plex Mono",monospace;font-size:.72rem;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--accent-rust);
+    margin-bottom:.45rem}
+  h1{font-family:"Crimson Pro",Georgia,serif;font-weight:600;
+    font-size:clamp(1.6rem,3.4vw,2.7rem);line-height:1.1;margin-bottom:.25rem}
+  h1 .accent{font-style:italic;color:var(--accent-rust)}
+  .thesis{font-family:"Crimson Pro",Georgia,serif;font-size:clamp(1rem,1.6vw,1.25rem);
+    color:var(--ink-soft);max-width:74ch;margin:.4rem 0 1.2rem;line-height:1.4}
+  .cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.4rem}
+  .col{border-top:3px solid var(--c);padding-top:.8rem}
+  .ctag{font-family:"IBM Plex Mono",monospace;font-size:.72rem;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--c);margin-bottom:.3rem}
+  .cname{font-family:"Crimson Pro",Georgia,serif;font-size:1.4rem;
+    font-weight:600;margin-bottom:.55rem}
+  .cbody{font-size:clamp(.92rem,1.4vw,1.04rem);color:var(--ink-soft);
+    line-height:1.5}
+  .clock{font-family:"IBM Plex Mono",monospace;font-size:.74rem;
+    color:var(--c);margin-top:.7rem;letter-spacing:.03em}
+  .foot{font-family:"Crimson Pro",Georgia,serif;font-size:clamp(1.05rem,1.7vw,1.38rem);
+    margin-top:1.3rem;padding-left:.85rem;border-left:3px solid var(--accent-amber);
+    line-height:1.4}
+  .src-foot{font-family:"IBM Plex Mono",monospace;font-size:.64rem;
+    color:var(--ink-soft);line-height:1.5;max-width:92ch;margin-top:.9rem;
+    border-left:3px solid var(--accent-rust);padding-left:.7rem}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="masthead">Coupled tipping points | Pacific herring | Haida Gwaii</div>
+  <h1>A system in a new state — <span class="accent">the triple bottom line, hit</span></h1>
+  <p class="thesis">After two decades of closure the system has not returned — it has settled into an alternative stable state at about a tenth of its former abundance, and it struck all three bottom lines on three different clocks.</p>
+
+  <div class="cols">
+    <div class="col" style="--c:var(--eco)">
+      <div class="ctag">Ecosystem</div>
+      <div class="cname">the food web</div>
+      <div class="cbody">Predators that depend on herring, and the halibut and salmon downstream of it. Spatial structure — the portfolio — eroded.</div>
+      <div class="clock">tipped ~1993 · the shift in the middle</div>
+    </div>
+    <div class="col" style="--c:var(--people)">
+      <div class="ctag">People</div>
+      <div class="cname">Haida k'aaw &amp; the sector</div>
+      <div class="cbody">Roe-on-kelp can no longer be reliably gathered at sites that once thrived — the very places where grandparents passed oral history to grandchildren. The commercial sector lost its fishery.</div>
+      <div class="clock">tipped ~1990 · the slow erosion</div>
+    </div>
+    <div class="col" style="--c:var(--econ)">
+      <div class="ctag">Economy</div>
+      <div class="cname">landed value</div>
+      <div class="cbody">HG roe landed value peaked in the 1980s, stayed high to the mid-1990s, then declined (2024 Rebuilding Plan, Figs 31/32; DFO fish slips).</div>
+      <div class="clock">tipped ~2005 · the fast crash</div>
+    </div>
+  </div>
+
+  <div class="foot">The economic crash was fast. The cultural erosion was slow. The ecological shift sat between them — ecological and service tipping points decoupled.</div>
+
+  <div class="src-foot">"~10% of historic" / alternative stable state = current m1_stier_11 state context + DFO SR 2025/005 (HG below LRP, 0-t). Economy: 2024 HG Rebuilding Plan Figs 31/32, DFO fish slips — peaked 1980s, high to mid-1990s, then declined (S8_landed_value_provenance.md). <b>No "$40M→$2.78M" claim — unsourced.</b> The cultural axis has no quantitative k'aaw tonnage threshold; it is spatial contraction + lost intergenerational knowledge against the ~10,000-yr archaeological baseline (McKechnie et al. 2014), not a number.</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Slide 5 — Two collapses, two outcomes</title>
+<!--
+  Talk artifact, US-UK Royal Society forum (Session 5, 20 May 2026).
+  SLIDE 5 = the narrative engine: one collapse recovered, one did not.
+  Static, slide-ready. Visual language = build1_spine.html /
+  herring_decoupling_figure.html.
+
+  DATA HONESTY: the catch/biomass curve is SCHEMATIC (qualitative shape from
+  the talk's vetted timeline + DFO sources), not a digitized series.
+  Numbers shown match the S5 speaker notes / herring_haida_gwaii_timeline.html:
+   - reduction fishery reached HG in the 1930s; catches peaked ~77,500 t in
+     1956; 1960s collapse; rebounded within ~5 yr of closure (the control).
+   - roe fishery from 1972; by 1993 the fleet found ~1,000 t; closure 1994;
+     ~25 yr on, still ~10% of historic abundance (current m1_stier_11 / DFO
+     SR 2025/005 context — 0-t recommendation, below LRP).
+  Two harvest modes: commercial vessels kill adults for roe; Haida k'aaw
+  takes the eggs after spawning and leaves the fish alive (planted for S13).
+  Any exact figure on a slide must be read off the cited source.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff; --ink:#111111; --ink-soft:#4a4a4a; --rule:#d8d8d8;
+    --accent-rust:#8b3a23; --accent-marine:#1c3a52; --accent-kelp:#4a5d3a;
+    --accent-amber:#a07028; --accent-plum:#5d3d52; --accent-slate:#4d4d52;
+    --catch:var(--accent-rust); --ok:var(--accent-kelp); --bad:var(--accent-plum);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0e0e0e; --ink:#f0eee9; --ink-soft:#a8a59f; --rule:#2e2c28;
+      --accent-rust:#d9714f; --accent-marine:#6e9bc4; --accent-kelp:#8aa074;
+      --accent-amber:#cfa055; --accent-plum:#b685a8; --accent-slate:#9c9ca3;}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--ink);
+    font-family:"IBM Plex Sans",-apple-system,sans-serif;
+    display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .stage{width:min(1180px,95vw)}
+  .masthead{font-family:"IBM Plex Mono",monospace;font-size:.72rem;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--accent-rust);
+    margin-bottom:.4rem}
+  h1{font-family:"Crimson Pro",Georgia,serif;font-weight:600;
+    font-size:clamp(1.5rem,3.2vw,2.5rem);line-height:1.12;margin-bottom:.2rem}
+  h1 .accent{font-style:italic;color:var(--accent-rust)}
+  .thesis{font-family:"Crimson Pro",Georgia,serif;font-size:clamp(1rem,1.6vw,1.25rem);
+    color:var(--ink-soft);max-width:70ch;margin:.45rem 0 .7rem;line-height:1.4}
+  svg{display:block;width:100%;height:auto}
+  .axis{stroke:var(--rule);stroke-width:1.5}
+  .tick{font-family:"IBM Plex Mono",monospace;font-size:11px;fill:var(--ink-soft)}
+  .lab{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.03em}
+  .track{fill:none;stroke:var(--catch);stroke-width:3.4;
+    stroke-linecap:round;stroke-linejoin:round}
+  .ann{font-family:"Crimson Pro",Georgia,serif;font-size:15px}
+  .annok{fill:var(--ok)} .annbad{fill:var(--bad)}
+  .brk line{stroke-width:1.4;stroke-dasharray:3 3}
+  .src-foot{font-family:"IBM Plex Mono",monospace;font-size:.64rem;
+    color:var(--ink-soft);line-height:1.5;max-width:90ch;margin-top:.8rem;
+    border-left:3px solid var(--accent-rust);padding-left:.7rem}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="masthead">Coupled tipping points | Pacific herring | Haida Gwaii</div>
+  <h1>Two collapses, <span class="accent">two outcomes</span></h1>
+  <p class="thesis">The same fish, the same coast — fished two different ways. One collapse rebounded within about five years. The next has not come back in twenty-five.</p>
+
+  <svg viewBox="0 0 1100 430" aria-label="Schematic Haida Gwaii herring catch/biomass, 1900 to present: a 1950s peak, a 1960s collapse that recovered within ~5 years, then a 1990s collapse that has not recovered">
+    <!-- axes -->
+    <line class="axis" x1="70" y1="320" x2="1060" y2="320"/>
+    <line class="axis" x1="70" y1="40"  x2="70"  y2="320"/>
+    <text class="tick" x="20" y="60">catch /</text>
+    <text class="tick" x="20" y="74">biomass</text>
+    <text class="tick" x="70"  y="340">1900</text>
+    <text class="tick" x="300" y="340">1930</text>
+    <text class="tick" x="505" y="340">1956</text>
+    <text class="tick" x="800" y="340">1994</text>
+    <text class="tick" x="1030" y="340">now</text>
+
+    <!-- schematic catch/biomass curve -->
+    <path class="track" d="M70,300 C170,298 250,292 305,272
+      C400,235 470,120 513,82
+      C560,140 595,250 615,272
+      C645,235 680,168 705,176
+      C745,188 775,170 800,196
+      C825,240 845,300 870,306
+      C950,310 1000,308 1060,309"/>
+
+    <!-- 1956 peak marker -->
+    <g class="brk">
+      <line x1="513" y1="82" x2="513" y2="320" stroke="var(--catch)"/>
+      <circle cx="513" cy="82" r="5" fill="var(--catch)"/>
+      <text class="lab" fill="var(--catch)" x="513" y="70" text-anchor="middle">~77,500 t · 1956 peak</text>
+    </g>
+
+    <!-- 1960s collapse → recovered (text clear above the rebound shoulder) -->
+    <g>
+      <text class="ann annok" x="566" y="120">1960s collapse → recovered ~5 yr</text>
+      <text class="ann annok" x="566" y="138" font-style="italic">the control case</text>
+      <path d="M648,146 C672,156 690,166 702,174" fill="none" stroke="var(--ok)" stroke-width="1.4"/>
+      <polygon points="702,174 690,170 695,160" fill="var(--ok)"/>
+    </g>
+
+    <!-- 1994 roe closure marker -->
+    <g class="brk">
+      <line x1="800" y1="196" x2="800" y2="320" stroke="var(--bad)"/>
+      <circle cx="800" cy="196" r="5" fill="var(--bad)"/>
+      <text class="lab" fill="var(--bad)" x="796" y="188" text-anchor="end">roe fishery closed 1994</text>
+    </g>
+
+    <!-- 1990s collapse → no recovery (kept inside the right edge) -->
+    <g>
+      <line x1="838" y1="316" x2="1055" y2="318" stroke="var(--bad)" stroke-width="1.4" stroke-dasharray="4 3"/>
+      <text class="ann annbad" x="845" y="258">1990s collapse → no recovery</text>
+      <text class="ann annbad" x="845" y="276" font-style="italic">25 yr closed · ~10% of historic</text>
+    </g>
+  </svg>
+
+  <div class="src-foot">Curve schematic (qualitative shape from the talk's vetted timeline + DFO sources), not a digitized series. Reduction fishery reached HG in the 1930s; catches peaked ~77,500 t in 1956; 1960s collapse rebounded within ~5 yr of closure. Roe fishery from 1972; by 1993 the fleet found ~1,000 t; closure 1994; ~25 yr on, still ~10% of historic (current m1_stier_11 / DFO SR 2025/005 — below LRP, 0-t). Two harvest modes: commercial vessels kill adults for roe; Haida k'aaw takes eggs after spawning, fish left alive.</div>
+</div>
+</body>
+</html>
