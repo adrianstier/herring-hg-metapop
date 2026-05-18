@@ -179,6 +179,10 @@ function photo(s,file){ s.addImage({path:file,x:0,y:0,w:W,h:H,sizing:{type:'cove
     {x:0.7,y:6.0,w:12.1,h:1.0,fontFace:HEAD,fontSize:15,color:C.soft,valign:'middle'});
   s.addNotes('Deliver the three crisply. Do not add a fourth. The EWS thread is a proposal, not a finding (keep hypothesis strength). Transition: "let me close."');
 }
+/* DFO corroboration — Cleary SR 2025/005 spawning biomass (REAL extract) */ {
+  const s=base(true); s.addImage({path:path.join(DA,'dfo_spawning_biomass.png'),x:0,y:0,w:W,h:H});
+  s.addNotes("DFO's own assessment confirms it, independently. Aggregate single-stock SCA (Cleary SR 2025/005, distinct from m1_stier_11). HG spawning biomass sits at the Limit Reference Point (~6.45 kt = 0.3*SB0; SB0 ~21.5 kt). Even at zero catch (HG=0 t since 2002), P(SB2025<LRP)=0.38, P(SB2025<0.75*SB_Prod)=0.95 — the keystone number, and it's DFO's, not ours. Real Table 15/19 data, 2015-2024 + 2025 forecast (the full 1951-2024 series is a figure-only digitization, handed off).");
+}
 /* S14 — close */ {
   const s=base(true); photo(s,path.join(PH,'s14_close.png'));
   s.addShape(p.ShapeType.rect,{x:0,y:4.2,w:W,h:3.3,fill:{color:'0E0E0E',transparency:30}});
