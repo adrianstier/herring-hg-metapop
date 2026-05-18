@@ -181,10 +181,57 @@ try({
       title = "Two collapses, two outcomes",
       subtitle = NULL,
       x = NULL, y = "Estimated biomass (tonnes)",
-      caption = wcap("Real model output (m1_stier_11, focal-9 reporting; median, 80% CI). The mid-century reduction-fishery collapse rebounded within ~5 years; the post-1990s roe-fishery state has not recovered.")
+      caption = NULL
     ) +
     theme_lecture(base_size = 22) + deck_titles
   save_deck(p5, "s05_biomass_timeline")
+}, silent = FALSE)
+
+# ── DFO — Cleary SR 2025/005 spawning biomass vs LRP (REAL extracted data) ───
+try({
+  ex <- file.path(proj_dir, "Output", "diagnostics",
+                   "dfo_newer_public_pdf_extract")
+  t15 <- read_csv(file.path(ex,
+    "dfo_sr_2025_005_table_15_hg_spawning_biomass_depletion_2015_2024.csv"),
+    show_col_types = FALSE) %>%
+    transmute(year, med = spawning_biomass_kt_median,
+              lo = spawning_biomass_kt_p05, hi = spawning_biomass_kt_p95)
+  t19 <- read_csv(file.path(ex,
+    "dfo_sr_2025_005_table_19_hg_reference_points.csv"),
+    show_col_types = FALSE)
+  gv <- function(rp) t19$median[t19$reference_point == rp][1]
+  LRP <- gv("0.3SB 0"); SB0 <- gv("SB 0")
+  sb25 <- t19$median[t19$reference_point == "SB 2025"][1]
+  sb25lo <- t19$p05[t19$reference_point == "SB 2025"][1]
+  sb25hi <- t19$p95[t19$reference_point == "SB 2025"][1]
+  proj <- data.frame(year = 2025, med = sb25, lo = sb25lo, hi = sb25hi)
+
+  pdfo <- ggplot(t15, aes(year, med)) +
+    geom_hline(yintercept = SB0, linetype = "dotted",
+               colour = DECK$soft, linewidth = 0.4) +
+    annotate("text", x = 2015, y = SB0, label = paste0("unfished SB0 ≈ ", round(SB0, 1), " kt"),
+             hjust = 0, vjust = -0.5, colour = DECK$soft, size = 4) +
+    geom_hline(yintercept = LRP, linetype = "dashed",
+               colour = DECK$amber, linewidth = 0.7) +
+    annotate("text", x = 2015, y = LRP, label = paste0("Limit Reference Point = 0.3·SB0 ≈ ", round(LRP, 2), " kt"),
+             hjust = 0, vjust = 1.5, colour = DECK$amber, size = 4.2) +
+    geom_ribbon(aes(ymin = lo, ymax = hi), fill = DECK$marine, alpha = 0.20) +
+    geom_line(colour = DECK$marine, linewidth = 1.6) +
+    geom_point(colour = DECK$marine, size = 2.4) +
+    geom_point(data = proj, colour = DECK$rust, size = 3.4) +
+    geom_errorbar(data = proj, aes(ymin = lo, ymax = hi), width = 0.3,
+                  colour = DECK$rust, linewidth = 0.9) +
+    annotate("text", x = 2025, y = sb25hi,
+             label = "2025 forecast,\nno fishing", hjust = 1.1, vjust = 0,
+             colour = DECK$rust, size = 4, lineheight = 0.9) +
+    scale_x_continuous(breaks = seq(2015, 2025, 2)) +
+    labs(
+      title = "Spawning biomass — at the limit reference point",
+      subtitle = NULL, x = NULL, y = "Spawning biomass (kt)",
+      caption = wcap("DFO CSAS Science Response 2025/005 (Cleary et al.), Tables 15 & 19 — extracted, not estimated. Aggregate single-stock SCA for the HG Major SAR (distinct from the m1_stier_11 metapopulation model). Even at zero catch (HG = 0 t since 2002), P(SB2025 < LRP) = 0.38 and P(SB2025 < 0.75·SB_Prod) = 0.95.")
+    ) +
+    theme_lecture(base_size = 22) + deck_titles
+  save_deck(pdfo, "s_dfo_spawning_biomass")
 }, silent = FALSE)
 
 cat("Deck figure re-export complete ->", outdir, "\n")
