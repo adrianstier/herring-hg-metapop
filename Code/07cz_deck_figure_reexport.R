@@ -158,4 +158,36 @@ try({
   save_deck(p9, "s09_synchrony")
 }, silent = FALSE)
 
+# ── S5 — REAL archipelago total spawn index, 1951–2025 (two collapses) ───────
+try({
+  sp <- read_csv(
+    file.path(proj_dir, "Data", "processed",
+              "HG_Spawn_Survey_1951_2025_all_sections.csv"),
+    show_col_types = FALSE)
+  keep_sections <- c(1, 2, 3, 5, 6, 12, 21, 22, 23, 24, 25)
+  agg <- sp %>%
+    filter(section %in% keep_sections) %>%
+    group_by(year) %>%
+    summarise(total = sum(spawn_index_tonnes, na.rm = TRUE), .groups = "drop") %>%
+    arrange(year)
+  write_csv(agg, file.path(diag_dir, "deck_s05_total_spawn_index.csv"))
+  p5 <- ggplot(agg, aes(year, total)) +
+    geom_vline(xintercept = 1994, linetype = "dashed",
+               colour = DECK$soft, linewidth = 0.4) +
+    annotate("text", x = 1994, y = max(agg$total, na.rm = TRUE),
+             label = "roe fishery closed 1994", hjust = 1.04, vjust = 1,
+             colour = DECK$soft, size = 4.4) +
+    geom_line(colour = DECK$rust, linewidth = 1.4) +
+    geom_point(colour = DECK$rust, size = 2) +
+    scale_y_continuous(labels = scales::label_comma()) +
+    labs(
+      title = "Two collapses, two outcomes",
+      subtitle = wsub("Archipelago total spawn index (sum of 11 sections), Haida Gwaii — REAL survey data, 1951–2025"),
+      x = NULL, y = "Total spawn index (tonnes)",
+      caption = wcap("Real data: Data/processed/HG_Spawn_Survey_1951_2025_all_sections.csv (DFO HG spawn survey, Stier-aligned 11 sections). Not a model output; not schematic. The 1960s reduction-fishery collapse rebounded; the post-1990s roe-fishery state has not recovered.")
+    ) +
+    theme_lecture(base_size = 22) + deck_titles
+  save_deck(p5, "s05_spawn_timeline")
+}, silent = FALSE)
+
 cat("Deck figure re-export complete ->", outdir, "\n")
