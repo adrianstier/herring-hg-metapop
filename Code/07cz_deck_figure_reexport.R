@@ -164,21 +164,24 @@ try({
                  show_col_types = FALSE) %>%
     filter(report_set == "focal_9") %>% arrange(year)
   ytop <- max(bm$median, na.rm = TRUE) * 1.32
+  closures <- data.frame(year = c(1968, 1994),
+                         lab = c("reduction fishery\nclosed ~1968",
+                                 "roe fishery\nclosed 1994"))
   p5 <- ggplot(bm, aes(year, median)) +
-    geom_vline(xintercept = 1994, linetype = "dashed",
-               colour = DECK$soft, linewidth = 0.4) +
-    annotate("text", x = 1994, y = ytop,
-             label = "roe fishery closed 1994", hjust = 1.04, vjust = 1.2,
-             colour = DECK$soft, size = 4.4) +
+    geom_vline(data = closures, aes(xintercept = year), linetype = "dashed",
+               colour = DECK$soft, linewidth = 0.45) +
+    geom_text(data = closures, aes(x = year, y = ytop, label = lab),
+              hjust = 1.06, vjust = 1.05, colour = DECK$soft, size = 4.2,
+              lineheight = 0.9, inherit.aes = FALSE) +
     geom_ribbon(aes(ymin = lo80, ymax = hi80), fill = DECK$rust, alpha = 0.20) +
     geom_line(colour = DECK$rust, linewidth = 1.6) +
     scale_y_continuous(labels = scales::label_comma()) +
     coord_cartesian(ylim = c(0, ytop)) +
     labs(
       title = "Two collapses, two outcomes",
-      subtitle = wsub("m1_stier_11 estimated total HG herring biomass — focal-9 sections (median, 80% CI), 1951–2025"),
+      subtitle = NULL,
       x = NULL, y = "Estimated biomass (tonnes)",
-      caption = wcap("Real model output: Output/diagnostics/m1_stier_11_total_biomass_by_year.csv. Focal-9 reporting is the cleaner talk estimate (numbers_provenance.md — the all-11 recent upper tail is dominated by sparse fit-only sections). 80% CI; not schematic. Mid-century reduction-fishery collapse rebounded; the post-1990s state has not recovered.")
+      caption = wcap("Real model output (m1_stier_11, focal-9 reporting; median, 80% CI). The mid-century reduction-fishery collapse rebounded within ~5 years; the post-1990s roe-fishery state has not recovered.")
     ) +
     theme_lecture(base_size = 22) + deck_titles
   save_deck(p5, "s05_biomass_timeline")
