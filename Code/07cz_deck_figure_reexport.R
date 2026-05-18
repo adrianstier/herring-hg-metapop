@@ -75,9 +75,9 @@ try({
     scale_x_discrete(expand = expansion(add = c(0.45, 0.45))) +
     labs(
       title = "Population growth collapsed — cove by cove",
-      subtitle = wsub("Realized growth rate by spawning section, historical vs recent (each line = one cove; amber dashed = λ 1, no growth)"),
+      subtitle = NULL,
       x = NULL, y = "Realized growth rate  (λ)",
-      caption = wcap("Source: m1_stier_11 refit, Stier-aligned baseline (Output/figures/stier2020_updated/fig5). Structural, system-wide decline invisible at the management scale.")
+      caption = NULL
     ) +
     theme_lecture(base_size = 22) + deck_titles +
     theme(axis.text.x = element_text(angle = 12, hjust = 1))
@@ -95,9 +95,9 @@ try({
     geom_line(colour = DECK$marine, linewidth = 1.1) +
     labs(
       title = "Ocean productivity is a first-order driver",
-      subtitle = wsub("Posterior PDO effect on subpopulation growth (median, 50% & 95% CI) — climate necessary, not sufficient"),
+      subtitle = NULL,
       x = NULL, y = "PDO effect on growth",
-      caption = wcap("Source: m1_stier_11 (Output/figures/stier2020_updated/fig3). Climate is a driver, not the whole answer; no predator coefficient is promoted for Haida Gwaii (claim-control sheet).")
+      caption = NULL
     ) +
     theme_lecture(base_size = 22) + deck_titles
   save_deck(p6, "s06_climate_pdo")
@@ -150,9 +150,9 @@ try({
     geom_point(colour = DECK$plum, size = 2.2) +
     labs(
       title = "The portfolio eroded",
-      subtitle = wsub("Subpopulation synchrony, 10-yr rolling windows (Loreau & de Mazancourt index)"),
+      subtitle = NULL,
       x = NULL, y = "Synchrony  (φ)",
-      caption = wcap("Method = Code/04 (canonical). The >60% rise since the mid-1990s is a Stier et al. 2020 published result; current m1_stier_11 synchrony = 0.63 all-11 / 0.70 focal-9. The early-warning-signal reading is a PROPOSAL, not a tested result (claim-control sheet).")
+      caption = NULL
     ) +
     theme_lecture(base_size = 22) + deck_titles
   save_deck(p9, "s09_synchrony")
@@ -228,7 +228,7 @@ try({
     labs(
       title = "Spawning biomass — at the limit reference point",
       subtitle = NULL, x = NULL, y = "Spawning biomass (kt)",
-      caption = wcap("DFO CSAS Science Response 2025/005 (Cleary et al.), Tables 15 & 19 — extracted, not estimated. Aggregate single-stock SCA for the HG Major SAR (distinct from the m1_stier_11 metapopulation model). Even at zero catch (HG = 0 t since 2002), P(SB2025 < LRP) = 0.38 and P(SB2025 < 0.75·SB_Prod) = 0.95.")
+      caption = NULL
     ) +
     theme_lecture(base_size = 22) + deck_titles
   save_deck(pdfo, "s_dfo_spawning_biomass")
