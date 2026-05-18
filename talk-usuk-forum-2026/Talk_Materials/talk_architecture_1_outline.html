@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Talk Architecture 1/3 — Outline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,500;0,600;0,700;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fbfaf7;--card:#fff;--text:#1c1916;--muted:#6f6860;--faint:#9b938a;
+    --rust:#b3502d;--rust-soft:#c97a52;--line:#e6e1d8;--line2:#d4cdc0;--shade:#f3f0ea;
+    --teal:#2f6b6e;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#1a1815;--card:#221f1b;--text:#ece8e1;--muted:#a59d92;--faint:#7d756a;
+    --rust:#e08a5f;--rust-soft:#c97a52;--line:#332f29;--line2:#423d35;--shade:#26231f;
+    --teal:#6fb3b3;
+  }}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;
+    line-height:1.6;padding:48px 24px 96px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:780px;margin:0 auto}
+  .setmark{font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--rust);
+    font-weight:600;margin-bottom:16px}
+  .setmark span{color:var(--faint)}
+  h1{font-family:'Crimson Pro',serif;font-weight:600;font-size:39px;line-height:1.12;
+    letter-spacing:-.015em;margin-bottom:14px}
+  .thesis{font-family:'Crimson Pro',serif;font-size:20px;font-style:italic;color:var(--muted);
+    line-height:1.45;margin-bottom:20px}
+  .meta{font-size:13px;color:var(--muted);line-height:1.7;padding-top:15px;border-top:1px solid var(--line)}
+  .meta strong{color:var(--text);font-weight:600}
+  /* act strip */
+  .strip{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:24px 0 8px}
+  .strip .a{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:12px 13px}
+  .strip .a .an{font-family:'Crimson Pro',serif;font-size:13px;font-weight:700;color:var(--rust);
+    letter-spacing:.05em}
+  .strip .a .at{font-size:13.5px;font-weight:600;margin:3px 0 2px}
+  .strip .a .ad{font-size:11.5px;color:var(--muted);line-height:1.4}
+  .strip .a .ax{font-size:11px;color:var(--faint);margin-top:5px;font-variant-numeric:tabular-nums}
+  .runline{display:flex;align-items:baseline;gap:14px;margin:14px 0 4px;font-size:13px;color:var(--muted)}
+  .runline .big{font-family:'Crimson Pro',serif;font-size:30px;font-weight:600;color:var(--text);line-height:1}
+  /* act header */
+  .acthead{margin:34px 0 2px;padding-bottom:8px;display:flex;align-items:baseline;gap:12px;
+    border-bottom:2px solid var(--text)}
+  .acthead .n{font-family:'Crimson Pro',serif;font-size:15px;font-weight:700;color:var(--rust)}
+  .acthead .t{font-family:'Crimson Pro',serif;font-size:22px;font-weight:600;letter-spacing:-.01em}
+  .acthead .x{margin-left:auto;font-size:12px;color:var(--faint);font-variant-numeric:tabular-nums}
+  /* slide row */
+  .slide{background:var(--card);border:1px solid var(--line);border-radius:10px;
+    padding:16px 18px;margin-top:12px;display:flex;gap:16px}
+  .slide .num{font-family:'Crimson Pro',serif;font-size:32px;font-weight:700;color:var(--rust);
+    line-height:.9;min-width:40px}
+  .slide .body{flex:1}
+  .slide .head{display:flex;align-items:baseline;gap:10px;margin-bottom:5px}
+  .slide .ttl{font-family:'Crimson Pro',serif;font-size:19px;font-weight:600;line-height:1.2;flex:1}
+  .slide .time{font-size:11.5px;font-weight:600;background:var(--shade);border:1px solid var(--line);
+    border-radius:20px;padding:2px 9px;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--text)}
+  ul.b{list-style:none;margin:0;padding:0}
+  ul.b li{font-size:13.5px;line-height:1.5;padding-left:15px;position:relative;margin-bottom:4px}
+  ul.b li::before{content:"";position:absolute;left:0;top:8px;width:5px;height:5px;
+    border-radius:50%;background:var(--rust-soft)}
+  ul.b li.take{font-weight:600}
+  ul.b li.take::before{background:var(--rust);border-radius:1px;width:6px;height:6px;top:7px}
+  ul.b li.plant{color:var(--muted);font-style:italic}
+  ul.b li.plant::before{background:transparent;border:1px solid var(--faint);top:7px}
+  ul.b li.flag{background:var(--shade);border-left:2px solid var(--rust);
+    border-radius:0 4px 4px 0;padding:5px 9px 5px 11px;margin:3px 0 5px;font-size:12.5px}
+  ul.b li.flag::before{display:none}
+  .vis{margin-top:9px;font-size:11px;letter-spacing:.07em;text-transform:uppercase;
+    font-weight:600;color:var(--teal);display:flex;align-items:center;gap:6px}
+  .vis::before{content:"";width:14px;height:9px;border:1.5px solid var(--teal);border-radius:2px;flex:none}
+  .foot{margin-top:40px;background:var(--shade);border-radius:10px;padding:18px 20px;
+    font-size:13px;color:var(--muted);line-height:1.6}
+  .foot b{color:var(--text);font-weight:600}
+  .end{margin-top:30px;text-align:center;font-size:12px;color:var(--faint);line-height:1.7}
+  @media (max-width:600px){
+    body{padding:34px 14px 72px}h1{font-size:30px}.thesis{font-size:18px}
+    .strip{grid-template-columns:1fr}.slide .num{font-size:26px;min-width:32px}
+    .slide .ttl{font-size:17px}
+  }
+  @media print{body{padding:0;background:#fff}.slide,.strip .a,.foot{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="setmark">Talk Architecture <span>· 1 of 3 ·</span> The Outline</div>
+  <h1>Ten Thousand Years of Herring — the 14-slide spine</h1>
+  <p class="thesis">Ecological and ecosystem-service tipping points are separable; the gap between them is where management can act. One case, told as a story, built toward solutions for managing tipping points and resilience.</p>
+  <div class="meta">
+    <strong>Adrian Stier</strong> · UC Santa Barbara · US–UK Scientific Forum on Shifts and Tipping Points in Ocean Systems<br>
+    Session 5 — Tipping Points in Ecosystem Services · Royal Society, London · 20 May 2026, 9:30 BST
+  </div>
+
+  <div class="strip">
+    <div class="a"><div class="an">ACT I</div><div class="at">Cold open</div><div class="ad">Set the stage and the characters — place, fish, people, baseline.</div><div class="ax">slides 1–4 · ~3:10</div></div>
+    <div class="a"><div class="an">ACT II</div><div class="at">Story &amp; results</div><div class="ad">The departures — five results, each chained to a lesson.</div><div class="ax">slides 5–10 · ~7:05</div></div>
+    <div class="a"><div class="an">ACT III</div><div class="at">Synthesis</div><div class="ad">Turn the case into transferable insight for managing tipping points.</div><div class="ax">slides 11–14 · ~4:15</div></div>
+  </div>
+
+  <div class="runline">
+    <span><span class="big">14:58</span>&nbsp; total runtime</span>
+    <span>·&nbsp; 14 slides &nbsp;·&nbsp; 15-minute slot, ~2s buffer</span>
+  </div>
+
+  <div id="slides"></div>
+
+  <div class="foot">
+    <b>The spine is chronological, building to take-homes.</b> The cold open earns the room's attention with a place and a fish — your differentiator in a session of models. The middle is results-forward: five results (slides 6–10), each one explicitly chained to the lesson it carries. The synthesis collects those lessons into one set of solutions for managing tipping points and resilience — no separate "for this room" detour. Two of the figure slots don't exist yet (slide 7 to build; slide 5 catch timeline to source); the rest you have or can pull from the papers. See artifact 3 for the full asset spec.
+  </div>
+
+  <div class="end">
+    Talk Architecture 1 of 3 · companion to 2 (Speaker Notes) and 3 (Figures &amp; Layout)<br>
+    Confirmed spine — May 2026
+  </div>
+
+</div>
+<script>
+const S=[
+ {n:1,act:1,actName:"Cold open",actX:"slides 1–4 · ~3:35",t:40,
+  ttl:"Title",vis:"Photo — herring school (full-bleed)",
+  b:[["","Title, name, session; genuine Haida partnership acknowledgment"],
+     ["take","Open with the conceptual claim, as the hook: ecological tipping points and ecosystem-service tipping points are separable — the gap between them is where management acts"],
+     ["","Then hand to the story — \u201Cone system to test that idea\u201D"]]},
+ {n:2,act:1,t:58,ttl:"The shore comes alive",vis:"Photo — herring / spawn imagery",
+  b:[["","10,000 yrs ago: quiet shores, then spring — bait balls, water white with spawn"],
+     ["","Forage fish: small, oily, the energetic hinge; ocean life, coastal spawn"],
+     ["","The characters arrive — bears, eagles, sea lions, and the Haida"]]},
+ {n:3,act:1,t:55,ttl:"The people and the fish",vis:"Photo — Haida (full-bleed; credit needed)",
+  b:[["","Haida harvest for 10,000+ yrs — rakes, rowboats, following the spawn"],
+     ["","Adults and eggs; roe-on-kelp; a cultural keystone"]]},
+ {n:4,act:1,t:62,ttl:"The baseline, measured",vis:"Figure — McKechnie 2014 (pull from paper)",
+  b:[["","171 sites, 435,777 bones; herring 49%, 99% ubiquity, <±10% variance"],
+     ["","A quantified baseline — ten millennia of stability"],
+     ["take","Hold onto this — everything next is a departure"]]},
+ {n:5,act:2,actName:"Story & results",actX:"slides 5–10 · ~7:05",t:68,
+  ttl:"Two collapses, two outcomes",vis:"Figure — catch / biomass timeline (source)",
+  b:[["","Smallpox (one line); reduction fishery → 1960s collapse → ~5-yr rebound (control case)"],
+     ["","Roe fishery → 1990s collapse → 25 yrs closed, no recovery"],
+     ["plant","Plant the two harvest modes: commercial kill adults; Haida take eggs post-spawn"],
+     ["take","The puzzle: why didn't it come back?"]]},
+ {n:6,act:2,t:60,ttl:"The investigation",vis:"Figure — driver partition (your model output)",
+  b:[["","Decades of Haida + government monitoring; Bayesian state-space models"],
+     ["","Ocean productivity a first-order driver — can triple"],
+     ["take","Climate necessary, not sufficient — so we looked at space"]]},
+ {n:7,act:2,t:74,ttl:"The two scales",vis:"Figure — archipelago vs cove (TO BUILD)",
+  b:[["","Management scale (archipelago, one quota) vs biological scale (cove)"],
+     ["","Archipelago exploitation ~4%; local cove rates hit 65% — the average hid the extremes"],
+     ["","The cove: where herring spawn, the fleet seines, humpbacks feed"],
+     ["take","Match management scale to biology, extraction, and predation"]]},
+ {n:8,act:2,t:64,ttl:"Population growth collapsed, cove by cove",vis:"Figure — per-cove growth rate (Stier 2020)",
+  b:[["","Realized growth rate falls in nearly every spawning cove; aggregate looked survivable"],
+     ["take","The decline is structural and system-wide — invisible at the management scale"]]},
+ {n:9,act:2,t:80,ttl:"The portfolio eroded",vis:"Figure — synchrony (Stier 2020)",
+  b:[["","Subpopulations once boomed and busted independently — a portfolio, a rescue effect"],
+     ["","Synchrony up >60% since the mid-1990s — the measured result (Stier 2020)"],
+     ["take","The portfolio has eroded — protecting asynchrony is what's at stake"],
+     ["flag","⚡ NEEDS ANALYSIS — calling rising synchrony an early-warning signal is a proposal, not a result. The leading-indicator analysis isn't done; present it as a hypothesis only."]]},
+ {n:10,act:2,t:80,ttl:"The predators came back",vis:"Photo — humpback feeding + Figure — marine mammal recovery",
+  b:[["","Marine mammals recovered from whaling/sealing; predation demand up orders of magnitude — driving both the growth collapse and the rising synchrony"],
+     ["","Humpback predation now likely the largest single source of herring mortality — a tipping cascade"],
+     ["","Humpbacks forage at the cove scale — closes the scale loop"],
+     ["plant","Second hypothesis (TEK): heavy adult harvest erased the herring's spawning-site memory"],
+     ["take","A conservation win became a driver; species interactions can't be managed around"]]},
+ {n:11,act:3,actName:"Synthesis",actX:"slides 11–14 · ~4:15",t:75,
+  ttl:"A system in a new state — the triple bottom line, hit",vis:"Text-led (optional 3-panel schematic)",
+  b:[["","Growth near zero; ~10% of historic abundance; an alternative stable state"],
+     ["","Struck all three bottom lines on different clocks: ecosystem · people (Haida + commercial) · economy ($40M→$2.78M)"],
+     ["","Cultural loss is concrete — roe-on-kelp gone at sites where grandparents passed oral history to grandchildren"],
+     ["take","Ecological and service tipping points decoupled"]]},
+ {n:12,act:3,t:70,ttl:"The decoupling — and the management window",vis:"Figure — four-layer decoupling (BUILT)",
+  b:[["","Four layers, four clocks; thresholds cross years apart"],
+     ["take","The gap between them is where management can act"]]},
+ {n:13,act:3,t:82,ttl:"What this case teaches",vis:"Text-led — the three take-homes",
+  b:[["take","Match scale to biology — finer-scale escapement is costly but preserves the portfolio"],
+     ["take","Manage the ecosystem, not the stock — integrate species interactions"],
+     ["take","Allocate across the triple bottom line — ecosystem, sectors, economy; co-governance the vehicle (AMB, Gwaii Haanas reserve & World Heritage site, 2024 rebuilding plan)"],
+     ["flag","⚡ Open question, pending analysis: is the early-warning signal spatial? If rising synchrony proves a leading indicator, observation scale decides what you can see."]]},
+ {n:14,act:3,t:30,ttl:"Close",vis:"Photo — herring / Haida reprise",
+  b:[["","Recovery is a moving target — the system has changed"],
+     ["","The gap is the leverage point — manage it, at the right scale, for the whole system"],
+     ["","Unfinished: loop speed; whether this travels to systems without a 10,000-yr record"]]}
+];
+const fmt=s=>Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+const c=document.getElementById("slides");let cum=0,lastAct=0;
+const actT={1:"Cold open — set the stage and characters",2:"Story &amp; results — the departures",3:"Synthesis — managing for tipping points"};
+S.forEach(s=>{
+  if(s.act!==lastAct){
+    const h=document.createElement("div");h.className="acthead";
+    h.innerHTML=`<span class="n">ACT ${["","I","II","III"][s.act]}</span>`+
+      `<span class="t">${actT[s.act]}</span><span class="x">${s.actX}</span>`;
+    c.appendChild(h);lastAct=s.act;
+  }
+  cum+=s.t;
+  const d=document.createElement("div");d.className="slide";
+  d.innerHTML=`<div class="num">${s.n}</div><div class="body">`+
+    `<div class="head"><div class="ttl">${s.ttl}</div>`+
+    `<div class="time">${fmt(s.t)} · ${fmt(cum)}</div></div>`+
+    `<ul class="b">${s.b.map(x=>`<li class="${x[0]}">${x[1]}</li>`).join("")}</ul>`+
+    `<div class="vis">${s.vis}</div></div>`;
+  c.appendChild(d);
+});
+</script>
+</body>
+</html>

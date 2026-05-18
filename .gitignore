@@ -63,4 +63,5 @@ cloud/logs/
 # logistics, which live on disk + Google Drive.
 talk-usuk-forum-2026/**/*.pdf
 talk-usuk-forum-2026/**/*.pdf.imgzip.bak
+talk-usuk-forum-2026/**/*.zip
 talk-usuk-forum-2026/Trip_Dossier/

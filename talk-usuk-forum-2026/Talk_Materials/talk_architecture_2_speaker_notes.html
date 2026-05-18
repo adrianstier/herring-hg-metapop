@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Talk Architecture 2/3 — Speaker Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fbfaf7;--card:#fff;--text:#1f1b17;--muted:#6f6860;--faint:#9b938a;
+    --rust:#b3502d;--line:#e6e1d8;--line2:#d4cdc0;--shade:#f3f0ea;
+    --teal:#2f6b6e;--teal-bg:#eef4f3;--cue-bg:#f8ede7;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#1a1815;--card:#221f1b;--text:#ece8e1;--muted:#a59d92;--faint:#7d756a;
+    --rust:#e08a5f;--line:#332f29;--line2:#423d35;--shade:#26231f;
+    --teal:#6fb3b3;--teal-bg:#1f2a29;--cue-bg:#2c2019;
+  }}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;
+    line-height:1.6;padding:48px 24px 96px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto}
+  .setmark{font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--rust);
+    font-weight:600;margin-bottom:16px}
+  .setmark span{color:var(--faint)}
+  h1{font-family:'Crimson Pro',serif;font-weight:600;font-size:38px;line-height:1.12;
+    letter-spacing:-.015em;margin-bottom:14px}
+  .meta{font-size:13px;color:var(--muted);line-height:1.7;padding-top:15px;border-top:1px solid var(--line)}
+  .meta strong{color:var(--text);font-weight:600}
+  .legend{margin-top:18px;background:var(--shade);border-radius:9px;padding:14px 16px;
+    font-size:12.5px;color:var(--muted);line-height:1.7}
+  .legend b{color:var(--text);font-weight:600}
+  .runline{margin:16px 0 2px;font-size:13px;color:var(--muted)}
+  .runline .big{font-family:'Crimson Pro',serif;font-size:28px;font-weight:600;color:var(--text)}
+  /* slide card */
+  .slide{background:var(--card);border:1px solid var(--line);border-radius:11px;
+    margin-top:16px;overflow:hidden}
+  .slide .top{display:flex;align-items:baseline;gap:12px;padding:15px 20px 12px;
+    border-bottom:1px solid var(--line)}
+  .slide .num{font-family:'Crimson Pro',serif;font-size:30px;font-weight:700;color:var(--rust);
+    line-height:.85;min-width:38px}
+  .slide .ttl{font-family:'Crimson Pro',serif;font-size:20px;font-weight:600;flex:1;line-height:1.18}
+  .slide .time{font-size:11.5px;font-weight:600;background:var(--shade);border:1px solid var(--line);
+    border-radius:20px;padding:3px 10px;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .sec{padding:12px 20px;border-bottom:1px solid var(--line)}
+  .sec:last-child{border-bottom:none}
+  .tag{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;
+    display:block;margin-bottom:5px}
+  .sec.onscreen .tag{color:var(--teal)}
+  .sec.onscreen p{font-size:13px;color:var(--muted);line-height:1.55}
+  .sec.say .tag{color:var(--rust)}
+  .sec.say p{font-family:'Crimson Pro',serif;font-size:16.5px;line-height:1.6;color:var(--text)}
+  .sec.say p+p{margin-top:8px}
+  .sec.say em{font-style:italic}
+  .sec.cue{background:var(--cue-bg)}
+  .sec.cue .tag{color:var(--rust)}
+  .sec.cue p{font-size:13px;line-height:1.55;color:var(--text)}
+  .sec.trans{background:var(--shade)}
+  .sec.trans .tag{color:var(--faint)}
+  .sec.trans p{font-family:'Crimson Pro',serif;font-style:italic;font-size:15px;
+    line-height:1.5;color:var(--muted)}
+  .sec.trans p::before{content:"\2192  ";color:var(--rust);font-style:normal;font-weight:600}
+  .end{margin-top:36px;text-align:center;font-size:12px;color:var(--faint);line-height:1.7}
+  @media (max-width:600px){
+    body{padding:34px 14px 72px}h1{font-size:29px}
+    .slide .num{font-size:25px;min-width:30px}.slide .ttl{font-size:18px}
+    .sec.say p{font-size:15.5px}
+  }
+  @media print{body{padding:0;background:#fff}.slide{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="setmark">Talk Architecture <span>· 2 of 3 ·</span> Speaker Notes</div>
+  <h1>Speaker Notes — all 14 slides</h1>
+  <div class="meta">
+    <strong>Adrian Stier</strong> · UC Santa Barbara · US–UK Scientific Forum · Session 5 · Royal Society, London · 20 May 2026
+  </div>
+  <div class="legend">
+    <b>On screen</b> — what the slide shows (your figures and photos drop into these slots).&nbsp;
+    <b>Say</b> — the spoken content; deliver from it, don't read it verbatim.&nbsp;
+    <b>Cue</b> — a delivery or pacing note.&nbsp;
+    <b>Transition</b> — the bridge line into the next slide.
+  </div>
+  <div class="runline"><span class="big">14:33</span> total · 15-minute slot · times are targets, not scripts</div>
+
+  <div id="slides"></div>
+
+  <div class="end">
+    Talk Architecture 2 of 3 · companion to 1 (Outline) and 3 (Figures &amp; Layout)
+  </div>
+
+</div>
+<script>
+const S=[
+{n:1,ttl:"Title",t:40,cum:40,
+ onscreen:"Full-bleed herring school photo. Title, your name, affiliation, session. One subtitle line carrying the conceptual claim \u2014 e.g. \u201CEcological tipping points and the tipping points in the services an ecosystem provides are not the same event.\u201D",
+ say:["Thank Ida. Then a genuine word of acknowledgment, unhurried: this work is a partnership with the Haida Nation, with named collaborators \u2014 credit them here.",
+   "Then state the idea, before any story \u2014 this is the hook. \u201CHere is what I want to convince you of. When an ocean ecosystem crosses a tipping point, the services it provides to people do not necessarily cross with it. Ecological tipping points and ecosystem-service tipping points can separate \u2014 one can lead, lag, or decouple from the other. And the gap between them is where management can still act.\u201D",
+   "Then hand to the case: \u201CI want to test that idea against one system \u2014 and to do that I need to start ten thousand years ago.\u201D Advance."],
+ cue:"The one engagement hook before the story \u2014 deliver the claim with conviction, as a single idea, then stop. Do not let it expand into a roadmap or an agenda slide. Keep the Haida acknowledgment genuine and unhurried; it matters in this room. About forty seconds.",
+ trans:"\u2026ten thousand years ago."},
+{n:2,ttl:"The shore comes alive",t:58,cum:73,
+ onscreen:"Herring school / spawn imagery, near full-bleed. Minimal or no text.",
+ say:["\u201CTen thousand years ago, the shores of Haida Gwaii were mostly quiet \u2014 and then, each spring, they were not. The water along the coast would turn, great silver bait balls spinning just offshore, as Pacific herring arrived from the open ocean to spawn.\u201D",
+   "Then say what a forage fish is: small, oily, energy-dense; spends most of its life offshore; comes to the coast only to lay eggs \u2014 on kelp, on eelgrass, on almost any surface. \u201CWhen they arrived, they pulled the whole ecosystem toward the shore \u2014 bears, bald eagles, sea lions, seals.\u201D"],
+ cue:"This is the cold open \u2014 do not rush it. These are scientists, but the vivid scene is exactly what makes you memorable in a session of models. Warm, unhurried delivery.",
+ trans:"And they pulled in people."},
+{n:3,ttl:"The people and the fish",t:55,cum:128,
+ onscreen:"Full-bleed Haida photo. Photographer and Nation credited on the slide.",
+ say:["\u201CThe Haida Nation has harvested herring on this coast for as long as we can measure \u2014 early on from rowboats, with long wooden rakes tipped with bone, following the spawn around the archipelago.\u201D",
+   "They took both the adult fish and the eggs \u2014 roe-on-kelp, a practice still alive today. Herring here is not just food; it is a cultural keystone."],
+ cue:"This slide is your differentiator \u2014 you treat a 10,000-year cultural practice as a real part of the system. If the photo's permission is at all uncertain, swap to a spawn or roe-on-kelp image; never show identifiable people without clear consent and on-slide credit.",
+ trans:"We can put numbers on how long this lasted \u2014 and how stable it was."},
+{n:4,ttl:"The baseline, measured",t:62,cum:190,
+ onscreen:"McKechnie 2014 figure \u2014 the site map or the NISP proportions. Key numbers as callouts: 171 sites, 49%, 99%, <\u00B110%.",
+ say:["\u201CAcross 171 archaeological sites on this coast, and more than 435,000 identified fish bones, herring is the single most common fish \u2014 close to half of everything identified, present at 99% of sites.\u201D",
+   "And the abundance barely moves: less than ten percent variation across almost all of the stratified sequences, over roughly 10,700 years. \u201CFor a room that argues about what natural variability even is \u2014 that is a ten-thousand-year measurement of it.\u201D"],
+ cue:"Your credibility anchor and your advantage \u2014 no other speaker has a forage-fish baseline this deep. State the numbers cleanly, don't oversell. Land the \u201Cten-thousand-year measurement of natural variability\u201D line.",
+ trans:"Hold onto that. Everything from here is a departure from it."},
+{n:5,ttl:"Two collapses, two outcomes",t:68,cum:258,
+ onscreen:"A herring catch / biomass timeline, ~1900\u2013present, marking the 1960s collapse-and-recovery and the 1990s collapse-and-non-recovery.",
+ say:["\u201CThe first departure wasn't even a fishery \u2014 it was smallpox, which collapsed the Haida population through the 1800s.\u201D Then industrial fishing: a reduction fishery \u2014 herring rendered to oil and fertilizer \u2014 reached Haida Gwaii in the 1930s; catches peaked near 77,500 tons in 1956; by the 1960s the stock collapsed. \u201CBut here is the part that matters: within about five years of closure, it rebounded. The forgiving recovery forage fish are known for \u2014 the control case.\u201D",
+   "Then the market changed: a roe fishery, eggs exported to Japan, pressure back from 1972. Note the two harvest modes \u2014 commercial vessels kill the adult fish to strip the roe; Haida harvesters take the eggs after spawning and leave the fish alive. By 1993 the fleet could find only about a thousand tons; closure followed in 1994. \u201CAnd this time it did not come back. Twenty-five years on, still at about a tenth of what it was.\u201D"],
+ cue:"The two-collapse contrast is the engine of the talk \u2014 one recovered, one didn't. Land it hard; it's what makes the second collapse a tipping point and not just overfishing. The two harvest modes are planted here for the slide-13 allocation take-home \u2014 say it, don't dwell.",
+ trans:"Why didn't it come back? That has been my group's work for several years."},
+{n:6,ttl:"The investigation",t:60,cum:318,
+ onscreen:"Driver-partition figure \u2014 your state-space model output (relative roles of climate, predation, habitat, density dependence).",
+ say:["\u201CWe can ask that question because Haida and government scientists have monitored this system for decades \u2014 how many herring spawn, how many are caught.\u201D We fit Bayesian hierarchical state-space models to that record, to separate the roles of climate, predation, habitat, and density dependence.",
+   "\u201CClimate matters a great deal \u2014 as the ocean cycles and brings cold, nutrient-rich water onshore, herring productivity can triple.\u201D But climate is necessary, not sufficient \u2014 it does not explain why the system won't recover."],
+ cue:"Your methods credential \u2014 the room is quantitative and respects the state-space machinery. Plant the flag and move; don't get technical. This slide rules climate in as a driver, out as the whole answer.",
+ trans:"So we looked somewhere else \u2014 at space."},
+{n:7,ttl:"The two scales",t:74,cum:392,
+ onscreen:"Two-panel figure \u2014 archipelago aggregate view (left) vs cove-level exploitation spread (right). The ~4% and 65% as large callouts. [TO BUILD]",
+ say:["\u201CThe quota for this herring is set for the whole archipelago. But the fish, the fishery, and the predators all operate at a far finer scale \u2014 individual coves.\u201D",
+   "Look at the two scales side by side. Archipelago-wide, the exploitation rate looked modest \u2014 around four percent. At the cove scale, local rates reached sixty-five percent. The average hid the extremes. \u201CThe cove is where herring spawn. It is where the fleet seines a whole school in an afternoon. And \u2014 we'll come back to this \u2014 it is where humpbacks feed. Biology, extraction, and predation all happen at the cove scale. Management sits above it.\u201D The lesson: match the scale of management to the scale at which biology, extraction, and predation actually operate."],
+ cue:"The conceptual hinge of the whole talk \u2014 the scale-mismatch idea the slide-13 take-home harvests. The 4%-versus-65% contrast is the single number to make them remember. Slow down on it.",
+ trans:"Look at that finer scale, and the story changes completely."},
+{n:8,ttl:"Population growth collapsed, cove by cove",t:64,cum:456,
+ onscreen:"Per-cove population growth-rate figure (Stier 2020).",
+ say:["\u201CAt the cove scale, realized population growth has fallen in nearly every spawning cove in the archipelago.\u201D The aggregate biomass trace looked survivable \u2014 but the cove-scale signal did not. The decline is not a blip in one place; it is structural, and it is system-wide."],
+ cue:"Short, sharp results slide. The takeaway is the point: a system-wide, structural decline that the management-scale metric simply could not see.",
+ trans:"And the coves did something else \u2014 together."},
+{n:9,ttl:"The portfolio eroded",t:80,cum:536,
+ onscreen:"Synchrony figure (Stier 2020). A \u201C>60%\u201D callout. If the early-warning-signal idea appears on the slide, label it explicitly as a proposal \u2014 not a finding.",
+ say:["\u201CHerring are not salmon \u2014 they stray between sites. But particular coves used to keep their own rhythm, booming and failing out of step with their neighbors.\u201D That asynchrony is a portfolio: a good year in one cove reseeds a bad year in another, and the diversity of independent parts steadies the whole.",
+   "\u201CSince the mid-1990s, synchrony across these subpopulations is up more than sixty percent. The portfolio has eroded.\u201D That rise is the measured result. Then offer the interpretation as a proposal, not a finding: \u201CThe aggregate biomass gave no warning at all. I want to put an idea in front of this room \u2014 that rising synchrony may be an early-warning signal, one that lives in spatial structure rather than temporal variance. If that holds, the scale you observe at decides whether you can see it. We are testing that now.\u201D"],
+ cue:"\u26A1 NEEDS ANALYSIS \u2014 the >60% synchrony rise is a measured result (Stier 2020); the early-warning-signal interpretation is not yet tested and the leading-indicator analysis is not done. Deliver it as a hypothesis you are putting to the room, not as a finding \u2014 do not call it a result or your contribution until the analysis exists.",
+ trans:"So: growth collapsed cove by cove, and the portfolio eroded. Why \u2014 two hypotheses, and the first can explain both."},
+{n:10,ttl:"The predators came back",t:80,cum:616,
+ onscreen:"Full-bleed humpback-feeding photo; marine mammal recovery figure (multi-species) as a paired panel or inset.",
+ say:["\u201CFirst hypothesis: there are far more mouths in the ocean now than in the 1960s. Marine mammals have recovered from whaling and sealing \u2014 humpbacks, and others.\u201D Predation demand is up orders of magnitude; humpback predation alone is now likely the single largest source of herring mortality. And this one mechanism accounts for both results you just saw: it drives the decline in growth, and \u2014 because highly mobile predators skim from cove to cove \u2014 it synchronises subpopulations that used to rise and fall independently.",
+   "\u201CI want to be honest about what that means. The whale recovery is a conservation triumph. It is also, for herring, a tipping cascade \u2014 one system's recovery propagating into another system's collapse.\u201D And humpbacks forage at the cove scale \u2014 so spawning, fishing, and predation all happen at the same scale. The second hypothesis comes from Traditional Knowledge: that heavy harvest of the adults erased the herring's own learned memory of where to spawn."],
+ cue:"Name the tipping cascade explicitly \u2014 it ties you to Lenton's keynote. Hold the honesty about the whales; the room respects that a conservation win can also be a driver. Give the TEK hypothesis real weight \u2014 don't rush past it.",
+ trans:"Either way \u2014 the system is now somewhere new."},
+{n:11,ttl:"A system in a new state \u2014 the triple bottom line, hit",t:75,cum:691,
+ onscreen:"Text-led. Optional simple three-panel schematic \u2014 ecosystem / people / economy. The $40M\u2192$2.78M as a callout.",
+ say:["\u201CPopulation growth sits near zero. After two decades of closure the system has not returned \u2014 it appears to have settled into an alternative stable state, at about a tenth of its former abundance.\u201D",
+   "And the collapse struck all three bottom lines, on three different clocks. The ecosystem \u2014 predators, and the halibut and salmon that depend on herring. The people \u2014 the Haida can no longer reliably gather roe-on-kelp at sites that once thrived; anthropologists have documented these as the very places where grandparents gathered with grandchildren, and a disproportionate share of oral history was passed down. The commercial sector lost its fishery. The economy \u2014 commercial value fell from roughly forty million dollars in 1993 to under three million. \u201CThe economic crash was fast. The cultural erosion was slow. The ecological shift sat between them.\u201D"],
+ cue:"Name Scheffer \u2014 \u201Calternative stable state\u201D \u2014 the room will nod. The three-clocks framing sets up the decoupling figure; make sure \u201Cfast / slow / between them\u201D lands clearly.",
+ trans:"Those tipping points did not happen together \u2014 and that is the heart of what I want to leave you with."},
+{n:12,ttl:"The decoupling \u2014 and the management window",t:70,cum:761,
+ onscreen:"The four-layer decoupling figure (already built \u2014 toggle theme to match the deck).",
+ say:["Walk the figure. \u201CFour layers of this system, four clocks. The service tips around 1990, the ecological state in 1993, the economic value in 2005 \u2014 and governance responds later still.\u201D Three layers fall; one rises. They do not line up.",
+   "\u201CThe horizontal gap between them is the management window \u2014 the years in which intervention can still change the outcome.\u201D"],
+ cue:"Let the figure carry it \u2014 point, don't crowd. This is the payoff of the whole story; the audience has felt it, now they see it. One clear pass across the figure.",
+ trans:"So what does this case teach about acting inside that window?"},
+{n:13,ttl:"What this case teaches",t:82,cum:843,
+ onscreen:"Text-led \u2014 the three take-homes, typographically strong. Optional faint reprise of the decoupling figure behind.",
+ say:["\u201CThree things. First \u2014 match the scale of management to the scale of biology. Manage at the cove or section scale, where the fish, the fishery, and the predators actually operate. Finer-scale escapement \u2014 closer to how we manage salmon, river by river \u2014 is costly: more monitoring, more decision points. But it preserves the portfolio, and the portfolio is the resilience.\u201D",
+   "\u201CSecond \u2014 manage the ecosystem, not the stock. Integrate species interactions. The ecosystem is the largest consumer of herring; a quota set as if the predators aren't there is a fiction.\u201D",
+   "\u201CThird \u2014 allocate explicitly across the triple bottom line: the ecosystem, the human sectors \u2014 commercial and Haida \u2014 and the economy. Allocation is a multi-way decision, and co-governance \u2014 the Archipelago Management Board, the Gwaii Haanas reserve and World Heritage Site, the minister-signed rebuilding plan of 2024 \u2014 is the institution that can make it. And Gwaii Haanas is a protected reserve and a productive fishing ground at once: conservation and use are not in opposition here.\u201D",
+   "And one open thread, offered as a proposal and not a result: that the early-warning signal here was spatial \u2014 and if that holds, the scale we choose to observe at decides whether anyone can see it. That is what we are testing next."],
+ cue:"The destination \u2014 the whole talk has built here. Deliver the three crisply \u2014 headline first, then the qualifier. They should be concrete enough to land in a National Academies recommendation. Do not add a fourth. The closing early-warning-signal thread is a proposal, not a finding \u2014 keep it hypothesis-strength (see the slide 9 flag).",
+ trans:"Let me close."},
+{n:14,ttl:"Close",t:30,cum:873,
+ onscreen:"Full-bleed herring / Haida reprise photo. Closing line; thank-you; acknowledgments.",
+ say:["\u201CRecovery is a moving target \u2014 the system has changed, and herring may not return the way they left. The gap between an ecological tipping point and a service tipping point is the leverage point \u2014 and the lesson is to manage that gap, at the right scale, for the whole system.\u201D",
+   "\u201CWhat we still don't know: how fast we can close the loop from indicator to action, and whether this travels to systems without a ten-thousand-year record. The herring is the example. The lesson is about thresholds. Thank you.\u201D"],
+ cue:"Slow down. Land \u201Cthe herring is the example; the lesson is about thresholds\u201D \u2014 and stop. Don't tail off into logistics or repeated acknowledgments.",
+ trans:null}
+];
+const fmt=s=>Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+const c=document.getElementById("slides");
+let _cum=0;
+S.forEach(s=>{
+  _cum+=s.t;
+  const d=document.createElement("div");d.className="slide";
+  let h=`<div class="top"><div class="num">${s.n}</div>`+
+    `<div class="ttl">${s.ttl}</div>`+
+    `<div class="time">${fmt(s.t)} \u00B7 ${fmt(_cum)}</div></div>`;
+  h+=`<div class="sec onscreen"><span class="tag">On screen</span><p>${s.onscreen}</p></div>`;
+  h+=`<div class="sec say"><span class="tag">Say</span>${s.say.map(p=>`<p>${p}</p>`).join("")}</div>`;
+  h+=`<div class="sec cue"><span class="tag">Cue</span><p>${s.cue}</p></div>`;
+  if(s.trans)h+=`<div class="sec trans"><span class="tag">Transition</span><p>${s.trans}</p></div>`;
+  d.innerHTML=h;c.appendChild(d);
+});
+</script>
+</body>
+</html>
