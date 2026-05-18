@@ -29,7 +29,7 @@ Status legend: ✅ ready to drop in · 🟡 adapt/confirm · 🔨 build · 📷 
 | 1 | Title | `DRV-ASSETS 01-biology/herring_bait_ball_underwater_spiral.jpg` | `01-biology/herring_school_underwater_natgeo.jpeg` | 📷 | Pull from Drive; dark scrim under title block. Title: "Coupled Tipping Points in Pacific Herring & Haida Gwaii" |
 | 2 | The shore comes alive | `DRV-ASSETS 01-biology/aerial_herring_spawn_turquoise_water.jpeg` | `01-biology/herring_bait_ball_dramatic_underwater.jpeg` | 📷 | Full-bleed, image carries it |
 | 3 | The people and the fish | `DRV-ASSETS 09-collaborator-photos/salomon_roe_on_branch_harvest_from_boat.JPG` (k'aaw practice, Salomon-credited) | `08-field-photos/stier_herring_roe_on_kelp_closeup.jpeg` (Adrian's own — no consent issue) | 📷 | Credit photographer + Nation on slide. Stier field photo is the rights-safe fallback |
-| 4 | The baseline, measured | `Literature/McKechnie_et_al_2014_PNAS_Archaeological_Herring.pdf` (crop site map / NISP) | `DRV-ASSETS 12-publications/McKechnie_…pdf` | 🟡 | Crop figure; **verify callouts** (171 sites, 435,777 bones, 49%, 99%, <±10%) against PDF text |
+| 4 | The baseline, measured | `Literature/McKechnie_et_al_2014_PNAS_Archaeological_Herring.pdf` (crop site map / NISP) | `DRV-ASSETS 12-publications/McKechnie_…pdf`; accessible-image candidate: [Mongabay 2014 "By the bones"](https://news.mongabay.com/2014/06/by-the-bones-herring-populations-were-superabundant-before-commercial-fisheries/) | 🟡 | Crop figure; **verify callouts** (171 sites, 435,777 bones, 49%, 99%, <±10%) against PDF text. ⚠️ Mongabay photo usable **only with explicit on-slide photo credit** — verify rights per the named photographer before embedding in the public deck |
 
 ## Act II — Story & results (slides 5–10)
 

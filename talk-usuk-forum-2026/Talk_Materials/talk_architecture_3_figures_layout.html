@@ -130,43 +130,44 @@
 
   <div class="manifest">
     <h2>Asset manifest</h2>
-    <div class="mh">Six visual slots are ready, four need sourcing, two need building, four are photos to source.</div>
+    <div class="mh">Two figures drop straight in; one crops from an in-repo PDF; one adapts a 142C teaching figure; two need building (incl. the S12 decoupling figure — its named file does not exist); two are text-led; photos pull from DRV-ASSETS — except the S10 humpback photo, missing everywhere. No new model analysis needed.</div>
 
     <div class="mgroup">
-      <div class="gh"><span class="badge b-have">You have it</span><span class="gx">drop straight in</span></div>
+      <div class="gh"><span class="badge b-have">Drop straight in</span><span class="gx">in this repo</span></div>
       <ul>
-        <li><b>Per-cove population growth rate</b> <span>— Stier et al. 2020 — slide 8</span></li>
-        <li><b>Subpopulation synchrony</b> <span>— Stier et al. 2020 — slide 9</span></li>
-        <li><b>Marine mammal recovery</b> <span>— your multi-species figure — slide 10</span></li>
+        <li><b>Per-cove growth rate</b> <span>— Output/figures/stier2020_updated/fig5_realized_growth_updated.pdf — slide 8</span></li>
+        <li><b>Subpopulation synchrony</b> <span>— Output/figures/synchrony.pdf (current 0.63/0.70) — slide 9</span></li>
       </ul>
     </div>
     <div class="mgroup">
-      <div class="gh"><span class="badge b-built">Built</span><span class="gx">already made</span></div>
+      <div class="gh"><span class="badge b-pull">Crop / adapt — source exists</span><span class="gx">no new analysis</span></div>
       <ul>
-        <li><b>Four-layer decoupling figure</b> <span>— herring_decoupling_figure.html — slide 12</span></li>
+        <li><b>Baseline figure</b> <span>— Literature/McKechnie_et_al_2014_PNAS…pdf (in repo) — slide 4</span></li>
+        <li><b>Two-scale 4%/65%</b> <span>— DRV-ASSETS 05-data-graphs/slide_herring_fishing_rate_subpop_vs_archipelago.png — slide 7</span></li>
+        <li><b>Climate / PDO driver</b> <span>— Output/figures/stier2020_updated/fig3_growth_pdo_updated.pdf — slide 6</span></li>
+        <li><b>Marine-mammal recovery</b> <span>— predator repo century_scale_predator_field.pdf — slide 10</span></li>
       </ul>
     </div>
     <div class="mgroup">
-      <div class="gh"><span class="badge b-pull">Pull from paper</span><span class="gx">source &amp; crop</span></div>
+      <div class="gh"><span class="badge b-build">Build — Claude</span><span class="gx">no model runs</span></div>
       <ul>
-        <li><b>Baseline figure</b> <span>— McKechnie et al. 2014, site map or NISP proportions — slide 4</span></li>
-        <li><b>Catch / biomass timeline</b> <span>— DFO or Stier 2020; confirm a clean version exists — slide 5</span></li>
-        <li><b>Driver partition</b> <span>— your state-space model output; confirm a presentable panel — slide 6</span></li>
+        <li><b>Four-layer decoupling figure</b> <span>— extend build1_spine.html (named file does NOT exist) — slide 12 — the payoff</span></li>
+        <li><b>Annotated two-collapse timeline</b> <span>— no clean version exists — slide 5</span></li>
       </ul>
     </div>
     <div class="mgroup">
-      <div class="gh"><span class="badge b-build">To build</span><span class="gx">Claude can build</span></div>
+      <div class="gh"><span class="badge b-text">Text-led</span><span class="gx">lay out</span></div>
       <ul>
-        <li><b>Two-scale figure</b> <span>— archipelago ~4% vs cove ~65% — slide 7 — the conceptual hinge</span></li>
-        <li><b>Triple-bottom-line schematic</b> <span>— optional 3-panel — slide 11</span></li>
+        <li><b>Triple bottom line</b> <span>— 3 columns; value crops figs/RebuildingPlan2024_Fig31/32 — slide 11</span></li>
+        <li><b>Three take-homes</b> <span>— content in S20_solution_payload.md — slide 13</span></li>
       </ul>
     </div>
     <div class="mgroup">
-      <div class="gh"><span class="badge b-photo">Photo — source</span><span class="gx">you provide</span></div>
+      <div class="gh"><span class="badge b-photo">Photo — from DRV-ASSETS</span><span class="gx">Adrian picks</span></div>
       <ul>
-        <li><b>Herring school</b> <span>— slide 1 (title) and slide 2 (the shore); a reprise for slide 14</span></li>
-        <li><b>Haida people</b> <span>— slide 3 — needs photographer + Nation credit on slide</span></li>
-        <li><b>Humpback feeding on herring</b> <span>— slide 10</span></li>
+        <li><b>Herring school</b> <span>— DRV-ASSETS 01-biology/ — slides 1, 2, 14 (reprise)</span></li>
+        <li><b>Haida k'aaw</b> <span>— 09-collaborator-photos/salomon… or 08-field-photos/stier… — slide 3</span></li>
+        <li><b>Humpback feeding</b> <span>— ⚠ NOT in any 142C/242 library; Adrian must source — slide 10</span></li>
       </ul>
     </div>
   </div>
@@ -209,74 +210,74 @@ const WF={
 };
 const S=[
 {n:1,ttl:"Title",wf:"fullbleed",cap:"Full-bleed photo, title block lower",
- status:"photo",statusLab:"Photo \u2014 source",
- asset:"Herring school photo",source:"You source",
+ status:"photo",statusLab:"Photo \u2014 from DRV-ASSETS",
+ asset:"Herring school photo",source:"DRV-ASSETS 01-biology/herring_bait_ball_underwater_spiral.jpg (alt: herring_school_underwater_natgeo.jpeg)",
  os:["Talk title","Adrian Stier \u00B7 UC Santa Barbara","US\u2013UK Scientific Forum \u00B7 Session 5","Subtitle \u2014 the conceptual claim as the hook: \u201CEcological tipping points and ecosystem-service tipping points are not the same event \u2014 the gap is where management acts\u201D"],
  note:"Dark scrim under the title block for legibility. The claim is delivered verbally and carried as one subtitle line \u2014 keep it to a single sentence; this is a title slide, not an agenda slide."},
 {n:2,ttl:"The shore comes alive",wf:"fullbleedplain",cap:"Image-dominant, full bleed",
- status:"photo",statusLab:"Photo \u2014 source",
- asset:"Herring / spawn imagery",source:"You source",
+ status:"photo",statusLab:"Photo \u2014 from DRV-ASSETS",
+ asset:"Herring / spawn imagery",source:"DRV-ASSETS 01-biology/aerial_herring_spawn_turquoise_water.jpeg (alt: herring_bait_ball_dramatic_underwater.jpeg)",
  os:["Optional kicker: \u201C~10,000 years ago\u201D","Otherwise let the image carry it"],
  note:"No title bar needed \u2014 this is a breathing-room visual beat."},
 {n:3,ttl:"The people and the fish",wf:"fullbleedplain",cap:"Full bleed, credit lower corner",
- status:"photo",statusLab:"Photo \u2014 source + credit",
- asset:"Haida photo",source:"You source \u2014 consent + credit required",
+ status:"photo",statusLab:"Photo \u2014 DRV-ASSETS + credit",
+ asset:"Haida k'aaw photo",source:"DRV-ASSETS 09-collaborator-photos/salomon_roe_on_branch_harvest_from_boat.JPG (Salomon-credited); rights-safe fallback 08-field-photos/stier_herring_roe_on_kelp_closeup.jpeg",
  os:["Photo credit: photographer + Nation","Optional kicker"],
  note:"If permission is uncertain, substitute a roe-on-kelp or spawn image \u2014 carries the point without the consent question."},
 {n:4,ttl:"The baseline, measured",wf:"figure",cap:"Title \u00B7 figure \u00B7 caption",
- status:"pull",statusLab:"Pull from paper",
- asset:"Baseline figure \u2014 site map or NISP proportions",source:"McKechnie et al. 2014",
+ status:"pull",statusLab:"Crop \u2014 PDF in repo",
+ asset:"Baseline figure \u2014 site map or NISP proportions",source:"Literature/McKechnie_et_al_2014_PNAS_Archaeological_Herring.pdf (in repo). Accessible-image candidate: Mongabay 2014 'By the bones' (news.mongabay.com/2014/06/by-the-bones-herring-populations-were-superabundant-before-commercial-fisheries/) \u2014 only with explicit photo credit",
  os:["Title: \u201CTen millennia of stability\u201D","Callouts: 171 sites \u00B7 435,777 bones \u00B7 herring 49% \u00B7 99% ubiquity \u00B7 <\u00B110% variance","Credit: McKechnie et al. 2014"],
- note:"Numbers as callouts around or beside the figure \u2014 they are the slide as much as the image is."},
+ note:"Numbers as callouts around or beside the figure \u2014 they are the slide as much as the image is. Verify 171 / 435,777 / 49% / 99% / <\u00b110% against the McKechnie PDF text; Mongabay photo only with on-slide credit."},
 {n:5,ttl:"Two collapses, two outcomes",wf:"figure",cap:"Title \u00B7 annotated timeline \u00B7 caption",
- status:"pull",statusLab:"Pull / confirm source",
- asset:"Herring catch / biomass timeline, ~1900\u2013present",source:"DFO or Stier 2020 \u2014 confirm",
+ status:"build",statusLab:"Build \u2014 no clean version exists",
+ asset:"Herring catch / biomass timeline, ~1900\u2013present",source:"Build from Output/figures/m1_total_biomass_trajectory.pdf + DRV-ASSETS 05-data-graphs/dfo_biomass_timeseries_with_threshold.png",
  os:["Title: \u201CTwo collapses, two outcomes\u201D","On-figure: \u201C1960s collapse \u2192 recovered ~5 yr\u201D","On-figure: \u201C1990s collapse \u2192 25 yr, no recovery\u201D","Note: commercial = adults for roe \u00B7 Haida = eggs after spawning"],
  note:"The two on-figure annotations are the slide's argument \u2014 make them prominent, not footnotes."},
 {n:6,ttl:"The investigation",wf:"figure",cap:"Title \u00B7 figure \u00B7 caption",
- status:"pull",statusLab:"Have? \u2014 confirm",
- asset:"Driver-partition figure \u2014 state-space model output",source:"Your model",
+ status:"pull",statusLab:"In repo \u2014 climate framing",
+ asset:"Climate / PDO driver figure",source:"Output/figures/stier2020_updated/fig3_growth_pdo_updated.pdf (alt: companions/companion_07_driver_dashboard.pdf)",
  os:["Title: \u201CWhat drives this fish\u201D","Caption: ocean productivity \u2014 a first-order driver"],
- note:"Fallback: if no clean panel exists, run this slide text-led and make the climate point verbally."},
+ note:"⚠ Claim guardrail: frame as 'climate necessary, not sufficient'; the chosen panel must NOT show a promoted predator coefficient (claim-control sheet)."},
 {n:7,ttl:"The two scales",wf:"twopanel",cap:"Title \u00B7 two panels \u00B7 takeaway",
- status:"build",statusLab:"To build",
- asset:"Two-panel figure \u2014 archipelago vs cove",source:"Claude can build \u2014 ~4% / 65% verified",
+ status:"pull",statusLab:"Adapt \u2014 142C teaching fig exists",
+ asset:"Two-panel figure \u2014 archipelago vs cove",source:"DRV-ASSETS 05-data-graphs/slide_herring_fishing_rate_subpop_vs_archipelago.png (alt: 10-research-figures/proportion_sites_fished_biomass_caught.png)",
  os:["Title: \u201CThe two scales\u201D","Left panel: \u201Cmanagement scale \u00B7 archipelago\u201D \u2014 ~4% callout","Right panel: \u201Cbiological scale \u00B7 cove\u201D \u2014 up-to-65% callout","Takeaway: \u201CMatch management scale to biology, extraction, and predation.\u201D"],
- note:"The conceptual hinge of the talk. Side-by-side panels with the 4% / 65% contrast as large callouts."},
+ note:"The conceptual hinge. NOT a from-scratch build — adapt the 142C teaching figure. Label '4% / 65%' as Stier et al. 2020 (not m1_stier_11)."},
 {n:8,ttl:"Population growth collapsed, cove by cove",wf:"figure",cap:"Title \u00B7 figure \u00B7 takeaway",
- status:"have",statusLab:"You have it",
- asset:"Per-cove population growth rate",source:"Stier et al. 2020",
+ status:"have",statusLab:"Drop in — in repo",
+ asset:"Per-cove population growth rate",source:"Output/figures/stier2020_updated/fig5_realized_growth_updated.pdf (current refit)",
  os:["Title: \u201CGrowth collapsed, cove by cove\u201D","Takeaway: \u201CStructural, system-wide \u2014 invisible at the management scale.\u201D"],
  note:"Figure dominant, one takeaway strip. A short, sharp results slide."},
 {n:9,ttl:"The portfolio eroded",wf:"figure",cap:"Title \u00B7 figure \u00B7 takeaway",
- status:"have",statusLab:"You have it",
- asset:"Subpopulation synchrony figure",source:"Stier et al. 2020",
+ status:"have",statusLab:"Drop in — in repo",
+ asset:"Subpopulation synchrony figure",source:"Output/figures/synchrony.pdf; current numbers Output/figures/portfolio_metrics_combined.pdf",
  os:["Title: \u201CThe portfolio eroded\u201D","Callout: \u201C>60% rise in synchrony since the mid-1990s\u201D \u2014 the measured result","If the early-warning-signal idea is shown, mark it as a proposal (e.g. \u201Cproposed: a spatial early-warning signal\u201D)","Takeaway: \u201CThe portfolio is what to protect.\u201D"],
- note:"The synchrony figure is solid; the early-warning-signal framing is the part still to be earned.",
+ note:"Current synchrony = 0.63 all-11 / 0.70 focal-9 (m1_stier_11). The '>60% rise' is Stier 2020 — label it. The EWS framing is still to be earned.",
  flag:"\u26A1 NEEDS ANALYSIS \u2014 the >60% synchrony rise is measured (Stier 2020), but framing it as an early-warning signal is a proposal, not a result. The leading-indicator analysis is not done. Keep any on-slide EWS label at hypothesis strength."},
 {n:10,ttl:"The predators came back",wf:"photoinset",cap:"Full-bleed photo + figure inset",
- status:"have",statusLab:"Photo source + figure have",
- asset:"Humpback feeding photo + marine mammal recovery figure",source:"Photo: you source \u00B7 Figure: yours (multi-species)",
+ status:"pull",statusLab:"Figure in predator repo \u00B7 photo MISSING",
+ asset:"Humpback feeding photo + marine mammal recovery figure",source:"Figure: /Users/adrianstier/pacific-herring-predators/Output/figures/century_scale_predator_field.pdf (alt: HG_humpback_trajectory_1910-2022.pdf). Photo: NOT in any 142C/242 library \u2014 Adrian must source",
  os:["Title: \u201CThe predators came back\u201D","Recovery-figure caption (multi-species)","Link line: one mechanism behind both earlier results \u2014 the growth collapse and the synchrony","Takeaway: \u201CA conservation win became a driver.\u201D"],
- note:"Humpback photo as the ground; the recovery figure on a clean inset card so the data stays legible over the image."},
+ note:"⚠ Predators = large ecological pressure, NOT a promoted HG causal coefficient (claim-control sheet). Recovery figure on a clean inset card; pull from the sibling predator repo by reference (firewall-safe)."},
 {n:11,ttl:"A system in a new state",wf:"threepanel",cap:"Title \u00B7 three columns \u00B7 footer",
- status:"text",statusLab:"Text-led \u2014 optional build",
- asset:"Triple-bottom-line schematic (optional)",source:"Claude can build, or lay out as text",
- os:["Title: \u201CA system in a new state\u201D","Column 1 \u2014 Ecosystem: predators; halibut &amp; salmon","Column 2 \u2014 People: Haida roe-on-kelp sites \u2014 where grandparents passed oral history to grandchildren; commercial sector lost its fishery","Column 3 \u2014 Economy: $40M \u2192 $2.78M","Footer: \u201Can alternative stable state \u2014 ~10% of historic abundance\u201D"],
- note:"Three columns make the triple bottom line literal. Keep each column to a label + one line."},
-{n:12,ttl:"The decoupling \u2014 and the management window",wf:"figurebuilt",cap:"Built figure, full",
- status:"built",statusLab:"Built",
- asset:"Four-layer decoupling figure",source:"herring_decoupling_figure.html",
- os:["The figure carries its own title and caption","Slide title optional \u2014 the figure can stand alone"],
- note:"Toggle the figure's light/dark theme to match the rest of the deck before exporting."},
+ status:"text",statusLab:"Text-led \u00b7 value crops exist",
+ asset:"Triple-bottom-line 3 columns",source:"figs/RebuildingPlan2024_Fig31_*.png + Fig32 (value layer)",
+ os:["Title: \u201CA system in a new state\u201D","Column 1 \u2014 Ecosystem: predators; halibut &amp; salmon","Column 2 \u2014 People: Haida roe-on-kelp sites \u2014 where grandparents passed oral history to grandchildren; commercial sector lost its fishery","Column 3 \u2014 Economy: BC roe value peaked 1980s, high to mid-90s, then declined (Rebuilding Plan Figs 31/32) \u2014 NOT $40M to $2.78M (unsourced)","Footer: \u201Can alternative stable state \u2014 ~10% of historic abundance\u201D"],
+ note:"Three columns, label + one line each. ⚠ Do NOT assert $40M to $2.78M — unsourced; use the sourced wording (S8_landed_value_provenance.md)."},
+{n:12,ttl:"The decoupling \u2014 and the management window",wf:"figurebuild",cap:"Figure to build, full",
+ status:"build",statusLab:"Build \u2014 named file does NOT exist",
+ asset:"Four-layer decoupling figure",source:"Extend build1_spine.html (currently 3-layer: eco/value/culture) to 4 layers/clocks",
+ os:["4 layers, 4 clocks: service ~1990 \u00b7 ecological 1993 \u00b7 economic 2005 \u00b7 governance later","The horizontal gap = the management window"],
+ note:"Biggest build gap \u2014 the payoff slide. herring_decoupling_figure.html does not exist; only the 3-layer build1_spine.html draft. Extend to 4-layer, render/QA, export."},
 {n:13,ttl:"What this case teaches",wf:"textled",cap:"Title \u00B7 three take-homes",
  status:"text",statusLab:"Typographic \u2014 lay out",
- asset:"The three take-homes",source:"Text \u2014 no figure",
+ asset:"The three take-homes",source:"Content in S20_solution_payload.md (measure structure / manage exposure / build data spine)",
  os:["Title: \u201CWhat this case teaches\u201D","1 \u2014 Match scale to biology \u2014 finer-scale management, though costly, preserves the portfolio","2 \u2014 Manage the ecosystem, not the stock \u2014 integrate species interactions","3 \u2014 Allocate across the triple bottom line \u2014 via co-governance (AMB, Gwaii Haanas reserve &amp; WHS, 2024 plan)","Thread line (proposal, pending analysis): \u201Crising synchrony as a spatial early-warning signal \u2014 if it holds, observation scale decides what you can see\u201D"],
  note:"Strong typography, three numbered take-homes. Optional faint reprise of the decoupling figure behind the text."},
 {n:14,ttl:"Close",wf:"fullbleed",cap:"Full-bleed photo, closing band",
- status:"photo",statusLab:"Photo \u2014 source",
- asset:"Herring / Haida reprise photo",source:"You source",
+ status:"photo",statusLab:"Photo \u2014 reprise S1/S2",
+ asset:"Herring / Haida reprise photo",source:"Reuse slide 1/2 DRV-ASSETS 01-biology image",
  os:["Closing line: \u201CThe herring is the example. The lesson is about thresholds.\u201D","\u201CThank you\u201D","Acknowledgments"],
  note:"A reprise of the slide 1 / slide 2 imagery closes the loop. Keep the closing line large and alone."}
 ];
