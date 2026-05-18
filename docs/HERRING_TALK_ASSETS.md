@@ -224,6 +224,8 @@ tracked. **This is the home for the talk outline / drafts / deck.**
 | FRM-MAP | doc | **Slide → asset map (14-slide spine)** | `talk-usuk-forum-2026/Talk_Materials/slide_asset_map.md` | ready | production checklist: every slide wired to concrete asset files + guardrail + action; gaps and build order |
 | FRM-QA | doc | **Q&A backup slides (20 cards, themed)** | `talk-usuk-forum-2026/Talk_Materials/qa_backup_slides.md` | ready | audience-anchored appendix cards: question · answer line · proof object · do-not-say guardrail; supersedes the talk_production_plan.md B1–B8 list |
 | FRM-DECOUP | html | **Slide 12 — four-layer decoupling figure** | `talk-usuk-forum-2026/Talk_Materials/herring_decoupling_figure.html` | ready | the payoff figure: cultural/ecological/economic tips on different clocks + co-governance rising; management-window band; build1_spine visual language; governance track schematic (not an outcome metric) |
+| FRM-SLIDES | html | **Built slide artifacts S5/S7/S11/S13** | `talk-usuk-forum-2026/Talk_Materials/s5_two_collapses.html`, `s7_two_scales.html`, `s11_triple_bottom_line.html`, `s13_takeaways.html` | ready | rendered + QA'd schematic/text slides in the deck visual language; sourced/claim-safe |
+| FRM-DESIGN | doc | **Deck design system (THE build contract)** | `talk-usuk-forum-2026/Talk_Materials/deck_design_system.md` | ready | canvas, type scale, palette, zone templates, no-stretch rule, R-figure re-export spec, per-slide build map, pipeline; image-rendered deck decision (venue PC lacks the fonts) |
 
 ---
 
