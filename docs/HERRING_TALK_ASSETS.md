@@ -221,6 +221,7 @@ tracked. **This is the home for the talk outline / drafts / deck.**
 | FRM-BLOCK | doc | **Talk blocker resolution log** | `talk-usuk-forum-2026/Talk_Materials/blocker_resolution_2026-05-17.md` | ready | compact handoff of resolved/bounded blockers and remaining production work |
 | FRM-ARCH | html | **Confirmed 14-slide talk architecture (3 parts)** | `talk-usuk-forum-2026/Talk_Materials/talk_architecture_{1_outline,2_speaker_notes,3_figures_layout}.html` | ready | the current confirmed spine: acts/timings, per-slide say/cue/transition, per-slide wireframe + asset manifest |
 | FRM-MAP | doc | **Slide → asset map (14-slide spine)** | `talk-usuk-forum-2026/Talk_Materials/slide_asset_map.md` | ready | production checklist: every slide wired to concrete asset files + guardrail + action; gaps and build order |
+| FRM-QA | doc | **Q&A backup slides (20 cards, themed)** | `talk-usuk-forum-2026/Talk_Materials/qa_backup_slides.md` | ready | audience-anchored appendix cards: question · answer line · proof object · do-not-say guardrail; supersedes the talk_production_plan.md B1–B8 list |
 
 ---
 
@@ -524,6 +525,15 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
   **Open for Adrian:** confirm the 14-slide spine is final (it drops the
   Stier-2016 cognitive-map / AMB social beat that this index calls the
   audience differentiator) or fold that beat back in.
+- **2026-05-18 (figures/layout synced + Q&A backup deck):** Rewrote
+  `talk_architecture_3_figures_layout.html` (manifest + all 14 slides) to the
+  verified asset state; added the Mongabay 2014 McKechnie writeup as a
+  credit-gated S4 image candidate. Built **`qa_backup_slides.md`** (FRM-QA) —
+  20 audience-anchored Q&A cards across 6 themes, each wired to an existing
+  proof object (13/14 drop-in; only B7's EWS test-schematic is an optional
+  build), superseding the old B1–B8 list. Most-likely pulls flagged: B7 (EWS
+  rigor), B1 (predators), B5 (hysteresis vs transient), B2
+  (non-identifiability), B18 (service valuation — chair), B20 (solutions).
 - **Open / next actions (priority order):**
   1. **Build S12 four-layer decoupling figure** (extend `build1_spine.html`) —
      the payoff slide; currently missing.
