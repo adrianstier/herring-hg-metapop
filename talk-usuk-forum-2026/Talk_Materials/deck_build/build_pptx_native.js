@@ -51,7 +51,8 @@ function photo(s,file){ s.addImage({path:file,x:0,y:0,w:W,h:H,sizing:{type:'cove
   s.addNotes('Thank Ida. Genuine Haida-partnership acknowledgment. State the idea before any story (the hook): ecological vs ecosystem-service tipping points can separate; the gap is where management acts. Then: "to test that idea I start ten thousand years ago." ~40s.');
 }
 /* S2 — The shore comes alive */ {
-  const s=base(true); photo(s,path.join(PH,'s02_shore.jpg'));
+  const s=base(true);
+  s.addMedia({ type:'video', path:path.join(PH,'s02_shore.mp4'), x:0, y:0, w:W, h:H });
   s.addText('~10,000 years ago',{x:0.6,y:6.6,w:6,h:0.5,fontFace:MONO,fontSize:18,color:C.amber});
   s.addNotes('Cold open — do not rush. Quiet shores, then each spring the water turns — silver bait balls offshore. What a forage fish is. It pulls the ecosystem shoreward. Transition: "and they pulled in people."');
 }

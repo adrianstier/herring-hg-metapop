@@ -74,7 +74,7 @@ try({
     geom_point(colour = DECK$kelp, size = 2.4, alpha = 0.8) +
     scale_x_discrete(expand = expansion(add = c(0.45, 0.45))) +
     labs(
-      title = "Population growth collapsed — cove by cove",
+      title = NULL,
       subtitle = NULL,
       x = NULL, y = "Realized growth rate  (λ)",
       caption = NULL
@@ -94,7 +94,7 @@ try({
     geom_ribbon(aes(ymin = q25, ymax = q75), fill = DECK$marine, alpha = 0.34) +
     geom_line(colour = DECK$marine, linewidth = 1.1) +
     labs(
-      title = "Ocean productivity is a first-order driver",
+      title = NULL,
       subtitle = NULL,
       x = NULL, y = "PDO effect on growth",
       caption = NULL
@@ -149,7 +149,7 @@ try({
     geom_line(colour = DECK$plum, linewidth = 1.4) +
     geom_point(colour = DECK$plum, size = 2.2) +
     labs(
-      title = "The portfolio eroded",
+      title = NULL,
       subtitle = NULL,
       x = NULL, y = "Synchrony  (φ)",
       caption = NULL
@@ -178,7 +178,7 @@ try({
     scale_y_continuous(labels = scales::label_comma()) +
     coord_cartesian(ylim = c(0, ytop)) +
     labs(
-      title = "Two collapses, two outcomes",
+      title = NULL,
       subtitle = NULL,
       x = NULL, y = "Estimated biomass (tonnes)",
       caption = NULL
@@ -226,7 +226,7 @@ try({
              colour = DECK$rust, size = 4, lineheight = 0.9) +
     scale_x_continuous(breaks = seq(2015, 2025, 2)) +
     labs(
-      title = "Spawning biomass — at the limit reference point",
+      title = NULL,
       subtitle = NULL, x = NULL, y = "Spawning biomass (kt)",
       caption = NULL
     ) +
@@ -269,7 +269,7 @@ try({
     annotate("text", x = 2025, y = s25hi, label = "2025 forecast,\nno fishing",
              hjust = 1.08, vjust = 0, colour = DECK$rust, size = 4, lineheight = 0.9) +
     scale_x_continuous(breaks = seq(1950, 2020, 10)) +
-    labs(title = "Spawning biomass — at the limit reference point",
+    labs(title = NULL,
          subtitle = NULL, x = NULL, y = "Spawning biomass (kt)",
          caption = "Digitized from DFO SR 2025/005 Fig 8(d); reference points & 2025 forecast = Table 19 (exact).") +
     theme_lecture(base_size = 22) + deck_titles +
