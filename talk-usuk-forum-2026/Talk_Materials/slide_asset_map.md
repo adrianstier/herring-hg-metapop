@@ -47,7 +47,7 @@ Status legend: ✅ ready to drop in · 🟡 adapt/confirm · 🔨 build · 📷 
 | # | Slide | Primary asset | Backup | Status | Action / guardrail |
 |---|---|---|---|---|---|
 | 11 | A system in a new state | text-led 3 columns (ecosystem / people / economy) | `figs/RebuildingPlan2024_Fig31_…png`, `…Fig32_…png` (value layer) | 🟡⚠️ | **Do NOT assert "$40M→$2.78M" (unsourced).** Use sourced wording: BC roe value peaked 1980s, high to mid-90s, declined 1995–2005 & post-2008 (Rebuilding Plan Figs 31/32, DFO fish slips). See `S8_landed_value_provenance.md` |
-| 12 | The decoupling — mgmt window | `build1_spine.html` (currently **3-layer**: eco/value/culture) | — | 🔨 | **Biggest build gap.** Spec names a non-existent `herring_decoupling_figure.html`. S12 speaker notes need **4 layers/clocks** (service ~1990, ecological 1993, economic 2005, governance later). Extend build1_spine to 4-layer, render/QA, export slide image |
+| 12 | The decoupling — mgmt window | `herring_decoupling_figure.html` (**built 2026-05-18**; static, 4 layers/clocks) | `build1_spine.html` (animated 3-layer spine — S1/S2/S14 use) | ✅ | Built in the build1_spine visual language, rendered + decluttered. Governance track schematic (not an outcome metric; HG still below LRP). Remaining: export to slide image, choose light/dark to match deck |
 | 13 | What this case teaches | text-led; content from `S20_solution_payload.md` (measure structure / manage exposure / build data spine) | three take-homes in `talk_architecture_1_outline.html` slide 13 | ✅ | Typographic layout. Keep the spatial-EWS thread proposal-strength (ties to S9) |
 | 14 | Close | reuse slide 1/2 herring photo (reprise) | `DRV-ASSETS 01-biology/*` | 📷 | Closing line large + alone: "The herring is the example. The lesson is about thresholds." |
 
@@ -62,8 +62,9 @@ Status legend: ✅ ready to drop in · 🟡 adapt/confirm · 🔨 build · 📷 
    that S15/S19 provenance work targeted — the master index calls that "the
    differentiator for this audience." Confirm 14-slide is final, or fold the
    social beat back in.
-2. **S12 figure missing** — the named built artifact does not exist; 3-layer vs
-   4-layer mismatch. Highest-priority build.
+2. ~~S12 figure missing~~ **RESOLVED 2026-05-18** — `herring_decoupling_figure.html`
+   built (static, 4 layers/clocks, build1_spine visual language). Remaining:
+   export to slide image + light/dark theme choice.
 3. **S10 humpback-feeding photo** — not in any 142C/242 asset library (only SSL
    video + a humpback silhouette). Adrian must source.
 4. **No new analysis required.** Spine rests on `m1_stier_11` + Stier 2020
@@ -72,7 +73,7 @@ Status legend: ✅ ready to drop in · 🟡 adapt/confirm · 🔨 build · 📷 
 
 ## Build order (Claude can do 1–6; Adrian owns photos)
 
-1. S12 four-layer decoupling figure (extend `build1_spine.html`).
+1. ✅ S12 four-layer decoupling figure — **done** (`herring_decoupling_figure.html`).
 2. S7 two-scale figure (adapt the 142C teaching version; Stier 2020 attribution).
 3. S5 annotated two-collapse timeline.
 4. S4 McKechnie crop + callout verification.

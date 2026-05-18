@@ -11,7 +11,7 @@ tracks the cross-session build state.
 > **Talk Build State** section at the bottom so the next context window picks up
 > cleanly.
 
-Last updated: 2026-05-18 (14-slide architecture confirmed; systematic per-slide asset audit; slide→asset map FRM-MAP wired; S12/S10/number gaps flagged).
+Last updated: 2026-05-18 (14-slide architecture confirmed; systematic per-slide asset audit; slide→asset map FRM-MAP wired; heatwave/bottom-up Q&A scope added; S12/S10/number gaps flagged).
 
 ---
 
@@ -125,6 +125,7 @@ plan and the claim-control sheet.
 | TP-12 | doc | **Talk model claim control sheet** | `docs/talk-model-claim-control-sheet.md` | ready | safe/unsafe language for every model, predator, recovery, DFO, and Doherty claim |
 | TP-13 | doc | **Doherty-style HG gap table** | `docs/doherty-style-hg-gap-table.md` | ready | concise replication-gap table: present vs provisional vs missing vs proxy-only |
 | TP-14 | doc | **20-slide talk production plan + backup/Q&A slides** | `talk-usuk-forum-2026/Talk_Materials/talk_production_plan.md` | ready | canonical slide order, treatment rhythm, asset wiring, likely-question backup slides |
+| TP-15 | doc | **Heatwave / bottom-up model scope** | `Output/diagnostics/heatwave_bottomup_scope.md` | ready | Smale/Cavan Q&A answer: Blob as stress-test context, PDO as full-era climate term, no AWS heatwave branch unless a local gate clears |
 
 ### 3b. Figures (this repo)
 
@@ -222,6 +223,7 @@ tracked. **This is the home for the talk outline / drafts / deck.**
 | FRM-ARCH | html | **Confirmed 14-slide talk architecture (3 parts)** | `talk-usuk-forum-2026/Talk_Materials/talk_architecture_{1_outline,2_speaker_notes,3_figures_layout}.html` | ready | the current confirmed spine: acts/timings, per-slide say/cue/transition, per-slide wireframe + asset manifest |
 | FRM-MAP | doc | **Slide → asset map (14-slide spine)** | `talk-usuk-forum-2026/Talk_Materials/slide_asset_map.md` | ready | production checklist: every slide wired to concrete asset files + guardrail + action; gaps and build order |
 | FRM-QA | doc | **Q&A backup slides (20 cards, themed)** | `talk-usuk-forum-2026/Talk_Materials/qa_backup_slides.md` | ready | audience-anchored appendix cards: question · answer line · proof object · do-not-say guardrail; supersedes the talk_production_plan.md B1–B8 list |
+| FRM-DECOUP | html | **Slide 12 — four-layer decoupling figure** | `talk-usuk-forum-2026/Talk_Materials/herring_decoupling_figure.html` | ready | the payoff figure: cultural/ecological/economic tips on different clocks + co-governance rising; management-window band; build1_spine visual language; governance track schematic (not an outcome metric) |
 
 ---
 
@@ -534,9 +536,30 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
   build), superseding the old B1–B8 list. Most-likely pulls flagged: B7 (EWS
   rigor), B1 (predators), B5 (hysteresis vs transient), B2
   (non-identifiability), B18 (service valuation — chair), B20 (solutions).
+- **2026-05-18 (heatwave/bottom-up Q&A scope):** Added
+  `Code/07bv_heatwave_bottomup_scope.R`, which writes
+  `Output/diagnostics/heatwave_bottomup_scope.md` and
+  `Output/figures/heatwave_bottomup_scope.pdf`. The talk-safe answer for
+  Smale/Cavan-style questions is now: the 2014–2016 Blob/MHW is a useful
+  stress-test period and bottom-up forcing remains plausible, but current
+  evidence does not support making the heatwave the promoted explanation for
+  HG non-recovery. Updated Q&A B3 to cite this proof object. No AWS heatwave
+  branch is recommended unless a local residual gate first clears.
+- **2026-05-18 (S12 decoupling figure built — top build resolved):**
+  `talk-usuk-forum-2026/Talk_Materials/herring_decoupling_figure.html` created
+  — static, slide-ready, 4 layers / 4 clocks (cultural ~1990 · ecological 1993
+  · economic ~2005 · co-governance rising later) + management-window band, in
+  the `build1_spine.html` visual language; rendered + decluttered via Chrome
+  headless QA. Governance track is a SCHEMATIC institutional-milestone curve
+  (Athlii Gwaii 1985 → Gwaii Haanas 1993 → AMB → 2024 Rebuilding Plan),
+  explicitly NOT an outcome metric (HG remains below LRP, 0-t — DFO SR
+  2025/005). `talk_architecture_3` S12, `slide_asset_map.md` S12, and the new
+  FRM-DECOUP catalog row updated. Remaining for S12: export to a slide image
+  and pick light/dark to match the final deck.
 - **Open / next actions (priority order):**
-  1. **Build S12 four-layer decoupling figure** (extend `build1_spine.html`) —
-     the payoff slide; currently missing.
+  1. ✅ S12 four-layer decoupling figure — **built**
+     (`herring_decoupling_figure.html`); remaining: export to slide image +
+     light/dark choice.
   2. Build S7 two-scale (adapt 142C teaching fig, Stier-2020 attribution),
      S5 annotated two-collapse timeline.
   3. S4 McKechnie crop + callout verification; S6 figure pick;

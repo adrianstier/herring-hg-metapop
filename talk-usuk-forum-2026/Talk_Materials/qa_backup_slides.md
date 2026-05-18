@@ -54,9 +54,14 @@ B12's "what would test the EWS" mini-schematic is an optional small build.
 - **Answer line:** Bottom-up is one of the two best-supported HG strands (with
   spatial erosion). PDO drives subpopulation intrinsic growth, the 2014–16
   heatwave hit in the study's final years, and OSMOSE-type work points to
-  starvation limiting northern BC herring — but it is necessary, not
-  sufficient, and the climate signal is itself confounded.
-- **Proof object:** `Output/figures/pdo_climate_signal_screen.pdf`, `Output/figures/mhw_recovery_screen.pdf`, `Output/figures/pdo_window_sensitivity.pdf`; idea-bank H3.
+  starvation limiting northern BC herring — but the new heatwave scope
+  diagnostic says the Blob is a stress-test period, **not** the promoted
+  explanation for HG non-recovery.
+- **Proof object:** `Output/diagnostics/heatwave_bottomup_scope.md`;
+  `Output/figures/heatwave_bottomup_scope.pdf`;
+  `Output/figures/pdo_climate_signal_screen.pdf`,
+  `Output/figures/mhw_recovery_screen.pdf`,
+  `Output/figures/pdo_window_sensitivity.pdf`; idea-bank H3.
 - **⚠ Do not say:** "warm PDO = bad" as a clean rule (Stier 2020: asynchrony loss in cold productive years).
 
 ### B4 · "Could this be a 3-year recruitment-return lag, not adult mortality?"
