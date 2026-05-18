@@ -158,36 +158,30 @@ try({
   save_deck(p9, "s09_synchrony")
 }, silent = FALSE)
 
-# ── S5 — REAL archipelago total spawn index, 1951–2025 (two collapses) ───────
+# ── S5 — REAL m1_stier_11 estimated total biomass, 1951–2025 ─────────────────
 try({
-  sp <- read_csv(
-    file.path(proj_dir, "Data", "processed",
-              "HG_Spawn_Survey_1951_2025_all_sections.csv"),
-    show_col_types = FALSE)
-  keep_sections <- c(1, 2, 3, 5, 6, 12, 21, 22, 23, 24, 25)
-  agg <- sp %>%
-    filter(section %in% keep_sections) %>%
-    group_by(year) %>%
-    summarise(total = sum(spawn_index_tonnes, na.rm = TRUE), .groups = "drop") %>%
-    arrange(year)
-  write_csv(agg, file.path(diag_dir, "deck_s05_total_spawn_index.csv"))
-  p5 <- ggplot(agg, aes(year, total)) +
+  bm <- read_csv(file.path(diag_dir, "m1_stier_11_total_biomass_by_year.csv"),
+                 show_col_types = FALSE) %>%
+    filter(report_set == "focal_9") %>% arrange(year)
+  ytop <- max(bm$median, na.rm = TRUE) * 1.32
+  p5 <- ggplot(bm, aes(year, median)) +
     geom_vline(xintercept = 1994, linetype = "dashed",
                colour = DECK$soft, linewidth = 0.4) +
-    annotate("text", x = 1994, y = max(agg$total, na.rm = TRUE),
-             label = "roe fishery closed 1994", hjust = 1.04, vjust = 1,
+    annotate("text", x = 1994, y = ytop,
+             label = "roe fishery closed 1994", hjust = 1.04, vjust = 1.2,
              colour = DECK$soft, size = 4.4) +
-    geom_line(colour = DECK$rust, linewidth = 1.4) +
-    geom_point(colour = DECK$rust, size = 2) +
+    geom_ribbon(aes(ymin = lo80, ymax = hi80), fill = DECK$rust, alpha = 0.20) +
+    geom_line(colour = DECK$rust, linewidth = 1.6) +
     scale_y_continuous(labels = scales::label_comma()) +
+    coord_cartesian(ylim = c(0, ytop)) +
     labs(
       title = "Two collapses, two outcomes",
-      subtitle = wsub("Archipelago total spawn index (sum of 11 sections), Haida Gwaii — REAL survey data, 1951–2025"),
-      x = NULL, y = "Total spawn index (tonnes)",
-      caption = wcap("Real data: Data/processed/HG_Spawn_Survey_1951_2025_all_sections.csv (DFO HG spawn survey, Stier-aligned 11 sections). Not a model output; not schematic. The 1960s reduction-fishery collapse rebounded; the post-1990s roe-fishery state has not recovered.")
+      subtitle = wsub("m1_stier_11 estimated total HG herring biomass — focal-9 sections (median, 80% CI), 1951–2025"),
+      x = NULL, y = "Estimated biomass (tonnes)",
+      caption = wcap("Real model output: Output/diagnostics/m1_stier_11_total_biomass_by_year.csv. Focal-9 reporting is the cleaner talk estimate (numbers_provenance.md — the all-11 recent upper tail is dominated by sparse fit-only sections). 80% CI; not schematic. Mid-century reduction-fishery collapse rebounded; the post-1990s state has not recovered.")
     ) +
     theme_lecture(base_size = 22) + deck_titles
-  save_deck(p5, "s05_spawn_timeline")
+  save_deck(p5, "s05_biomass_timeline")
 }, silent = FALSE)
 
 cat("Deck figure re-export complete ->", outdir, "\n")

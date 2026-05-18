@@ -69,15 +69,17 @@ function photo(s,file){ s.addImage({path:file,x:0,y:0,w:W,h:H,sizing:{type:'cove
 /* S4 — The baseline, measured */ {
   const s=base(false); masthead(s,false);
   title(s,[{text:'The baseline, '},{text:'measured',options:{italic:true,color:C.rust}}],false);
+  // left: stacked stat callouts
   const stats=[['171','archaeological sites'],['435,777','identified fish bones'],
     ['49%','of all fish — herring'],['99%','site ubiquity'],['<±10%','variance / ~10,700 yr']];
-  stats.forEach((v,i)=>{ const x=0.5+i*2.55;
-    s.addText(v[0],{x,y:2.0,w:2.45,h:1.0,fontFace:HEAD,fontSize:40,bold:true,color:C.rust});
-    s.addText(v[1],{x,y:3.0,w:2.45,h:0.7,fontFace:BODY,fontSize:13,color:C.softD}); });
-  s.addText('Across 171 archaeological sites and 435,777 identified fish bones, Pacific herring is the single most common fish — present at 99% of sites, with less than ±10% variation over roughly 10,700 years.',
-    {x:0.5,y:4.0,w:12.3,h:1.4,fontFace:BODY,fontSize:18,color:C.inkD,lineSpacing:26});
+  stats.forEach((v,i)=>{ const y=1.85+i*0.92;
+    s.addText(v[0],{x:0.5,y,w:2.5,h:0.7,fontFace:HEAD,fontSize:34,bold:true,color:C.rust});
+    s.addText(v[1],{x:3.0,y:y+0.1,w:3.6,h:0.5,fontFace:BODY,fontSize:14,color:C.softD,valign:'middle'}); });
+  // right: the iconic ancient-herring-bones-in-hand photo (aspect preserved, no stretch)
+  { const w=5.5, h=w*(443/600); s.addImage({path:path.join(PH,'s04_mckechnie_bones.png'),
+    x:7.3,y:1.95,w,h}); }
   takeaway(s,'A ten-thousand-year measurement of natural variability. Everything next is a departure from it.',false);
-  caption(s,'Source: McKechnie et al. 2014, PNAS. To add: site-map / NISP figure crop (Literature/McKechnie_et_al_2014_PNAS…pdf).',false);
+  caption(s,'Source: McKechnie et al. 2014, PNAS. Photo: Jim Barlow / University of Oregon (via Mongabay 2014) — ⚠ confirm reuse rights/credit before the recorded talk.',false);
   s.addNotes('Credibility anchor: a ten-thousand-year measurement of natural variability. State numbers cleanly. Transition: "hold onto that — everything next is a departure."');
 }
 /* S5 — Two collapses (REAL archipelago spawn-index figure inserted) */ {
