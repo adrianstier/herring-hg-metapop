@@ -39,47 +39,67 @@ def y2v(yp): return m*yp + k
 mx = np.maximum(np.maximum(R,G),B); mn = np.minimum(np.minimum(R,G),B)
 blackpx = (mx < 110) & ((mx-mn) < 45)         # near-black/neutral
 
-# --- x-calibration: black x-axis TICK MARKS below the bottom axis ---
-# bottom axis = the lowest long horizontal black run
-rowblack = blackpx.sum(axis=1)
-axis_rows = np.where(rowblack > 0.55*cw)[0]
-y_axis = axis_rows.max()                       # bottom axis row
-# tick marks hang just below the axis
-tb = blackpx[y_axis+2:y_axis+18, :]
-tickcols = np.where(tb.sum(axis=0) >= 3)[0]
-groups, cur = [], [tickcols[0]]
-for v in tickcols[1:]:
-    if v-cur[-1] <= 4: cur.append(v)
-    else: groups.append(int(np.mean(cur))); cur=[v]
-groups.append(int(np.mean(cur)))
-groups = np.array(sorted(groups))
-# keep the 8 evenly-spaced decade ticks (largest near-uniform run)
-diffs = np.diff(groups)
-step = np.median(diffs)
-# greedily select ticks ~step apart
-sel=[groups[0]]
-for g in groups[1:]:
-    if abs((g-sel[-1]) - step) < 0.4*step or (g-sel[-1])>0.6*step:
-        sel.append(g)
-sel=np.array(sel)
-if len(sel) >= 8:
-    xs = sel[:8]
+# --- plot interior X-extent from the red/blue reference-line span ---
+# geom_hline spans the full panel data region -> its column extent = panel.
+ref = red | blue
+refcols = np.where(ref.sum(axis=0) > 0)[0]
+xL, xR = int(refcols.min()), int(refcols.max())
+# ggplot continuous-x default expansion = mult 0.05 each side.
+# Fig 8(d) data x-range = 1951..2025 (incl. 2025 forecast pt). The decade
+# tick LABELS are 1950..2020; gridlines sit at those years inside the panel.
+# Detect decade vertical gridlines strictly INSIDE (xL,xR), in a clean upper
+# band (few data here except the 1956 bar) using neutral light-grey columns.
+yb0, yb1 = max(0,int(min(y_red,y_blue))-9999), 0  # placeholder
+# clean band = top ~12% of interior (above most data); interior top approx:
+itop = max(0, int(y_red - (V_RED)/((V_BLUE-V_RED)/(y_blue-y_red+1e-9))) ) if False else 5
+band = c[itop:itop+ max(20,int(0.10*ch)), xL+3:xR-3]
+mxb = np.maximum(np.maximum(band[:,:,0],band[:,:,1]),band[:,:,2])
+mnb = np.minimum(np.minimum(band[:,:,0],band[:,:,1]),band[:,:,2])
+gl  = (mxb < 225) & (mxb > 120) & ((mxb-mnb) < 25)   # grey gridline
+prof = gl.sum(axis=0)
+thr = max(3, 0.5*band.shape[0])
+cols = np.where(prof >= thr)[0] + (xL+3)
+# cluster
+if len(cols):
+    groups,cur=[],[cols[0]]
+    for v in cols[1:]:
+        if v-cur[-1]<=4: cur.append(v)
+        else: groups.append(int(np.mean(cur))); cur=[v]
+    groups.append(int(np.mean(cur))); groups=np.array(sorted(groups))
 else:
-    xs = np.linspace(groups[0], groups[-1], 8)
+    groups=np.array([])
 years_dec = np.array([1950,1960,1970,1980,1990,2000,2010,2020])
-px = np.polyfit(years_dec, xs, 1)
-def yr2x(y): return np.polyval(px, y)
-def x2yr(xp): return (xp - px[1])/px[0]
-# plot interior y-bounds: top gridline (~80 kt) .. bottom axis
+# Robust: anchor X by the panel edges + ggplot 0.05 expansion (data 1951..2025)
+dmin,dmax = 1951.0, 2025.0
+pad = 0.05*(dmax-dmin)
+panel_lo, panel_hi = dmin-pad, dmax+pad         # years at xL, xR
+def yr2x(y): return xL + (y-panel_lo)/(panel_hi-panel_lo)*(xR-xL)
+def x2yr(xp): return panel_lo + (xp-xL)/(xR-xL)*(panel_hi-panel_lo)
+# QA the edge model against detected decade gridlines (if any)
+if len(groups)>=6:
+    gy = np.array([x2yr(g) for g in groups])
+    # snap to nearest decade and report residual
+    snap = np.round(gy/10)*10
+    resid = np.abs(gy-snap)
+    print(f"x-edge model: xL={xL} xR={xR} panel[{panel_lo:.1f},{panel_hi:.1f}]"
+          f"  gridline-decade residual median={np.median(resid):.2f} yr (n={len(groups)})")
+else:
+    print(f"x-edge model: xL={xL} xR={xR} panel[{panel_lo:.1f},{panel_hi:.1f}]  (no gridline check)")
 y_top = max(0, int(min(y_red, y_blue)) - 250)
 
 # --- isolate the black SB line ---
 # near-black & neutral; exclude red/blue line rows; exclude ribbon (mid grey)
 black = (mx < 95) & ((mx-mn) < 38)
 black[red] = False; black[blue] = False
-# drop the 2 reference-line rows +/-3 px so they don't bleed in
-for yr in list(red_rows)+list(blue_rows):
-    black[max(0,yr-3):yr+4,:] = False
+# NOTE: do NOT blank the red/blue rows wholesale — the SB line hugs the LRP
+# in the recent low period; per-pixel colour exclusion above is enough.
+# restrict to plot interior using the (solid) y-calibration: the value=0
+# baseline is at pixel (0-k)/m; ignore anything at/below it (axis, labels,
+# catch-bar bases) and anything implausibly high (> 85 kt).
+y_zero = int(round((0.0 - k)/m))
+y_hi   = int(round((85.0 - k)/m))
+black[y_zero+1:, :] = False
+black[:max(0,y_hi), :] = False
 
 rows = []
 for year in range(1951, 2025):
@@ -105,7 +125,7 @@ for year in range(1951, 2025):
 
 # --- QA print ---
 print(f"y-cal: red@{y_red:.1f}=6.452  blue@{y_blue:.1f}=19.107  m={m:.5f} k={k:.3f}")
-print(f"x-cal: decades px={np.round(xs,1)}  year->px slope={px[0]:.3f}")
+print(f"x-cal: edge model panel[{panel_lo:.1f},{panel_hi:.1f}] xL={xL} xR={xR}")
 anch = {1955:'~55-61',1968:'low ~2-5',1980:'~28-33',1990:'~25-31',
         2010:'~9-12',2024:'≈6.4 (Table15)'}
 d = dict(rows)

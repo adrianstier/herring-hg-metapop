@@ -234,4 +234,47 @@ try({
   save_deck(pdfo, "s_dfo_spawning_biomass")
 }, silent = FALSE)
 
+# ── DFO full series 1951–2024 — DIGITIZED from SR 2025/005 Fig 8(d) ──────────
+# Overwrites s_dfo_spawning_biomass (later write wins) with the full-length
+# traced SB line + exact Table 19 reference points / 2025 forecast.
+try({
+  dg <- read_csv(file.path(diag_dir,
+        "dfo_sr2025005_fig8d_SB_digitized_1951_2024.csv"),
+        show_col_types = FALSE) %>%
+    transmute(year, sb = suppressWarnings(as.numeric(sb_kt_digitized))) %>%
+    filter(!is.na(sb), sb >= 0, sb <= 62)        # >62 = catch-bar pixels, not the SB line
+  ex <- file.path(diag_dir, "dfo_newer_public_pdf_extract")
+  t19 <- read_csv(file.path(ex,
+        "dfo_sr_2025_005_table_19_hg_reference_points.csv"),
+        show_col_types = FALSE)
+  gv <- function(rp) t19$median[t19$reference_point == rp][1]
+  LRP <- gv("0.3SB 0"); SB0 <- gv("SB 0")
+  s25 <- t19$median[t19$reference_point == "SB 2025"][1]
+  s25lo <- t19$p05[t19$reference_point == "SB 2025"][1]
+  s25hi <- t19$p95[t19$reference_point == "SB 2025"][1]
+  proj <- data.frame(year = 2025, sb = s25, lo = s25lo, hi = s25hi)
+  pD <- ggplot(dg, aes(year, sb)) +
+    geom_hline(yintercept = SB0, linetype = "dotted",
+               colour = DECK$soft, linewidth = 0.4) +
+    annotate("text", x = 1951, y = SB0, label = paste0("unfished SB0 ≈ ", round(SB0,1), " kt"),
+             hjust = 0, vjust = -0.5, colour = DECK$soft, size = 4) +
+    geom_hline(yintercept = LRP, linetype = "dashed",
+               colour = DECK$amber, linewidth = 0.7) +
+    annotate("text", x = 1951, y = LRP, label = paste0("Limit Reference Point ≈ ", round(LRP,2), " kt"),
+             hjust = 0, vjust = -0.6, colour = DECK$amber, size = 4.2) +
+    geom_line(colour = DECK$marine, linewidth = 1.5) +
+    geom_point(data = proj, aes(year, sb), colour = DECK$rust, size = 3.4) +
+    geom_errorbar(data = proj, aes(year, ymin = lo, ymax = hi), width = 1.2,
+                  colour = DECK$rust, linewidth = 0.9, inherit.aes = FALSE) +
+    annotate("text", x = 2025, y = s25hi, label = "2025 forecast,\nno fishing",
+             hjust = 1.08, vjust = 0, colour = DECK$rust, size = 4, lineheight = 0.9) +
+    scale_x_continuous(breaks = seq(1950, 2020, 10)) +
+    labs(title = "Spawning biomass — at the limit reference point",
+         subtitle = NULL, x = NULL, y = "Spawning biomass (kt)",
+         caption = "Digitized from DFO SR 2025/005 Fig 8(d); reference points & 2025 forecast = Table 19 (exact).") +
+    theme_lecture(base_size = 22) + deck_titles +
+    theme(plot.caption = element_text(color = DECK$soft, size = rel(0.6), hjust = 0))
+  save_deck(pD, "s_dfo_spawning_biomass")
+}, silent = FALSE)
+
 cat("Deck figure re-export complete ->", outdir, "\n")
