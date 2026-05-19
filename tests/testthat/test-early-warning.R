@@ -314,3 +314,29 @@ test_that("spatial/synchrony EWS output: schema, phi in [0,1], latent CI, units"
   # core9 has 2 fewer sections than all11 -> n_occupied generally lower/eq
   expect_true(all(d$n_occupied <= 11, na.rm = TRUE))
 })
+
+# ── Task 3.3: covariance leading-EOF / lambda_max + MAR(1) eigenvalue ───────
+test_that("covariance eigen + MAR(1) EWS output: schema, ranges, latent CI", {
+  skip_if_not(file.exists(here::here("Output","diagnostics","ews_input_layers.rds")))
+  system2("Rscript", here::here("Code","11_ews_03_covariance_eigen.R"),
+          stdout = TRUE, stderr = TRUE)
+  f <- here::here("Output","diagnostics","ews_covariance_eigen.csv")
+  expect_true(file.exists(f))
+  d <- readr::read_csv(f, show_col_types = FALSE)
+  need <- c("layer","unit","window_len","window_mid",
+            "lambda_max","lambda_max_lo","lambda_max_hi",
+            "eig_share","eig_share_lo","eig_share_hi",
+            "mar1_eigen","mar1_eigen_lo","mar1_eigen_hi")
+  expect_true(all(need %in% names(d)))
+  expect_setequal(unique(d$layer), c("observed","latent"))
+  expect_setequal(unique(d$unit),  c("all11","core9"))
+  expect_setequal(unique(d$window_len), c(10,15,20))
+  es <- d$eig_share[is.finite(d$eig_share)]
+  expect_true(length(es) > 0 && all(es >= -1e-9 & es <= 1 + 1e-9))   # in [0,1]
+  expect_true(any(d$lambda_max > 0, na.rm = TRUE))                    # variance positive
+  lat <- dplyr::filter(d, layer == "latent")
+  expect_true(any(lat$lambda_max_hi > lat$lambda_max_lo, na.rm = TRUE))  # real CI
+  obs <- dplyr::filter(d, layer == "observed")
+  expect_true(all(obs$lambda_max_lo == obs$lambda_max | is.na(obs$lambda_max),
+                  na.rm = TRUE))
+})
