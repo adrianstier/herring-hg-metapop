@@ -1,0 +1,10 @@
+.Rproj.user
+.Rhistory
+.RData
+renv/library/
+_targets/
+data-raw/**/*.csv
+!data-raw/**/MANIFEST.sha256
+data/*.csv
+Output/*
+!Output/.gitkeep

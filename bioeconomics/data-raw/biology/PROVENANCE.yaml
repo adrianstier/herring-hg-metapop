@@ -1,0 +1,6 @@
+source_repo: /Users/adrianstier/stier-2027-herring-metapopulation
+model_branch: m1_stier_11 (promoted baseline)
+source_file: Output/diagnostics/m1_stier_11_total_biomass_by_year.csv
+sha256: a03cd6f678c08863921306e5e9bf786681c4f9739b68bbfdd98e5db763a649c9
+exported_utc: 2026-05-19 09:45:37 UTC
+biomass_note: posterior median of the HG total (all-11-section report set) from the promoted m1_stier_11 baseline; faithful model import, not a section-sum
