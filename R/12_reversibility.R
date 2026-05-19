@@ -432,3 +432,54 @@ survey_artifact_null <- function(truth, era_break, q, cv = 0.2, seed) {
   obs <- qv * truth * stats::rlnorm(n, -0.5 * cv^2, cv)
   as.numeric(obs)
 }
+
+# ============================================================================
+# Task 12: driver_state_loop
+# ============================================================================
+
+#' Driver-state path geometry. Signed loop area via the shoelace formula
+#' (nonzero = non-retracing = hysteresis-like); also the vertical state gap
+#' between down- and up-limb at matched driver deciles.
+#'
+#' @param driver Numeric vector — the control parameter (e.g. exploitation rate).
+#' @param state  Numeric vector — the response (e.g. biomass). Same length as driver.
+#' @param year   Numeric/integer vector — time index. Same length as driver.
+#' @param pivot  Scalar — year (or index value) separating the "down-limb"
+#'               (driver increasing/collapse phase) from the "up-limb"
+#'               (driver decreasing/recovery phase).
+#' @return Named list: signed_area (numeric), matched_gap (numeric),
+#'   gap_by_decile (named array or NULL).
+#'   Degenerate contract (spec §7): returns
+#'     list(signed_area = NA_real_, matched_gap = NA_real_, gap_by_decile = NULL)
+#'   silently (never crashes, never a silent wrong number) when:
+#'     - fewer than 3 finite (driver, state) pairs, OR
+#'     - the driver has fewer than 2 distinct finite values
+#'       (constant driver -> non-unique quantile breaks -> cut() crash).
+driver_state_loop <- function(driver, state, year, pivot) {
+  ok <- is.finite(driver) & is.finite(state)
+  d <- driver[ok]; s <- state[ok]; y <- year[ok]
+  # §7 guard: need >= 3 finite pairs AND >= 2 distinct driver values
+  if (length(d) < 3L || length(unique(d)) < 2L) {
+    return(list(signed_area = NA_real_, matched_gap = NA_real_,
+                gap_by_decile = NULL))
+  }
+  # Shoelace formula (signed area of the closed driver-state polygon)
+  area <- 0.5 * sum(d * c(s[-1], s[1]) - c(d[-1], d[1]) * s)
+  limb <- ifelse(y <= pivot, "down", "up")
+  # Decile binning: unique() breaks guard collapses due to quantile ties
+  qd  <- stats::quantile(d, probs = seq(0, 1, 0.1), na.rm = TRUE)
+  uqd <- unique(qd)           # drop duplicate break values (e.g. near-constant)
+  if (length(uqd) < 2L) {
+    return(list(signed_area = NA_real_, matched_gap = NA_real_,
+                gap_by_decile = NULL))
+  }
+  bin <- cut(d, uqd, include.lowest = TRUE)
+  gap <- tapply(seq_along(d), bin, function(ix) {
+    dn <- s[ix][limb[ix] == "down"]; up <- s[ix][limb[ix] == "up"]
+    if (!length(dn) || !length(up)) return(NA_real_)
+    mean(dn) - mean(up)
+  })
+  list(signed_area   = as.numeric(area),
+       matched_gap   = as.numeric(mean(gap, na.rm = TRUE)),
+       gap_by_decile = gap)
+}

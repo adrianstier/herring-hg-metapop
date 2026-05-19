@@ -276,6 +276,53 @@ test_that("ccm_drivers: a degenerate per-driver rho vector yields strict=FALSE, 
   expect_true(r$converges_strict[r$driver == "d"])      # good driver unaffected
 })
 
+# ============================================================================
+# Task 12: driver_state_loop
+# ============================================================================
+
+test_that("driver_state_loop: hysteretic path has nonzero signed area, monotone ~0", {
+  th <- seq(0, 2*pi, length.out = 80)
+  drv <- cos(th); st <- sin(th)
+  L <- driver_state_loop(driver = drv, state = st,
+                         year = seq_along(th), pivot = 40)
+  expect_gt(abs(L$signed_area), 1.5)                     # ~ pi for unit circle
+  d2 <- c(seq(0,1,length.out=40), seq(1,0,length.out=40))
+  s2 <- d2 * 2
+  L2 <- driver_state_loop(d2, s2, seq_along(d2), pivot = 40)
+  expect_lt(abs(L2$signed_area), 0.05)
+})
+
+test_that("driver_state_loop §7 guard: constant driver returns NA contract silently", {
+  # constant driver -> non-unique quantile breaks -> crash without guard
+  expect_silent(
+    r1 <- driver_state_loop(rep(2, 10), rnorm(10), 1:10, pivot = 5)
+  )
+  expect_true(is.na(r1$signed_area))
+  expect_true(is.na(r1$matched_gap))
+  expect_null(r1$gap_by_decile)
+  expect_true(all(c("signed_area", "matched_gap", "gap_by_decile") %in% names(r1)))
+})
+
+test_that("driver_state_loop §7 guard: too-short input (< 3 finite pairs) returns NA contract silently", {
+  expect_silent(
+    r2 <- driver_state_loop(c(1, 2), c(1, 2), 1:2, pivot = 1)
+  )
+  expect_true(is.na(r2$signed_area))
+  expect_true(is.na(r2$matched_gap))
+  expect_null(r2$gap_by_decile)
+})
+
+test_that("driver_state_loop §7 guard: NA-bearing input computes on finite pairs", {
+  th <- seq(0, 2*pi, length.out = 80)
+  drv <- cos(th); st <- sin(th)
+  drv[c(5, 20)] <- NA_real_   # inject two NAs
+  expect_silent(
+    L_na <- driver_state_loop(drv, st, seq_along(drv), pivot = 40)
+  )
+  # After stripping 2 NAs, 78 finite pairs remain -> should still compute
+  expect_true(is.finite(L_na$signed_area))
+})
+
 # ── Task 10: potential_landscape ──────────────────────────────────────────────
 test_that("potential_landscape: double-well -> 2 minima, single-well -> 1", {
   set.seed(5)
