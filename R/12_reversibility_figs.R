@@ -73,8 +73,6 @@
 #'
 #' @return ggplot object
 fig_lambda_trajectory <- function() {
-  library(ggplot2)
-
   okabe <- .rev_okabe()
   thm   <- .rev_theme(9)
 
@@ -109,6 +107,12 @@ fig_lambda_trajectory <- function() {
     "\n(lambda_max failed to relax, n~20;\nconsistent with slow transient OR persistence)"
   )
 
+  # Annotation y: held at 1.46 (within coord_cartesian ylim 0.70..1.52, well
+  # above the current data ceiling 1.39). coord_cartesian warns rather than
+  # silently dropping if future data exceeds the cap. Hardcoded here so the
+  # annotation does not collide with post-closure data points.
+  ann_y <- 1.46
+
   ggplot(d, aes(x = year)) +
     # 80-pct band
     geom_ribbon(aes(ymin = lam_lo, ymax = lam_hi),
@@ -121,7 +125,7 @@ fig_lambda_trajectory <- function() {
     # Closure
     geom_vline(xintercept = 2005, linetype = "dotted", color = "grey30", linewidth = 0.6) +
     # Post-closure annotation -- short text, left-justified inside post-closure region
-    annotate("text", x = 2006.5, y = 1.46,
+    annotate("text", x = 2006.5, y = ann_y,
              label = paste0(
                "Post-closure: slope = +",
                formatC(round(sl, 4), format = "f", digits = 4),
@@ -137,7 +141,8 @@ fig_lambda_trajectory <- function() {
              label = "S-map: n.s. at n~75 (SECONDARY)",
              hjust = 0, vjust = 0, size = 1.9, color = "grey45", lineheight = 1.1) +
     scale_x_continuous(breaks = seq(1950, 2030, 10), limits = c(1950, 2026)) +
-    scale_y_continuous(limits = c(0.70, 1.52)) +
+    scale_y_continuous() +
+    coord_cartesian(ylim = c(0.70, 1.52)) +
     labs(
       x = "Year",
       y = "|lambda_max(t)|  (Jacobian leading eigenvalue)",
@@ -171,9 +176,6 @@ fig_lambda_trajectory <- function() {
 #'
 #' @return ggplot object
 fig_state_dependent_dF <- function() {
-  library(ggplot2)
-  library(ggrepel)
-
   okabe <- .rev_okabe()
   thm   <- .rev_theme(9)
 
@@ -251,9 +253,6 @@ fig_state_dependent_dF <- function() {
 #'
 #' @return patchwork ggplot object
 fig_potential_pre_post <- function() {
-  library(ggplot2)
-  library(patchwork)
-
   okabe <- .rev_okabe()
   thm   <- .rev_theme(9)
 
@@ -322,8 +321,8 @@ fig_potential_pre_post <- function() {
 
   # Assemble: equal widths
   pa + pb +
-    plot_layout(ncol = 2, widths = c(1, 1)) +
-    plot_annotation(
+    patchwork::plot_layout(ncol = 2, widths = c(1, 1)) +
+    patchwork::plot_annotation(
       caption = paste0(
         "Left: genuine pre-closure estimate.\n",
         "Right: post-closure is not estimable at n~20 ",
@@ -347,9 +346,6 @@ fig_potential_pre_post <- function() {
 #'
 #' @return ggplot object
 fig_driver_loop <- function() {
-  library(ggplot2)
-  library(ggrepel)
-
   okabe <- .rev_okabe()
   thm   <- .rev_theme(9)
 
@@ -430,9 +426,6 @@ fig_driver_loop <- function() {
 #'
 #' @return patchwork ggplot object
 fig_controls_panel <- function() {
-  library(ggplot2)
-  library(patchwork)
-
   okabe <- .rev_okabe()
   thm   <- .rev_theme(9)
 
@@ -462,7 +455,6 @@ fig_controls_panel <- function() {
 
   # Label only FAIL bars to reduce clutter; PASS implied by non-orange color
   fail_df <- seed_df[!seed_df$pass, ]
-  canon_df <- seed_df[seed_df$canonical, ]
 
   pa <- ggplot(seed_df, aes(x = seed_str, y = ifelse(is.na(lam_trend), 0, lam_trend),
                              fill = fill_col)) +
@@ -480,7 +472,9 @@ fig_controls_panel <- function() {
       x = "Seed",
       y = "lambda_max trend slope  (pre-closure)",
       title = "A  PRIMARY control: lambda_max trend",
-      subtitle = "9/12 seeds pass (75%); green = canonical seed 20260519 (PASS)"
+      subtitle = sprintf("%d/%d seeds pass (%d%%); green = canonical seed 20260519 (PASS)",
+                         sum(seed_df$pass), nrow(seed_df),
+                         round(pass_rate * 100))
     ) +
     thm +
     theme(legend.position = "none",
@@ -528,8 +522,8 @@ fig_controls_panel <- function() {
           plot.subtitle = element_text(size = rel(0.78)))
 
   pa + pb +
-    plot_layout(ncol = 2, widths = c(1.1, 0.9)) +
-    plot_annotation(
+    patchwork::plot_layout(ncol = 2, widths = c(1.1, 0.9)) +
+    patchwork::plot_annotation(
       caption = paste0(
         "A: PRIMARY gate for controls -- canonical seed (20260519) passes.\n",
         "B: S-map nonlinearity is non-significant at n~75; ",

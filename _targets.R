@@ -451,51 +451,66 @@ list(
 
   tar_target(
     fig_reversibility_lambda_file,
-    save_figure(
-      fig_lambda_trajectory(),
-      filename = "reversibility_lambda_trajectory.pdf",
-      width = 170, height = 120
-    ),
+    {
+      force(reversibility_discrimination_file)
+      save_figure(
+        fig_lambda_trajectory(),
+        filename = "reversibility_lambda_trajectory.pdf",
+        width = 170, height = 120
+      )
+    },
     format = "file"
   ),
 
   tar_target(
     fig_reversibility_state_df_file,
-    save_figure(
-      fig_state_dependent_dF(),
-      filename = "reversibility_state_df.pdf",
-      width = 170, height = 140
-    ),
+    {
+      force(reversibility_discrimination_file)
+      save_figure(
+        fig_state_dependent_dF(),
+        filename = "reversibility_state_df.pdf",
+        width = 170, height = 140
+      )
+    },
     format = "file"
   ),
 
   tar_target(
     fig_reversibility_potential_file,
-    save_figure(
-      fig_potential_pre_post(),
-      filename = "reversibility_potential.pdf",
-      width = 183, height = 120
-    ),
+    {
+      force(reversibility_discrimination_file)
+      save_figure(
+        fig_potential_pre_post(),
+        filename = "reversibility_potential.pdf",
+        width = 183, height = 120
+      )
+    },
     format = "file"
   ),
 
   tar_target(
     fig_reversibility_driver_loop_file,
-    save_figure(
-      fig_driver_loop(),
-      filename = "reversibility_driver_loop.pdf",
-      width = 170, height = 140
-    ),
+    {
+      force(reversibility_discrimination_file)
+      save_figure(
+        fig_driver_loop(),
+        filename = "reversibility_driver_loop.pdf",
+        width = 170, height = 140
+      )
+    },
     format = "file"
   ),
 
   tar_target(
     fig_reversibility_controls_file,
-    save_figure(
-      fig_controls_panel(),
-      filename = "reversibility_controls.pdf",
-      width = 183, height = 130
-    ),
+    {
+      force(reversibility_discrimination_file)
+      save_figure(
+        fig_controls_panel(),
+        filename = "reversibility_controls.pdf",
+        width = 183, height = 130
+      )
+    },
     format = "file"
   )
 )
