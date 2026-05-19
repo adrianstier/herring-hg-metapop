@@ -524,6 +524,29 @@ test_that("discrimination_table scores the four explanations with verdicts", {
   expect_equal(tab$verdict[tab$explanation == "hysteresis"], "supported")
 })
 
+test_that("discrimination_table output column is support_criteria (template, not observed evidence)", {
+  ev <- list(
+    nonlinear = TRUE, lambda_failed_to_relax = TRUE,
+    state_dependent_dF = TRUE, new_potential_well = TRUE,
+    effective_driver_returned = FALSE, loop_p = 0.02,
+    regime_best = "depensatory", artifact_reproduces = FALSE)
+  tab <- discrimination_table(ev)
+  # Column is renamed to make clear it is the SUPPORT TEMPLATE, not findings
+  expect_true("support_criteria" %in% names(tab))
+  expect_false("signatures" %in% names(tab))
+  # A refuted row STILL carries its support template (the conditions NOT met)
+  na_ev <- list(
+    nonlinear = TRUE, lambda_failed_to_relax = NA,
+    new_potential_well = TRUE, loop_p = 0.02,
+    effective_driver_returned = TRUE, artifact_reproduces = FALSE)
+  tab2 <- discrimination_table(na_ev)
+  ref_row <- tab2[tab2$verdict == "refuted", , drop = FALSE]
+  expect_true(nrow(ref_row) >= 1L)
+  expect_true(all(nzchar(ref_row$support_criteria)))
+  # Column carries a non-empty template string for every row regardless of verdict
+  expect_true(all(nzchar(tab$support_criteria)))
+})
+
 test_that("discrimination_table: NA ev fields -> indeterminate (not crash, not false supported/refuted)", {
   ev_na <- list(
     nonlinear = TRUE, lambda_failed_to_relax = NA,

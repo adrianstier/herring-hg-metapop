@@ -605,8 +605,16 @@ reversibility_controls <- function(seed, n = 70) {
 # ============================================================================
 
 #' Map the evidence bundle onto the four non-exclusive explanations (spec
-#' §2.4). Returns a verdict + the supporting signatures per row. Never emits
+#' §2.4). Returns a verdict + the `support_criteria` per row. Never emits
 #' "the system tipped"; honest negatives are first-class verdicts.
+#'
+#' COLUMN SEMANTICS — `support_criteria` is the fixed *template of conditions
+#' that WOULD support the verdict* for that explanation. It is NOT the observed
+#' evidence and must never be presented as findings. A "refuted" row still
+#' carries the support template (the conditions that were NOT met); read it as
+#' "this verdict would be supported IF <support_criteria>", not as a statement
+#' about what the data showed. Callers that need an evidence-accurate
+#' human-readable record must print the actual observed ev values separately.
 #'
 #' NA-robustness: any ev field that is NA or NULL is treated as missing
 #' evidence. Each explanation tracks which ev fields it depends on; if any
@@ -631,12 +639,12 @@ discrimination_table <- function(ev) {
   row <- function(expl, cond_sup, cond_ref, signs, ev_deps) {
     if (any(sapply(ev_deps, .is_missing))) {
       return(data.frame(explanation = expl, verdict = "indeterminate",
-                        signatures = signs, stringsAsFactors = FALSE))
+                        support_criteria = signs, stringsAsFactors = FALSE))
     }
     v <- if (isTRUE(cond_sup) && !isTRUE(cond_ref)) "supported"
          else if (isTRUE(cond_ref)) "refuted"
          else if (is.na(cond_sup)) "indeterminate" else "weak"
-    data.frame(explanation = expl, verdict = v, signatures = signs,
+    data.frame(explanation = expl, verdict = v, support_criteria = signs,
                stringsAsFactors = FALSE)
   }
   # Extract ev fields once (NULL -> NA where needed).
