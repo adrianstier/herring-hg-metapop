@@ -107,3 +107,14 @@ test_that("detect_candidate_transitions finds a known mean shift, ignores noise"
   expect_lte(nrow(cp0), 1L)                                   # ~no spurious cp
   expect_true(all(c("year","index","kind") %in% names(cp)))
 })
+
+test_that("survey_artifact_null is seed-deterministic and injects only a q-shift", {
+  truth <- rep(1000, 60)                           # NO resilience change
+  a <- survey_artifact_null(truth, era_break = 30,
+                            q = c(0.6, 1.0), seed = 42)
+  b <- survey_artifact_null(truth, era_break = 30,
+                            q = c(0.6, 1.0), seed = 42)
+  expect_identical(a, b)                            # determinism
+  expect_lt(mean(a[1:30]), mean(a[31:60]))          # q rises across the break
+  expect_equal(length(a), 60L)
+})

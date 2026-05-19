@@ -61,3 +61,14 @@ detect_candidate_transitions <- function(x, years, penalty = "MBIC") {
   data.frame(year = yy[idx], index = idx,
              kind = rep("meanvar_PELT", length(idx)))
 }
+
+#' Survey-method false-positive generator: a series with NO resilience change
+#' but the documented two-era catchability shift + lognormal obs error.
+#' Self-contained copy of the EWS-shared util (Phase 9 dedupe).
+survey_artifact_null <- function(truth, era_break, q, cv = 0.2, seed) {
+  set.seed(seed)
+  n <- length(truth)
+  qv <- ifelse(seq_len(n) <= era_break, q[1], q[2])
+  obs <- qv * truth * stats::rlnorm(n, -0.5 * cv^2, cv)
+  as.numeric(obs)
+}
