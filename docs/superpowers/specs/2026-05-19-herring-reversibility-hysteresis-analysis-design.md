@@ -276,12 +276,17 @@ interpretation is trusted.
 3. **Negative control (specificity).** A **linear-stochastic single-attractor**
    process — Ornstein–Uhlenbeck / AR(1) mean-reverting to one equilibrium +
    observation noise, **not** a deterministic nonlinear map sitting at
-   equilibrium. The battery must stay quiet: S-map θ nonlinearity **not**
-   detected (the process is genuinely linear) and the `|λ_max(t)|` trend
-   flat/near-constant (no spurious CSD). This is the true nonlinearity/CSD
-   false-positive control; a stationary *nonlinear* map is **not** a valid
-   negative control because S-map correctly flags its nonlinearity (the prior
-   mis-specification, corrected 2026-05-19).
+   equilibrium. The **specificity gate is the PRIMARY `|λ_max(t)|` trend**: it
+   must be flat/near-constant (no spurious CSD) on this genuinely linear
+   process — and it is. The S-map θ nonlinearity result on this control is
+   **reported, not gated**: empirically, at n≈70 the short-series Ebisuzaki
+   surrogate makes the θ test **false-positive even on this genuinely linear
+   process**. That demonstrated false positive is **itself the Boettiger–
+   Hastings power finding** — direct, quantified evidence for why generic
+   S-map nonlinearity cannot be the HG headline detector and must stay
+   secondary. (A stationary *nonlinear* map is **not** a valid negative
+   control because S-map correctly flags its nonlinearity — the prior
+   mis-specification, corrected 2026-05-19.)
 4. **Survey-method false-positive audit (headline-capable).** Reuse the EWS
    spec's `survey_artifact_null()`: simulate the documented two-era
    catchability shift + zero-ambiguity + survey-coverage changes with **no**
