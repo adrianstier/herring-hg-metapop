@@ -140,7 +140,7 @@ test_that("ews_mar1_eigen is degenerate/NA-robust (spec §8)", {
   expect_true(is.na(ews_mar1_eigen(matrix(1:6, ncol = 2))))     # too few rows
   expect_true(is.na(ews_mar1_eigen(matrix(rnorm(4), ncol = 1))))# <2 cols
   Xc <- matrix(rep(c(2, 5), each = 30), ncol = 2)               # constant cols
-  expect_true(is.na(ews_mar1_eigen(Xc)) || is.finite(ews_mar1_eigen(Xc)))
+  expect_true(is.na(ews_mar1_eigen(Xc)))                        # singular OLS -> NA
   expect_no_warning(ews_mar1_eigen(matrix(1:6, ncol = 2)))
   Xna <- matrix(rnorm(120), ncol = 2); Xna[5, 1] <- NA          # NA -> MARSS path
   v <- suppressWarnings(ews_mar1_eigen(Xna))

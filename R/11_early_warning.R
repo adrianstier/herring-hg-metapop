@@ -433,13 +433,13 @@ ews_mar1_eigen <- function(X) {
         MARSS::MARSS(t(X),
           model = list(B = "unconstrained", Q = "diagonal and unequal",
                        R = "zero", U = "zero"),
-          silent = TRUE, control = list(maxit = 500))
+          silent = TRUE, control = list(maxit = 500, safe = TRUE))
       ))
+      # NB: return() here exits ews_mar1_eigen(), not just the tryCatch
       if (isTRUE(fit$convergence != 0)) return(NA_real_)
-      # MARSS::coef is not exported; use the internal marssMLE method
-      suppressWarnings(suppressMessages(
-        matrix(MARSS:::coef.marssMLE(fit, type = "matrix")$B, p, p)
-      ))
+      # coef.marssMLE is a registered S3 method (not in MARSS NAMESPACE
+      # exports); plain coef() dispatches correctly
+      matrix(coef(fit, type = "matrix")$B, p, p)
     } else {
       Yr <- X[-1, , drop = FALSE]
       Zr <- X[-nrow(X), , drop = FALSE]
