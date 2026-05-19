@@ -256,3 +256,27 @@ test_that("data-layer builder writes both layers x both units with the right con
   expect_true(any(grepl("Tasu|Naden", L$observed_all11$site)))
   expect_true(all(is.finite(L$latent_core9$value)))             # natural scale, finite
 })
+
+# ── Task 3.1: generic aggregate EWS output-contract test ────────────────────
+test_that("generic aggregate EWS output: schema, layers, latent CI present", {
+  skip_if_not(file.exists(here::here("Output","diagnostics","ews_input_layers.rds")))
+  out <- system2("Rscript",
+    here::here("Code","11_ews_01_generic_aggregate.R"),
+    stdout = TRUE, stderr = TRUE)
+  f <- here::here("Output","diagnostics","ews_generic_aggregate.csv")
+  expect_true(file.exists(f))
+  d <- readr::read_csv(f, show_col_types = FALSE)
+  needed <- c("layer","unit","detrend","win_frac","year",
+              "ar1","ar1_lo","ar1_hi","variance","variance_lo","variance_hi",
+              "sd","skew","kurtosis","cv","densratio","returnrate")
+  expect_true(all(needed %in% names(d)))
+  expect_setequal(unique(d$layer), c("observed","latent"))
+  expect_setequal(unique(d$unit),  c("all11","core9"))
+  expect_true(any(is.finite(d$ar1)) && any(is.finite(d$variance)))
+  # latent CI is a real interval somewhere (hi > lo for at least some rows)
+  lat <- dplyr::filter(d, layer == "latent")
+  expect_true(any(lat$ar1_hi > lat$ar1_lo, na.rm = TRUE))
+  # observed point: lo == hi == point
+  obs <- dplyr::filter(d, layer == "observed")
+  expect_true(all(obs$ar1_lo == obs$ar1 | is.na(obs$ar1), na.rm = TRUE))
+})
