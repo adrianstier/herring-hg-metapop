@@ -343,6 +343,34 @@ ccm_drivers <- function(target, drivers, E, seed, libSizes = NULL) {
   do.call(rbind, res)
 }
 
+#' Nonparametric drift f(x)=E[dx|x], diffusion g2(x)=E[dx^2|x], effective
+#' potential U(x) = -cumsum(f/g2). Stable equilibria = minima of U.
+#' Sparse tail bins (< min_count obs) are excluded before integration; U is
+#' lightly smoothed with a 3-point running average to suppress noise-driven
+#' false inflections (standard Fokker-Planck landscape practice).
+potential_landscape <- function(x, n_bin = 25, min_count = 5) {
+  x <- as.numeric(x); dx <- diff(x); xc <- x[-length(x)]
+  br <- seq(min(xc), max(xc), length.out = n_bin + 1)
+  bin <- cut(xc, br, include.lowest = TRUE)
+  ctr <- (br[-1] + br[-length(br)]) / 2
+  cnt  <- as.numeric(table(bin))
+  drift <- tapply(dx, bin, mean)
+  diff2 <- tapply(dx^2, bin, mean); diff2[is.na(diff2) | diff2 == 0] <- NA
+  keep <- is.finite(drift) & is.finite(diff2) & cnt >= min_count
+  ctr_k <- ctr[keep]
+  U_raw <- -cumsum((drift[keep] / diff2[keep])) * mean(diff(br))
+  n_k <- length(U_raw)
+  if (n_k >= 3) {
+    U <- as.numeric(stats::filter(U_raw, rep(1/3, 3), sides = 2))
+    U[is.na(U)] <- U_raw[is.na(U)]
+  } else {
+    U <- U_raw
+  }
+  is_min <- which(c(FALSE, diff(sign(diff(U))) > 0, FALSE))
+  list(x = ctr_k, U = U, drift = as.numeric(drift[keep]),
+       minima = ctr_k[is_min])
+}
+
 #' Survey-method false-positive generator: a series with NO resilience change
 #' but the documented two-era catchability shift + lognormal obs error.
 #' Self-contained copy of the EWS-shared util (Phase 9 dedupe).

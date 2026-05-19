@@ -275,3 +275,17 @@ test_that("ccm_drivers: a degenerate per-driver rho vector yields strict=FALSE, 
   expect_false(is.na(r$converges_strict[r$driver == "flat"]))
   expect_true(r$converges_strict[r$driver == "d"])      # good driver unaffected
 })
+
+# ── Task 10: potential_landscape ──────────────────────────────────────────────
+test_that("potential_landscape: double-well -> 2 minima, single-well -> 1", {
+  set.seed(5)
+  bi <- numeric(4000); bi[1] <- 1
+  for (i in 2:4000) bi[i] <- bi[i-1] + (bi[i-1] - bi[i-1]^3)*0.05 +
+                              rnorm(1, 0, 0.25)
+  pb <- potential_landscape(bi, n_bin = 30)
+  expect_gte(length(pb$minima), 2L)
+  mono <- numeric(4000); mono[1] <- 0
+  for (i in 2:4000) mono[i] <- mono[i-1] - 0.1*mono[i-1] + rnorm(1, 0, 0.3)
+  pm <- potential_landscape(mono, n_bin = 30)
+  expect_equal(length(pm$minima), 1L)
+})
