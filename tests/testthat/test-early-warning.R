@@ -232,3 +232,27 @@ test_that("ews_detect_transitions strucchange-only mode (n < 2l+1) still detects
   expect_identical(names(ct), c("year", "method"))
   expect_true(nrow(ct) >= 1L && all(ct$method == "breakpoint"))
 })
+
+# ── Task 2.1: data-layer builder contract test ──────────────────────────────
+test_that("data-layer builder writes both layers x both units with the right contract", {
+  fit_path <- here::here("Data", "processed", "m1_stier_11_fit.rds")
+  skip_if_not(file.exists(fit_path), "m1_stier_11_fit.rds absent")
+  out <- system2("Rscript", here::here("Code", "11_ews_00_data_layers.R"),
+                  stdout = TRUE, stderr = TRUE)
+  f <- here::here("Output", "diagnostics", "ews_input_layers.rds")
+  expect_true(file.exists(f))
+  L <- readRDS(f)
+  expect_setequal(names(L),
+    c("observed_all11", "observed_core9", "latent_all11", "latent_core9"))
+  expect_true(all(c("year", "section", "site", "value", "latitude", "longitude")
+                  %in% names(L$observed_all11)))
+  expect_true(all(c("draw", "year", "section", "site", "value")
+                  %in% names(L$latent_core9)))
+  expect_gt(dplyr::n_distinct(L$latent_core9$draw), 1)          # real draws
+  expect_setequal(unique(L$observed_all11$year), 1951:2025)
+  expect_false(any(L$observed_all11$value == 0, na.rm = TRUE))  # zeros -> NA
+  # core-9 excludes the 2 sparse sections; all-11 includes them
+  expect_false(any(grepl("Tasu|Naden", L$observed_core9$site)))
+  expect_true(any(grepl("Tasu|Naden", L$observed_all11$site)))
+  expect_true(all(is.finite(L$latent_core9$value)))             # natural scale, finite
+})
