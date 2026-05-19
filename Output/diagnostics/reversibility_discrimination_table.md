@@ -1,25 +1,30 @@
 # Reversibility Discrimination Table
 
-Generated: 2026-05-19 21:08:07.19488
+Generated: 2026-05-19 21:25:50.527996
 Canonical seed: 20260519
 
-## Evidence Bundle
+## Observed Evidence (ACTUAL values — not the support template)
 
-| Evidence field              | Value |
-|----------------------------|-------|
-| nonlinear (S-map, all_11)   | FALSE    |
-| lambda_failed_to_relax      | TRUE (post-closure trend=0.0136) |
-| new_potential_well          | FALSE (0 post-closure minima) |
-| loop_p (u x biomass_all11)  | 0.0020 |
-| effective_driver_returned   | TRUE (post-closure median u=0.0000) |
-| artifact_reproduces         | FALSE |
+| Field | Observed value | Measurement status |
+|-------|----------------|---------------------|
+| nonlinear | FALSE | GENUINE (S-map theta test, n=75) |
+| lambda_failed_to_relax | TRUE (post-closure Jacobian trend=0.0136) | GENUINE (post-closure Jacobian trend, n=20) |
+| new_potential_well | NA (NOT ESTIMABLE at n=20) | NA: post-closure potential landscape NOT ESTIMABLE at n=20 (underpowered, degenerate contract) |
+| loop_p | 0.0020 | GENUINE (500-replicate survey-artifact null, full series) |
+| effective_driver_returned | TRUE (composite recent median=-0.155 vs roe-era median=0.149) | GENUINE (composite net pressure: recent>=2015 median=-0.155 vs roe-era 1972-2004 median=0.149; n_ref=33, n_recent=10) |
+| artifact_reproduces | FALSE | GENUINE (loop_null_p=0.0020; >=0.05 would mean artifact reproduces) |
 
 ## Discrimination Verdicts
 
-| Explanation          | Verdict        | Signatures |
-|---------------------|----------------|-----------|
-| hysteresis           | refuted        | nonlinear + |lambda| not relaxed + new well + sig. loop |
-| unreturned_driver    | refuted        | fishing removed but effective driver did not return |
-| long_transient       | weak           | restoring but slow; no new well; n.s. loop |
-| artifact             | refuted        | survey-artifact null reproduces the observed signal |
+`support_criteria` below is the TEMPLATE of conditions that WOULD support
+each verdict — it is NOT the observed evidence. Read a refuted row as
+"would be supported IF <support_criteria>". The observed values are in the
+table above.
+
+| Explanation | Verdict | Support criteria (template, not findings) |
+|-------------|---------|--------------------------------------------|
+| hysteresis | indeterminate | nonlinear + |lambda| not relaxed + new well + sig. loop |
+| unreturned_driver | refuted | fishing removed but effective driver did not return |
+| long_transient | indeterminate | restoring but slow; no new well; n.s. loop |
+| artifact | refuted | survey-artifact null reproduces the observed signal |
 
