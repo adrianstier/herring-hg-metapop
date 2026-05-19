@@ -289,3 +289,17 @@ test_that("potential_landscape: double-well -> 2 minima, single-well -> 1", {
   pm <- potential_landscape(mono, n_bin = 30)
   expect_equal(length(pm$minima), 1L)
 })
+
+# ── Task 11: regime_models + state_modality ───────────────────────────────────
+test_that("regime_models prefers depensation for an Allee recruit series; modality works", {
+  set.seed(9)
+  S <- seq(5, 200, length.out = 120)
+  R <- 300 * S^2 / (60^2 + S^2) * exp(rnorm(120, 0, 0.15))
+  mm <- regime_models(stock = S, recruit = R)
+  expect_equal(mm$best, "depensatory")
+  expect_true(all(c("model","aic") %in% names(mm$table)))
+  expect_true("best" %in% names(mm))
+  d <- state_modality(c(rnorm(200, -2, 0.4), rnorm(200, 2, 0.4)))
+  expect_lt(d$dip_p, 0.05)
+  expect_gte(state_modality(rnorm(400))$dip_p, 0.05)
+})

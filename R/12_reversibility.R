@@ -371,6 +371,29 @@ potential_landscape <- function(x, n_bin = 25, min_count = 5) {
        minima = ctr_k[is_min])
 }
 
+#' Beverton-Holt vs depensatory (Allee) recruitment model selection by AIC.
+regime_models <- function(stock, recruit) {
+  d <- data.frame(S = stock, R = recruit)
+  d <- d[is.finite(d$S) & is.finite(d$R) & d$S > 0 & d$R > 0, ]
+  bh <- try(stats::nls(R ~ a * S / (b + S), data = d,
+              start = list(a = max(d$R), b = stats::median(d$S))),
+            silent = TRUE)
+  dp <- try(stats::nls(R ~ a * S^2 / (b^2 + S^2), data = d,
+              start = list(a = max(d$R), b = stats::median(d$S))),
+            silent = TRUE)
+  sc <- function(m) if (inherits(m, "try-error")) Inf else stats::AIC(m)
+  tab <- data.frame(model = c("beverton_holt","depensatory"),
+                     aic = c(sc(bh), sc(dp)))
+  list(table = tab, best = tab$model[which.min(tab$aic)])
+}
+
+#' Hartigan dip test of multimodality.
+state_modality <- function(x) {
+  x <- x[is.finite(x)]
+  dt <- diptest::dip.test(x)
+  list(dip = unname(dt$statistic), dip_p = unname(dt$p.value))
+}
+
 #' Survey-method false-positive generator: a series with NO resilience change
 #' but the documented two-era catchability shift + lognormal obs error.
 #' Self-contained copy of the EWS-shared util (Phase 9 dedupe).
