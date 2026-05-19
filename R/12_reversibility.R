@@ -545,33 +545,49 @@ loop_null_pvalue <- function(driver, state, year, pivot, era_break, q,
 # Task 14: reversibility_controls
 # ============================================================================
 
-#' Power calibration. Positive: a metapopulation sliding toward a saddle-node
-#' (control parameter ramped) at HG cadence + noise. Negative: a stationary
-#' single-attractor metapopulation. The battery MUST detect the former and
-#' stay quiet on the latter before any HG interpretation is trusted.
+#' Power calibration (spec §5, redesigned 2026-05-19).
+#' POSITIVE: a system ramped through a saddle-node fold — cusp normal form
+#'   x_{t} = x_{t-1} + (r_t + x_{t-1} - x_{t-1}^3)*dt + noise, r ramped so the
+#'   upper branch annihilates and the trajectory transitions to the REAL lower
+#'   attractor (NO numerical clamp). Critical slowing: the local map multiplier
+#'   1+dt*f'(x*) -> 1 as the fold is approached, so |lambda_max| RISES pre-
+#'   transition. PRIMARY detector = the pre-transition |lambda_max| trend.
+#' NEGATIVE: a linear-stochastic single attractor — AR(1)/OU mean-reverting to
+#'   one equilibrium + noise (genuinely linear: S-map theta must NOT flag it;
+#'   |lambda_max| ~ constant -> ~zero trend).
+#' Generic S-map theta nonlinearity is SECONDARY and underpowered at n~70 —
+#'   reported (nl_p, nl_delta), never a hard pass/fail gate.
 reversibility_controls <- function(seed, n = 70) {
   set.seed(seed)
-  pos <- numeric(n); pos[1] <- 8
-  h <- seq(0, 2.2, length.out = n)
-  for (t in 2:n) pos[t] <- max(1e-3, pos[t-1] + 0.6*pos[t-1]*
-                     (1 - pos[t-1]/10) - h[t] + rnorm(1, 0, 0.15))
+  # POSITIVE — cusp f(x)=r+x-x^3 ramped through the fold (r: 0.7 -> -0.7),
+  # start on the upper stable branch; transitions to the lower real attractor.
+  r <- seq(0.7, -0.7, length.out = n)
+  pos <- numeric(n); pos[1] <- 1.30          # upper equilibrium near r=0.7
+  for (t in 2:n) pos[t] <- pos[t-1] +
+      (r[t] + pos[t-1] - pos[t-1]^3) * 0.10 + rnorm(1, 0, 0.03)
+  # NEGATIVE — OU/AR(1): x_t = x_{t-1} + k*(mu - x_{t-1}) + noise
+  # (k=0.30 -> AR coefficient 0.70; one stable equilibrium; linear).
   neg <- numeric(n); neg[1] <- 8
-  for (t in 2:n) neg[t] <- neg[t-1] + 0.6*neg[t-1]*
-                     (1 - neg[t-1]/10) - 1.0 + rnorm(1, 0, 0.15)
-  summ <- function(v) {
+  for (t in 2:n) neg[t] <- neg[t-1] + 0.30 * (8 - neg[t-1]) +
+                            rnorm(1, 0, 0.30)
+  # transition index = largest absolute one-step change (the catastrophic jump)
+  jump_idx <- function(v) which.max(abs(diff(v))) + 1L
+  summ <- function(v, ramped) {
     nl <- smap_nonlinearity(v, E = 2, n_surr = 100, seed = seed)
     je <- smap_jacobian_eigen(v, E = 2, theta = 2)
-    je_fin <- je[is.finite(je$lambda_max), ]
-    lambda_trend <- if (nrow(je_fin) < 3L) {
-      NA_real_
-    } else {
-      fit <- stats::lm(lambda_max ~ t, data = je_fin)
-      unname(stats::coef(fit)[2])
+    je <- je[is.finite(je$lambda_max), ]
+    if (ramped) {                       # CSD is the APPROACH: pre-transition only
+      jt <- jump_idx(v)
+      je <- je[je$t < jt - 1L, , drop = FALSE]
     }
-    list(nonlinearity_detected = nl$p_value < 0.05,
-         lambda_trend = lambda_trend)
+    lt <- if (nrow(je) < 3L) NA_real_ else
+            unname(stats::coef(stats::lm(lambda_max ~ t, data = je))[2])
+    list(nonlinearity_detected = isTRUE(nl$p_value < 0.05),
+         nl_p = nl$p_value, nl_delta = nl$delta,
+         lambda_trend = lt)
   }
-  list(positive = summ(pos), negative = summ(neg), seed = seed)
+  list(positive = summ(pos, ramped = TRUE),
+       negative = summ(neg, ramped = FALSE), seed = seed)
 }
 
 # ============================================================================

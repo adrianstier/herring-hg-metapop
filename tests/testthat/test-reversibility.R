@@ -481,12 +481,13 @@ test_that("loop_null_pvalue is seed-deterministic (same seed -> identical p)", {
 # Task 14: reversibility_controls
 # ============================================================================
 
-test_that("battery detects an approaching fold and stays quiet on a stationary system", {
+test_that("battery detects an approaching fold (CSD primary) and stays quiet on a linear-stochastic system", {
   ctl <- reversibility_controls(seed = 4, n = 70)
   expect_gt(ctl$positive$lambda_trend, 0)
-  expect_true(ctl$positive$nonlinearity_detected)
+  expect_gt(ctl$positive$lambda_trend, ctl$negative$lambda_trend)
+  expect_lt(abs(ctl$negative$lambda_trend), 5e-3)
+  expect_gte(ctl$positive$nl_delta, ctl$negative$nl_delta)
   expect_false(ctl$negative$nonlinearity_detected)
-  expect_lt(abs(ctl$negative$lambda_trend), abs(ctl$positive$lambda_trend))
 })
 
 # ============================================================================
