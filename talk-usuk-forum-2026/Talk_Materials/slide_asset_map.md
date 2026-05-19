@@ -1,9 +1,12 @@
-# Slide → Asset Map — 14-slide Royal Society spine
+# Slide → Asset Map — Royal Society spine (15 slides incl. S3.5)
 
-Created: 2026-05-18. Wires every slide in the **confirmed 14-slide architecture**
-(`talk_architecture_1_outline.html` / `_2_speaker_notes.html` /
-`_3_figures_layout.html`) to concrete asset files, with status, the
-claim/number guardrail that governs it, and the remaining action.
+Created: 2026-05-18. **Updated 2026-05-19** after the two-session slide-review
+pass (Adrian's 23-item list): spine is now **15 numbered slides incl. the new
+S3.5 wasp-waist slide**, plus the S9b animation and the backup deck. The deck
+is **ASSEMBLED & QA-passed** — `Herring_RoyalSociety_Stier_2026_clean.pptx`
+(canonical) built by `deck_build/build_pptx_native.js` from baked
+`deck_assets/*.png`. Wires every slide to concrete asset files, with status,
+the claim/number guardrail that governs it, and the remaining action.
 
 **Provenance rules (do not violate):**
 - Numbers: `numbers_provenance.md` — current portfolio metrics are `m1_stier_11`
@@ -22,14 +25,15 @@ Status legend: ✅ ready to drop in · 🟡 adapt/confirm · 🔨 build · 📷 
 
 ---
 
-## Act I — Cold open (slides 1–4)
+## Act I — Cold open (slides 1–4, incl. new S3.5)
 
 | # | Slide | Primary asset | Backup | Status | Action / guardrail |
 |---|---|---|---|---|---|
 | 1 | Title | `DRV-ASSETS 01-biology/herring_bait_ball_underwater_spiral.jpg` | `01-biology/herring_school_underwater_natgeo.jpeg` | 📷 | Pull from Drive; dark scrim under title block. Title: "Coupled Tipping Points in Pacific Herring & Haida Gwaii" |
 | 2 | The shore comes alive | `DRV-ASSETS 01-biology/aerial_herring_spawn_turquoise_water.jpeg` | `01-biology/herring_bait_ball_dramatic_underwater.jpeg` | 📷 | Full-bleed, image carries it |
-| 3 | The people and the fish | `DRV-ASSETS 09-collaborator-photos/salomon_roe_on_branch_harvest_from_boat.JPG` (k'aaw practice, Salomon-credited) | `08-field-photos/stier_herring_roe_on_kelp_closeup.jpeg` (Adrian's own — no consent issue) | 📷 | Credit photographer + Nation on slide. Stier field photo is the rights-safe fallback |
-| 4 | The baseline, measured | `Literature/McKechnie_et_al_2014_PNAS_Archaeological_Herring.pdf` (crop site map / NISP) | `DRV-ASSETS 12-publications/McKechnie_…pdf`; accessible-image candidate: [Mongabay 2014 "By the bones"](https://news.mongabay.com/2014/06/by-the-bones-herring-populations-were-superabundant-before-commercial-fisheries/) | 🟡 | Crop figure; **verify callouts** (171 sites, 435,777 bones, 49%, 99%, <±10%) against PDF text. ⚠️ Mongabay photo usable **only with explicit on-slide photo credit** — verify rights per the named photographer before embedding in the public deck |
+| 3 | The people and the fish | ✅ **PAIRED side-by-side** — `photos/s03_harvest.jpg` (Salomon, harvester w/ spawn-laden branch; used-with-permission, Council of the Haida Nation) \| `photos/s03_roe_closeup.jpg` (Stier roe-on-kelp macro, rights-safe) | `photos/s03_roe_macro.png` (alt) | ✅ | BUILT — paired cover-crop, dual on-slide credit. No distortion |
+| 3.5 | **Herring: the wasp-waist of the system** (NEW) | ✅ `photos/s03b_foodweb_oceana.png` (Oceana wasp-waist food-web: phyto→zoo→**herring**→fisheries/mammals/seabirds/people) | — | ✅⚠️ | BUILT — native dark slide, square diagram contained & centred. Oceana / M. Nowlin (Seattle Times) credit retained on-figure + on-slide caption. **Adrian cleared on-slide use — no rights blocker.** Sets up the food-web centre for non-experts; underpins S10 + S14 |
+| 4 | The baseline, measured | ✅ `photos/s04_mckechnie_map_crop.png` (McKechnie 2014 Fig-1 dual map panels: Haida Gwaii detail + NE-Pacific context, ▲ sites, red spawn) | `Literature/McKechnie_et_al_2014_PNAS_Archaeological_Herring.pdf` | ✅⚠️ | BUILT — **cut to 3 sourced stats** (171 sites / 49% of fish bones / <±10% over ~10,700 yr); dropped 435,777-bones & 99%-ubiquity rows. Bones chart + Mongabay photo **removed** (rights question retired with them). Caption credits McKechnie 2014 PNAS |
 
 ## Act II — Story & results (slides 5–10)
 
@@ -46,10 +50,10 @@ Status legend: ✅ ready to drop in · 🟡 adapt/confirm · 🔨 build · 📷 
 
 | # | Slide | Primary asset | Backup | Status | Action / guardrail |
 |---|---|---|---|---|---|
-| 11 | A system in a new state | text-led 3 columns (ecosystem / people / economy) | `figs/RebuildingPlan2024_Fig31_…png`, `…Fig32_…png` (value layer) | 🟡⚠️ | **Do NOT assert "$40M→$2.78M" (unsourced).** Use sourced wording: BC roe value peaked 1980s, high to mid-90s, declined 1995–2005 & post-2008 (Rebuilding Plan Figs 31/32, DFO fish slips). See `S8_landed_value_provenance.md` |
-| 12 | The decoupling — mgmt window | `herring_decoupling_figure.html` (**built 2026-05-18**; static, 4 layers/clocks) | `build1_spine.html` (animated 3-layer spine — S1/S2/S14 use) | ✅ | Built in the build1_spine visual language, rendered + decluttered. Governance track schematic (not an outcome metric; HG still below LRP). Remaining: export to slide image, choose light/dark to match deck |
-| 13 | What this case teaches | text-led; content from `S20_solution_payload.md` (measure structure / manage exposure / build data spine) | three take-homes in `talk_architecture_1_outline.html` slide 13 | ✅ | Typographic layout. Keep the spatial-EWS thread proposal-strength (ties to S9) |
-| 14 | Close | reuse slide 1/2 herring photo (reprise) | `DRV-ASSETS 01-biology/*` | 📷 | Closing line large + alone: "The herring is the example. The lesson is about thresholds." |
+| 11 | A system in a **new state** | ✅ native 3 columns (ecosystem / people / economy), reframed to new-state thesis | `figs/RebuildingPlan2024_Fig31_…png`, `…Fig32_…png` (value layer) | ✅⚠️ | BUILT — **only sourced numbers on-slide:** roe MARKET collapsed not just stock; BC roe value peaked 1980s→high to mid-90s→declined (Rebuilding Plan §5.2.3); SOK price **$62.88/lb (1995) → $11–14/lb now**; predator demand ≈239%; last HG roe fishery 2002. Kazunoko "why" in speaker notes only. **"$40M→$2.78M" NOT used.** Takeaway: "the value moved, it didn't vanish." (`S8_landed_value_provenance.md`) |
+| 12 | **Recovery is a moving target** | ✅ native **two-state slide** (OLD reference point, faded ✕ "unreachable" → arrow → NEW equilibrium card) | `deck_assets/12_decoupling.png` (old four-clocks baked image — now orphaned, kept as possible backup) | ✅⚠️ | BUILT — replaces the confusing four-clocks. Message: historical reference point unreachable; new lower equilibrium (~10% of historic, predator-dominated, DFO at LRP, ~0-t catch since 2002); resilience judged against the new state. Claim guard: ~10% / alt stable state = m1_stier_11 + DFO SR 2025/005; co-governance = institutional milestone, not an outcome metric |
+| 13 | **Three transferable lessons** | ✅ native; 3 lessons (scale / ecosystem-not-stock / allocate across triple bottom line) | `S20_solution_payload.md` | ✅⚠️ | BUILT — wording tightened; amber footer **re-pointed** from EWS-only → spatial-EWS proposal + recovery-redefined-against-new-state (ties to S9 + S12). Proposal-strength kept (no claim change) |
+| 14 | **Close** | ✅ `photos/s14_close.png` (herring bait-ball reprise) + scrim | `DRV-ASSETS 01-biology/*` | ✅ | BUILT — **"thresholds" framing dropped.** Closing line: "A century of change — *recalibrate what herring is.*" + sub-line tying back to S3.5 (herring as the food-web centre, not a stock to maximise). Forced clean 2-line break |
 
 ---
 
@@ -62,9 +66,12 @@ Status legend: ✅ ready to drop in · 🟡 adapt/confirm · 🔨 build · 📷 
    that S15/S19 provenance work targeted — the master index calls that "the
    differentiator for this audience." Confirm 14-slide is final, or fold the
    social beat back in.
-2. ~~S12 figure missing~~ **RESOLVED 2026-05-18** — `herring_decoupling_figure.html`
-   built (static, 4 layers/clocks, build1_spine visual language). Remaining:
-   export to slide image + light/dark theme choice.
+2. ~~S12 figure missing~~ ~~RESOLVED 2026-05-18 (decoupling HTML)~~
+   **SUPERSEDED 2026-05-19** — Adrian's review found the four-clocks
+   confusing. S12 was **rebuilt as a native two-state "Recovery is a moving
+   target" slide** in `build_pptx_native.js` (no figure export needed).
+   `herring_decoupling_figure.html` / `deck_assets/12_decoupling.png` are
+   orphaned but kept as a possible backup.
 3. **S10 figure ✅ BUILT** (`s10_predators_returned.png`, deck-styled, claim-safe,
    chosen by Adrian = consumption + pressure over the humpback-trajectory
    alternative). **Remaining S10 gap: the humpback-feeding photo** the figure

@@ -65,7 +65,7 @@ any checkout — no hardcoded absolute paths.
 |---|---|
 | `redesign_figs.py` | Python/matplotlib data figures for S8, S9, S10, S12. Renders 3840×1500 unframed PNGs into `deck_assets/_originals/`. |
 | `preprocess_figures.py` | Pillow chrome bake. Top band = rust mono kicker + serif title. Bottom band = amber left-rule + takeaway + mono provenance. Output 3840×2160 → `deck_assets/`. |
-| `build_pptx_native.js` | `pptxgenjs` deck assembler. S1–S4, S11, S13–S14 are native pptx text. S5–S10, S12, S16 (DFO backup) are full-bleed images from the baked PNGs. |
+| `build_pptx_native.js` | `pptxgenjs` deck assembler. Native pptx slides: S1–S3, **S3.5**, S4, S9b (video), S11, **S12** (two-state), S13, S14, Q&A divider. Full-bleed baked PNGs: S5–S10, B-DFO, SB1–SB7. |
 | `deck_assets/` | Slide-ready PNGs the build script ingests. |
 | `deck_assets/_originals/` | Untouched figure sources. Re-baking always starts from here. |
 | `build_pptx.js` | Legacy builder, kept for provenance. Do not run. |
@@ -84,29 +84,43 @@ any checkout — no hardcoded absolute paths.
 - Provenance footer: DejaVu Sans Mono in `--ink-soft`
 
 The .pptx renders pixel-identical on any machine because figure slides are
-baked images (no live font substitution). S1–S4, S11, S13–S15 are native text
-boxes using venue-safe Georgia / Calibri / Consolas.
+baked images (no live font substitution). The native slides (S1–S3, S3.5, S4,
+S9b, S11, S12, S13, S14, Q&A divider) use venue-safe Georgia / Calibri /
+Consolas.
 
 ## Slide map
 
-1. Title (native, photo + scrim)
-2. Shore comes alive (native, video poster + amber tag)
-3. People & fish (native, photo + scrim)
-4. Baseline, measured (native, light background)
-5. Two collapses — biomass time series (baked image)
-6. Ocean productivity — PDO effect (baked image)
-7. Fishing pressure — scale mismatch (baked image)
-8. **Population growth collapsed — diverging bars** (baked image)
-9. **The portfolio eroded — before/after** (baked image)
-10. **The predators came back — stacked area** (baked image)
-11. A system in a new state (native, 3-column)
-12. **Four layers, four clocks — timeline** (baked image)
-13. Three transferable lessons (native)
-14. Close (native, photo + scrim)
-15. Q&A backup divider (native)
-16. DFO spawning biomass (baked image, backup)
+**Spine (15 numbered slides incl. S3.5) + S9b animation, then the backup deck.**
+Updated 2026-05-19 (Session-B native lane: S3.5 added; S4/S11/S13/S14 reframed;
+S12 converted from baked image → native two-state slide).
 
-Slides marked **bold** were redesigned with new visualizations.
+1. S1 — Title (native, photo + scrim)
+2. S2 — Shore comes alive (native, video poster + amber tag)
+3. S3 — People & the fish (native, **paired** photos: harvest | roe macro + scrim)
+4. **S3.5 — Herring: the wasp-waist of the system** (native, Oceana diagram + on-fig/caption credit) — *NEW*
+5. S4 — The baseline, measured (native, light bg; **3 stats** + McKechnie dual-panel site map)
+6. S5 — Two collapses — biomass time series (baked image)
+7. S6 — Ocean productivity — PDO effect (baked image)
+8. S7 — Fishing pressure — scale mismatch (baked image)
+9. S8 — Population growth collapsed — diverging bars (baked image)
+10. S9 — The portfolio eroded — before/after (baked image)
+11. S9b — async→sync portfolio **animation** (native, video; punctuates S9)
+12. S10 — The predators came back — stacked area (baked image)
+13. **S11 — A system in a new state** (native, 3-column; new-state thesis, sourced roe value)
+14. **S12 — Recovery is a moving target** (native, two-state OLD✕→NEW card; *was* the baked four-clocks image)
+15. **S13 — Three transferable lessons** (native; tightened, footer re-pointed)
+16. **S14 — Close** (native, photo + scrim; "A century of change — recalibrate what herring is")
+
+Backup deck (after S14, hidden until pulled):
+
+17. Q&A backup divider (native)
+18. B-DFO — DFO spawning biomass at LRP (baked image)
+19–25. SB1–SB7 — portfolio eras / predator species / climate-Blob / m1-vs-DFO /
+    co-governance timeline / cod-vs-herring / EWS-as-hypothesis (baked images)
+
+Slides marked **bold** were redesigned/reframed in the 2026-05-19 review pass.
+`deck_assets/12_decoupling.png` (old four-clocks) is now orphaned but kept as a
+possible backup since S12 went native.
 
 ## When you need to change something
 
@@ -165,3 +179,14 @@ a different style.
   pipeline is canonical for ALL talk figures incl. future Q&A/backup slides;
   R/ggplot2 is the parallel paper/analysis track, preserved, not the talk
   source (see "Status & figure policy" at top)
+- 2026-05-19 — **slide-review pass (2 sessions, Adrian's 23-item list).**
+  Session-A (figures): #1 stretch fix (aspect-preserving bake), S5–S10
+  reworked + baked. Session-B (native lane, `build_pptx_native.js`): S3 →
+  paired photos; **new S3.5 wasp-waist food-web** (Oceana diagram); S4 → 3
+  stats + McKechnie site map; S11 → new-state thesis with primary-sourced roe
+  value ($62.88/lb 1995→$11–14/lb, kazunoko mechanism in notes); **S12 →
+  native two-state "Recovery is a moving target"** (old four-clocks baked
+  image orphaned); S13 lessons tightened + footer re-pointed; S14 close
+  reframed off "thresholds" → "A century of change — recalibrate what
+  herring is". All claim-checked vs `talk-model-claim-control-sheet.md` /
+  `numbers_provenance.md` / `S8_landed_value_provenance.md`.

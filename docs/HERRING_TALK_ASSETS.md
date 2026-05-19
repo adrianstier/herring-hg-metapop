@@ -208,7 +208,7 @@ tracked. **This is the home for the talk outline / drafts / deck.**
 | FRM-AGENDA | pdf | Draft forum agenda (use `*_readable.pdf`) | `talk-usuk-forum-2026/Forum_Documents/` | data | confirm slot/session details |
 | FRM-TIMELINE | html | Interactive HG herring timeline | `talk-usuk-forum-2026/Talk_Materials/herring_haida_gwaii_timeline.html` | raw-material | narrative/timeline device |
 | FRM-TRIP | html | Trip dossier (flights, programme, forms, contacts) | `talk-usuk-forum-2026/Trip_Dossier/` | local-only | logistics — not talk content; gitignored because private |
-| FRM-DOSS | html/csv | **Attendee dossier — all 50 other attendees** | `talk-usuk-forum-2026/Attendee_Dossier/` | local-only | who's-in-the-room prep: booklet photo + affiliation + top-3 most-cited first/last-author papers per person. Open `attendee_dossier.html` (self-contained, searchable); `attendee_dossier.csv` is the structured DB. **CONFIDENTIAL — built from the "do not circulate" participant list; gitignored, never commit/publish.** Provenance/method in its `README.md`; 10 hand-verified disambiguations in `VERIFICATION.md`. Refresh: `python3 pull_papers.py && python3 build_dossier.py` |
+| FRM-DOSS | html/csv | **Attendee dossier + networking tool — all 49 other attendees** (booklet v3) | `talk-usuk-forum-2026/Attendee_Dossier/` | local-only | who's-in-the-room prep + networking strategy. Built from `US-UK_Forum_2026_programme_booklet_v3.pdf` (canonical; v3 dropped Beatriz Arellano Nava → 49, retimed Mon reception 18:30–20:30 and Wed Session 6). `attendee_dossier.html` (self-contained): priority-ranked photo gallery (tiers Must/Strategic/Field/Context), per-person *why-talk / opener hook / talk-resonance*, a localStorage trip tracker (spoke/follow-up/notes + export), and an itinerary tab with networking windows + your ★ talk slot. Photos verified page-by-page vs the booklet (position-based mapping; an earlier extraction-order bug that scrambled multi-photo pages was fixed; ver1-verified photos retained since v3 headshots are identical). `attendee_dossier.csv` = structured DB. **CONFIDENTIAL — built from the "do not circulate" participant list; gitignored, never commit/publish.** Method/provenance in `README.md`; disambiguations in `VERIFICATION.md`. Refresh: `python3 pull_papers.py && python3 build_dossier.py` (roster/networking/schedule are curated, edit by hand) |
 | FRM-PAPERS | pdf/doc | Curated cited papers + acquisition log (PDFs gitignored) | `talk-usuk-forum-2026/Reference_Papers/` | raw-material | Doherty 2025, Ingeman 2019, Levin 2020, Okamoto 2020, Samhouri 2017, Selkoe 2015, Shelton 2014, Stier 2016, Stier 2020, plus newly acquired forum papers; source state in `ACQUISITION_LOG.md` |
 | FRM-WORK | dir | **Talk outline / slide drafts / deck go here** | `talk-usuk-forum-2026/Talk_Materials/` | draft | working talk build location |
 | FRM-PROD | doc | **Canonical 20-slide production plan** | `talk-usuk-forum-2026/Talk_Materials/talk_production_plan.md` | ready | current slide sequence, treatment rhythm, asset wiring, backup/Q&A slides |
@@ -711,3 +711,57 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
   honestly-flagged thin/non-academic records). Method in its `README.md`,
   changes in `VERIFICATION.md`. Not talk content — networking prep only;
   fully firewalled from the core analysis.
+- **2026-05-19 (slide-review pass — 23-item list, 2 parallel Claude
+  sessions):** Adrian did a slide-by-slide review → 23 actionable items
+  captured in
+  `talk-usuk-forum-2026/Talk_Materials/SLIDE_REVISION_TODO_2026-05-19.md`
+  (the live cross-session coordination board). Two sessions split the work:
+  - **Session-A (figure pipeline):** fixed the systemic image-stretch bug
+    (`preprocess_figures.py` `bake()` now aspect-preserving, no distortion);
+    reworked + re-baked S5–S10 (S5 big amber closure labels + ★; S6 2-panel
+    PDO↕biomass "necessary not sufficient"; S7 single-halo + compact HCR
+    label; S8 "9 of 11 declined"; S9 real-data 10-yr synchrony line + 1994
+    ★; S10 ≈239% callout moved out of overlap). Figure lane QA-passed.
+  - **Session-B (native-slide lane, `deck_build/build_pptx_native.js`):**
+    S3 → paired side-by-side photos (harvest | roe macro, dual credit);
+    **NEW S3.5 "Herring: the wasp-waist of the system"** (Oceana food-web
+    diagram, on-fig + caption credit — Adrian cleared on-slide use, no
+    rights blocker); S4 → cut to 3 sourced stats + McKechnie dual-panel
+    site map (bones chart + Mongabay photo dropped); S11 → new-state thesis
+    with **only primary-sourced** roe value (SOK $62.88/lb 1995 → $11–14/lb;
+    BC roe value peaked 1980s per Rebuilding Plan §5.2.3; kazunoko mechanism
+    in speaker notes only — "$40M→$2.78M" NOT used); **S12 → native
+    two-state "Recovery is a moving target"** slide (replaces the confusing
+    four-clocks; `12_decoupling.png` orphaned, kept as possible backup);
+    S13 → lessons tightened + amber footer re-pointed to spatial-EWS +
+    new-state thesis; S14 → close reframed off "thresholds" → "A century of
+    change — recalibrate what herring is" (ties back to S3.5). All on-slide
+    claims/numbers checked against `docs/talk-model-claim-control-sheet.md`,
+    `numbers_provenance.md`, `S8_landed_value_provenance.md`.
+  - **Spine is now 15 numbered slides (incl. S3.5)** + S9b animation +
+    backup deck (Q&A divider, B-DFO, SB1–SB7). Native slides: S1–S3, S3.5,
+    S4, S9b, S11, S12, S13, S14, Q&A divider; baked images: S5–S10,
+    B-DFO, SB1–SB7.
+  - **Deck ASSEMBLED & QA-passed** (`node build_pptx_native.js`):
+    `talk-usuk-forum-2026/Talk_Materials/Herring_RoyalSociety_Stier_2026_clean.pptx`
+    is canonical; dated checkpoint
+    `Herring_RoyalSociety_Stier_2026_claude-code_20260519-093728.pptx`.
+    Session-B ran a full PDF visual-QA (LibreOffice→PDF, every changed
+    slide rasterized & inspected; caught + fixed a dangling "is." on S14).
+    Final independent cross-QA of S11–S14 handed to Session-A per the board
+    handshake; doc updates (this entry, `deck_build/README.md` slide map,
+    `slide_asset_map.md`) done by Session-B at Adrian's direction. Next:
+    Session-A cross-QA → final deck to scientific.meetings@royalsociety.org
+    (talk Wed 2026-05-20).
+- **2026-05-19 (dossier networking layer + v3 booklet):** FRM-DOSS upgraded
+  from a reference into a networking tool — priority tiers (Must/Strategic/
+  Field/Context), per-person why-talk + opener hook + talk-resonance,
+  localStorage trip tracker (spoke/follow-up/notes + export), and an itinerary
+  tab with networking windows. Earlier same day: caught + fixed a photo-mapping
+  bug (pdfimages emitted page images in object, not reading, order — multi-photo
+  pages were scrambled; now position-mapped via PyMuPDF and verified page-by-
+  page against the booklet). Then **booklet v3** arrived and was made canonical:
+  Beatriz Arellano Nava removed (49 attendees), Mon reception 18:30–20:30, Wed
+  Session 6 Wilhelm 11:00/Laybourn 11:10/Panel 11:20; v3 OCR/typo regressions
+  not adopted; ver1-verified photos retained (identical headshots). Rebuilt,
+  QA'd, gitignored. Not talk content — networking prep only.
