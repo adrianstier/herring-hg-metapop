@@ -247,3 +247,31 @@ test_that("ccm_drivers is seed-deterministic (spec §8 recorded-seed contract)",
                    E = 3, seed = 11)
   expect_identical(a, b)
 })
+
+test_that("ccm_drivers guards a too-short target with a 0-row contract frame", {
+  # spec §7: never crash / never a silent number. cor.test() THROWS (not warns)
+  # on a < 3-point rho vector, so suppressWarnings cannot protect it.
+  r <- ccm_drivers(target = rnorm(10),
+                   drivers = list(drv = rnorm(10)), E = 3, seed = 1)
+  expect_equal(nrow(r), 0L)
+  expect_true(all(c("driver", "rho_min", "rho_max",
+                    "converges_heuristic", "converges_strict") %in% names(r)))
+})
+
+test_that("ccm_drivers: a degenerate per-driver rho vector yields strict=FALSE, not NA/error", {
+  # A constant driver makes CCM rho degenerate (no rank variation) -> cor.test
+  # would error; converges_strict must be a real logical FALSE, and a good
+  # driver in the same call must still be evaluated normally.
+  set.seed(11)
+  d <- numeric(300); d[1] <- 0.3
+  for (i in 2:300) d[i] <- d[i-1] * (3.7 - 3.7 * d[i-1])
+  n <- numeric(300); n[1] <- 0.2
+  for (i in 2:300) n[i] <- n[i-1] * (3.6 - 3.6 * n[i-1] - 0.3 * d[i-1])
+  flat <- rep(0.5, 300)                       # constant -> degenerate rho
+  r <- ccm_drivers(target = n[51:300],
+                   drivers = list(d = d[51:300], flat = flat[51:300]),
+                   E = 3, seed = 11)
+  expect_false(r$converges_strict[r$driver == "flat"])
+  expect_false(is.na(r$converges_strict[r$driver == "flat"]))
+  expect_true(r$converges_strict[r$driver == "d"])      # good driver unaffected
+})

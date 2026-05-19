@@ -83,6 +83,9 @@ detect_candidate_transitions <- function(x, years, penalty = "MBIC") {
 #'          rho_by_E (data.frame with columns E and rho from rEDM::EmbedDimension).
 #'          Spec §7 short-series guard: < 2*E_max + 2 finite points returns the
 #'          NA-shaped contract (E_best=NA, rho_best=NA, 0-row rho_by_E).
+#' Boundary note: at n just above the 2*E_max+2 guard, rEDM emits "nan found"
+#' warnings and the largest-E rho values are unreliable; real HG section
+#' lengths (~30-50 obs) are well clear of this boundary.
 edm_embed <- function(x, E_max = 8, theiler = 1) {
   if (sum(is.finite(x)) < 2L * E_max + 2L) {
     return(list(
@@ -270,12 +273,33 @@ smap_jacobian_eigen <- function(x, E, theta = 2) {
 #' @return  data.frame: driver (character), rho_min, rho_max,
 #'          converges_strict (logical; the authoritative gate),
 #'          converges_heuristic (logical; non-authoritative legacy Δρ>0.1 flag).
+#'          Spec §7 short-series guard: returns a 0-row frame with all five
+#'          columns present (never crash / silent number) when the target is
+#'          too short to (a) embed at E (< 2*E + 2 finite points, mirrors the
+#'          other EDM guards) or (b) yield a >=3-point CCM convergence
+#'          trajectory (the Kendall monotonicity test's precondition).
 ccm_drivers <- function(target, drivers, E, seed, libSizes = NULL) {
   set.seed(seed)
+  contract0 <- function() data.frame(
+    driver              = character(0),
+    rho_min             = numeric(0),
+    rho_max             = numeric(0),
+    converges_strict    = logical(0),
+    converges_heuristic = logical(0)
+  )
+  n_fin <- sum(is.finite(target))
+  if (n_fin < 2L * E + 2L) return(contract0())
   n <- length(target)
   # Max lib size: n - E - 1 (rEDM requires libSize < n - E - Tp, Tp=0 default)
   max_lib <- n - E - 1L
   step    <- max(5L, floor(max_lib / 10L))
+  # CCM convergence needs >= 3 library sizes for a computable Kendall test of
+  # rho-vs-libSize; below that the auto trajectory is degenerate -> 0-row.
+  if (is.null(libSizes) &&
+      (max_lib < E + 2L ||
+       length(seq(E + 2L, max_lib, by = step)) < 3L)) {
+    return(contract0())
+  }
   if (is.null(libSizes)) libSizes <- paste(E + 2L, max_lib, step)
   res <- lapply(names(drivers), function(nm) {
     df <- data.frame(
@@ -299,8 +323,13 @@ ccm_drivers <- function(target, drivers, E, seed, libSizes = NULL) {
     rho  <- cm[[rcol]]                     # ascending libSize trajectory
     rho_max <- rho[length(rho)]
     # converges_strict: monotone rho-vs-libSize (Kendall) AND rho floor.
-    kendall_p <- suppressWarnings(
-      stats::cor.test(seq_along(rho), rho, method = "kendall")$p.value
+    # cor.test() THROWS (not warns) on a degenerate rho vector (< 3 finite,
+    # no rank variation); tryCatch -> NA p.value -> strict = FALSE (never NA).
+    kendall_p <- tryCatch(
+      suppressWarnings(
+        stats::cor.test(seq_along(rho), rho, method = "kendall")$p.value
+      ),
+      error = function(e) NA_real_
     )
     converges_strict <- isTRUE(kendall_p < 0.05) && isTRUE(rho_max > 0.2)
     data.frame(
