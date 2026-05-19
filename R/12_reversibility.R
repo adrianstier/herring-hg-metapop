@@ -349,11 +349,13 @@ ccm_drivers <- function(target, drivers, E, seed, libSizes = NULL) {
 #' lightly smoothed with a 3-point running average to suppress noise-driven
 #' false inflections (standard Fokker-Planck landscape practice).
 #' @return Degenerate contract: returns the 4-name list with zero-length
-#'   x/U/drift/minima (never crashes) when < 2 finite values or constant x.
+#'   x/U/drift/minima (never crashes) when < 3 finite values or constant x
+#'   (the estimator needs xc = x[-length(x)] of length >= 2, i.e. >= 3 finite x;
+#'   2 distinct finite values collapse seq() breaks and crash cut()).
 potential_landscape <- function(x, n_bin = 25, min_count = 5) {
   x <- as.numeric(x)
   x_fin <- x[is.finite(x)]
-  if (length(x_fin) < 2L || min(x_fin) == max(x_fin)) {
+  if (length(x_fin) < 3L || min(x_fin) == max(x_fin)) {
     return(list(x = numeric(0), U = numeric(0),
                 drift = numeric(0), minima = numeric(0)))
   }
@@ -411,7 +413,10 @@ regime_models <- function(stock, recruit) {
 state_modality <- function(x) {
   x <- x[is.finite(x)]
   if (length(x) < 4L) return(list(dip = NA_real_, dip_p = NA_real_))
-  dt <- diptest::dip.test(x)
+  # Tied/duplicate values make diptest call regularize.values(), which warns
+  # "collapsing to unique 'x' values"; benign for the dip statistic (the ECDF
+  # is unaffected) -> suppress so it doesn't escape as a pipeline signal.
+  dt <- suppressWarnings(diptest::dip.test(x))
   list(dip = unname(dt$statistic), dip_p = unname(dt$p.value))
 }
 

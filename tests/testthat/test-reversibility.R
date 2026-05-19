@@ -324,24 +324,39 @@ test_that("potential_landscape: constant / all-NA / NA-embedded input -> empty c
   expect_silent(pe <- potential_landscape(bi_na, n_bin = 30))
   expect_named(pe, nm)
   expect_gte(length(pe$minima), 2L)            # contract preserved after NA-strip
+
+  # Exactly-2-distinct-finite window: x_fin = c(3,5) (len 2) -> xc len 1 ->
+  # seq(3,3,...) -> cut() 'breaks' are not unique crash. Needs >= 3 finite x
+  # (estimator needs xc length >= 2). Must hit the empty 4-name contract.
+  expect_silent(p2 <- potential_landscape(c(NA, 3, 5, NA)))
+  expect_named(p2, nm)
+  expect_length(p2$x, 0L); expect_length(p2$U, 0L); expect_length(p2$minima, 0L)
+
+  expect_silent(p2b <- potential_landscape(c(3, 5)))
+  expect_named(p2b, nm)
+  expect_length(p2b$x, 0L); expect_length(p2b$U, 0L)
+  expect_length(p2b$minima, 0L)
 })
 
-test_that("regime_models: <3 finite positive pairs -> NA contract, no crash; one-model-fail still selects", {
+test_that("regime_models: <3 finite positive pairs -> NA contract, no crash; AIC picks better-fitting model when both converge", {
   expect_silent(r0 <- regime_models(stock = c(1, NA, -2),
                                     recruit = c(5, 3, NA)))
   expect_true(all(c("model", "aic") %in% names(r0$table)))
   expect_true(is.na(r0$best))
   expect_true(all(is.na(r0$table$aic)))
 
-  # One-model-fails sanity: a clean Beverton-Holt series where the depensatory
-  # nls may fail to converge -> the converging model must still be selected
-  # (which.min ignores NA: which.min(c(NA, 3)) == 2 in R).
+  # AIC-selection sanity: a clean Beverton-Holt series where BOTH nls
+  # converge (BH AIC ~ 744.6, depensatory ~ 779.7) -> best must be the
+  # lower-AIC (better-fitting) model, not a degenerate/NA path. The
+  # both-nls-fail NA path is covered by the <3-rows guard above + the
+  # sc()->NA logic (which.min ignores NA: which.min(c(NA, 3)) == 2).
   set.seed(21)
   S <- seq(5, 200, length.out = 80)
   R <- 400 * S / (30 + S) * exp(rnorm(80, 0, 0.08))
   rb <- regime_models(stock = S, recruit = R)
   expect_false(is.na(rb$best))
-  expect_true(rb$best %in% c("beverton_holt", "depensatory"))
+  expect_false(any(is.na(rb$table$aic)))       # both fits converged
+  expect_equal(rb$best, rb$table$model[which.min(rb$table$aic)])
 })
 
 test_that("state_modality: <4 / all-NA input -> NA dip + NA p, no crash", {
@@ -354,4 +369,12 @@ test_that("state_modality: <4 / all-NA input -> NA dip + NA p, no crash", {
   expect_named(s2, c("dip", "dip_p"))
   expect_identical(s2$dip, NA_real_)
   expect_identical(s2$dip_p, NA_real_)
+
+  # Tied values trigger a benign diptest regularize.values "collapsing to
+  # unique 'x' values" warning; the suite asserts WARN 0 and the downstream
+  # pipeline treats warnings as signals, so it must be suppressed (not escape).
+  expect_silent(s3 <- state_modality(c(1, 1, 2, 2, 3, 3, 4, 4)))
+  expect_named(s3, c("dip", "dip_p"))
+  expect_true(is.finite(s3$dip))
+  expect_true(is.finite(s3$dip_p))
 })
