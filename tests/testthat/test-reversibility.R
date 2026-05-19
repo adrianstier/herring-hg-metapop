@@ -303,3 +303,55 @@ test_that("regime_models prefers depensation for an Allee recruit series; modali
   expect_lt(d$dip_p, 0.05)
   expect_gte(state_modality(rnorm(400))$dip_p, 0.05)
 })
+
+# ── Phase 4 degenerate-input guards (spec §7: emit NA + shape, never crash) ────
+test_that("potential_landscape: constant / all-NA / NA-embedded input -> empty contract, no crash", {
+  nm <- c("x", "U", "drift", "minima")
+  expect_silent(pc <- potential_landscape(rep(5, 50)))
+  expect_named(pc, nm)
+  expect_length(pc$x, 0L); expect_length(pc$U, 0L); expect_length(pc$minima, 0L)
+
+  expect_silent(pn <- potential_landscape(rep(NA_real_, 50)))
+  expect_named(pn, nm)
+  expect_length(pn$x, 0L); expect_length(pn$U, 0L); expect_length(pn$minima, 0L)
+
+  # Finite series with embedded NAs: NAs stripped, estimator still runs (no crash)
+  set.seed(5)
+  bi <- numeric(4000); bi[1] <- 1
+  for (i in 2:4000) bi[i] <- bi[i-1] + (bi[i-1] - bi[i-1]^3)*0.05 +
+                              rnorm(1, 0, 0.25)
+  bi_na <- bi; bi_na[c(10, 500, 2500)] <- NA_real_
+  expect_silent(pe <- potential_landscape(bi_na, n_bin = 30))
+  expect_named(pe, nm)
+  expect_gte(length(pe$minima), 2L)            # contract preserved after NA-strip
+})
+
+test_that("regime_models: <3 finite positive pairs -> NA contract, no crash; one-model-fail still selects", {
+  expect_silent(r0 <- regime_models(stock = c(1, NA, -2),
+                                    recruit = c(5, 3, NA)))
+  expect_true(all(c("model", "aic") %in% names(r0$table)))
+  expect_true(is.na(r0$best))
+  expect_true(all(is.na(r0$table$aic)))
+
+  # One-model-fails sanity: a clean Beverton-Holt series where the depensatory
+  # nls may fail to converge -> the converging model must still be selected
+  # (which.min ignores NA: which.min(c(NA, 3)) == 2 in R).
+  set.seed(21)
+  S <- seq(5, 200, length.out = 80)
+  R <- 400 * S / (30 + S) * exp(rnorm(80, 0, 0.08))
+  rb <- regime_models(stock = S, recruit = R)
+  expect_false(is.na(rb$best))
+  expect_true(rb$best %in% c("beverton_holt", "depensatory"))
+})
+
+test_that("state_modality: <4 / all-NA input -> NA dip + NA p, no crash", {
+  s1 <- state_modality(rep(NA_real_, 20))
+  expect_named(s1, c("dip", "dip_p"))
+  expect_identical(s1$dip, NA_real_)
+  expect_identical(s1$dip_p, NA_real_)
+
+  s2 <- state_modality(c(1, 2, 3))
+  expect_named(s2, c("dip", "dip_p"))
+  expect_identical(s2$dip, NA_real_)
+  expect_identical(s2$dip_p, NA_real_)
+})

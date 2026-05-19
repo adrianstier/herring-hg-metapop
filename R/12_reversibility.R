@@ -348,8 +348,17 @@ ccm_drivers <- function(target, drivers, E, seed, libSizes = NULL) {
 #' Sparse tail bins (< min_count obs) are excluded before integration; U is
 #' lightly smoothed with a 3-point running average to suppress noise-driven
 #' false inflections (standard Fokker-Planck landscape practice).
+#' @return Degenerate contract: returns the 4-name list with zero-length
+#'   x/U/drift/minima (never crashes) when < 2 finite values or constant x.
 potential_landscape <- function(x, n_bin = 25, min_count = 5) {
-  x <- as.numeric(x); dx <- diff(x); xc <- x[-length(x)]
+  x <- as.numeric(x)
+  x_fin <- x[is.finite(x)]
+  if (length(x_fin) < 2L || min(x_fin) == max(x_fin)) {
+    return(list(x = numeric(0), U = numeric(0),
+                drift = numeric(0), minima = numeric(0)))
+  }
+  x <- x_fin   # estimator is index-free; strip NAs (same idiom as ews_spatial_* in R/11)
+  dx <- diff(x); xc <- x[-length(x)]
   br <- seq(min(xc), max(xc), length.out = n_bin + 1)
   bin <- cut(xc, br, include.lowest = TRUE)
   ctr <- (br[-1] + br[-length(br)]) / 2
@@ -372,24 +381,36 @@ potential_landscape <- function(x, n_bin = 25, min_count = 5) {
 }
 
 #' Beverton-Holt vs depensatory (Allee) recruitment model selection by AIC.
+#' @return Degenerate contract: when < 3 finite positive (S,R) pairs, returns
+#'   table with aic = c(NA, NA) and best = NA_character_ (never a silent
+#'   structural answer); a failed nls scores NA so the converging model wins.
 regime_models <- function(stock, recruit) {
   d <- data.frame(S = stock, R = recruit)
   d <- d[is.finite(d$S) & is.finite(d$R) & d$S > 0 & d$R > 0, ]
+  if (nrow(d) < 3L) {
+    return(list(table = data.frame(model = c("beverton_holt", "depensatory"),
+                                   aic = c(NA_real_, NA_real_)),
+                best = NA_character_))
+  }
   bh <- try(stats::nls(R ~ a * S / (b + S), data = d,
               start = list(a = max(d$R), b = stats::median(d$S))),
             silent = TRUE)
   dp <- try(stats::nls(R ~ a * S^2 / (b^2 + S^2), data = d,
               start = list(a = max(d$R), b = stats::median(d$S))),
             silent = TRUE)
-  sc <- function(m) if (inherits(m, "try-error")) Inf else stats::AIC(m)
+  sc <- function(m) if (inherits(m, "try-error")) NA_real_ else stats::AIC(m)
   tab <- data.frame(model = c("beverton_holt","depensatory"),
                      aic = c(sc(bh), sc(dp)))
-  list(table = tab, best = tab$model[which.min(tab$aic)])
+  best <- if (all(is.na(tab$aic))) NA_character_ else tab$model[which.min(tab$aic)]
+  list(table = tab, best = best)
 }
 
 #' Hartigan dip test of multimodality.
+#' @return Degenerate contract: returns dip = NA_real_, dip_p = NA_real_ when
+#'   < 4 finite values (dip test undefined below n = 4); never a silent 0/1.
 state_modality <- function(x) {
   x <- x[is.finite(x)]
+  if (length(x) < 4L) return(list(dip = NA_real_, dip_p = NA_real_))
   dt <- diptest::dip.test(x)
   list(dip = unname(dt$statistic), dip_p = unname(dt$p.value))
 }
