@@ -1,0 +1,5 @@
+"explanation","verdict","signatures","seed"
+"hysteresis","refuted","nonlinear + |lambda| not relaxed + new well + sig. loop",20260519
+"unreturned_driver","refuted","fishing removed but effective driver did not return",20260519
+"long_transient","weak","restoring but slow; no new well; n.s. loop",20260519
+"artifact","refuted","survey-artifact null reproduces the observed signal",20260519
