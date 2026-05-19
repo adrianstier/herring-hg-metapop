@@ -99,7 +99,28 @@ test_that("spatial EWS are degenerate/NA-robust (spec §8)", {
   expect_true(is.na(ews_spatial_skew(c(1, 2))))             # <3 finite -> NA
   expect_false(is.nan(ews_spatial_skew(c(5,5,5,5))))
   cc <- cbind(c(1,1,1), c(0,0,0))                           # identical coords
-  expect_true(is.na(ews_morans_i(c(1,2,3), cc)) || is.finite(ews_morans_i(c(1,2,3), cc)))
+  expect_true(is.na(ews_morans_i(c(1,2,3), cc)))
   expect_true(is.na(ews_morans_i(c(5,5,5,5), cbind(1:4, 0)))) # zero spatial variance -> NA not Inf
   expect_no_warning(ews_morans_i(c(5,5,5,5), cbind(1:4, 0)))
+})
+
+test_that("generic battery returns the expected indicator columns", {
+  set.seed(3)
+  x <- as.numeric(cumsum(rnorm(60)))
+  res <- ews_generic_battery(x, win_frac = 0.5, detrend = "gaussian")
+  expect_true(all(c("time","ar1","variance","sd","skew","kurtosis",
+                     "cv","densratio") %in% names(res)))
+  expect_true(nrow(res) > 5)
+})
+
+test_that("generic battery is degenerate-robust (spec §8)", {
+  short <- ews_generic_battery(rnorm(8), win_frac = 0.5, detrend = "none")
+  expect_s3_class(short, "tbl_df")                       # empty tibble, not error
+  expect_true(all(c("time","ar1","variance","sd","skew","kurtosis",
+                     "cv","densratio") %in% names(short)))
+  expect_equal(nrow(short), 0L)
+  flat <- ews_generic_battery(rep(5, 60), win_frac = 0.5, detrend = "none")
+  expect_s3_class(flat, "tbl_df")                        # constant series: no crash
+  expect_no_warning(ews_generic_battery(c(rnorm(40), NA, rnorm(19)),
+                                        win_frac = 0.5, detrend = "gaussian"))
 })
