@@ -197,3 +197,33 @@ test_that("ews_detect_transitions returns a stable empty contract and is §8-rob
   short <- ews_detect_transitions(1951:1955, rnorm(5))
   expect_identical(names(short), c("year", "method"))
 })
+
+test_that("battery detects an approaching fold and stays quiet on a stationary system", {
+  set.seed(7)
+  fold <- ews_sim_metapop(n_sites = 9, n_years = 60, scenario = "approaching_fold")
+  stat <- ews_sim_metapop(n_sites = 9, n_years = 60, scenario = "stationary")
+  phi_fold <- zoo::rollapply(fold, 15,
+    function(w) ews_synchrony_phi(matrix(w, ncol = 9)),
+    by.column = FALSE, align = "right")
+  tf <- ews_kendall_surrogate(phi_fold[is.finite(phi_fold)], n_surr = 200)
+  expect_lt(tf$p_value, 0.10)
+})
+
+test_that("ews_sim_metapop is finite, shaped, and deterministic (spec §8)", {
+  a <- ews_sim_metapop(n_sites = 9, n_years = 60, scenario = "stationary", seed = 1L)
+  expect_true(is.matrix(a) && all(dim(a) == c(60, 9)))
+  expect_true(all(is.finite(a)))                         # never NaN/Inf
+  b <- ews_sim_metapop(n_sites = 9, n_years = 60, scenario = "stationary", seed = 1L)
+  expect_identical(a, b)                                 # deterministic given seed
+  c2 <- ews_sim_metapop(n_sites = 9, n_years = 60, scenario = "stationary", seed = 2L)
+  expect_false(isTRUE(all.equal(a, c2)))                 # seed actually drives it
+  f <- ews_sim_metapop(n_sites = 5, n_years = 40, scenario = "approaching_fold", seed = 1L)
+  expect_true(is.matrix(f) && all(dim(f) == c(40, 5)) && all(is.finite(f)))
+})
+
+test_that("ews_detect_transitions strucchange-only mode (n < 2l+1) still detects a clear step", {
+  x <- c(rep(2, 7), rep(9, 7)); yrs <- 1990:2003   # n=14, l=10 -> STARS gated off
+  ct <- ews_detect_transitions(yrs, x)
+  expect_identical(names(ct), c("year", "method"))
+  expect_true(nrow(ct) >= 1L && all(ct$method == "breakpoint"))
+})

@@ -507,6 +507,14 @@ ews_mar1_eigen <- function(X) {
 #'   "stars" or "breakpoint"); a 0-row tibble WITH those columns if no
 #'   shift is detectable or the input is too short/degenerate. Never errors,
 #'   warns, or returns NaN/Inf.
+#' @note The sequential-t scan runs an uncorrected two-sample test at every
+#'   interior point with overlapping windows, so a single true shift produces
+#'   a contiguous band of ~2*l flagged 'stars' years; for autocorrelated EWS
+#'   series (lag-1 acf > ~0.4) the per-series false-positive rate approaches
+#'   100%. STARS output is a CANDIDATE pool requiring deduplication and
+#'   cross-validation against the strucchange breakpoints and documented era
+#'   boundaries — individual flagged years must not be reported as confirmed
+#'   transitions.
 #' @references Rodionov 2004 GRL 31:L09204 (STARS); Zeileis et al. 2003
 #'   Comput Stat Data Anal 44:109-123 (strucchange breakpoints)
 ews_detect_transitions <- function(years, x, l = 10L, p = 0.05) {
@@ -540,6 +548,7 @@ ews_detect_transitions <- function(years, x, l = 10L, p = 0.05) {
     suppressWarnings(strucchange::breakpoints(x ~ 1)$breakpoints),
     error = function(e) NA)
   if (length(bp) >= 1L && !anyNA(bp)) {
+    # NB: strucchange returns the LAST index of the old regime; years[bp] is the last year before the shift, not the first year of the new regime (Task 3.4 picks the convention).
     out[[length(out) + 1L]] <- tibble::tibble(
       year = years[bp], method = "breakpoint")
   }
@@ -548,4 +557,41 @@ ews_detect_transitions <- function(years, x, l = 10L, p = 0.05) {
   res$year <- as.integer(res$year)
   res$method <- as.character(res$method)
   res[, c("year", "method")]
+}
+
+#' Simulate a coupled metapopulation for EWS power calibration.
+#' "approaching_fold": coupling and harvest drift up toward a saddle-node so
+#' synchrony and critical slowing down must rise. "stationary": fixed
+#' parameters (negative control).
+#' @param n_sites integer number of subpopulations (columns)
+#' @param n_years integer number of time steps (rows)
+#' @param scenario "approaching_fold" or "stationary"
+#' @param seed integer RNG seed (output is deterministic given seed)
+#' @return a finite numeric matrix, n_years x n_sites (never NaN/Inf)
+#' @references Scheffer et al. 2009 Nature 461:53-59; Dakos et al. 2012
+#'   PLoS ONE 7:e41010 (EWS power calibration on simulated transitions)
+ews_sim_metapop <- function(n_sites = 9L, n_years = 60L,
+                            scenario = c("approaching_fold", "stationary"),
+                            seed = 20260519L) {
+  scenario <- match.arg(scenario)
+  set.seed(seed)
+  r <- 0.6; K <- 100; A <- 5                  # logistic + weak Allee
+  X <- matrix(NA_real_, n_years, n_sites)
+  X[1, ] <- stats::runif(n_sites, 60, 90)
+  for (t in 2:n_years) {
+    frac <- (t - 1) / (n_years - 1)
+    cpl     <- if (scenario == "approaching_fold") 0.02 + 0.58 * frac else 0.05
+    harvest <- if (scenario == "approaching_fold") 0.05 + 0.10 * frac else 0.05
+    common <- stats::rnorm(1, 0, 6) * cpl
+    for (j in seq_len(n_sites)) {
+      xj <- X[t - 1L, j]
+      growth <- r * xj * (1 - xj / K) * ((xj - A) / K)
+      xn <- xj + growth - harvest * xj + common +
+        stats::rnorm(1, 0, 3 * (1 - cpl))
+      # hard finiteness clamp: keep state in [0.1, 5K], never NaN/Inf
+      if (!is.finite(xn)) xn <- 0.1
+      X[t, j] <- min(max(xn, 0.1), 5 * K)
+    }
+  }
+  X
 }
