@@ -214,6 +214,56 @@ smap_jacobian_eigen <- function(x, E, theta = 2) {
   data.frame(t = seq_len(n), lambda_max = as.numeric(lam))
 }
 
+#' Convergent cross-mapping (rEDM) for causal attribution.
+#'
+#' rEDM 1.15.4 CCM output: columns LibSize, "<columns>:<target>", "<target>:<columns>".
+#' The causal-direction cross-map rho is "<columns>:<target>", which is the rho
+#' for "target shadow manifold predicts columns" — i.e. target xmap driver —
+#' confirming driver -> target causality (Sugihara et al. 2012).
+#'
+#' libSizes argument: string "start end step" (rEDM 1.15.4 API).
+#' Maximum library size is constrained to n - E - 1 to avoid rEDM error.
+#'
+#' @param target    Numeric vector (response time series).
+#' @param drivers   Named list of numeric vectors (candidate drivers; same length as target).
+#' @param E         Embedding dimension (integer).
+#' @param libSizes  NULL (auto) or a custom libSizes string passed to rEDM::CCM.
+#' @return  data.frame with columns driver (character), rho_min, rho_max, converges (logical).
+ccm_drivers <- function(target, drivers, E, libSizes = NULL) {
+  n <- length(target)
+  # Max lib size: n - E - 1 (rEDM requires libSize < n - E - Tp, Tp=0 default)
+  max_lib <- n - E - 1L
+  step    <- max(5L, floor(max_lib / 10L))
+  if (is.null(libSizes)) libSizes <- paste(E + 2L, max_lib, step)
+  res <- lapply(names(drivers), function(nm) {
+    df <- data.frame(
+      t   = seq_len(n),
+      tgt = as.numeric(target),
+      drv = as.numeric(drivers[[nm]])
+    )
+    cm <- rEDM::CCM(
+      dataFrame = df,
+      E         = E,
+      columns   = "tgt",
+      target    = "drv",
+      libSizes  = libSizes,
+      sample    = 100,
+      showPlot  = FALSE
+    )
+    # Pick the cross-map rho column: "tgt:drv" (tgt xmap drv).
+    # In rEDM 1.15.4 this is "<columns>:<target>" = "tgt:drv".
+    rcol <- grep(":", names(cm), value = TRUE)[1]
+    rho  <- cm[[rcol]]
+    data.frame(
+      driver    = nm,
+      rho_min   = rho[1L],
+      rho_max   = rho[length(rho)],
+      converges = (rho[length(rho)] - rho[1L]) > 0.1
+    )
+  })
+  do.call(rbind, res)
+}
+
 #' Survey-method false-positive generator: a series with NO resilience change
 #' but the documented two-era catchability shift + lognormal obs error.
 #' Self-contained copy of the EWS-shared util (Phase 9 dedupe).

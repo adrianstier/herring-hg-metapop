@@ -177,3 +177,21 @@ test_that("smap_jacobian_eigen recovers the eigenvalue of a known linear AR syst
   expect_equal(length(j$lambda_max), length(x))
   expect_true(all(c("t","lambda_max") %in% names(j)))
 })
+
+test_that("ccm_drivers detects a known driver, not an independent series", {
+  # Uses multiplicative Sugihara (2012) coupling: n[i] = n[i-1]*(r - r*n[i-1] - B*d[i-1])
+  # which stays bounded in (0,1). The plan's additive formula (+0.3*d) diverges
+  # to -Inf by index 20 for these fixed ICs (d[1]=0.3, n[1]=0.2); the
+  # Sugihara multiplicative form is the canonical CCM benchmark and preserves
+  # the scientific contract (d causes n, indep does not).
+  set.seed(11)
+  d <- numeric(300); d[1] <- 0.3
+  for (i in 2:300) d[i] <- d[i-1] * (3.7 - 3.7 * d[i-1])
+  n <- numeric(300); n[1] <- 0.2
+  for (i in 2:300) n[i] <- n[i-1] * (3.6 - 3.6 * n[i-1] - 0.3 * d[i-1])
+  indep <- runif(300)
+  r <- ccm_drivers(target = n[51:300],
+                   drivers = list(d = d[51:300], indep = indep[51:300]), E = 3)
+  expect_gt(r$rho_max[r$driver == "d"], r$rho_max[r$driver == "indep"])
+  expect_true(r$converges[r$driver == "d"])
+})
