@@ -422,5 +422,80 @@ list(
       width = 170, height = 100
     ),
     format = "file"
+  ),
+
+  # ========================================================================
+  # STAGE 9: Reversibility / hysteresis analysis figures
+  # These targets read from Output/diagnostics/reversibility_*.csv files
+  # produced by Code/run_reversibility_suite.sh.  They are downstream of
+  # the posterior-extraction + portfolio targets (stages 6-7) because the
+  # diagnostic CSVs depend on m1_stier_11 posterior outputs.
+  #
+  # Discrimination table file target (the headline output)
+  # ========================================================================
+
+  tar_target(
+    reversibility_discrimination_file,
+    {
+      path <- here::here(
+        "Output", "diagnostics", "reversibility_discrimination_table.csv"
+      )
+      if (!file.exists(path)) {
+        stop("reversibility_discrimination_table.csv not found. ",
+             "Run Code/run_reversibility_suite.sh first.")
+      }
+      path
+    },
+    format = "file"
+  ),
+
+  tar_target(
+    fig_reversibility_lambda_file,
+    save_figure(
+      fig_lambda_trajectory(),
+      filename = "reversibility_lambda_trajectory.pdf",
+      width = 170, height = 120
+    ),
+    format = "file"
+  ),
+
+  tar_target(
+    fig_reversibility_state_df_file,
+    save_figure(
+      fig_state_dependent_dF(),
+      filename = "reversibility_state_df.pdf",
+      width = 170, height = 140
+    ),
+    format = "file"
+  ),
+
+  tar_target(
+    fig_reversibility_potential_file,
+    save_figure(
+      fig_potential_pre_post(),
+      filename = "reversibility_potential.pdf",
+      width = 183, height = 120
+    ),
+    format = "file"
+  ),
+
+  tar_target(
+    fig_reversibility_driver_loop_file,
+    save_figure(
+      fig_driver_loop(),
+      filename = "reversibility_driver_loop.pdf",
+      width = 170, height = 140
+    ),
+    format = "file"
+  ),
+
+  tar_target(
+    fig_reversibility_controls_file,
+    save_figure(
+      fig_controls_panel(),
+      filename = "reversibility_controls.pdf",
+      width = 183, height = 130
+    ),
+    format = "file"
   )
 )
