@@ -145,6 +145,54 @@ Total new spine slides: **6** (S1b locator, methods, economics,
 Okamoto-solution, S10b, S12b) + retunes (S2/S3/S3.5, S13/S14) + S6/S9b
 drop-on-day notes. Deck → ~33 slides incl. backups.
 
+## 🟢 ADRIAN'S ECONOMIC STORY — three price regimes (use to build out S10c)
+
+Adrian supplied this directly (2026-05-19) — build the S10c economics slide
+into a **three-act "price regime" diagram/concept** (price/value on y vs
+time; same fish, three regimes):
+
+- **Act 1 — Industrial input (1930s–1967):** no real price signal. Reduction
+  fishery — herring → fishmeal/oil, lowest-value use; harvested for volume
+  (coastwide >200 kt/yr early 1960s, 240 kt in 1963; HG record 77,500 t in
+  1956 off the 1951 year-class). No ex-vessel price/t for this era in
+  sources. Only high-value product = Haida kʼaaw (SOK), largely a trade
+  good (bartered Tsimshian/Tlingit for eulachon grease, soapberries) or
+  artisanal (Ernie Wilson: dried kʼaaw $0.22/lb, 1930s, Jedway).
+  Overfishing + poor recruitment → fishery shut 1967/68.
+- **Act 2 — Kazunoko price explosion (1972–~1996):** resource didn't change,
+  the MARKET did. Exogenous demand shock — Japan's own domestic herring
+  fishery collapsed early 1970s → fishmeal fish → luxury roe overnight
+  (only female roe = kazunoko, near-price-inelastic Japanese New Year
+  delicacy). Roy Jones Sr.: early-1970s roe $0.85/lb from a Vancouver
+  middleman ("change the address, ship to Japan"). SOK $1.2M (111 t, 1977)
+  → $22.4M (256 t, 1996); coastwide roe ~$50M/yr on ~32,000 t (1993–2002),
+  seine peak ≈$40M (1993). Premium dried kʼaaw direct to Japanese buyers
+  up to $24/lb.
+- **Act 3 — Demand collapse (~1996–2006):** DEMAND-side, not stock-side —
+  three forces all in Japan/competitors: (1) Japan post-bubble stagnation,
+  (2) generational shift away from kazunoko, (3) low-cost Alaska/Russia
+  supply into the same single market. SOK $40/lb (1995) → <$6/lb (2004),
+  ~85% in <a decade. Coastwide roe $50M → ~$12M (2004) → $2.78M (2006).
+  By 2006 near-worthless (Food&Bait $0.15/lb, Special Use $0.62/lb). HG
+  fishery closed (1999–2001, then 2003–present). Full round trip —
+  industrial → luxury → near-worthless — in ~35 yr; stock collapse roughly
+  concurrent; **disentangling the two is the central unanswered question**
+  (this is the slide's payoff line; ties to S11 "value moved, didn't
+  vanish" + the reference-point problem).
+
+**⚠️ CLAIM-CONTROL RECONCILIATION REQUIRED before these specific $ go on a
+Royal Society slide.** `S8_landed_value_provenance.md` found the
+*authoritative primary source* (2024 HG Herring Rebuilding Plan §5.2.3, DFO
+fish slips) supports: roe value "peaked in the 1980s, high to mid-1990s,
+declined 1995–2005 & post-2008"; SOK real price "$62.88/lb (1995) →
+$11–14/lb recently." Adrian's numbers here ($40/lb→<$6/lb; $50M→$12M→$2.78M;
+seine ≈$40M 1993) are richer/teaching-deck-sourced and **differ** from that
+primary source. The three-act CONCEPT is the design; the fresh session must
+have Adrian confirm which number set is citable on-slide (or present the
+trajectory qualitatively + footnote the source) — do NOT silently put the
+unreconciled figures on the slide. The Roy Jones Sr. / Ernie Wilson quotes
+are strong colour for speaker notes.
+
 ## ▶️ RESUME HERE (continuation checklist)
 
 **State:** deck known-good at **28 slides** (`Herring_RoyalSociety_Stier_2026_clean.pptx`),
