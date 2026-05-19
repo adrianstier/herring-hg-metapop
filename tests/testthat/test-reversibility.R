@@ -425,3 +425,45 @@ test_that("state_modality: <4 / all-NA input -> NA dip + NA p, no crash", {
   expect_true(is.finite(s3$dip))
   expect_true(is.finite(s3$dip_p))
 })
+
+# ============================================================================
+# Task 13: loop_null_pvalue
+# ============================================================================
+
+test_that("loop_null_pvalue: a single-equilibrium + q-shift series does not fake a loop", {
+  set.seed(2)
+  truth <- 1000 + cumsum(rnorm(60, 0, 5))                # single attractor
+  obs <- survey_artifact_null(truth, era_break = 30, q = c(0.6, 1.0), seed = 2)
+  drv <- c(seq(0.3, 0, length.out = 30), rep(0, 30))     # driver removed
+  p <- loop_null_pvalue(driver = drv, state = obs, year = 1:60,
+                        pivot = 30, era_break = 30, q = c(0.6, 1.0),
+                        n_null = 200, seed = 2)
+  expect_gte(p, 0.05)                                    # not a real loop
+})
+
+test_that("loop_null_pvalue §7 guard: too-short state returns NA_real_ silently", {
+  # length 3 < 4 finite threshold -> NA contract
+  expect_silent(
+    p_short <- loop_null_pvalue(
+      driver = c(1, 2, 3), state = c(100, 110, 120), year = 1:3,
+      pivot = 2, era_break = 2, q = c(0.6, 1.0),
+      n_null = 50, seed = 1
+    )
+  )
+  expect_true(is.na(p_short))
+  expect_identical(p_short, NA_real_)
+})
+
+test_that("loop_null_pvalue is seed-deterministic (same seed -> identical p)", {
+  set.seed(2)
+  truth <- 1000 + cumsum(rnorm(60, 0, 5))
+  obs <- survey_artifact_null(truth, era_break = 30, q = c(0.6, 1.0), seed = 2)
+  drv <- c(seq(0.3, 0, length.out = 30), rep(0, 30))
+  p1 <- loop_null_pvalue(driver = drv, state = obs, year = 1:60,
+                         pivot = 30, era_break = 30, q = c(0.6, 1.0),
+                         n_null = 200, seed = 2)
+  p2 <- loop_null_pvalue(driver = drv, state = obs, year = 1:60,
+                         pivot = 30, era_break = 30, q = c(0.6, 1.0),
+                         n_null = 200, seed = 2)
+  expect_identical(p1, p2)
+})

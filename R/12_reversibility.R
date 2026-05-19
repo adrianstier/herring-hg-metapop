@@ -483,3 +483,51 @@ driver_state_loop <- function(driver, state, year, pivot) {
        matched_gap   = as.numeric(mean(gap, na.rm = TRUE)),
        gap_by_decile = gap)
 }
+
+# ============================================================================
+# Task 13: loop_null_pvalue
+# ============================================================================
+
+#' Null p-value for the driver-state loop index.
+#'
+#' Regenerates the state from a single-equilibrium process (loess baseline of
+#' the observed series) plus the documented two-era catchability q-shift
+#' (survey_artifact_null). The fraction of null |signed_area| values at least
+#' as extreme as observed is the p-value: p >= 0.05 means the loop is NOT
+#' distinguishable from a pure survey artifact.
+#'
+#' Determinism: set.seed(seed) governs the outer call AND the sample.int()
+#' draws inside replicate(), making the full null reproducible. Two calls with
+#' the same seed produce identical p.
+#'
+#' @param driver     Numeric vector — control parameter (same length as state).
+#' @param state      Numeric vector — response (observed, possibly q-shifted).
+#' @param year       Numeric/integer vector — time index.
+#' @param pivot      Scalar — year separating down/up limbs (passed to driver_state_loop).
+#' @param era_break  Integer — era boundary passed to survey_artifact_null.
+#' @param q          Length-2 numeric — catchability in each era.
+#' @param n_null     Integer — number of null replicates (default 500).
+#' @param seed       REQUIRED integer seed for reproducibility.
+#' @return Numeric scalar p-value in (0, 1], or NA_real_ (spec §7 contract)
+#'   when:
+#'     - the observed loop is undefined (driver_state_loop returns NA signed_area), OR
+#'     - the series is too short for loess (< 4 finite state values).
+#'   Never crashes; never returns a misleading p.
+loop_null_pvalue <- function(driver, state, year, pivot, era_break, q,
+                             n_null = 500, seed) {
+  set.seed(seed)
+  # §7 guard: too-short series -> loess crashes or is undefined
+  if (sum(is.finite(state)) < 4L) return(NA_real_)
+  obs_area_signed <- driver_state_loop(driver, state, year, pivot)$signed_area
+  # §7 guard: loop undefined (constant/short driver) -> NA, not a misleading p
+  if (!is.finite(obs_area_signed)) return(NA_real_)
+  obs_area <- abs(obs_area_signed)
+  # Loess baseline: smooth the observed series to get a single-attractor null base
+  base <- stats::predict(stats::loess(state ~ seq_along(state)))
+  null_area <- replicate(n_null, {
+    sim <- survey_artifact_null(base, era_break, q,
+                                seed = sample.int(1e6, 1))
+    abs(driver_state_loop(driver, sim, year, pivot)$signed_area)
+  })
+  (1 + sum(null_area >= obs_area, na.rm = TRUE)) / (1 + n_null)
+}
