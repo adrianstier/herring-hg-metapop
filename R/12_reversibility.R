@@ -101,6 +101,68 @@ edm_embed <- function(x, E_max = 8, theiler = 1) {
   )
 }
 
+#' Ebisuzaki (1997) phase-randomised surrogate: preserves amplitude spectrum,
+#' destroys nonlinear structure.  Internal helper.
+.ebisuzaki <- function(x) {
+  n  <- length(x)
+  ft <- stats::fft(x)
+  # Draw random phases for the positive-frequency half
+  n_half <- floor((n - 1) / 2)
+  ph  <- stats::runif(n_half, 0, 2 * pi)
+  amp <- Mod(ft)[seq(2, n_half + 1)]
+  re  <- amp * cos(ph)
+  im  <- amp * sin(ph)
+  half <- complex(real = re, imaginary = im)
+  # Reconstruct full spectrum (Hermitian symmetry)
+  nyq <- if (n %% 2 == 0) Re(ft[n / 2 + 1]) else NULL
+  spec <- c(Re(ft[1]), half, nyq, Conj(rev(half)))
+  Re(stats::fft(spec, inverse = TRUE) / n)
+}
+
+#' S-map nonlinearity test with Ebisuzaki surrogate distribution.
+#'
+#' PredictNonlinear output uses columns Theta and rho (rEDM 1.15.4).
+#' Theta = 0 is not produced; the minimum Theta (0.01) is used as the
+#' linear baseline (rho_theta0).
+#'
+#' @param x      Numeric vector (univariate time series).
+#' @param E      Embedding dimension (integer).
+#' @param n_surr Number of Ebisuzaki surrogates (default 200).
+#' @param seed   Random seed for surrogates (reproducibility).
+#' @return Named list: rho_theta0 (rho at min theta), rho_theta_best,
+#'         delta (rho_best - rho0), p_value (one-sided surrogate test).
+smap_nonlinearity <- function(x, E, n_surr = 200, seed) {
+  set.seed(seed)
+  .fit <- function(v) {
+    df   <- data.frame(t = seq_along(v), x = as.numeric(scale(v)))
+    half <- floor(nrow(df) / 2)
+    s <- rEDM::PredictNonlinear(
+      dataFrame = df,
+      lib       = c(1, half),
+      pred      = c(half + 1, nrow(df)),
+      columns   = "x",
+      target    = "x",
+      E         = E,
+      showPlot  = FALSE
+    )
+    # rEDM 1.15.4: smallest Theta is 0.01, not 0 — use it as linear baseline
+    c(rho0 = s$rho[which.min(s$Theta)],
+      rhob = max(s$rho, na.rm = TRUE))
+  }
+  obs       <- .fit(x)
+  delta_obs <- obs["rhob"] - obs["rho0"]
+  surr <- replicate(n_surr, {
+    f <- .fit(.ebisuzaki(x))
+    f["rhob"] - f["rho0"]
+  })
+  list(
+    rho_theta0    = unname(obs["rho0"]),
+    rho_theta_best = unname(obs["rhob"]),
+    delta         = unname(delta_obs),
+    p_value       = (1 + sum(surr >= delta_obs)) / (1 + n_surr)
+  )
+}
+
 #' Survey-method false-positive generator: a series with NO resilience change
 #' but the documented two-era catchability shift + lognormal obs error.
 #' Self-contained copy of the EWS-shared util (Phase 9 dedupe).

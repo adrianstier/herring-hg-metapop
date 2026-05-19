@@ -155,3 +155,15 @@ test_that("edm_embed recovers low embedding dim for the logistic map", {
   expect_gt(e$rho_best, 0.8)
   expect_true(all(c("E_best","rho_best","rho_by_E") %in% names(e)))
 })
+
+test_that("smap_nonlinearity flags the nonlinear logistic map, not AR(1) noise", {
+  set.seed(7)
+  x <- numeric(250); x[1] <- 0.4
+  for (i in 2:250) x[i] <- 3.8 * x[i-1] * (1 - x[i-1])
+  nl <- smap_nonlinearity(x[51:250], E = 2, n_surr = 50, seed = 7)
+  expect_gt(nl$rho_theta_best, nl$rho_theta0)
+  expect_lt(nl$p_value, 0.05)
+  ar <- as.numeric(stats::arima.sim(list(ar = 0.5), 200))
+  nl2 <- smap_nonlinearity(ar, E = 2, n_surr = 50, seed = 7)
+  expect_gte(nl2$p_value, 0.05)
+})
