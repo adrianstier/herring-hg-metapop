@@ -1,6 +1,6 @@
 # Reversibility driver-state hysteresis loop — run note
 
-Generated: 2026-05-19 21:56:45.675577
+Generated: 2026-05-20 00:12:18.074576
 Seed: 20260519
 
 - Biomass combos (u, effective_driver x biomass_all11): RAN (do not depend on portfolio_metrics_rolling.csv).

@@ -1,6 +1,6 @@
 # Effective-driver provenance (context-only)
 
-Generated: 2026-05-19
+Generated: 2026-05-20
 Seed: 20260519 (no stochastic ops in this script)
 
 ## Components included in composite

@@ -1,6 +1,6 @@
 # Reversibility Controls — Power Calibration
 
-Generated: 2026-05-19 21:57:10.114796
+Generated: 2026-05-20 00:13:30.024524
 Canonical seed: 20260519
 Seeds tested: 12
 

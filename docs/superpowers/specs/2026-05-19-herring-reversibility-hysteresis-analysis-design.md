@@ -1,7 +1,9 @@
 # Design Spec — Reversibility, Hysteresis & Alternative-State Analysis of the Haida Gwaii Herring Metapopulation
 
 Date: 2026-05-19
-Status: Approved design (brainstorming complete) — pending user review before plan
+Status: Implemented (Phases 0–9 complete on branch feat/reversibility-hysteresis-analysis; awaiting finishing-a-development-branch)
+Implementation plan: `docs/superpowers/plans/2026-05-19-herring-reversibility-hysteresis.md`
+Corrected-headline result: hysteresis=indeterminate / unreturned_driver=refuted-with-window-sensitivity-disclosed / long_transient=indeterminate / artifact=refuted; loop_p=0.002 real non-retrace; post-closure attractor not estimable at n≈20.
 Author: Claude (brainstorming session with Adrian Stier)
 Repo: `stier-2027-herring-metapopulation`
 Sibling spec: `docs/superpowers/specs/2026-05-19-herring-ews-analysis-design.md`
