@@ -111,6 +111,7 @@ test_that("generic battery returns the expected indicator columns", {
   expect_true(all(c("time","ar1","variance","sd","skew","kurtosis",
                      "cv","densratio") %in% names(res)))
   expect_true(nrow(res) > 5)
+  expect_false("acf1" %in% names(res))
 })
 
 test_that("generic battery is degenerate-robust (spec §8)", {
@@ -123,4 +124,25 @@ test_that("generic battery is degenerate-robust (spec §8)", {
   expect_s3_class(flat, "tbl_df")                        # constant series: no crash
   expect_no_warning(ews_generic_battery(c(rnorm(40), NA, rnorm(19)),
                                         win_frac = 0.5, detrend = "gaussian"))
+})
+
+test_that("MAR1 dominant eigenvalue recovers a known stable AR system", {
+  set.seed(4)
+  n <- 300; B <- matrix(c(0.6, 0.05, 0.0, 0.5), 2, 2)
+  X <- matrix(0, n, 2)
+  for (t in 2:n) X[t, ] <- B %*% X[t - 1, ] + rnorm(2, 0, 0.1)
+  lam <- ews_mar1_eigen(X)
+  expect_lt(lam, 1)        # stable
+  expect_gt(lam, 0.3)      # near true dominant eigenvalue ~0.61
+})
+
+test_that("ews_mar1_eigen is degenerate/NA-robust (spec §8)", {
+  expect_true(is.na(ews_mar1_eigen(matrix(1:6, ncol = 2))))     # too few rows
+  expect_true(is.na(ews_mar1_eigen(matrix(rnorm(4), ncol = 1))))# <2 cols
+  Xc <- matrix(rep(c(2, 5), each = 30), ncol = 2)               # constant cols
+  expect_true(is.na(ews_mar1_eigen(Xc)) || is.finite(ews_mar1_eigen(Xc)))
+  expect_no_warning(ews_mar1_eigen(matrix(1:6, ncol = 2)))
+  Xna <- matrix(rnorm(120), ncol = 2); Xna[5, 1] <- NA          # NA -> MARSS path
+  v <- suppressWarnings(ews_mar1_eigen(Xna))
+  expect_true(is.na(v) || (is.finite(v) && v >= 0))
 })

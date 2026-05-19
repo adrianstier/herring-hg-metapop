@@ -195,8 +195,10 @@ ews_spatial_skew <- function(v) {
 #' \code{timeindex -> time}, \code{ar1 -> ar1}, \code{sd -> sd},
 #' \code{sd^2 -> variance} (computed here), \code{sk -> skew},
 #' \code{kurt -> kurtosis}, \code{cv -> cv}, \code{densratio -> densratio},
-#' \code{returnrate -> returnrate}.  The \code{acf1} column returned by
-#' \code{generic_ews} is retained in the output as-is.
+#' \code{returnrate -> returnrate}.  The \code{acf1} column from
+#' \code{generic_ews} is intentionally omitted from the stable contract
+#' (\code{ar1} is the rolling lag-1 autocorrelation used for EWS;
+#' \code{acf1} is a whole-series summary).
 #'
 #' \strong{Detrending argument map} (\code{detrend=} -> \code{generic_ews
 #' detrending=}):
@@ -338,7 +340,7 @@ ews_generic_battery <- function(x,
     skew       = as.double(raw[["sk"]]),
     kurtosis   = as.double(raw[["kurt"]]),
     cv         = if ("cv" %in% names(raw)) as.double(raw[["cv"]])
-                 else as.double(raw[["sd"]] / abs(rowMeans(raw[, "sd", drop = FALSE]))),
+                 else NA_real_, # generic_ews exposes no rolling-window mean; cv unavailable -> NA
     densratio  = if ("densratio"  %in% names(raw)) as.double(raw[["densratio"]])
                  else NA_real_,
     returnrate = if ("returnrate" %in% names(raw)) as.double(raw[["returnrate"]])
@@ -409,4 +411,48 @@ ews_morans_i <- function(vals, coords) {
   val <- (n / s0) * (as.numeric(t(z) %*% w %*% z) / zz)
   if (!is.finite(val)) return(NA_real_)
   val
+}
+
+#' Dominant eigenvalue modulus of the MAR(1)/VAR(1) interaction matrix B.
+#' Rising lambda toward 1 == multivariate critical slowing down.
+#' Uses OLS VAR(1) when the matrix is complete; MARSS when NAs are present.
+#' @param X numeric matrix, rows = time, cols = subpopulations
+#' @return numeric scalar (spectral radius of B); NA_real_ if <2 columns,
+#'   insufficient time rows, singular/non-converging fit, or non-finite result.
+#'   Never NaN/Inf; no warnings escape.
+#' @references Ives et al. 2003 Ecol Monogr 73:301-330 (MAR(1)); Dakos 2018
+#'   Ecol Indic (multivariate EWS)
+ews_mar1_eigen <- function(X) {
+  X <- as.matrix(X)
+  p <- ncol(X)
+  if (p < 2L) return(NA_real_)
+  if (nrow(X) < (p + 2L)) return(NA_real_)
+  B <- tryCatch({
+    if (anyNA(X)) {
+      fit <- suppressWarnings(suppressMessages(
+        MARSS::MARSS(t(X),
+          model = list(B = "unconstrained", Q = "diagonal and unequal",
+                       R = "zero", U = "zero"),
+          silent = TRUE, control = list(maxit = 500))
+      ))
+      if (isTRUE(fit$convergence != 0)) return(NA_real_)
+      # MARSS::coef is not exported; use the internal marssMLE method
+      suppressWarnings(suppressMessages(
+        matrix(MARSS:::coef.marssMLE(fit, type = "matrix")$B, p, p)
+      ))
+    } else {
+      Yr <- X[-1, , drop = FALSE]
+      Zr <- X[-nrow(X), , drop = FALSE]
+      cf <- stats::lm.fit(Zr, Yr)$coefficients
+      if (anyNA(cf)) return(NA_real_)
+      # lm.fit(Zr, Yr)$coefficients is p x p: column k = regression of Y[,k] on Z,
+      # i.e. cf[j, k] = B[k, j].  So B = t(matrix(cf, p, p)).
+      t(matrix(cf, p, p))
+    }
+  }, error = function(e) NULL)
+  if (is.null(B) || anyNA(B)) return(NA_real_)
+  ev <- tryCatch(max(Mod(eigen(B, only.values = TRUE)$values)),
+                 error = function(e) NA_real_)
+  if (!is.finite(ev)) return(NA_real_)
+  ev
 }
