@@ -199,13 +199,18 @@ test_that("ews_detect_transitions returns a stable empty contract and is §8-rob
 })
 
 test_that("battery detects an approaching fold and stays quiet on a stationary system", {
-  set.seed(7)
+  # NB: ews_sim_metapop reseeds internally per `seed` arg; fold/stat share the stream start and differ only by scenario (intended controlled contrast)
   fold <- ews_sim_metapop(n_sites = 9, n_years = 60, scenario = "approaching_fold")
   stat <- ews_sim_metapop(n_sites = 9, n_years = 60, scenario = "stationary")
   phi_fold <- zoo::rollapply(fold, 15,
     function(w) ews_synchrony_phi(matrix(w, ncol = 9)),
     by.column = FALSE, align = "right")
   tf <- ews_kendall_surrogate(phi_fold[is.finite(phi_fold)], n_surr = 200)
+  phi_stat <- zoo::rollapply(stat, 15,
+    function(w) ews_synchrony_phi(matrix(w, ncol = 9)),
+    by.column = FALSE, align = "right")
+  ts <- ews_kendall_surrogate(phi_stat[is.finite(phi_stat)], n_surr = 200)
+  expect_gt(ts$p_value, 0.20)            # negative control: no spurious trend
   expect_lt(tf$p_value, 0.10)
 })
 

@@ -654,6 +654,8 @@ ews_sim_metapop <- function(n_sites = 9, n_years = 60,
   X
 }
 ```
+> [ACCEPTED DEVIATION 2026-05-19, commit 17fe18f: A 15→5, harvest 0.05+0.55*frac → 0.05+0.10*frac, cpl 0.02+0.45*frac → 0.02+0.58*frac. Original params drove harvest far past the saddle-node early and collapsed the stationary control arm to the 0.1 clamp floor (φ τ≈−0.61, failing negative control). Corrected params: real fold still crossed (~t51, mean 69→38, Jacobian→0); fold AR1 τ≈+0.44 p≈0, variance τ≈+0.70 p≈0; stationary φ τ≈−0.31 p≈0.22 (non-sig). NOTE: φ rise is primarily coupling-driven (shared:idiosyncratic variance ratio ↑~75×); AR1/variance are a weaker secondary CSD signal — Task 4.4 must interpret accordingly.]
+
 (Add `zoo` to the Task 0.2 install list and probe test.)
 
 - [ ] **Step 4: Run — expect PASS.**

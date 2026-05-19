@@ -568,6 +568,12 @@ ews_detect_transitions <- function(years, x, l = 10L, p = 0.05) {
 #' @param scenario "approaching_fold" or "stationary"
 #' @param seed integer RNG seed (output is deterministic given seed)
 #' @return a finite numeric matrix, n_years x n_sites (never NaN/Inf)
+#' @note In 'approaching_fold' the synchrony rise is primarily coupling-driven
+#'   (shared:idiosyncratic noise variance ratio rises ~75x as cpl 0.02->0.60);
+#'   genuine critical slowing down is present but secondary (Jacobian->0,
+#'   rolling AR1 ~0.43->0.74). Synchrony-based EWS are a strong positive
+#'   control here; isolated AR1/variance detection is a weaker, confounded
+#'   signal — calibrate Task 4.4 power expectations accordingly.
 #' @references Scheffer et al. 2009 Nature 461:53-59; Dakos et al. 2012
 #'   PLoS ONE 7:e41010 (EWS power calibration on simulated transitions)
 ews_sim_metapop <- function(n_sites = 9L, n_years = 60L,
@@ -575,6 +581,8 @@ ews_sim_metapop <- function(n_sites = 9L, n_years = 60L,
                             seed = 20260519L) {
   scenario <- match.arg(scenario)
   set.seed(seed)
+  if (n_years < 2L || n_sites < 1L)
+    return(matrix(NA_real_, max(n_years, 0L), max(n_sites, 0L)))
   r <- 0.6; K <- 100; A <- 5                  # logistic + weak Allee
   X <- matrix(NA_real_, n_years, n_sites)
   X[1, ] <- stats::runif(n_sites, 60, 90)
