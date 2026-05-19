@@ -289,3 +289,28 @@ test_that("generic aggregate EWS output: schema, layers, latent CI present", {
   obs <- dplyr::filter(d, layer == "observed")
   expect_true(all(obs$ar1_lo == obs$ar1 | is.na(obs$ar1), na.rm = TRUE))
 })
+
+# ── Task 3.2: spatial/synchrony EWS output-contract test ────────────────────
+test_that("spatial/synchrony EWS output: schema, phi in [0,1], latent CI, units", {
+  skip_if_not(file.exists(here::here("Output","diagnostics","ews_input_layers.rds")))
+  system2("Rscript", here::here("Code","11_ews_02_spatial_synchrony.R"),
+          stdout = TRUE, stderr = TRUE)
+  f <- here::here("Output","diagnostics","ews_spatial_synchrony.csv")
+  expect_true(file.exists(f))
+  d <- readr::read_csv(f, show_col_types = FALSE)
+  need <- c("layer","unit","window_len","window_mid",
+            "phi","phi_lo","phi_hi","eta","spatial_var","spatial_skew",
+            "morans_i","cv_ratio","n_occupied")
+  expect_true(all(need %in% names(d)))
+  expect_setequal(unique(d$layer), c("observed","latent"))
+  expect_setequal(unique(d$unit),  c("all11","core9"))
+  expect_setequal(unique(d$window_len), c(10,15,20))
+  ph <- d$phi[is.finite(d$phi)]
+  expect_true(length(ph) > 0 && all(ph >= -1e-9 & ph <= 1 + 1e-9))   # phi in [0,1]
+  lat <- dplyr::filter(d, layer == "latent")
+  expect_true(any(lat$phi_hi > lat$phi_lo, na.rm = TRUE))            # real CI
+  obs <- dplyr::filter(d, layer == "observed")
+  expect_true(all(obs$phi_lo == obs$phi | is.na(obs$phi), na.rm = TRUE))
+  # core9 has 2 fewer sections than all11 -> n_occupied generally lower/eq
+  expect_true(all(d$n_occupied <= 11, na.rm = TRUE))
+})
