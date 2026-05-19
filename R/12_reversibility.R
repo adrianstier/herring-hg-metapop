@@ -27,6 +27,7 @@ effective_driver <- function(df, components, provenance = character()) {
     stop("effective_driver: component(s) not in df: ",
          paste(missing, collapse = ", "))
   }
+  if (!length(components)) stop("effective_driver: 'components' is empty")
   z <- function(v) {
     s <- stats::sd(v, na.rm = TRUE)
     # All-NA component (covariate absent for this series): emit NA so

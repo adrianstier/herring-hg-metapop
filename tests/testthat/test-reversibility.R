@@ -86,5 +86,12 @@ test_that("effective_driver: an all-NA row yields NA_real_, never NaN", {
 
 test_that("effective_driver errors when a component is absent from df", {
   df <- data.frame(year = 2000:2002, a = c(1, 2, 3))
-  expect_error(effective_driver(df, components = c("a", "missing_col")))
+  expect_error(effective_driver(df, components = c("a", "missing_col")),
+               regexp = "not in df")
+})
+
+test_that("effective_driver errors on empty components (no silent NA)", {
+  df <- data.frame(year = 2000:2002, a = c(1, 2, 3))
+  expect_error(effective_driver(df, components = character(0)),
+               regexp = "components.*empty")
 })
