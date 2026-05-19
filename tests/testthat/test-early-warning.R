@@ -41,3 +41,19 @@ test_that("synchrony indicators are NA-robust (mirror compute_synchrony_lm)", {
   expect_no_warning(ews_synchrony_eta(m2))
   expect_true(is.na(ews_synchrony_eta(m2)) || is.finite(ews_synchrony_eta(m2)))
 })
+
+test_that("leading eigen share is 1 for a rank-1 (perfectly synchronous) system", {
+  set.seed(1)
+  z <- rnorm(50)
+  m <- cbind(z, 2 * z, -0.5 * z)            # all columns collinear
+  out <- ews_cov_eigen(m)
+  expect_equal(out$eig_share, 1, tolerance = 1e-6)
+  expect_gt(out$lambda_max, 0)
+})
+
+test_that("leading eigen share ~ 1/p for independent equal-variance columns", {
+  set.seed(2)
+  m <- matrix(rnorm(4000), ncol = 4)
+  out <- ews_cov_eigen(m)
+  expect_equal(out$eig_share, 0.25, tolerance = 0.06)
+})
