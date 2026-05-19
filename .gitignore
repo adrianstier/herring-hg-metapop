@@ -33,6 +33,7 @@ Code/legacy-2019/Posteriors/
 # without re-running the full pipeline):
 #   - Output/figures/lecture/deck/*.png   (lecture deck artifacts)
 #   - Output/figures/reversibility_*.{pdf,png}  (reversibility paper figures)
+#   - Output/figures/legends/reversibility_*.md  (reversibility figure legend text)
 Output/figures/
 Output/figures/*.png
 Output/figures/*.pdf

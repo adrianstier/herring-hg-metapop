@@ -430,7 +430,10 @@ fig_controls_panel <- function() {
   thm   <- .rev_theme(9)
 
   # --- Panel A: per-seed pass/fail ------------------------------------------
-  # Hard-coded from reversibility_controls.md (no machine-readable CSV for seeds)
+  # MAINTENANCE NOTE: seed_df is transcribed from Output/diagnostics/reversibility_controls.md.
+  # If Script 07's seed list or canonical seed changes, this data frame MUST be updated
+  # manually. Known debt: Script 07 should emit reversibility_controls.csv for
+  # programmatic read; deferred post-merge (see Phase 9 final-review M-2).
   seed_df <- data.frame(
     seed      = c(20260519, 1, 2, 3, 4, 5, 7, 11, 21, 42, 99, 123),
     canonical = c(TRUE, rep(FALSE, 11)),
