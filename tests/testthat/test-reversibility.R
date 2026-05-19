@@ -146,3 +146,12 @@ test_that("survey_artifact_null rejects q of wrong length (no silent NA-poison)"
     survey_artifact_null(truth, era_break = 30, q = 0.6, seed = 42),
     regexp = "length\\(q\\)")
 })
+
+test_that("edm_embed recovers low embedding dim for the logistic map", {
+  x <- numeric(200); x[1] <- 0.4
+  for (i in 2:200) x[i] <- 3.8 * x[i-1] * (1 - x[i-1])
+  e <- edm_embed(x[51:200])
+  expect_true(e$E_best >= 1 && e$E_best <= 4)
+  expect_gt(e$rho_best, 0.8)
+  expect_true(all(c("E_best","rho_best","rho_by_E") %in% names(e)))
+})

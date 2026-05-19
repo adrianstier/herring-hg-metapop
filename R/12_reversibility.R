@@ -69,6 +69,38 @@ detect_candidate_transitions <- function(x, years, penalty = "MBIC") {
              kind = rep("meanvar_PELT", length(idx)))
 }
 
+# ============================================================================
+# EDM functions (Tasks 6-9) — rEDM 1.15.4 dataFrame= interface
+# ============================================================================
+
+#' Simplex projection (rEDM): optimal embedding dimension E and predictability
+#' rho. Theiler window via exclusionRadius for autocorrelation.
+#'
+#' @param x  Numeric vector (univariate time series).
+#' @param E_max  Maximum E to search (default 8).
+#' @param theiler  Theiler exclusion window (default 1).
+#' @return  Named list: E_best (integer), rho_best (numeric),
+#'          rho_by_E (data.frame with columns E and rho from rEDM::EmbedDimension).
+edm_embed <- function(x, E_max = 8, theiler = 1) {
+  df   <- data.frame(t = seq_along(x), x = as.numeric(x))
+  half <- floor(nrow(df) / 2)
+  s <- rEDM::EmbedDimension(
+    dataFrame       = df,
+    lib             = c(1, half),
+    pred            = c(half + 1, nrow(df)),
+    columns         = "x",
+    target          = "x",
+    maxE            = E_max,
+    exclusionRadius = theiler,
+    showPlot        = FALSE
+  )
+  list(
+    E_best    = s$E[which.max(s$rho)],
+    rho_best  = max(s$rho, na.rm = TRUE),
+    rho_by_E  = s
+  )
+}
+
 #' Survey-method false-positive generator: a series with NO resilience change
 #' but the documented two-era catchability shift + lognormal obs error.
 #' Self-contained copy of the EWS-shared util (Phase 9 dedupe).
