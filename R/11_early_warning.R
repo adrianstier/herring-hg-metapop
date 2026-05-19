@@ -115,3 +115,52 @@ ews_cov_eigen <- function(mat) {
     loadings   = e$vectors[, 1]
   )
 }
+
+#' Spatial variance across sections within a year (one EWS sample).
+#' @param v numeric vector (one value per section for a given year)
+#' @return numeric scalar; NA_real_ if fewer than 2 finite values
+ews_spatial_variance <- function(v) {
+  v <- v[is.finite(v)]
+  if (length(v) < 2L) return(NA_real_)
+  stats::var(v)
+}
+
+#' Spatial skewness across sections within a year.
+#' @param v numeric vector (one value per section)
+#' @return numeric scalar; NA_real_ if <3 finite values or zero variance
+ews_spatial_skew <- function(v) {
+  v <- v[is.finite(v)]
+  if (length(v) < 3L) return(NA_real_)
+  m <- mean(v)
+  s2 <- mean((v - m)^2)
+  if (!is.finite(s2) || s2 == 0) return(NA_real_)
+  mean((v - m)^3) / s2^1.5
+}
+
+#' Moran's I with inverse-distance, row-standardised weights.
+#' @param vals numeric vector (one value per section, one year)
+#' @param coords two-column matrix (lon, lat) row-aligned to vals
+#' @return numeric scalar; NA_real_ if <3 usable sections, zero spatial
+#'   variance, or no positive weights (never NaN/Inf)
+ews_morans_i <- function(vals, coords) {
+  coords <- as.matrix(coords)
+  ok <- is.finite(vals) & is.finite(coords[, 1]) & is.finite(coords[, 2])
+  vals <- vals[ok]; coords <- coords[ok, , drop = FALSE]
+  n <- length(vals)
+  if (n < 3L) return(NA_real_)
+  z <- vals - mean(vals)
+  zz <- sum(z^2)
+  if (!is.finite(zz) || zz == 0) return(NA_real_)
+  d <- as.matrix(stats::dist(coords))
+  w <- 1 / d
+  diag(w) <- 0
+  w[!is.finite(w)] <- 0
+  s0 <- sum(w)
+  if (!is.finite(s0) || s0 == 0) return(NA_real_)
+  rs <- rowSums(w)
+  w <- sweep(w, 1, ifelse(rs == 0, 1, rs), "/")
+  s0 <- sum(w)
+  val <- (n / s0) * (as.numeric(t(z) %*% w %*% z) / zz)
+  if (!is.finite(val)) return(NA_real_)
+  val
+}

@@ -39,7 +39,8 @@ test_that("synchrony indicators are NA-robust (mirror compute_synchrony_lm)", {
   expect_true(is.finite(ews_synchrony_phi(m)))
   m2 <- cbind(c(1,2,3,4,5), c(5,5,5,5,5))         # zero-variance col
   expect_no_warning(ews_synchrony_eta(m2))
-  expect_true(is.na(ews_synchrony_eta(m2)) || is.finite(ews_synchrony_eta(m2)))
+  expect_true(is.na(ews_synchrony_eta(m2)))
+  expect_no_warning(ews_synchrony_phi(m2))
 })
 
 test_that("leading eigen share is 1 for a rank-1 (perfectly synchronous) system", {
@@ -66,4 +67,29 @@ test_that("ews_cov_eigen is guard- and NA-robust", {
   m <- cbind(c(1,2,3,NA,5,6), c(2,1,4,3,5,4), c(1,3,2,4,6,5))
   out <- ews_cov_eigen(m)                              # NA present -> no crash
   expect_true(is.na(out$eig_share) || (out$eig_share >= 0 && out$eig_share <= 1 + 1e-9))
+})
+
+test_that("spatial variance and skew match base R on a year vector", {
+  v <- c(1, 5, 2, 8, 3)
+  expect_equal(ews_spatial_variance(v), stats::var(v))
+  expect_equal(round(ews_spatial_skew(v), 6),
+               round(mean((v - mean(v))^3) / (mean((v - mean(v))^2))^1.5, 6))
+})
+
+test_that("Moran's I is positive for a perfect linear gradient on a line", {
+  coords <- cbind(1:6, rep(0, 6))
+  vals <- as.numeric(1:6)
+  expect_gt(ews_morans_i(vals, coords), 0)
+})
+
+test_that("spatial EWS are degenerate/NA-robust (spec §8)", {
+  expect_true(is.na(ews_spatial_variance(c(3))))            # <2 finite
+  expect_true(is.na(ews_spatial_variance(c(NA, NA))))
+  expect_true(is.na(ews_spatial_skew(c(5, 5, 5, 5))))       # zero variance -> NA not NaN
+  expect_true(is.na(ews_spatial_skew(c(1, 2))))             # <3 finite -> NA
+  expect_false(is.nan(ews_spatial_skew(c(5,5,5,5))))
+  cc <- cbind(c(1,1,1), c(0,0,0))                           # identical coords
+  expect_true(is.na(ews_morans_i(c(1,2,3), cc)) || is.finite(ews_morans_i(c(1,2,3), cc)))
+  expect_true(is.na(ews_morans_i(c(5,5,5,5), cbind(1:4, 0)))) # zero spatial variance -> NA not Inf
+  expect_no_warning(ews_morans_i(c(5,5,5,5), cbind(1:4, 0)))
 })
