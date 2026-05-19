@@ -123,3 +123,7 @@ theme_lecture <- function(base_size = 18) {
 
 cat("Setup loaded:", N_SITES, "sites,", N_YEARS, "years (",
     YEAR_START, "-", YEAR_END, ")\n")
+
+# ── EWS analysis packages (Phase: early-warning) ──
+# Loaded lazily via ::; listed here as the dependency contract.
+# earlywarnings, spatialwarnings, MARSS, posterior, Kendall, strucchange, zoo
