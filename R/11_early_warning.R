@@ -252,6 +252,11 @@ ews_spatial_skew <- function(v) {
 #'   window length), or when \code{generic_ews} itself errors on a degenerate
 #'   (e.g. constant) series.
 #'
+#' @note Plotting from \code{earlywarnings::generic_ews()} is internally
+#'   suppressed to a temporary pdf device (cleaned up after each call), so this
+#'   function is headless / \code{Rscript}-safe and never spawns \code{Rplots*.pdf}
+#'   or leaks graphics devices across large sweeps.
+#'
 #' @references
 #'   Dakos, V., Carpenter, S.R., Ellison, A.M., Guttal, V., Ives, A.R.,
 #'   Kéfi, S., Livina, V., Seekell, D.A., van Nes, E.H., and Scheffer, M.
@@ -312,6 +317,19 @@ ews_generic_battery <- function(x,
   has_internal_na <- anyNA(x)
 
   # --- Call generic_ews, catching all conditions ---
+  # earlywarnings::generic_ews() calls dev.new()/plot() unconditionally. Under
+  # a headless `Rscript` dev.new() falls back to the default device, which
+  # spews Rplots*.pdf into the cwd; ~thousands of sweep calls exhaust the
+  # 1000-name limit, after which dev.new() errors, the tryCatch below silently
+  # returns a 0-row contract, and real results are masked. We point the
+  # `device` option at a temp-pdf opener for the duration of the call so every
+  # dev.new() lands in one disposable file, then close all devices opened
+  # during the call and restore the option. Done inline (not via on.exit) so
+  # nothing -- device or temp file -- leaks across the sweep.
+  .gp          <- tempfile(fileext = ".pdf")
+  .dev_opt     <- getOption("device")
+  .devs_before <- grDevices::dev.list()
+  options(device = function() grDevices::pdf(.gp))
   raw <- tryCatch(
     suppressWarnings(
       earlywarnings::generic_ews(
@@ -324,6 +342,11 @@ ews_generic_battery <- function(x,
     ),
     error = function(e) NULL
   )
+  options(device = .dev_opt)
+  for (.d in rev(setdiff(grDevices::dev.list(), .devs_before))) {
+    tryCatch(grDevices::dev.off(.d), error = function(e) NULL)
+  }
+  unlink(.gp)
 
   if (is.null(raw) || !is.data.frame(raw) || nrow(raw) == 0L) {
     return(empty_contract)

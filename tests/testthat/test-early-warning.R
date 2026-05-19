@@ -126,6 +126,15 @@ test_that("generic battery is degenerate-robust (spec §8)", {
                                         win_frac = 0.5, detrend = "gaussian"))
 })
 
+test_that("ews_generic_battery is headless-robust (no screen device needed)", {
+  nd <- length(grDevices::dev.list())
+  set.seed(11)
+  r <- ews_generic_battery(as.numeric(cumsum(rnorm(80))), 0.5, "gaussian")
+  expect_gt(nrow(r), 5)                              # NOT the empty contract
+  expect_true(any(is.finite(r$ar1)))                 # real EWS values
+  expect_equal(length(grDevices::dev.list()), nd)    # no leaked device
+})
+
 test_that("MAR1 dominant eigenvalue recovers a known stable AR system", {
   set.seed(4)
   n <- 300; B <- matrix(c(0.6, 0.05, 0.0, 0.5), 2, 2)

@@ -29,31 +29,14 @@ suppressPackageStartupMessages({
   library(here)
 })
 
-# Suppress earlywarnings::generic_ews() plotting BEFORE loading the package.
-# generic_ews() calls dev.new() unconditionally.  We redirect each new device
-# to a persistent sink PDF so no Rplots*.pdf files accumulate and we never hit
-# R's 63-device limit.  battery_quiet() snapshots dev.list() before each call
-# and closes any new devices after, keeping the open-device count at 0.
-.ews_sink_file <- tempfile(fileext = ".pdf")
-options(device = function() grDevices::pdf(.ews_sink_file))
-
+# ews_generic_battery() is headless-robust at the source (R/11_early_warning.R
+# suppresses earlywarnings::generic_ews() plotting to an internal temp pdf and
+# cleans up after every call), so no script-level device hack is needed.
 source(here::here("R", "00_setup.R"))
 source(here::here("R", "11_early_warning.R"))
 
 proj_dir <- here::here()
 diag_dir <- file.path(proj_dir, "Output", "diagnostics")
-
-# battery_quiet: redirect generic_ews() plotting to the sink PDF and close any
-# new devices that were opened during the call.
-battery_quiet <- function(x, win_frac, detrend) {
-  devs_before <- grDevices::dev.list()
-  result      <- ews_generic_battery(x, win_frac = win_frac, detrend = detrend)
-  new_devs    <- setdiff(grDevices::dev.list(), devs_before)
-  for (d in rev(new_devs)) {
-    tryCatch(grDevices::dev.off(d), error = function(e) NULL)
-  }
-  result
-}
 
 cat("=== Task 3.1: Generic aggregate EWS ===\n")
 cat(format(Sys.time()), "\n\n")
@@ -137,8 +120,7 @@ run_layer <- function(layer_name, df) {
       x   <- sub$tot
       yr  <- sub$year
 
-      # Suppress earlywarnings plotting via null device
-      batt <- battery_quiet(x, win_frac = wfrc, detrend = dtr)
+      batt <- ews_generic_battery(x, win_frac = wfrc, detrend = dtr)
 
       if (nrow(batt) == 0L) next
 
@@ -271,6 +253,3 @@ cat(sprintf("Year range    : %d - %d\n", min(final$year), max(final$year)))
 cat(sprintf("Latent draws  : %d\n", n_latent_draws_used))
 cat(sprintf("Output        : %s\n", out_path))
 cat(sprintf("Columns       : %s\n", paste(names(final), collapse = ", ")))
-
-# Clean up the temporary sink PDF used to absorb generic_ews() plot output.
-if (file.exists(.ews_sink_file)) unlink(.ews_sink_file)
