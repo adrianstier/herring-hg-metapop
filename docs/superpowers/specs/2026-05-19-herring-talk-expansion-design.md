@@ -103,11 +103,16 @@ ecological, social, economic consequences. It legitimizes the methods and
 supplies the solution.
 
 ### §5 — Methods/legitimacy slide (NEW native, after S4)
-Tight honest m1_stier_11 description (Bayesian state-space metapopulation;
-spawn-index data; 11 sections; spatially-correlated process error;
-survey-scaling; ambiguous zeros = missing) explicitly framed as the
-published, peer-reviewed **Okamoto et al. 2020 (Ecol Appl)** approach,
-extended. ~40 s. Claim-control safe (no fitted predator coefficient claim).
+**CORRECTION (Adrian 2026-05-19): methods ≠ Okamoto. Do NOT frame the
+methods slide as "the Okamoto approach."** Okamoto et al. 2020 is the
+SOLUTION slide (§7), not the methods citation. The methods slide legitimizes
+OUR analysis on its own merits: a tight, honest m1_stier_11 description —
+Bayesian state-space metapopulation model; DFO spawn-index data; 11 sections
+(focal-9 reporting); spatially-correlated process error; survey-scaling
+prior; ambiguous zeros treated as missing; updated/extended from Stier et
+al. 2020 (Ecosphere) metapopulation lineage. Purpose: a non-fisheries
+tipping-points audience trusts the inference. ~40 s. Claim-control safe (no
+fitted predator coefficient claim). Okamoto-2020 is referenced ONLY on §7.
 
 ### §6 — Economics↔ecology slide (NEW native, feeding S11)
 Resolved framing: **coupled supply + demand**, not either/or. The BC
@@ -139,6 +144,62 @@ marked drop-on-the-day in speaker notes. Nothing cut from the deck.
 Total new spine slides: **6** (S1b locator, methods, economics,
 Okamoto-solution, S10b, S12b) + retunes (S2/S3/S3.5, S13/S14) + S6/S9b
 drop-on-day notes. Deck → ~33 slides incl. backups.
+
+## ▶️ RESUME HERE (continuation checklist)
+
+**State:** deck known-good at **28 slides** (`Herring_RoyalSociety_Stier_2026_clean.pptx`),
+builds clean. DONE: S1b "Haida Gwaii" locator (slide 2); S8b annotation
+collision fixed. Talk Wed 2026-05-20.
+
+**Pipeline (run from `talk-usuk-forum-2026/Talk_Materials/deck_build/`):**
+`python3 redesign_figs.py && python3 preprocess_figures.py && node build_pptx_native.js`
+→ output `../Herring_RoyalSociety_Stier_2026_clean.pptx`. QA via LibreOffice
+→ PDF (`soffice --headless --convert-to pdf -env:UserInstallation=file:///tmp/loX`).
+**PowerPoint caches an open file** — must `osascript quit` + `pkill` + reopen
+to see changes. After each item: dated checkpoint
+`Herring_RoyalSociety_Stier_2026_claude-code_YYYYMMDD-HHMMSS.pptx/.pdf`,
+log in `talk-usuk-forum-2026/Talk_Materials/SLIDE_REVISION_TODO_2026-05-19.md`.
+
+**Build order (each = 1 native block in `build_pptx_native.js` unless noted):**
+1. **Methods/legitimacy** native slide after S4 — m1_stier_11 itself (NOT
+   Okamoto): Bayesian state-space metapopulation, DFO spawn index, 11
+   sections (focal-9), spatial process error, survey-q prior, zeros=missing,
+   extended from Stier 2020 Ecosphere. Legitimizes the inference. ~40s.
+2. **Economics↔ecology** native slide feeding S11 — coupled supply+demand:
+   Japan's Hokkaido herring collapse created the kazunoko import niche →
+   BC sac-roe fishery built → Japanese demand fell post-1990s AND HG
+   ecological supply collapsed → market value gone, ecological+cultural
+   value not. On-slide numbers ONLY from `S8_landed_value_provenance.md`
+   (roe value peaked 1980s→declined; SOK $62.88/lb 1995→$11–14/lb).
+   Japan-collapse driver = documented context, flag if unsourced. Kazunoko
+   photo in `deck_build/photos/l2_imports/` (image6.jpeg ~1440x907).
+3. **S10b predator-pit** baked figure — new `redesign_figs.py` fn (content
+   zone 19.2×7.5 @200dpi, NO baked title) + `preprocess_figures.py` JOBS
+   entry + native fullbleed block after S10. Data: SB2 species means
+   (humpback ~4.96 kt, Steller ~2.41 kt) + pressure index ≈239% of spawn
+   2015–24. Message: consumptive lock-in / alternative stable state —
+   closure removed fishing but recovered predator field caps recovery.
+   GUARDRAIL loud: audited demand/pressure, NOT a fitted m1 coefficient;
+   causal lock-in hypothesis-strength.
+4. **Okamoto-2020 solution** native slide before S13 — triple-bottom-line
+   allocation: industry (commercial) · Haida (kʼaaw/FSC) · ecosystem
+   (predators: marine mammals + commercial fishes like salmon); nested-scale
+   + dynamically-optimized harvest. Attributed Okamoto et al. 2020 Ecol
+   Appl (Adrian co-author). Then tighten S13 so it doesn't duplicate.
+5. **S12b reference-point problem** native slide after S12 (mirror S12
+   chrome): DFO LRP anchored to historical baseline unreachable post-regime-
+   shift; killer stat from B-DFO backup — even at zero catch since 2002,
+   P(SB2025<LRP)=0.38; prescribe dynamic/ecosystem-conditioned reference
+   points + reset expectations. Caption: m1_stier_11 + DFO SR 2025/005;
+   co-governance = institutional milestone not outcome metric.
+6. **S13 retune + S14 tweak** (no 4th lesson); add "drop-on-the-day" lines
+   to S6 + S9b speaker notes. Final pipeline rebuild + QA + checkpoint +
+   board + quit/reopen PowerPoint.
+
+**Hard constraints:** predator demand = pressure not fitted coefficient;
+"~10%/alt stable state" cites m1_stier_11 + DFO SR 2025/005; co-governance ≠
+outcome metric; no new analysis; reuse existing audited data/assets only;
+target ~20 min, S6+S9b drop-on-day. Coordination board has the running log.
 
 ## Deadline note
 
