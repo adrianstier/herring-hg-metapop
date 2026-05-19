@@ -499,6 +499,12 @@ test_that("battery detects an approaching fold (CSD primary) and stays quiet on 
               is.finite(ctl$negative$nl_delta))
 })
 
+test_that("reversibility_controls is seed-deterministic (same seed -> identical result)", {
+  r1 <- reversibility_controls(seed = 7, n = 70)
+  r2 <- reversibility_controls(seed = 7, n = 70)
+  expect_identical(r1, r2)
+})
+
 # ============================================================================
 # Task 15: discrimination_table
 # ============================================================================
@@ -515,6 +521,7 @@ test_that("discrimination_table scores the four explanations with verdicts", {
   expect_true(all(tab$verdict %in%
     c("supported","weak","refuted","indeterminate")))
   expect_equal(tab$verdict[tab$explanation == "artifact"], "refuted")
+  expect_equal(tab$verdict[tab$explanation == "hysteresis"], "supported")
 })
 
 test_that("discrimination_table: NA ev fields -> indeterminate (not crash, not false supported/refuted)", {
@@ -532,4 +539,20 @@ test_that("discrimination_table: NA ev fields -> indeterminate (not crash, not f
   expect_equal(tab_na$verdict[tab_na$explanation == "artifact"], "refuted")
   # No errors, no NA verdicts -- every row has a real verdict string
   expect_false(any(is.na(tab_na$verdict)))
+})
+
+test_that("discrimination_table: a malformed non-scalar ev field -> indeterminate (no silent false verdict)", {
+  ev_bad <- list(
+    nonlinear = TRUE, lambda_failed_to_relax = TRUE,
+    state_dependent_dF = TRUE, new_potential_well = TRUE,
+    effective_driver_returned = FALSE, loop_p = c(NA, NA),   # length-2: malformed
+    regime_best = "depensatory", artifact_reproduces = FALSE)
+  expect_silent(tab_bad <- discrimination_table(ev_bad))
+  # hysteresis & long_transient depend on loop_p -> malformed -> indeterminate
+  # (NOT "weak" -- a non-scalar field must not yield a trustworthy verdict)
+  expect_equal(tab_bad$verdict[tab_bad$explanation == "hysteresis"], "indeterminate")
+  expect_equal(tab_bad$verdict[tab_bad$explanation == "long_transient"], "indeterminate")
+  # artifact does not depend on loop_p -> still refuted
+  expect_equal(tab_bad$verdict[tab_bad$explanation == "artifact"], "refuted")
+  expect_false(any(is.na(tab_bad$verdict)))
 })

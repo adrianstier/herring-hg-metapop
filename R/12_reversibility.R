@@ -548,8 +548,9 @@ loop_null_pvalue <- function(driver, state, year, pivot, era_break, q,
 #' Power calibration (spec §5, redesigned 2026-05-19).
 #' POSITIVE: a system ramped through a saddle-node fold — cusp normal form
 #'   x_{t} = x_{t-1} + (r_t + x_{t-1} - x_{t-1}^3)*dt + noise, r ramped so the
-#'   upper branch annihilates and the trajectory transitions to the REAL lower
-#'   attractor (NO numerical clamp). Critical slowing: the local map multiplier
+#'   fold is approached (upper branch decays; lower attractor not yet reached at
+#'   n=70 default — slow-passage regime). NO numerical clamp; the lower attractor
+#'   is reached at n~200+. Critical slowing: the local map multiplier
 #'   1+dt*f'(x*) -> 1 as the fold is approached, so |lambda_max| RISES pre-
 #'   transition. PRIMARY detector = the pre-transition |lambda_max| trend.
 #' NEGATIVE: a linear-stochastic single attractor — AR(1)/OU mean-reverting to
@@ -560,7 +561,8 @@ loop_null_pvalue <- function(driver, state, year, pivot, era_break, q,
 reversibility_controls <- function(seed, n = 70) {
   set.seed(seed)
   # POSITIVE — cusp f(x)=r+x-x^3 ramped through the fold (r: 0.7 -> -0.7),
-  # start on the upper stable branch; transitions to the lower real attractor.
+  # start on the upper stable branch; at the n=70 default this is the
+  # slow-passage approach (fold approached, lower attractor not yet reached).
   r <- seq(0.7, -0.7, length.out = n)
   pos <- numeric(n); pos[1] <- 1.30          # upper equilibrium near r=0.7
   for (t in 2:n) pos[t] <- pos[t-1] +
@@ -570,7 +572,13 @@ reversibility_controls <- function(seed, n = 70) {
   neg <- numeric(n); neg[1] <- 8
   for (t in 2:n) neg[t] <- neg[t-1] + 0.30 * (8 - neg[t-1]) +
                             rnorm(1, 0, 0.30)
-  # transition index = largest absolute one-step change (the catastrophic jump)
+  # transition index = the largest absolute one-step change in the series. At n=70
+  # the positive control is in slow-passage drift (the fold is approached but the
+  # lower attractor is not yet reached within the window); jump_idx therefore
+  # identifies the noisiest step, not a completed bifurcation crossing. The
+  # pre-transition window cut (je$t < jt - 1L) is still methodologically correct:
+  # it isolates the CSD approach from whatever noise peak or eventual crossing
+  # terminates the upper-branch trajectory. The heuristic is NOT a bifurcation detector.
   jump_idx <- function(v) which.max(abs(diff(v))) + 1L
   summ <- function(v, ramped) {
     nl <- smap_nonlinearity(v, E = 2, n_surr = 100, seed = seed)
@@ -578,6 +586,8 @@ reversibility_controls <- function(seed, n = 70) {
     je <- je[is.finite(je$lambda_max), ]
     if (ramped) {                       # CSD is the APPROACH: pre-transition only
       jt <- jump_idx(v)
+      # Exclude t=jt (jump/noise peak) AND t=jt-1 (may already be transitioning);
+      # the CSD window is conservatively the pre-approach trajectory only.
       je <- je[je$t < jt - 1L, , drop = FALSE]
     }
     lt <- if (nrow(je) < 3L) NA_real_ else
@@ -609,8 +619,10 @@ discrimination_table <- function(ev) {
     x <- ev[[field]]
     if (is.null(x)) NA else x
   }
-  # Helper: TRUE iff a scalar value is strictly NA or NULL (length-1 check).
-  .is_missing <- function(x) is.null(x) || (length(x) == 1L && is.na(x))
+  # Helper: TRUE iff a value is missing/malformed for verdict purposes —
+  # NULL, non-scalar (length != 1), or NA. A non-scalar field cannot yield a
+  # trustworthy supported/refuted verdict, so it is treated as missing.
+  .is_missing <- function(x) is.null(x) || length(x) != 1L || is.na(x)
   # Core row builder. ev_deps: named list of ev field values this row uses.
   # If any dep is NA/NULL -> "indeterminate" (trumps cond_ref).
   # Otherwise: cond_sup TRUE & cond_ref FALSE -> "supported";
@@ -647,7 +659,7 @@ discrimination_table <- function(ev) {
         signs    = "fishing removed but effective driver did not return",
         ev_deps  = list(eff_ret)),
     row("long_transient",
-        cond_sup = isTRUE(ltr == FALSE) && isTRUE(loop_p >= 0.05),
+        cond_sup = identical(ltr, FALSE) && isTRUE(loop_p >= 0.05),
         cond_ref = isTRUE(new_well),
         signs    = "restoring but slow; no new well; n.s. loop",
         ev_deps  = list(ltr, loop_p, new_well)),
