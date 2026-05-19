@@ -162,8 +162,12 @@ test_that("ews_kendall_surrogate is degenerate-robust and deterministic (spec §
   expect_true(is.na(cflat$tau) || is.na(cflat$p_value))
   expect_no_warning(ews_kendall_surrogate(rep(7, 30), n_surr = 50))
   expect_no_warning(ews_kendall_surrogate(c(NA, 1:30, NA), n_surr = 50))   # NA stripped
+  expect_no_warning(ews_kendall_surrogate(                                 # acf1 == 0 -> a==0
+    c(1,0,-1,0,1,0,-1,0,1,0,-1,0,1,0,-1,0,1,0,-1,0), n_surr = 50))
   set.seed(42L); z <- cumsum(rnorm(30))                                    # fixed y
   a <- ews_kendall_surrogate(z, n_surr = 100, seed = 42L)
   b <- ews_kendall_surrogate(z, n_surr = 100, seed = 42L)
   expect_equal(a$p_value, b$p_value)                                       # deterministic
+  c_diff <- ews_kendall_surrogate(z, n_surr = 100, seed = 999L)            # seed discriminates
+  expect_false(isTRUE(all.equal(a$p_value, c_diff$p_value)))
 })

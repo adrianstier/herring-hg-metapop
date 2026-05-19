@@ -420,7 +420,9 @@ ews_morans_i <- function(vals, coords) {
 #' @param seed integer RNG seed (results are deterministic given seed)
 #' @return list(tau, p_value, n); tau/p_value are NA_real_ if fewer than 5
 #'   finite points or the series has ~zero variance. Never NaN/Inf; no
-#'   warnings escape.
+#'   warnings escape. p_value is a Monte-Carlo estimate with resolution
+#'   1/n_surr; a reported p_value of 0 means 0 of n_surr surrogates met or
+#'   exceeded |tau_obs| (i.e. p < 1/n_surr), not exact zero.
 #' @references Dakos et al. 2008 PNAS 105:14308-14312; 2012 PLoS ONE 7:e41010
 ews_kendall_surrogate <- function(y, n_surr = 1000L, seed = 20260519L) {
   y <- as.numeric(y); y <- y[is.finite(y)]
@@ -440,8 +442,9 @@ ews_kendall_surrogate <- function(y, n_surr = 1000L, seed = 20260519L) {
   a <- max(min(a, 0.99), -0.99)
   set.seed(seed)
   tau_null <- vapply(seq_len(n_surr), function(i) {
-    e <- as.numeric(stats::arima.sim(
-      list(ar = a), n = n, sd = s * sqrt(1 - a^2)))
+    e <- if (a == 0) stats::rnorm(n, 0, s)
+         else as.numeric(stats::arima.sim(
+           list(ar = a), n = n, sd = s * sqrt(1 - a^2)))
     suppressWarnings(as.numeric(Kendall::Kendall(seq_len(n), e)$tau))
   }, numeric(1))
   tau_null <- tau_null[is.finite(tau_null)]
