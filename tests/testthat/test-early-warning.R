@@ -76,10 +76,20 @@ test_that("spatial variance and skew match base R on a year vector", {
                round(mean((v - mean(v))^3) / (mean((v - mean(v))^2))^1.5, 6))
 })
 
-test_that("Moran's I is positive for a perfect linear gradient on a line", {
-  coords <- cbind(1:6, rep(0, 6))
-  vals <- as.numeric(1:6)
-  expect_gt(ews_morans_i(vals, coords), 0)
+test_that("Moran's I matches an independent double-sum computation and detects gradient", {
+  coords <- cbind(1:6, rep(0, 6)); vals <- as.numeric(1:6)
+  # independent reference: I = (n/S0) * sum_ij w_ij z_i z_j / sum_i z_i^2
+  d <- as.matrix(stats::dist(coords)); W <- 1/d; diag(W) <- 0
+  rs <- rowSums(W); W <- W / rs                    # row-standardised
+  z <- vals - mean(vals); n <- length(vals)
+  num <- 0; for (i in 1:n) for (j in 1:n) num <- num + W[i,j]*z[i]*z[j]
+  ref <- (n / sum(W)) * num / sum(z^2)
+  expect_equal(ews_morans_i(vals, coords), ref, tolerance = 1e-8)
+  expect_gt(ews_morans_i(vals, coords), 0)         # positive autocorrelation
+  # detects structure: gradient I exceeds mean I of random permutations
+  set.seed(20260519L)
+  perm <- replicate(200, ews_morans_i(sample(vals), coords))
+  expect_gt(ews_morans_i(vals, coords), mean(perm, na.rm = TRUE))
 })
 
 test_that("spatial EWS are degenerate/NA-robust (spec §8)", {
