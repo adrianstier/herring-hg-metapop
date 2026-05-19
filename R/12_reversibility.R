@@ -540,3 +540,36 @@ loop_null_pvalue <- function(driver, state, year, pivot, era_break, q,
   })
   (1 + sum(null_area >= obs_area, na.rm = TRUE)) / (1 + n_null)
 }
+
+# ============================================================================
+# Task 14: reversibility_controls
+# ============================================================================
+
+#' Power calibration. Positive: a metapopulation sliding toward a saddle-node
+#' (control parameter ramped) at HG cadence + noise. Negative: a stationary
+#' single-attractor metapopulation. The battery MUST detect the former and
+#' stay quiet on the latter before any HG interpretation is trusted.
+reversibility_controls <- function(seed, n = 70) {
+  set.seed(seed)
+  pos <- numeric(n); pos[1] <- 8
+  h <- seq(0, 2.2, length.out = n)
+  for (t in 2:n) pos[t] <- max(1e-3, pos[t-1] + 0.6*pos[t-1]*
+                     (1 - pos[t-1]/10) - h[t] + rnorm(1, 0, 0.15))
+  neg <- numeric(n); neg[1] <- 8
+  for (t in 2:n) neg[t] <- neg[t-1] + 0.6*neg[t-1]*
+                     (1 - neg[t-1]/10) - 1.0 + rnorm(1, 0, 0.15)
+  summ <- function(v) {
+    nl <- smap_nonlinearity(v, E = 2, n_surr = 100, seed = seed)
+    je <- smap_jacobian_eigen(v, E = 2, theta = 2)
+    je_fin <- je[is.finite(je$lambda_max), ]
+    lambda_trend <- if (nrow(je_fin) < 3L) {
+      NA_real_
+    } else {
+      fit <- stats::lm(lambda_max ~ t, data = je_fin)
+      unname(stats::coef(fit)[2])
+    }
+    list(nonlinearity_detected = nl$p_value < 0.05,
+         lambda_trend = lambda_trend)
+  }
+  list(positive = summ(pos), negative = summ(neg), seed = seed)
+}

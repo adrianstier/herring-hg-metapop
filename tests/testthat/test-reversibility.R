@@ -476,3 +476,15 @@ test_that("loop_null_pvalue is seed-deterministic (same seed -> identical p)", {
                          n_null = 200, seed = 2)
   expect_identical(p1, p2)
 })
+
+# ============================================================================
+# Task 14: reversibility_controls
+# ============================================================================
+
+test_that("battery detects an approaching fold and stays quiet on a stationary system", {
+  ctl <- reversibility_controls(seed = 4, n = 70)
+  expect_gt(ctl$positive$lambda_trend, 0)
+  expect_true(ctl$positive$nonlinearity_detected)
+  expect_false(ctl$negative$nonlinearity_detected)
+  expect_lt(abs(ctl$negative$lambda_trend), abs(ctl$positive$lambda_trend))
+})
