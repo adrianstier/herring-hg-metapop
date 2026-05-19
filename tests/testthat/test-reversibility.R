@@ -323,6 +323,15 @@ test_that("driver_state_loop §7 guard: NA-bearing input computes on finite pair
   expect_true(is.finite(L_na$signed_area))
 })
 
+test_that("driver_state_loop: one-directional driver -> matched_gap is NA_real_ not NaN", {
+  drv <- seq(0.1, 0.9, length.out = 10)
+  st  <- rev(drv) * 1000
+  L   <- driver_state_loop(driver = drv, state = st, year = 1:10, pivot = 100)
+  expect_true(is.na(L$matched_gap))
+  expect_false(is.nan(L$matched_gap))
+  expect_true(is.finite(L$signed_area))
+})
+
 # ── Task 10: potential_landscape ──────────────────────────────────────────────
 test_that("potential_landscape: double-well -> 2 minima, single-well -> 1", {
   set.seed(5)

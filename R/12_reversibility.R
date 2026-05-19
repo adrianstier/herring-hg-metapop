@@ -455,6 +455,11 @@ survey_artifact_null <- function(truth, era_break, q, cv = 0.2, seed) {
 #'     - fewer than 3 finite (driver, state) pairs, OR
 #'     - the driver has fewer than 2 distinct finite values
 #'       (constant driver -> non-unique quantile breaks -> cut() crash).
+#'   NOTE: matched_gap may be NA_real_ even on a NON-degenerate return (finite
+#'   signed_area, populated gap_by_decile) when every observation falls on a
+#'   single limb -- no decile then has both down- and up-limb points, so no
+#'   matched gap is defined. Phase 7 callers should test is.finite(matched_gap)
+#'   rather than assume an NA matched_gap implies a fully degenerate result.
 driver_state_loop <- function(driver, state, year, pivot) {
   ok <- is.finite(driver) & is.finite(state)
   d <- driver[ok]; s <- state[ok]; y <- year[ok]
@@ -469,18 +474,19 @@ driver_state_loop <- function(driver, state, year, pivot) {
   # Decile binning: unique() breaks guard collapses due to quantile ties
   qd  <- stats::quantile(d, probs = seq(0, 1, 0.1), na.rm = TRUE)
   uqd <- unique(qd)           # drop duplicate break values (e.g. near-constant)
-  if (length(uqd) < 2L) {
-    return(list(signed_area = NA_real_, matched_gap = NA_real_,
-                gap_by_decile = NULL))
-  }
   bin <- cut(d, uqd, include.lowest = TRUE)
   gap <- tapply(seq_along(d), bin, function(ix) {
     dn <- s[ix][limb[ix] == "down"]; up <- s[ix][limb[ix] == "up"]
     if (!length(dn) || !length(up)) return(NA_real_)
     mean(dn) - mean(up)
   })
+  # One-directional driver (all obs on one limb -> every decile gap NA ->
+  # mean(.., na.rm=TRUE) = NaN). Emit NA_real_, never a silent NaN -- same
+  # no-silent-NaN class as effective_driver (Phase 1) and per the @return
+  # contract; Phase 7 writes matched_gap to CSV where NaN round-trips badly.
+  mg_raw <- mean(gap, na.rm = TRUE)
   list(signed_area   = as.numeric(area),
-       matched_gap   = as.numeric(mean(gap, na.rm = TRUE)),
+       matched_gap   = if (is.nan(mg_raw)) NA_real_ else as.numeric(mg_raw),
        gap_by_decile = gap)
 }
 
@@ -522,7 +528,10 @@ loop_null_pvalue <- function(driver, state, year, pivot, era_break, q,
   # §7 guard: loop undefined (constant/short driver) -> NA, not a misleading p
   if (!is.finite(obs_area_signed)) return(NA_real_)
   obs_area <- abs(obs_area_signed)
-  # Loess baseline: smooth the observed series to get a single-attractor null base
+  # Loess baseline: smooth the observed series to get a single-attractor null base.
+  # NAs are passed through to loess intentionally -- predict() keeps the output
+  # length-n / index-aligned (loess returns NA at NA positions), which
+  # survey_artifact_null requires; NA-stripping here would misalign the era split.
   base <- stats::predict(stats::loess(state ~ seq_along(state)))
   null_area <- replicate(n_null, {
     sim <- survey_artifact_null(base, era_break, q,
