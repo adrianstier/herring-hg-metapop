@@ -261,12 +261,27 @@ interpretation is trusted.
 1. **Surrogate batteries** per index (twin / Ebisuzaki / phase-randomized +
    Theiler window); for the latent layer, combine surrogate + posterior
    uncertainty.
-2. **Positive control (sensitivity).** Simulate an approaching
-   saddle-node / Allee metapopulation at HG cadence + the HG observation model
-   → the battery (S-map θ, `|λ_max(t)|`, potential, regime selection, loop)
-   **must** detect it.
-3. **Negative control (specificity).** A stationary single-attractor
-   metapopulation → the battery must stay quiet (low false-positive rate).
+2. **Positive control (sensitivity).** Simulate a system **ramped through a
+   saddle-node fold** — cusp normal form `dx = (r(t) + x − x³)dt + noise`, `r`
+   ramped so the upper branch disappears and the trajectory transitions to the
+   **real lower attractor (no numerical clamp)** — at HG cadence + the HG
+   observation model. The battery **must** detect the approach. **Detector
+   priority (load-bearing):** the time-varying `|λ_max(t)|` / critical-slowing-
+   down (CSD) trend is the **primary** sensitivity criterion — it must rise
+   toward instability before the transition and clearly exceed the negative
+   control's. Generic S-map θ nonlinearity is a **secondary** indicator,
+   **known to be underpowered at the HG cadence (n≈70)**; that power limit is
+   reported as an explicit finding (Boettiger–Hastings honesty), never used as
+   a hard pass/fail gate.
+3. **Negative control (specificity).** A **linear-stochastic single-attractor**
+   process — Ornstein–Uhlenbeck / AR(1) mean-reverting to one equilibrium +
+   observation noise, **not** a deterministic nonlinear map sitting at
+   equilibrium. The battery must stay quiet: S-map θ nonlinearity **not**
+   detected (the process is genuinely linear) and the `|λ_max(t)|` trend
+   flat/near-constant (no spurious CSD). This is the true nonlinearity/CSD
+   false-positive control; a stationary *nonlinear* map is **not** a valid
+   negative control because S-map correctly flags its nonlinearity (the prior
+   mis-specification, corrected 2026-05-19).
 4. **Survey-method false-positive audit (headline-capable).** Reuse the EWS
    spec's `survey_artifact_null()`: simulate the documented two-era
    catchability shift + zero-ambiguity + survey-coverage changes with **no**
