@@ -128,7 +128,19 @@ one. Content lives inside the 5% safe margin.
 
 ---
 
-## 5. R-figure re-export spec (for projection, no stretch)
+## 5. R-figure re-export spec (SUPERSEDED for the talk — paper/analysis track)
+
+> **⚠️ Policy (decided 2026-05-19, Adrian).** Talk figures are **no longer
+> R-rendered**. The canonical talk-figure pipeline is the **matplotlib +
+> baked-chrome** pipeline in `deck_build/` (`redesign_figs.py` →
+> `preprocess_figures.py` → `build_pptx_native.js`) — see §7 and
+> `deck_build/README.md` ("Status & figure policy"). ALL talk figures, current
+> and future (incl. Q&A/backup slides), use that pipeline and aesthetics.
+> R/ggplot2 (`Code/07cz_deck_figure_reexport.R`, `Output/figures/`) is the
+> **parallel paper/analysis track**: preserved, **not deleted**, **not** the
+> talk source. The spec below is retained for the manuscript figure work and
+> as historical context for how the deck figures originated — do not apply it
+> to the talk deck.
 
 R figures currently in `Output/figures/` are **manuscript** exports
 (`theme_pub(base_size≈10)`, often non-16:9, axis text sized for print). They
@@ -174,6 +186,7 @@ Re-export targets (R figures only — the rest are HTML/photo/PDF):
 | S6 | `stier2020_updated/fig3_growth_pdo_updated` | `lecture/s06_climate_pdo.png` | F · 11.0×4.6 |
 | S8 | `stier2020_updated/fig5_realized_growth_updated` | `lecture/s08_realized_growth.png` | F · 11.0×4.6 |
 | S9 | `synchrony` (+ `portfolio_metrics_combined` for numbers) | `lecture/s09_synchrony.png` | F · 11.0×4.6 |
+| S10 | `Data/processed/predators/` (firewall-safe import) | `lecture/deck/s10_predators_returned.png` | inset · authored 16:9 |
 | (B-cards) | as needed from `qa_backup_slides.md` proof objects | `lecture/bNN_*.png` | F |
 
 ---
@@ -192,10 +205,10 @@ assembler places. "Render" = HTML→PNG at 3840×2160. "Re-export" = R per §5.
 | 4 | The baseline, measured | F | McKechnie crop + stat callouts (compose to slide) | 🔨 build §7 |
 | 5 | Two collapses | D-light | render `s5_two_collapses.html` | ✅ built |
 | 6 | The investigation | F | re-export `s06_climate_pdo.png` + slide frame | 🔁 re-export |
-| 7 | The two scales | 2 | render `s7_two_scales.html` | ✅ built |
+| 7 | The two scales | F | re-export `s07_two_scales.png` + slide frame | ✅ real-data figure (replaces schematic) |
 | 8 | Growth collapsed | F | re-export `s08_realized_growth.png` + slide frame | 🔁 re-export |
 | 9 | Portfolio eroded | F | re-export `s09_synchrony.png` + slide frame | 🔁 re-export |
-| 10 | Predators came back | P+inset | humpback video frame (Adrian) + predator-repo recovery fig inset | 📷 Adrian + 🔁 |
+| 10 | Predators came back | P+inset | humpback video frame (Adrian) + `s10_predators_returned.png` inset (✅ re-exported §5) | 📷 Adrian + ✅ fig |
 | 11 | New state | C | render `s11_triple_bottom_line.html` | ✅ built |
 | 12 | The decoupling | D | render `herring_decoupling_figure.html` | ✅ built |
 | 13 | What this teaches | C | render `s13_takeaways.html` | ✅ built |

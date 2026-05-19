@@ -1,0 +1,38 @@
+
+model {
+   # priors on parameters
+   B0 ~ dnorm(0,1); # intercept
+   B1 ~ dnorm(0,1); # temp effect
+   tau ~ dgamma(0.01,0.01);
+   sigma2 <- 1/tau;
+   invEta ~ dgamma(0.01,0.01);
+   eta <- 1/invEta;
+logtheta ~ dnorm(0,0.01);
+theta <- exp(logtheta);
+
+for(i in 1:nSites) {
+     for(j in 1:nSites) {
+        Sigma[i,j] <- sigma2 * exp(-theta * distMat2[i,j]) + eta*diag[i,j];
+}
+  }
+
+# JAGS wants us to use the matrix inverse
+invSigma[1:nSites,1:nSites] <- inverse(Sigma[1:nSites,1:nSites]);
+# Draw a vector of random effects that is constant over time
+phi[1,1:nSites] ~ dmnorm(zeros,invSigma[,]);
+for(i in 2:nYears) {
+phi[i,1:nSites] ~ dmnorm(phi[i-1,1:nSites],invSigma[,]);
+
+}
+
+
+# Jags is not vectorized, so we have to loop over observations
+    for(i in 1:nYears) {
+       for(j in 1:nSites) {
+          logit(p[i,j]) <- B0 + B1 * tempF[i,j] + phi[i,j];
+          coliform01[i,j] ~ dbern(p[i,j]);
+        }
+    }
+ }
+
+

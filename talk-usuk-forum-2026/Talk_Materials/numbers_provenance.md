@@ -52,3 +52,25 @@ portfolio multiplier or a "0.17 to 0.28" synchrony pair.
 - Never present a Stier-2020 figure as an `m1_stier_11` result, and never the
   early abstract's "7 of 9 since 1994" phrasing as a current number without
   checking it against `m1_stier_11`/TP-01.
+
+## S8 realized-growth slide — ALL-11 (decision 2026-05-18)
+
+- **Adrian's call:** S8 shows **all 11 `m1_stier_11` sections**, not the
+  focal-9 Stier-2020 replication. The deck figure
+  (`Output/figures/lecture/deck/s08_realized_growth.png`, `Code/07cz` S8
+  block) now reads `Output/diagnostics/stier2020_updated_companion_growth_change.csv`
+  (per-section mean realized growth, m1_stier_11), **not** the focal-9
+  `stier2020_updated_fig5_growth_periods.csv`.
+- **On-slide number:** "**9 of 11 sections declined**" — data-exact:
+  `post_growth_median < hist_growth_median` for 9 of the 11 sections
+  (risers = Port Louis + Tasu Sound). This is a *current `m1_stier_11`*
+  number, not the early abstract's "7 of 9 / 8 of 9". Do not blend with the
+  focal-9 count.
+- **Metric note:** companion `hist/post_growth_median` is on a different
+  scale (λ ≈ 0.94–1.17, per-era mean realized growth) than the focal-9 fig5
+  (λ ≈ 1.3–1.6). They are different reads of m1_stier_11 — never mix the two
+  scales or counts on one slide.
+- **Sparse sensitivity:** Tasu Sound & Naden Harbour are retained in
+  m1_stier_11 but excluded from Stier-2020 focal panels; on S8 they are
+  drawn grey/dashed + "(sparse)"-labelled, never hidden. Medians only — no
+  per-section significance claim (claim-control sheet).

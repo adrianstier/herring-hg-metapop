@@ -11,7 +11,7 @@ tracks the cross-session build state.
 > **Talk Build State** section at the bottom so the next context window picks up
 > cleanly.
 
-Last updated: 2026-05-18 (14-slide architecture confirmed; systematic per-slide asset audit; slide→asset map FRM-MAP wired; heatwave/bottom-up Q&A scope added; S12/S10/number gaps flagged).
+Last updated: 2026-05-18 (S8 realized-growth redesigned as a slopegraph and switched to ALL-11 m1_stier_11 — "9 of 11 sections declined"; restaged + native .pptx rebuilt + composite-QA'd; provenance recorded. Earlier today: 14-slide architecture confirmed; per-slide asset audit; FRM-MAP wired; S6/S7/S10 figures built).
 
 ---
 
@@ -208,6 +208,7 @@ tracked. **This is the home for the talk outline / drafts / deck.**
 | FRM-AGENDA | pdf | Draft forum agenda (use `*_readable.pdf`) | `talk-usuk-forum-2026/Forum_Documents/` | data | confirm slot/session details |
 | FRM-TIMELINE | html | Interactive HG herring timeline | `talk-usuk-forum-2026/Talk_Materials/herring_haida_gwaii_timeline.html` | raw-material | narrative/timeline device |
 | FRM-TRIP | html | Trip dossier (flights, programme, forms, contacts) | `talk-usuk-forum-2026/Trip_Dossier/` | local-only | logistics — not talk content; gitignored because private |
+| FRM-DOSS | html/csv | **Attendee dossier — all 50 other attendees** | `talk-usuk-forum-2026/Attendee_Dossier/` | local-only | who's-in-the-room prep: booklet photo + affiliation + top-3 most-cited first/last-author papers per person. Open `attendee_dossier.html` (self-contained, searchable); `attendee_dossier.csv` is the structured DB. **CONFIDENTIAL — built from the "do not circulate" participant list; gitignored, never commit/publish.** Provenance/method in its `README.md`; 10 hand-verified disambiguations in `VERIFICATION.md`. Refresh: `python3 pull_papers.py && python3 build_dossier.py` |
 | FRM-PAPERS | pdf/doc | Curated cited papers + acquisition log (PDFs gitignored) | `talk-usuk-forum-2026/Reference_Papers/` | raw-material | Doherty 2025, Ingeman 2019, Levin 2020, Okamoto 2020, Samhouri 2017, Selkoe 2015, Shelton 2014, Stier 2016, Stier 2020, plus newly acquired forum papers; source state in `ACQUISITION_LOG.md` |
 | FRM-WORK | dir | **Talk outline / slide drafts / deck go here** | `talk-usuk-forum-2026/Talk_Materials/` | draft | working talk build location |
 | FRM-PROD | doc | **Canonical 20-slide production plan** | `talk-usuk-forum-2026/Talk_Materials/talk_production_plan.md` | ready | current slide sequence, treatment rhythm, asset wiring, backup/Q&A slides |
@@ -558,15 +559,155 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
   2025/005). `talk_architecture_3` S12, `slide_asset_map.md` S12, and the new
   FRM-DECOUP catalog row updated. Remaining for S12: export to a slide image
   and pick light/dark to match the final deck.
+- **2026-05-18 (bottom-up plankton data scope):** Added
+  `Code/07bw_bloom_phenology_link_screen.R`, a reproducible 8-day MODIS Aqua
+  ERDDAP screen for Haida Gwaii / Hecate Strait spring Chl-a phenology
+  (`Data/processed/bloom_phenology_haida_gwaii_8day_modis_proxy.csv`,
+  `Output/diagnostics/bloom_phenology_herring_screen.md`,
+  `Output/figures/bloom_phenology_herring_screen.pdf`). Added
+  `docs/bottom-up-plankton-data-scope.md` with the online data scan:
+  BioChem/DFO Pacific IOS are the best HG zooplankton route; CSAS 2025 OHGNZ
+  confirms a Hecate Strait 2000-present zooplankton time series and 1980-2021
+  regional samples, but a machine-readable extract is still needed before any
+  model covariate. Talk-safe answer: satellite Chl-a does **not** show a clean
+  Blob-era bloom-biomass failure; the unresolved bottom-up question is
+  secondary production / prey quality and timing.
+- **2026-05-18 (S6 climate figure rebuilt — productivity vs ocean state):**
+  Replaced the S6 block in `Code/07cz_deck_figure_reexport.R`: the year × PDO-
+  effect oscillating band is now a productivity-vs-ocean-state figure. y =
+  PDO-attributable multiplicative growth factor `exp(β·PDO)` from
+  `stier2020_updated_fig3_pdo_effect.csv` (verified `median = β·PDO`, constant
+  β = −0.0529, log-growth scale); x = PDO index, cool/productive (left) → warm
+  (right), 50/95% bands, white estimate line as the hero, observed-PDO rug.
+  **Claim-control:** the source data give a **~1.25× swing** (cool ×1.15 /
+  +15%, warm ×0.92 / −8%) over the observed PDO range — **NOT the hypothesized
+  ~3×**. No fabricated "3×" bracket drawn (numbers_provenance / claim-control
+  sheet); Adrian approved the honest ≈1.25× bracket framing. Regenerated →
+  restaged `deck_assets/06_climate_pdo.png` → rebuilt
+  `Herring_RoyalSociety_Stier_2026.pptx` (native). Slide-6 title ("Ocean
+  productivity is a first-order driver") and speaker notes ("necessary, not
+  sufficient") unchanged and still accurate.
+- **2026-05-18 (climate narrative corrected to match analysis):** Purged the
+  false "productivity can triple" climate claim everywhere it was live:
+  `talk_architecture_1_outline.html` (S6 bullet), `talk_architecture_2_speaker_
+  notes.html` (S6 spoken line), `deck_build/build_pptx.js` (legacy builder S6
+  note), and `deck_build/build_pptx_native.js` (live builder S6 note). All now
+  state the real model magnitude: cool/productive PDO phases ≈ +15% growth,
+  warm ≈ −8%, a ~1.25× swing — necessary, not sufficient. Native `.pptx`
+  rebuilt. Only remaining "triple" strings are the unrelated slide-11 *triple
+  bottom line*. Spine claim ("first-order driver, not the whole answer")
+  unchanged; only the magnitude was wrong and is now true to the analysis.
+- **2026-05-18 (S7 two-scale built — real-data fishing figure):** Added an S7
+  block to `Code/07cz_deck_figure_reexport.R` rendering
+  `s07_two_scales.png` from `Output/diagnostics/stier2020_updated_fig4_fishing.csv`
+  (real data, both scales, 1951–2025, CI bands): archipelago-wide (marine, the
+  managed rate, long-term median ~3%) vs fished-sections-only (rust, what
+  fished coves experience, peak median ~51%, upper CI ~70%), shaded
+  scale-mismatch gap, and a **DFO HCR benchmark drawn only over years in
+  force**: dashed F=0.20 (1983–2017), then F=0.10 (→2025). Data-derived
+  callout (no fabrication): 20% rule exceeded 22 of 75 yrs at the cove scale,
+  once archipelago-wide. Provenance: updated Stier et al. 2020 method, catch
+  matrix to 2025 — scale-mismatch result, NOT m1_stier_11. Brainstormed with
+  Adrian (provenance posture, emphasis, HCR span, cut-off vs 20%-rate
+  distinction). **`build_pptx_native.js` S7 converted from native schematic to
+  full-bleed R-figure image** (like S6/S8/S9); speaker note carries full HCR
+  provenance incl. the cut-off = 0.25·SB0 ≈ 5.4 kt biomass floor (different
+  axis, lives on the biomass slide). Staged `deck_assets/07_two_scales.png`,
+  native `.pptx` rebuilt. Ran the Figure Iteration Protocol (2 render→QA
+  passes). The old `s7_two_scales.html` schematic is now superseded.
+- **2026-05-18 (S10 predator figure built — "the predators came back"):** Adrian
+  chose the **consumption + pressure** figure over the humpback-trajectory
+  recovery-shape alternative (the two HG-specific single-message finalists; the
+  slide-map's nominal `century_scale_predator_field` rejected as a dense
+  off-message 4-panel BC figure). Added an S10 block to
+  `Code/07cz_deck_figure_reexport.R` that re-renders it **firewall-safe** from
+  the locally-imported predator products (`Data/processed/predators/
+  hg_predator_consumption_by_group_year.csv` + `hg_predation_pressure_index_
+  audited.csv`), never the sibling repo path → `Output/figures/lecture/deck/
+  s10_predators_returned.png` (deck-styled, dark `theme_lecture`, deck track
+  colours, 3840×2160). Two panels: **A** HG herring eaten by predator group
+  1910–2024 (marine mammals the hero band — ≈17.5 kt pre-whaling baseline →
+  mid-century trough → modern multi-predator rise to ~30 kt); **B** predator
+  demand as % of HG spawn (100% reference; 2015–24 mean ≈239%). **Claim
+  guardrail baked into the caption**: "a large ecological pressure, NOT a
+  fitted or promoted `m1_stier_11` predator coefficient" (per the
+  claim-control sheet). Ran the Figure Iteration Protocol — 4 render→QA passes
+  fixed an early-century sawtooth artifact (5-yearly pre-1950 census filled
+  with 0s), colliding stacked y-axis titles, and overlapping provenance text.
+  `slide_asset_map.md` S10 + open-gaps + build-order and
+  `deck_design_system.md` §5/§6 updated. **Remaining S10 gap unchanged:**
+  Adrian still sources the humpback-feeding P-zone photo this figure insets
+  into (not in any 142C/242 library).
+- **2026-05-18 (S8 realized-growth redesigned + switched to ALL-11):** S8 was
+  an ugly default-ggplot tangle (9 identical kelp lines, ~35% dead space, no
+  labels). Used two graphic-design agents (Tufte-slopegraph + keynote-impact),
+  reconciled against the deck track-colour contract (rejected their
+  rust/marine — ecological structure = kelp; rust/marine reserved for
+  value/governance on S5/S11/S12), and rebuilt the S8 block of
+  `Code/07cz_deck_figure_reexport.R` as a **slopegraph**. Adrian then flagged
+  it should be **all 11**, not focal-9. Traced the root cause (`Code/06g`
+  line 652: fig5 is *deliberately* focal-9 to replicate Stier 2020) and, per
+  Adrian's call, switched the source to
+  `Output/diagnostics/stier2020_updated_companion_growth_change.csv`
+  (per-section mean realized growth, **m1_stier_11, all 11 sections**, hist
+  1952–94 → post 1995–2025). Headline is data-exact **"9 of 11 sections
+  declined"** (post median < historical; risers = Port Louis + Tasu Sound).
+  Tasu Sound & Naden Harbour = sparse-sensitivity → grey/dashed + "(sparse)"
+  label, never hidden; Port Louis = lone focal hold (ink); kelp bundle = the
+  8 focal decliners; **λ=1 replacement line is meaningful here** (a couple
+  post-era sections dip <1, unlike focal-9 fig5). Direct-labelled (one
+  deconflicted repel layer, no legend), top ~1.85 in reserved for the native
+  title (verified composite: first figure ink 32% vs title ≤23%). Ran the
+  Figure Iteration Protocol (5 render→QA passes) + a pptx→pdf composite QA.
+  Restaged `deck_assets/08_realized_growth.png`, updated
+  `build_pptx_native.js` S8 title-notes (all-11, claim-safe), rebuilt the
+  native `.pptx`. Provenance recorded in `numbers_provenance.md` (S8 all-11
+  section) and `slide_asset_map.md` S8 row. Claim-control: medians only, no
+  per-section significance, m1_stier_11 attribution (not Stier-2020 focal-9).
+- **2026-05-19 (CANONICAL FIGURE PIPELINE DECIDED — Adrian):** The overnight
+  cowork v3 redesign is adopted as the **single canonical talk-figure
+  approach**. ALL talk figures — current and every future/added one, incl. the
+  extra Q&A/backup slides — are produced by the **matplotlib + baked-chrome
+  pipeline** in `talk-usuk-forum-2026/Talk_Materials/deck_build/`
+  (`redesign_figs.py` → `preprocess_figures.py` → `build_pptx_native.js`) and
+  must match its aesthetic/design contract. **Do not** introduce a different
+  chart style, a parallel exporter, or native-PPT chart objects for the talk.
+  **R/ggplot2 (`Code/07cz_deck_figure_reexport.R`, `Output/figures/`) is the
+  parallel paper/analysis track — preserved, NOT deleted, NOT the talk
+  source** (talk pulls data/numbers from analysis CSVs, never R images).
+  Portability fixed (hardcoded sandbox paths removed; fonts resolve
+  Liberation→Georgia/Courier so the pipeline runs on macOS + the Linux
+  sandbox). Authoritative how-to + "add a new slide" recipe:
+  `deck_build/README.md` ("Status & figure policy"); build contract updated in
+  `deck_design_system.md` §5 (R spec marked superseded for the talk). Any
+  future Claude/Codex/Adrian session adding talk slides MUST follow this.
 - **Open / next actions (priority order):**
   1. ✅ S12 four-layer decoupling figure — **built**
      (`herring_decoupling_figure.html`); remaining: export to slide image +
      light/dark choice.
-  2. Build S7 two-scale (adapt 142C teaching fig, Stier-2020 attribution),
-     S5 annotated two-collapse timeline.
-  3. S4 McKechnie crop + callout verification; S6 figure pick;
-     S9/S11 number corrections; S13 typographic layout.
-  4. Adrian: pull/choose S1/S2/S3/S10/S14 photos from `DRV-ASSETS`.
+  2. ✅ S7 two-scale — **built** (real-data archipelago-vs-fished-sections F
+     figure, updated Stier 2020 attribution); remaining: S5 annotated
+     two-collapse timeline.
+  3. S4 McKechnie crop + callout verification; ✅ S6 figure — built
+     (productivity-vs-PDO, honest ≈1.25× framing); S9/S11 number
+     corrections; S13 typographic layout.
+  4. ✅ S10 predator figure built (`s10_predators_returned.png`). Adrian:
+     pull/choose S1/S2/S3/S14 photos + the S10 humpback-feeding photo from
+     `DRV-ASSETS`.
   5. Assemble/render the `.pptx` in `talk-usuk-forum-2026/Talk_Materials/`.
   6. **Slides OVERDUE to `scientific.meetings@royalsociety.org`** (.pptx) —
      send as soon as the draft deck passes contact-sheet QA.
+- **2026-05-19 (attendee dossier):** Built FRM-DOSS — a who's-in-the-room
+  dossier for all 50 other forum attendees (25 speakers/chairs + 25
+  participants; Adrian excluded). Per person: official booklet headshot +
+  affiliation/role/session + top-3 most-cited first/last-author papers
+  (Semantic Scholar, rate-disciplined; 10 ambiguous names hand-verified via
+  a 3-agent OpenAlex disambiguation pass — caught e.g. a Richard Wood
+  gambling-researcher conflation, James M. Rae oncologist, William T. White
+  shark taxonomist). Outputs: `Attendee_Dossier/attendee_dossier.html`
+  (self-contained, searchable) + `.csv`. **CONFIDENTIAL**, gitignored
+  (built from the "do not circulate" participant list) — never commit or
+  publish. Confidence: 11 verified / 33 likely / 6 unverified (the 6 are
+  honestly-flagged thin/non-academic records). Method in its `README.md`,
+  changes in `VERIFICATION.md`. Not talk content — networking prep only;
+  fully firewalled from the core analysis.

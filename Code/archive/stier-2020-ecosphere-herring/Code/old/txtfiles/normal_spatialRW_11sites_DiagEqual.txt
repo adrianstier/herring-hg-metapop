@@ -1,0 +1,85 @@
+
+                 model {  
+                
+##########################
+#OBSERVATION MODEL PRIORS and LIKLIHOODs
+##########################
+
+tauR ~ dunif(1,100); #this is the estimated variance prior for Spawn Index
+q ~ dgamma(.02,0.001);  #Fraction of Spawn Observed on spawn surveys estiamted across all sites
+#psi ~ 0.1 #dunif(0,10) #this is in variance for fishing set fixed to try to get convergence
+
+for(i in 1:nYears) {
+  for(j in 1:nSites) {
+    Y[i,j] ~  dnorm(X[i,j]*q,1/tauR); #obs eq for spawn index. a normal pull with meam Xq LIKELIHOOD STATEMENT ****
+    
+    tl[i,j]<-Z[i,j]+log(Pc[i,j]) #total biomass (tl) is qual to to estimated biomass (Z) pre catch + catch (Pc) 
+    
+    ctab[i,j] ~ dnorm(tl[i,j],1/.1) #distribution of catch data  LIKELIHOOD STATEMENT ****
+  }
+}
+
+for(i in 1:nYears) {
+  for(j in 1:nSites) {
+    Pc[i,j] ~ dunif(0,c_prior[i,j]) #dbeta(1,1) #Fraction of Spawn Caught for each site, c_prior catches the hard variance for catch=0
+  }
+}
+
+##########################
+#PROCESS MODEL PRIORS
+##########################
+
+# POPULATION GROWTH parameters U: 
+Umu ~ dnorm(0,1); #average population growth
+Usig ~ dunif(0,100); #variance in population growth 
+Usig2<-Usig*Usig
+
+for(i in 1:nSites) {
+  U[i] ~ dnorm(Umu,1/Usig2) #for each site U set as random variable prior 
+}
+
+#COVARIATE
+pdoz2<-1
+
+pdocoef~dnorm(0,1/pdoz2); #estimated impact of pdo of herring
+
+#VARINCE MATRIX - Diagonal and Equal - same variance all sites 
+
+# For indepenent and equal variances
+sigma2[1] ~ dgamma(0.001,0.001); #set initial
+
+  for(i in 2:nSites) {
+    sigma2[i] <- sigma2[1]; #replicate initial value for all sigma2
+}
+
+
+
+# Estimate the initial state vector of population abundances
+
+
+for(j in 1:nSites) {
+      X[1,j] ~ dnorm(5,inverse(sigma2[j])); # vague normal prior for first time step
+	  Z[1,j] <- X[1,j] + log(1-Pc[1,j])
+}
+
+
+#  Delta Values
+for(i in 1:nYears){
+for(j in 1:nSites) {delta[i,j] ~ dnorm(0,inverse(sigma2[j]))
+}
+}
+
+      
+for(i in 2:nYears){
+for(j in 1:nSites) {
+
+#fishing by site and global pdo estimates and U estimates 
+Z[i,j] <- X[i-1,j]+U[j]+pdocoef*pdo[i-1]+delta[i,j]
+
+#Estimate the state X with catch by site 
+X[i,j] <-Z[i,j]+log(1-Pc[i,j]);
+
+ }
+} 
+} 
+ 

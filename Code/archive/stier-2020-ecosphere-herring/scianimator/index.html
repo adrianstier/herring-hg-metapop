@@ -1,0 +1,56 @@
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="generator" content="R package animation 2.3">
+	<title>Animations Using the R Language</title>
+	<link rel="stylesheet" href="css/reset.css" />
+	<link rel="stylesheet" href="css/styles.css" />
+	<link rel="stylesheet" href="css/scianimator.css" />
+  <link rel="stylesheet" href="http://yandex.st/highlightjs/7.3/styles/github.min.css">
+
+	<script src="js/jquery-1.4.4.min.js"></script>
+	<script src="js/jquery.scianimator.min.js"></script>
+  <script type="text/javascript" src="http://yandex.st/highlightjs/7.3/highlight.min.js"></script>
+  <script type="text/javascript" src="http://yandex.st/highlightjs/7.3/languages/r.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+</head>
+<body>
+
+	<div class="scianimator"><div id="Rplot" style="display: inline-block;"></div></div>
+	<div class="scianimator" style="width: 850px; text-align: left"><pre><code class="r">
+library(ade4)
+library(reshape)
+library(ggplot2)
+library(plyr)
+library(animation)
+library(PBSmodelling)
+library(PBSmapping)
+for (i in years) {
+    p.data <- surveyData[which(surveyData$YEAR == i), ]
+    max.z <- max(p.data$Z)
+    subset <- p.data[p.data$Z > 0, ]
+    print(i)
+    if (length(subset[, 1]) >= 1) {
+        subset <- data.frame(EID = p.data$EID, X = p.data$X, 
+            Y = p.data$Y, Z = p.data$Z, loc = p.data$LOC_CODE)
+        plotMap(nepacLLhigh, xlim = x.range, ylim = y.range, 
+            col = "gainsboro", plt = c(0.08, 0.99, 0.08, 0.99))
+        title(main = paste(i, "                         "), line = -4)
+        ramp <- colorRamp(c("red", "white"))
+        addBubbles(subset, type = "surface", symbol.bg = rev(heat.colors(n.colors)), 
+            legend.type = "horiz", z.max = max.obs, legend.breaks = pretty(min.obs:max.obs, 
+                n = n.colors), symbol.zero = FALSE, col = "grey", 
+            min.size = 0.1, max.size = 0.4)
+    }
+    ani.pause()
+}
+## R version 3.0.2 (2013-09-25)
+## Platform: x86_64-w64-mingw32/x64 (64-bit)
+## Other packages: ade4 1.6-2, reshape 0.8.5, ggplot2 1.0.0, plyr 1.8.1,
+## animation 2.3, PBSmodelling 2.66.264, PBSmapping 2.67.60</code></pre></div>
+	<script src="js/Rplot.js"></script>
+<!-- highlight R code -->
+
+</body>
+</html>

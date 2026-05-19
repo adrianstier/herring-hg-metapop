@@ -38,6 +38,23 @@ before reasoning about non-recovery mechanisms or drafting talk narrative.
 
 ---
 
+# Archived: Stier et al. 2020 *Ecosphere* paper code
+
+The original **2020 Ecosphere** Haida Gwaii herring metapopulation /
+portfolio paper codebase is archived (copied, original on Drive untouched) at:
+
+**`Code/archive/stier-2020-ecosphere-herring/`** — start with its
+**`INDEX.md`**.
+
+Contains: the 2020 simulator + figure code (`Code/Recent Figs/`), legacy MARSS/
+JAGS lineage (`Code/old/`), the **async→sync portfolio animation**
+(`_animation/sim_anim.mp4`, the talk restyle target), the published Ecosphere
+Fig 5, and the scianimator interactive version. ~16 MB (code + animation only;
+the 4.6 GB of model-output binaries were left on Drive — path in `INDEX.md`).
+Read-only provenance — not part of the live pipeline; port with intent.
+
+---
+
 # Claude Handoff: Predator Repo Link
 
 This herring metapopulation repo depends on the sibling predator-data repo for

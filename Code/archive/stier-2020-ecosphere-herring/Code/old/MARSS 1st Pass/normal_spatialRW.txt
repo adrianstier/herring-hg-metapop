@@ -1,0 +1,53 @@
+
+                 model {  
+                 # Populations are independent, so the Q matrix is a diagonal. We'll assume
+                 # B = 1, and there's no scaling (A) parameters because each time series = 1 state.
+                 # Unlike MARSS, we can model the trends (U) as random effects - meaning we'll estimate
+                 # a shared mean and sd across populations, as well as the deviations from that
+                 Umu ~ dnorm(0,1);
+                 Usig ~ dunif(0,100);
+                 Utau <- 1/(Usig*Usig);
+                 for(i in 1:nSites) {
+                 U[i] ~ dnorm(Umu,Utau);
+                 }
+                 pdocoef~dnorm(0,1);
+                 tau ~ dgamma(0.01,0.01);
+                 sigma2 <- 1/tau;
+                 invEta ~ dgamma(0.01,0.01);
+                 eta <- 1/invEta;
+                 logtheta ~ dnorm(0,0.01);
+                 theta <- exp(logtheta);
+                 for(i in 1:nSites) {
+                 for(j in 1:nSites) {
+                 Q[i,j] <- sigma2 * exp(-theta * distMat4[i,j]) + eta*diag[i,j];
+                 }
+                 }   
+                 # JAGS wants us to use the matrix inverse
+                 tauQ[1:nSites,1:nSites] <- inverse(Q[1:nSites,1:nSites]);
+                 
+                 # Estimate the initial state vector of population abundances
+                 for(i in 1:nSites) {
+                 X[1,i] ~ dnorm(3,0.01); # vague normal prior 
+                 }
+                 # Autoregressive process for remaining years
+                 for(i in 1:nSites) {zeros[i]<-0;}
+                 delta[1,1:nSites] ~ dmnorm(zeros,tauQ[1:nSites,1:nSites]);
+                 for(i in 2:nYears) {
+                 delta[i,1:nSites] ~ dmnorm(delta[i-1,1:nSites],tauQ[1:nSites,1:nSites]);
+                 for(j in 1:nSites) {
+                 #predX[i,j] <- X[i-1,j] + U[j];
+                 predX[i,j] <- X[i-1,j] + pdocoef*pdo[i];
+                 X[i,j] <- predX[i,j] + delta[i,j];
+                 }
+                 }
+                 
+                 # Observation model
+                 tauR ~ dgamma(0.001,0.001);
+                 for(i in 1:nYears) {
+                 for(j in 1:nSites) {
+                 Y[i,j] ~ dnorm(X[i,j],tauR);
+                 }
+                 }
+                 }  
+                 
+                 
