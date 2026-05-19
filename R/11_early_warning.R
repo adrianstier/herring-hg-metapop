@@ -496,3 +496,56 @@ ews_mar1_eigen <- function(X) {
   if (!is.finite(ev)) return(NA_real_)
   ev
 }
+
+#' Candidate regime-shift years via (a) sequential-t (Rodionov STARS-like)
+#' and (b) strucchange breakpoints on the mean.
+#' @param years integer-coercible vector of years aligned to x
+#' @param x numeric series (non-finite values dropped with their years)
+#' @param l integer half-window for the sequential-t scan (default 10)
+#' @param p numeric significance threshold for the sequential-t (default 0.05)
+#' @return a tibble with columns `year` (integer) and `method` (character:
+#'   "stars" or "breakpoint"); a 0-row tibble WITH those columns if no
+#'   shift is detectable or the input is too short/degenerate. Never errors,
+#'   warns, or returns NaN/Inf.
+#' @references Rodionov 2004 GRL 31:L09204 (STARS); Zeileis et al. 2003
+#'   Comput Stat Data Anal 44:109-123 (strucchange breakpoints)
+ews_detect_transitions <- function(years, x, l = 10L, p = 0.05) {
+  empty <- tibble::tibble(year = integer(0), method = character(0))
+  years <- suppressWarnings(as.integer(years))
+  x <- suppressWarnings(as.numeric(x))
+  if (length(x) != length(years)) return(empty)
+  ok <- is.finite(x) & is.finite(years)
+  years <- years[ok]; x <- x[ok]
+  n <- length(x)
+  if (n < 4L) return(empty)
+  out <- list()
+  # (a) sequential-t STARS-like
+  if (n >= (2L * l + 1L)) {
+    i <- l + 1L
+    while (i <= n - l) {
+      pre  <- x[(i - l):(i - 1L)]
+      post <- x[i:(i + l - 1L)]
+      tt <- tryCatch(
+        suppressWarnings(stats::t.test(pre, post)$p.value),
+        error = function(e) NA_real_)
+      if (is.finite(tt) && tt < p) {
+        out[[length(out) + 1L]] <- tibble::tibble(
+          year = years[i], method = "stars")
+      }
+      i <- i + 1L
+    }
+  }
+  # (b) strucchange breakpoints on the mean
+  bp <- tryCatch(
+    suppressWarnings(strucchange::breakpoints(x ~ 1)$breakpoints),
+    error = function(e) NA)
+  if (length(bp) >= 1L && !anyNA(bp)) {
+    out[[length(out) + 1L]] <- tibble::tibble(
+      year = years[bp], method = "breakpoint")
+  }
+  if (length(out) == 0L) return(empty)
+  res <- dplyr::distinct(dplyr::bind_rows(out))
+  res$year <- as.integer(res$year)
+  res$method <- as.character(res$method)
+  res[, c("year", "method")]
+}

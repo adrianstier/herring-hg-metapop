@@ -171,3 +171,29 @@ test_that("ews_kendall_surrogate is degenerate-robust and deterministic (spec §
   c_diff <- ews_kendall_surrogate(z, n_surr = 100, seed = 999L)            # seed discriminates
   expect_false(isTRUE(all.equal(a$p_value, c_diff$p_value)))
 })
+
+test_that("transition detector finds a planted mean shift near its true year", {
+  set.seed(6)
+  x <- c(rnorm(30, 10, 1), rnorm(30, 3, 1))
+  yrs <- 1951:2010
+  ct <- ews_detect_transitions(yrs, x)
+  expect_true(any(abs(ct$year - 1981) <= 3))
+})
+
+test_that("ews_detect_transitions returns a stable empty contract and is §8-robust", {
+  empty <- ews_detect_transitions(integer(0), numeric(0))
+  expect_s3_class(empty, "tbl_df")
+  expect_identical(names(empty), c("year", "method"))
+  expect_equal(nrow(empty), 0L)
+  expect_type(empty$year, "integer"); expect_type(empty$method, "character")
+  # all-NA x -> empty contract, no error/warning
+  e2 <- ews_detect_transitions(1951:1970, rep(NA_real_, 20))
+  expect_identical(names(e2), c("year", "method")); expect_equal(nrow(e2), 0L)
+  # constant series -> no t.test "essentially constant" error, empty contract
+  expect_no_warning(ews_detect_transitions(1951:1980, rep(5, 30)))
+  cc <- ews_detect_transitions(1951:1980, rep(5, 30))
+  expect_identical(names(cc), c("year", "method"))
+  # too-short series -> empty contract, no crash
+  short <- ews_detect_transitions(1951:1955, rnorm(5))
+  expect_identical(names(short), c("year", "method"))
+})
