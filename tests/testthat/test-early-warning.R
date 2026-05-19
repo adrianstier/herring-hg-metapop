@@ -146,3 +146,24 @@ test_that("ews_mar1_eigen is degenerate/NA-robust (spec §8)", {
   v <- suppressWarnings(ews_mar1_eigen(Xna))
   expect_true(is.na(v) || (is.finite(v) && v >= 0))
 })
+
+test_that("Kendall surrogate test flags a strong trend, not white noise", {
+  set.seed(5)
+  trend <- ews_kendall_surrogate(seq(0, 1, length.out = 40) + rnorm(40, 0, 0.02),
+                                  n_surr = 200)
+  expect_lt(trend$p_value, 0.05); expect_gt(trend$tau, 0.7)
+  flat <- ews_kendall_surrogate(rnorm(40), n_surr = 200)
+  expect_gt(flat$p_value, 0.05)
+})
+
+test_that("ews_kendall_surrogate is degenerate-robust and deterministic (spec §8)", {
+  expect_true(is.na(ews_kendall_surrogate(c(1, 2, 3), n_surr = 50)$tau))   # n<5
+  cflat <- ews_kendall_surrogate(rep(7, 30), n_surr = 50)                  # constant
+  expect_true(is.na(cflat$tau) || is.na(cflat$p_value))
+  expect_no_warning(ews_kendall_surrogate(rep(7, 30), n_surr = 50))
+  expect_no_warning(ews_kendall_surrogate(c(NA, 1:30, NA), n_surr = 50))   # NA stripped
+  set.seed(42L); z <- cumsum(rnorm(30))                                    # fixed y
+  a <- ews_kendall_surrogate(z, n_surr = 100, seed = 42L)
+  b <- ews_kendall_surrogate(z, n_surr = 100, seed = 42L)
+  expect_equal(a$p_value, b$p_value)                                       # deterministic
+})

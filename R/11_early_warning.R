@@ -413,6 +413,43 @@ ews_morans_i <- function(vals, coords) {
   val
 }
 
+#' Kendall tau trend statistic with an AR(1)-surrogate p-value (Dakos 2008).
+#' Surrogates preserve lag-1 autocorrelation and variance but destroy trend.
+#' @param y numeric vector (an indicator trajectory; non-finite values dropped)
+#' @param n_surr integer number of AR(1) surrogate series
+#' @param seed integer RNG seed (results are deterministic given seed)
+#' @return list(tau, p_value, n); tau/p_value are NA_real_ if fewer than 5
+#'   finite points or the series has ~zero variance. Never NaN/Inf; no
+#'   warnings escape.
+#' @references Dakos et al. 2008 PNAS 105:14308-14312; 2012 PLoS ONE 7:e41010
+ews_kendall_surrogate <- function(y, n_surr = 1000L, seed = 20260519L) {
+  y <- as.numeric(y); y <- y[is.finite(y)]
+  n <- length(y)
+  if (n < 5L) return(list(tau = NA_real_, p_value = NA_real_, n = n))
+  s <- stats::sd(y)
+  if (!is.finite(s) || s == 0) {
+    return(list(tau = NA_real_, p_value = NA_real_, n = n))
+  }
+  tau_obs <- suppressWarnings(
+    as.numeric(Kendall::Kendall(seq_len(n), y)$tau))
+  if (!is.finite(tau_obs)) {
+    return(list(tau = NA_real_, p_value = NA_real_, n = n))
+  }
+  a <- suppressWarnings(stats::acf(y, lag.max = 1, plot = FALSE)$acf[2])
+  if (!is.finite(a)) a <- 0
+  a <- max(min(a, 0.99), -0.99)
+  set.seed(seed)
+  tau_null <- vapply(seq_len(n_surr), function(i) {
+    e <- as.numeric(stats::arima.sim(
+      list(ar = a), n = n, sd = s * sqrt(1 - a^2)))
+    suppressWarnings(as.numeric(Kendall::Kendall(seq_len(n), e)$tau))
+  }, numeric(1))
+  tau_null <- tau_null[is.finite(tau_null)]
+  p <- if (length(tau_null) == 0L) NA_real_
+       else mean(abs(tau_null) >= abs(tau_obs))
+  list(tau = tau_obs, p_value = p, n = n)
+}
+
 #' Dominant eigenvalue modulus of the MAR(1)/VAR(1) interaction matrix B.
 #' Rising lambda toward 1 == multivariate critical slowing down.
 #' Uses OLS VAR(1) when the matrix is complete; MARSS when NAs are present.
