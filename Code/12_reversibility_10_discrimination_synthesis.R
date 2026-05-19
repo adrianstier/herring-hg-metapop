@@ -540,3 +540,14 @@ cat(sprintf(
 cat(sprintf(
   "[reversibility] composite gate: roe-era(1972-2004) median=%.3f vs recent(>=2015) median=%.3f -> returned=%s\n",
   ref_comp_med, recent_comp_med, ev_eff_returned))
+## M-1: surface the reference-window robustness diagnostic (was computed but
+## never written/printed). Prefer surfacing over deleting — it is useful.
+n_win_ret    <- sum(window_sens$gate_returned)
+n_win_total  <- nrow(window_sens)
+ge1972_mask  <- as.integer(sub("-.*", "", window_sens$window)) >= 1972
+n_ge1972_ret <- sum(window_sens$gate_returned[ge1972_mask])
+n_ge1972_tot <- sum(ge1972_mask)
+cat(sprintf(
+  "[synthesis] effective_driver returned in %d/%d windows; >=1972 subset: %d/%d (robust_ge1972=%s; nearest flip margin=%.4f z)\n",
+  n_win_ret, n_win_total, n_ge1972_ret, n_ge1972_tot,
+  win_robust_ge1972, win_flip_margin))

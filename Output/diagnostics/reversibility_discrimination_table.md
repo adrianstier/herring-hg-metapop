@@ -1,6 +1,6 @@
 # Reversibility Discrimination Table
 
-Generated: 2026-05-19 21:40:29.032147
+Generated: 2026-05-19 21:57:10.262615
 Canonical seed: 20260519
 
 ## Observed Evidence (ACTUAL values — not the support template)

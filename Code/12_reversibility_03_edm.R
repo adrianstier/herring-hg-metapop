@@ -29,47 +29,54 @@ states$biomass_all11_hi80 <- bio11[, c("year", "hi80")]
 names(states$biomass_all11_lo80)[2] <- "median"
 names(states$biomass_all11_hi80)[2] <- "median"
 
-## --- EDM nonlinearity table -------------------------------------------------
-nl_rows <- lapply(names(states), function(nm) {
+## --- single cached embedding per state -> nonlinearity + Jacobian -----------
+## I-3 fix: compute edm_embed(v) ONCE per state series and use that single
+## E_use for BOTH smap_nonlinearity() and smap_jacobian_eigen(). Avoids a
+## redundant rEDM cross-validation AND the latent risk that the nonlinearity
+## test and the |lambda| Jacobian could use divergent E_best if rEDM is not
+## perfectly stateless. Outputs are then split into the nl-CSV and je-CSV.
+embed_out <- lapply(names(states), function(nm) {
   s <- states[[nm]]
   v <- s$median
   em <- edm_embed(v)
   E_use <- if (is.na(em$E_best)) 2L else em$E_best
-  nl <- smap_nonlinearity(v, E = E_use, n_surr = 500, seed = seed)
-  data.frame(
-    state         = nm,
-    n_obs         = sum(!is.na(v)),
-    E             = E_use,
-    rho_simplex   = if (is.na(em$rho_best)) NA_real_ else em$rho_best,
-    rho_theta0    = nl$rho_theta0,
-    rho_theta_best = nl$rho_theta_best,
-    nl_delta      = nl$delta,
-    nl_p          = nl$p_value,
-    nonlinear_sig = isTRUE(nl$p_value < 0.05),
-    seed          = seed,
+
+  nlx <- smap_nonlinearity(v, E = E_use, n_surr = 500, seed = seed)
+  jex <- smap_jacobian_eigen(v, E = E_use, theta = 2)
+
+  ## align Jacobian rows back to year
+  yr <- s$year
+  jex$year  <- if (length(yr) == nrow(jex)) yr else NA_integer_
+  jex$state <- nm
+  jex <- jex[, c("state", "year", "t", "lambda_max")]
+
+  nl_row <- data.frame(
+    state          = nm,
+    n_obs          = sum(!is.na(v)),
+    E              = E_use,
+    rho_simplex    = if (is.na(em$rho_best)) NA_real_ else em$rho_best,
+    rho_theta0     = nlx$rho_theta0,
+    rho_theta_best = nlx$rho_theta_best,
+    nl_delta       = nlx$delta,
+    nl_p           = nlx$p_value,
+    nonlinear_sig  = isTRUE(nlx$p_value < 0.05),
+    seed           = seed,
     stringsAsFactors = FALSE
   )
+  list(nl = nl_row, je = jex, E_best = em$E_best, E_use = E_use)
 })
-nl <- do.call(rbind, nl_rows)
 
-## --- Jacobian eigen-trajectory ----------------------------------------------
-je_rows <- lapply(names(states), function(nm) {
-  s <- states[[nm]]
-  v <- s$median
-  em <- edm_embed(v)
-  E_use <- if (is.na(em$E_best)) 2L else em$E_best
-  je <- smap_jacobian_eigen(v, E = E_use, theta = 2)
-  ## align back to year
-  yr <- s$year
-  if (length(yr) == nrow(je)) {
-    je$year <- yr
-  } else {
-    je$year <- NA_integer_
-  }
-  je$state <- nm
-  je[, c("state", "year", "t", "lambda_max")]
-})
-je <- do.call(rbind, je_rows)
+nl <- do.call(rbind, lapply(embed_out, `[[`, "nl"))
+je <- do.call(rbind, lapply(embed_out, `[[`, "je"))
+
+## Report the per-state E_best from the single embed (I-3 verification aid).
+for (k in seq_along(embed_out)) {
+  cat(sprintf("[reversibility] single-embed: %-22s E_best=%s -> E_use=%d\n",
+              names(states)[k],
+              ifelse(is.na(embed_out[[k]]$E_best), "NA",
+                     as.character(embed_out[[k]]$E_best)),
+              embed_out[[k]]$E_use))
+}
 
 ## --- outputs ----------------------------------------------------------------
 dir.create("Output/diagnostics", showWarnings = FALSE, recursive = TRUE)

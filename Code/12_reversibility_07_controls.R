@@ -97,15 +97,15 @@ lines <- c(
   "",
   "| seed | canonical | pos_lam_trend | pos_primary | neg_nonlin | neg_lam_trend |",
   "|------|-----------|--------------|-------------|------------|--------------|",
-  apply(ctrl_tab, 1, function(r) {
+  ## M-2: vapply over rows (per-column typed access) instead of apply(),
+  ## which coerces the whole data.frame to a character matrix. Rendered
+  ## table is identical.
+  vapply(seq_len(nrow(ctrl_tab)), function(i) {
+    r <- ctrl_tab[i, ]
     sprintf("| %d | %s | %.4f | %s | %s | %.4f |",
-            as.integer(r["seed"]),
-            r["is_canonical"],
-            as.numeric(r["pos_lambda_trend"]),
-            r["pos_primary_pass"],
-            r["neg_nonlinear_sig"],
-            as.numeric(r["neg_lambda_trend"]))
-  }),
+            r$seed, r$is_canonical, r$pos_lambda_trend,
+            r$pos_primary_pass, r$neg_nonlinear_sig, r$neg_lambda_trend)
+  }, character(1L)),
   ""
 )
 

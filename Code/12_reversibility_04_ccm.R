@@ -18,11 +18,17 @@ drv <- read.csv("Output/diagnostics/reversibility_driver_axis.csv")
 ed  <- read.csv("Output/diagnostics/reversibility_effective_driver.csv")
 nl  <- read.csv("Output/diagnostics/reversibility_edm_nonlinearity.csv")
 
-## PDO for CCM
+## PDO for CCM — optional input; mirror Script 02's file.exists() guard so a
+## clean env missing the covariate degrades (PDO excluded) instead of crashing.
 pdo_path <- "Data/processed/pdo_combined_1854_2025.csv"
-pdo_raw <- read.csv(pdo_path)
-pdo_ann <- aggregate(Value ~ year, data = pdo_raw, FUN = mean)
-names(pdo_ann) <- c("year", "pdo")
+if (file.exists(pdo_path)) {
+  pdo_raw <- read.csv(pdo_path)
+  pdo_ann <- aggregate(Value ~ year, data = pdo_raw, FUN = mean)
+  names(pdo_ann) <- c("year", "pdo")
+} else {
+  warning("[ccm] PDO file not found — PDO excluded from driver set: ", pdo_path)
+  pdo_ann <- data.frame(year = integer(), pdo = numeric())
+}
 
 ## predation context covariate
 pred_path <- "Data/processed/predators/hg_predation_pressure_covariates.csv"

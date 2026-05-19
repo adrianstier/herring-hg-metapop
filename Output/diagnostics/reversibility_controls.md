@@ -1,6 +1,6 @@
 # Reversibility Controls — Power Calibration
 
-Generated: 2026-05-19 21:03:45.14417
+Generated: 2026-05-19 21:57:10.114796
 Canonical seed: 20260519
 Seeds tested: 12
 
@@ -31,16 +31,16 @@ Non-zero exit (status=1) fires if PRIMARY fails at canonical seed 20260519.
 
 | seed | canonical | pos_lam_trend | pos_primary | neg_nonlin | neg_lam_trend |
 |------|-----------|--------------|-------------|------------|--------------|
-| 20260519 | 1 | 0.0020 | 1 | 0 | -0.0011 |
-| 1 | 0 | 0.0015 | 1 | 0 | -0.0010 |
-| 2 | 0 | -0.0003 | 0 | 0 | -0.0004 |
-| 3 | 0 | 0.0004 | 1 | 0 | 0.0001 |
-| 4 | 0 | 0.0033 | 1 | 1 | 0.0029 |
-| 5 | 0 | 0.0033 | 1 | 0 | 0.0003 |
-| 7 | 0 | NA | 0 | 0 | -0.0047 |
-| 11 | 0 | 0.0016 | 1 | 0 | 0.0043 |
-| 21 | 0 | 0.0009 | 1 | 0 | 0.0005 |
-| 42 | 0 | 0.0005 | 1 | 0 | -0.0007 |
-| 99 | 0 | -0.0118 | 0 | 0 | 0.0009 |
-| 123 | 0 | 0.0020 | 1 | 0 | 0.0007 |
+| 20260519 | TRUE | 0.0020 | TRUE | FALSE | -0.0011 |
+| 1 | FALSE | 0.0015 | TRUE | FALSE | -0.0010 |
+| 2 | FALSE | -0.0003 | FALSE | FALSE | -0.0004 |
+| 3 | FALSE | 0.0004 | TRUE | FALSE | 0.0001 |
+| 4 | FALSE | 0.0033 | TRUE | TRUE | 0.0029 |
+| 5 | FALSE | 0.0033 | TRUE | FALSE | 0.0003 |
+| 7 | FALSE | NA | FALSE | FALSE | -0.0047 |
+| 11 | FALSE | 0.0016 | TRUE | FALSE | 0.0043 |
+| 21 | FALSE | 0.0009 | TRUE | FALSE | 0.0005 |
+| 42 | FALSE | 0.0005 | TRUE | FALSE | -0.0007 |
+| 99 | FALSE | -0.0118 | FALSE | FALSE | 0.0009 |
+| 123 | FALSE | 0.0020 | TRUE | FALSE | 0.0007 |
 
