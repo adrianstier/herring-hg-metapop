@@ -95,3 +95,15 @@ test_that("effective_driver errors on empty components (no silent NA)", {
   expect_error(effective_driver(df, components = character(0)),
                regexp = "components.*empty")
 })
+
+test_that("detect_candidate_transitions finds a known mean shift, ignores noise", {
+  set.seed(1)
+  x_step <- c(rnorm(30, 0, 0.3), rnorm(30, 3, 0.3))           # shift at index 31
+  yrs <- 1951:2010
+  cp <- detect_candidate_transitions(x_step, yrs)
+  expect_true(any(abs(cp$year - 1981) <= 2))                  # ~ index 31
+  x_flat <- rnorm(60, 0, 0.3)
+  cp0 <- detect_candidate_transitions(x_flat, yrs)
+  expect_lte(nrow(cp0), 1L)                                   # ~no spurious cp
+  expect_true(all(c("year","index","kind") %in% names(cp)))
+})

@@ -47,3 +47,17 @@ effective_driver <- function(df, components, provenance = character()) {
   attr(df, "components") <- components
   df
 }
+
+#' Objective candidate regime-shift points via PELT mean+variance change
+#' (changepoint::cpt.meanvar). Self-contained copy of the EWS-shared util;
+#' Phase 9 records the dedupe obligation.
+detect_candidate_transitions <- function(x, years, penalty = "MBIC") {
+  stopifnot(length(x) == length(years))
+  ok <- is.finite(x)
+  cp <- changepoint::cpt.meanvar(as.numeric(x[ok]), method = "PELT",
+                                 penalty = penalty)
+  idx <- changepoint::cpts(cp)
+  yy  <- years[ok]
+  data.frame(year = yy[idx], index = idx,
+             kind = rep("meanvar_PELT", length(idx)))
+}
