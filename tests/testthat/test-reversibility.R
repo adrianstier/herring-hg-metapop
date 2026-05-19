@@ -118,3 +118,31 @@ test_that("survey_artifact_null is seed-deterministic and injects only a q-shift
   expect_lt(mean(a[1:30]), mean(a[31:60]))          # q rises across the break
   expect_equal(length(a), 60L)
 })
+
+test_that("detect_candidate_transitions guards degenerate (short / all-NA) input", {
+  yrs11 <- 1951:1961
+  cp_na <- detect_candidate_transitions(rep(NA_real_, 11), yrs11)
+  expect_equal(nrow(cp_na), 0L)                     # all-NA -> 0-row frame
+  expect_true(all(c("year","index","kind") %in% names(cp_na)))
+  cp3 <- detect_candidate_transitions(c(1, 2, 3), 2001:2003)
+  expect_equal(nrow(cp3), 0L)                       # < 4 finite -> 0-row frame
+  expect_true(all(c("year","index","kind") %in% names(cp3)))
+})
+
+test_that("detect_candidate_transitions index references the ORIGINAL series under an NA gap", {
+  set.seed(7)
+  x <- c(rnorm(30, 0, 0.3), rnorm(30, 3, 0.3))      # clear step at index 31
+  x[16] <- NA_real_                                 # NA gap before the step
+  yrs <- 1951:2010
+  cp <- detect_candidate_transitions(x, yrs)
+  expect_gt(nrow(cp), 0L)
+  # index must address the ORIGINAL x/years vectors, not the NA-filtered one:
+  expect_equal(yrs[cp$index], cp$year)
+})
+
+test_that("survey_artifact_null rejects q of wrong length (no silent NA-poison)", {
+  truth <- rep(1000, 60)
+  expect_error(
+    survey_artifact_null(truth, era_break = 30, q = 0.6, seed = 42),
+    regexp = "length\\(q\\)")
+})

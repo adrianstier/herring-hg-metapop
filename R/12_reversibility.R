@@ -50,22 +50,31 @@ effective_driver <- function(df, components, provenance = character()) {
 
 #' Objective candidate regime-shift points via PELT mean+variance change
 #' (changepoint::cpt.meanvar). Self-contained copy of the EWS-shared util;
-#' Phase 9 records the dedupe obligation.
+#' Phase 9 records the dedupe obligation. `index` = position in the ORIGINAL
+#' x/years (NA-safe: maps back through the finite filter). Returns a 0-row
+#' data.frame (year/index/kind columns present) when < 4 finite values.
 detect_candidate_transitions <- function(x, years, penalty = "MBIC") {
   stopifnot(length(x) == length(years))
   ok <- is.finite(x)
+  if (sum(ok) < 4L) {
+    return(data.frame(year = integer(0), index = integer(0),
+                      kind = character(0)))
+  }
   cp <- changepoint::cpt.meanvar(as.numeric(x[ok]), method = "PELT",
                                  penalty = penalty)
   idx <- changepoint::cpts(cp)
-  yy  <- years[ok]
-  data.frame(year = yy[idx], index = idx,
+  orig <- which(ok)
+  idx_orig <- orig[idx]
+  data.frame(year = years[idx_orig], index = idx_orig,
              kind = rep("meanvar_PELT", length(idx)))
 }
 
 #' Survey-method false-positive generator: a series with NO resilience change
 #' but the documented two-era catchability shift + lognormal obs error.
 #' Self-contained copy of the EWS-shared util (Phase 9 dedupe).
+#' Calls set.seed(seed): advances the global RNG state (deterministic by design).
 survey_artifact_null <- function(truth, era_break, q, cv = 0.2, seed) {
+  stopifnot(length(q) == 2L)
   set.seed(seed)
   n <- length(truth)
   qv <- ifelse(seq_len(n) <= era_break, q[1], q[2])
