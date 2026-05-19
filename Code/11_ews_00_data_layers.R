@@ -37,9 +37,23 @@
 #     j=9  Cumshewa Inlet
 #     j=10 Laskeek Bay
 #     j=11 Skincuttle Inlet
-#   lat/lon       : from spawn CSV; ~45% rows have coords (vary by year).
-#                   We fill missing with per-section median to ensure every
-#                   year × section row carries a coordinate.
+#   lat/lon       : ≈45% of ALL-section CSV rows lack coords; the 11 fitted
+#                   sections range ~16–95% coverage. Per-section median fill
+#                   (within-section coordinate spread ≤0.23°, stable embayment
+#                   centroids) so every year × section row carries a coordinate.
+#
+#   Z vs X CONTRACT (read before any downstream EWS work):
+#     Latent state here = Stan parameter `Z` = PRE-fishing log-biomass,
+#     exp() applied → natural-scale pre-fishing biomass. This is CONSISTENT
+#     with R/03_fit_model.R::extract_posteriors() (which names Z "biomass")
+#     and the _targets.R compute_portfolio()/compute_synchrony() pipeline and
+#     the 2020 portfolio story. NOTE: the canonical
+#     Output/diagnostics/m1_stier_11_section_biomass_by_year.csv uses `X`
+#     (POST-fishing: X = Z + log1m(Pc)). Z == X in cells with no/low fishing,
+#     but Z exceeds X by up to ~2.7x in the 1960s–1971 reduction-era fishing
+#     cells (e.g. Laskeek Bay 1965: Z-median ≈ 21613 vs X-median ≈ 8051).
+#     Downstream EWS scripts must keep biomass on the Z basis and must NOT
+#     cross-reference the X-based section CSV as the same state.
 # ============================================================================
 
 suppressPackageStartupMessages({
@@ -130,7 +144,20 @@ if (!inherits(fit, "stanfit")) {
 
 cat("  fit class confirmed: stanfit (rstan)\n")
 
-# Extract Z[t, j] — log-scale latent state (pre-fishing biomass)
+# ── Latent state = Stan parameter Z (pre-fishing log-biomass) ────────────────
+# Z is the PRE-fishing log-biomass. exp(Z) = natural-scale pre-fishing biomass.
+# This choice is CONSISTENT with:
+#   - R/03_fit_model.R::extract_posteriors(), which names Z the "biomass"
+#     element (gather_draws(Z[year_idx, site_idx]) -> $biomass);
+#   - the _targets.R compute_portfolio() / compute_synchrony() pipeline, which
+#     consumes that Z-based biomass for the portfolio/synchrony story;
+#   - the 2020 Ecosphere portfolio narrative.
+# The canonical Output/diagnostics/m1_stier_11_section_biomass_by_year.csv is
+# the POST-fishing state X (X = Z + log1m(Pc)); X == Z where there is no/low
+# fishing but X < Z by up to ~2.7x in 1960s–1971 reduction-era fishing cells.
+# Downstream EWS scripts MUST keep biomass on the Z basis and MUST NOT treat
+# the X-based section CSV as the same state.
+#
 # rstan::extract returns a list; $Z is draws × T × J array
 # Permuted = TRUE (default) concatenates chains into one draw dimension
 cat("  Extracting Z draws ...\n")
@@ -153,10 +180,50 @@ if (abs(scale_check - 678.4) > 50) {
           "Got ", round(scale_check, 1), " expected ~678.4")
 }
 
+# ── Make-or-break mapping guard: reduction-era fishing-cell spot-check ────────
+# The Port Louis 1951 check above is a no/low-fishing cell where Z == X, so it
+# cannot discriminate Z-vs-X nor verify the j (site) index. Laskeek Bay 1965 is
+# a 1960s reduction-era fishing-active cell: by construction X = Z + log1m(Pc)
+# with Pc >= 0, so exp(Z) >= exp(X), and here Z materially EXCEEDS the X-based
+# CSV value (Z-median ≈ 21613 vs CSV X-median ≈ 8051, ratio ≈ 2.68). This
+# single assertion discriminates BOTH (a) Z vs X (a wrong X extraction would
+# give ≈ 8051, failing the strict >) AND (b) the j ordering (a mis-mapped site
+# index would land on a different magnitude). Laskeek Bay = SITE_NAMES[10] =
+# section 24; 1965 = YEARS[15] (t index 15).
+.j_laskeek <- which(SITE_NAMES == "Laskeek Bay")
+.t_1965    <- which(YEARS == 1965L)
+stopifnot(length(.j_laskeek) == 1L, length(.t_1965) == 1L)
+z_med_laskeek1965 <- median(exp(Z_arr[, .t_1965, .j_laskeek]))
+
+.x_csv <- read.csv(here::here("Output", "diagnostics",
+                              "m1_stier_11_section_biomass_by_year.csv"))
+x_med_laskeek1965 <- .x_csv$median[.x_csv$site_name == "Laskeek Bay" &
+                                     .x_csv$year == 1965L]
+stopifnot(length(x_med_laskeek1965) == 1L, is.finite(x_med_laskeek1965))
+
+cat(sprintf(paste0("  Reduction-era spot-check — Laskeek Bay 1965: ",
+                    "Z-median = %.1f  vs  CSV X-median = %.1f  (ratio %.2f)\n"),
+            z_med_laskeek1965, x_med_laskeek1965,
+            z_med_laskeek1965 / x_med_laskeek1965))
+
+# Z (pre-fishing) must be finite, positive, and STRICTLY exceed the X-based
+# CSV value at this fishing-active reduction-era cell. If this fails, the
+# Z/X identity or the (t, j) mapping is wrong — do NOT weaken this assertion.
+stopifnot(
+  is.finite(z_med_laskeek1965),
+  z_med_laskeek1965 > 0,
+  # Z >= X by construction; require a clear separation (>1.5x) here so the
+  # check genuinely discriminates Z from X (X-median would be ≈ 8051).
+  z_med_laskeek1965 > x_med_laskeek1965 * 1.5
+)
+
 # ── Thinning ─────────────────────────────────────────────────────────────────
 # Full 10K-draw tibble ~ 660 MB RAM; system has ~631 MB free at script start
 # (loaded fit already consumes ~760 MB of virtual/swap). Thin to 2000 draws
 # (every 5th) for safe in-process tibble construction.
+# rstan stores the draw permutation inside the stanfit .rds at sampling time,
+# so this systematic every-5th thinning is reproducible across sessions
+# without set.seed() (confirmed bit-identical across rstan::extract() calls).
 THIN_EVERY <- 5L
 draw_idx <- seq(1L, n_draws_full, by = THIN_EVERY)
 n_draws_kept <- length(draw_idx)
@@ -218,8 +285,13 @@ layers <- list(
 attr(layers, "n_draws")     <- n_draws_kept
 attr(layers, "thin_every")  <- THIN_EVERY
 attr(layers, "n_draws_full")<- n_draws_full
-attr(layers, "latent_param")<- "Z[t,j] (log-scale pre-fishing biomass; exp() applied)"
+attr(layers, "latent_param")<- paste0(
+  "Z: pre-fishing log-biomass, exp() applied; consistent with _targets.R ",
+  "portfolio pipeline; NOT the X-based m1_stier_11_section_biomass_by_year.csv")
 attr(layers, "scale_check") <- sprintf("Port Louis 1951 median = %.2f (expected ~678.4)", scale_check)
+attr(layers, "spot_check")  <- sprintf(
+  "Laskeek Bay 1965 Z-median = %.1f >> CSV X-median = %.1f (ratio %.2f) — Z (not X), correct (t,j) mapping",
+  z_med_laskeek1965, x_med_laskeek1965, z_med_laskeek1965 / x_med_laskeek1965)
 attr(layers, "built")       <- as.character(Sys.time())
 
 out_path <- file.path(diag_dir, "ews_input_layers.rds")
