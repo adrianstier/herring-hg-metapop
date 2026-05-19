@@ -154,6 +154,15 @@ test_that("edm_embed recovers low embedding dim for the logistic map", {
   expect_true(e$E_best >= 1 && e$E_best <= 4)
   expect_gt(e$rho_best, 0.8)
   expect_true(all(c("E_best","rho_best","rho_by_E") %in% names(e)))
+  expect_true(is.integer(e$E_best))                 # M2: integer E_best
+})
+
+test_that("edm_embed guards a too-short series with an NA-shaped return", {
+  e <- edm_embed(rnorm(10))                          # n=10 < 2*E_max+2 = 18
+  expect_true(is.na(e$E_best))
+  expect_true(is.na(e$rho_best))
+  expect_equal(nrow(e$rho_by_E), 0L)
+  expect_true(all(c("E_best","rho_best","rho_by_E") %in% names(e)))
 })
 
 test_that("smap_nonlinearity flags the nonlinear logistic map, not AR(1) noise", {
@@ -164,8 +173,17 @@ test_that("smap_nonlinearity flags the nonlinear logistic map, not AR(1) noise",
   expect_gt(nl$rho_theta_best, nl$rho_theta0)
   expect_lt(nl$p_value, 0.05)
   ar <- as.numeric(stats::arima.sim(list(ar = 0.5), 200))
-  nl2 <- smap_nonlinearity(ar, E = 2, n_surr = 50, seed = 7)
+  nl2 <- smap_nonlinearity(ar, E = 2, n_surr = 99, seed = 7)   # M3: n_surr 99
   expect_gte(nl2$p_value, 0.05)
+})
+
+test_that("smap_nonlinearity guards a too-short series with an NA-shaped return", {
+  nl <- smap_nonlinearity(rnorm(4), E = 2, n_surr = 50, seed = 7)  # 4 < 2*2+2 = 6
+  expect_true(is.na(nl$rho_theta0))
+  expect_true(is.na(nl$rho_theta_best))
+  expect_true(is.na(nl$delta))
+  expect_true(is.na(nl$p_value))
+  expect_true(all(c("rho_theta0","rho_theta_best","delta","p_value") %in% names(nl)))
 })
 
 test_that("smap_jacobian_eigen recovers the eigenvalue of a known linear AR system", {
@@ -176,6 +194,23 @@ test_that("smap_jacobian_eigen recovers the eigenvalue of a known linear AR syst
   expect_true(abs(median(j$lambda_max, na.rm = TRUE) - phi) < 0.2)
   expect_equal(length(j$lambda_max), length(x))
   expect_true(all(c("t","lambda_max") %in% names(j)))
+})
+
+test_that("smap_jacobian_eigen guards a too-short series (NA-shaped, length preserved)", {
+  x <- rnorm(6)                                      # 6 < 2*3+2 = 8 for E=3
+  j <- smap_jacobian_eigen(x, E = 3, theta = 0)
+  expect_equal(nrow(j), length(x))
+  expect_equal(length(j$lambda_max), length(x))
+  expect_true(all(is.na(j$lambda_max)))
+  expect_true(all(c("t","lambda_max") %in% names(j)))
+})
+
+test_that("smap_jacobian_eigen left-join NA-pads early rows (E=3, ~120 pts)", {
+  set.seed(5)
+  x <- as.numeric(stats::arima.sim(list(ar = 0.6), 120))
+  j <- smap_jacobian_eigen(x, E = 3, theta = 2)
+  expect_equal(nrow(j), length(x))                   # M5: length contract
+  expect_gt(sum(is.na(j$lambda_max)), 0L)            # M5: NA-padding documented
 })
 
 test_that("ccm_drivers detects a known driver, not an independent series", {
@@ -191,7 +226,24 @@ test_that("ccm_drivers detects a known driver, not an independent series", {
   for (i in 2:300) n[i] <- n[i-1] * (3.6 - 3.6 * n[i-1] - 0.3 * d[i-1])
   indep <- runif(300)
   r <- ccm_drivers(target = n[51:300],
-                   drivers = list(d = d[51:300], indep = indep[51:300]), E = 3)
+                   drivers = list(d = d[51:300], indep = indep[51:300]),
+                   E = 3, seed = 11)
   expect_gt(r$rho_max[r$driver == "d"], r$rho_max[r$driver == "indep"])
-  expect_true(r$converges[r$driver == "d"])
+  # converges_strict is the authoritative discrimination gate (Kendall + rho floor)
+  expect_true(r$converges_strict[r$driver == "d"])
+  expect_false(r$converges_strict[r$driver == "indep"])   # M1: false-positive direction
+  expect_true("converges_heuristic" %in% names(r))         # I1: renamed legacy flag
+})
+
+test_that("ccm_drivers is seed-deterministic (spec §8 recorded-seed contract)", {
+  set.seed(11)
+  d <- numeric(300); d[1] <- 0.3
+  for (i in 2:300) d[i] <- d[i-1] * (3.7 - 3.7 * d[i-1])
+  n <- numeric(300); n[1] <- 0.2
+  for (i in 2:300) n[i] <- n[i-1] * (3.6 - 3.6 * n[i-1] - 0.3 * d[i-1])
+  a <- ccm_drivers(target = n[51:300], drivers = list(d = d[51:300]),
+                   E = 3, seed = 11)
+  b <- ccm_drivers(target = n[51:300], drivers = list(d = d[51:300]),
+                   E = 3, seed = 11)
+  expect_identical(a, b)
 })

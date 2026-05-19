@@ -81,7 +81,16 @@ detect_candidate_transitions <- function(x, years, penalty = "MBIC") {
 #' @param theiler  Theiler exclusion window (default 1).
 #' @return  Named list: E_best (integer), rho_best (numeric),
 #'          rho_by_E (data.frame with columns E and rho from rEDM::EmbedDimension).
+#'          Spec §7 short-series guard: < 2*E_max + 2 finite points returns the
+#'          NA-shaped contract (E_best=NA, rho_best=NA, 0-row rho_by_E).
 edm_embed <- function(x, E_max = 8, theiler = 1) {
+  if (sum(is.finite(x)) < 2L * E_max + 2L) {
+    return(list(
+      E_best   = NA_integer_,
+      rho_best = NA_real_,
+      rho_by_E = data.frame(E = integer(0), rho = numeric(0))
+    ))
+  }
   df   <- data.frame(t = seq_along(x), x = as.numeric(x))
   half <- floor(nrow(df) / 2)
   s <- rEDM::EmbedDimension(
@@ -95,7 +104,7 @@ edm_embed <- function(x, E_max = 8, theiler = 1) {
     showPlot        = FALSE
   )
   list(
-    E_best    = s$E[which.max(s$rho)],
+    E_best    = as.integer(s$E[which.max(s$rho)]),
     rho_best  = max(s$rho, na.rm = TRUE),
     rho_by_E  = s
   )
@@ -131,7 +140,17 @@ edm_embed <- function(x, E_max = 8, theiler = 1) {
 #' @param seed   Random seed for surrogates (reproducibility).
 #' @return Named list: rho_theta0 (rho at min theta), rho_theta_best,
 #'         delta (rho_best - rho0), p_value (one-sided surrogate test).
+#'         Spec §7 short-series guard: < 2*E + 2 finite points returns the
+#'         all-NA contract.
 smap_nonlinearity <- function(x, E, n_surr = 200, seed) {
+  if (sum(is.finite(x)) < 2L * E + 2L) {
+    return(list(
+      rho_theta0     = NA_real_,
+      rho_theta_best = NA_real_,
+      delta          = NA_real_,
+      p_value        = NA_real_
+    ))
+  }
   set.seed(seed)
   .fit <- function(v) {
     df   <- data.frame(t = seq_along(v), x = as.numeric(scale(v)))
@@ -179,8 +198,13 @@ smap_nonlinearity <- function(x, E, n_surr = 200, seed) {
 #' @param theta  S-map localisation parameter (0 = global/linear).
 #' @return  data.frame with columns t (integer, 1..length(x)) and lambda_max
 #'          (numeric, NA where SMap could not estimate).
+#'          Spec §7 short-series guard: < 2*E + 2 finite points returns an
+#'          all-NA data.frame of length length(x) (length contract preserved).
 smap_jacobian_eigen <- function(x, E, theta = 2) {
   n  <- length(x)
+  if (sum(is.finite(x)) < 2L * E + 2L) {
+    return(data.frame(t = seq_len(n), lambda_max = rep(NA_real_, n)))
+  }
   df <- data.frame(t = seq_len(n), x = as.numeric(x))
   sm <- rEDM::SMap(
     dataFrame = df,
@@ -224,12 +248,30 @@ smap_jacobian_eigen <- function(x, E, theta = 2) {
 #' libSizes argument: string "start end step" (rEDM 1.15.4 API).
 #' Maximum library size is constrained to n - E - 1 to avoid rEDM error.
 #'
+#' Determinism (spec §8): `seed` is REQUIRED (no default) — set.seed(seed) is
+#' called before the driver loop AND passed to rEDM::CCM(seed=) (CCM's internal
+#' sampler is NOT governed by the global RNG), so the discrimination table that
+#' consumes this output is fully reproducible.
+#'
+#' Discrimination gate (spec §2.4): use `converges_strict` — TRUE iff
+#' (a) rho increases monotonically with library size
+#'     (Kendall rank test of rho vs ascending libSize, p < 0.05) AND
+#' (b) rho_max > 0.2 (rho floor).
+#' `rho_max` is the primary magnitude criterion. `converges_heuristic`
+#' (Δρ = rho_max - rho_min > 0.1) is a NON-AUTHORITATIVE supporting flag —
+#' it is false-positive-prone on short/noisy series (an independent series can
+#' show a spurious Δρ > 0.1) and MUST NOT be used as the discrimination gate.
+#'
 #' @param target    Numeric vector (response time series).
 #' @param drivers   Named list of numeric vectors (candidate drivers; same length as target).
 #' @param E         Embedding dimension (integer).
+#' @param seed      REQUIRED integer seed (reproducibility; spec §8).
 #' @param libSizes  NULL (auto) or a custom libSizes string passed to rEDM::CCM.
-#' @return  data.frame with columns driver (character), rho_min, rho_max, converges (logical).
-ccm_drivers <- function(target, drivers, E, libSizes = NULL) {
+#' @return  data.frame: driver (character), rho_min, rho_max,
+#'          converges_strict (logical; the authoritative gate),
+#'          converges_heuristic (logical; non-authoritative legacy Δρ>0.1 flag).
+ccm_drivers <- function(target, drivers, E, seed, libSizes = NULL) {
+  set.seed(seed)
   n <- length(target)
   # Max lib size: n - E - 1 (rEDM requires libSize < n - E - Tp, Tp=0 default)
   max_lib <- n - E - 1L
@@ -248,17 +290,25 @@ ccm_drivers <- function(target, drivers, E, libSizes = NULL) {
       target    = "drv",
       libSizes  = libSizes,
       sample    = 100,
+      seed      = seed,    # rEDM CCM sampler is not governed by global RNG
       showPlot  = FALSE
     )
     # Pick the cross-map rho column: "tgt:drv" (tgt xmap drv).
     # In rEDM 1.15.4 this is "<columns>:<target>" = "tgt:drv".
     rcol <- grep(":", names(cm), value = TRUE)[1]
-    rho  <- cm[[rcol]]
+    rho  <- cm[[rcol]]                     # ascending libSize trajectory
+    rho_max <- rho[length(rho)]
+    # converges_strict: monotone rho-vs-libSize (Kendall) AND rho floor.
+    kendall_p <- suppressWarnings(
+      stats::cor.test(seq_along(rho), rho, method = "kendall")$p.value
+    )
+    converges_strict <- isTRUE(kendall_p < 0.05) && isTRUE(rho_max > 0.2)
     data.frame(
-      driver    = nm,
-      rho_min   = rho[1L],
-      rho_max   = rho[length(rho)],
-      converges = (rho[length(rho)] - rho[1L]) > 0.1
+      driver              = nm,
+      rho_min             = rho[1L],
+      rho_max             = rho_max,
+      converges_strict    = converges_strict,
+      converges_heuristic = (rho_max - rho[1L]) > 0.1
     )
   })
   do.call(rbind, res)
