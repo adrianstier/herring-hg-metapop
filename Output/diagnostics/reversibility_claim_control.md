@@ -1,6 +1,6 @@
 # Reversibility Claim-Control Audit
 
-Generated: 2026-05-19 21:25:50.542681
+Generated: 2026-05-19 21:40:29.054126
 
 This file records the claim-safety pass for reversibility synthesis outputs.
 

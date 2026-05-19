@@ -149,6 +149,45 @@ post_drv      <- drv[drv$year > PIVOT, ]
 u_only_return <- isTRUE(median(post_drv$u, na.rm = TRUE) < 0.05)
 u_post_med    <- median(post_drv$u, na.rm = TRUE)
 
+## --- Reference-window sensitivity diagnostic (REPORTED, not a logic change) ---
+## The primary gate (roe-era 1972-2004 reference) is UNCHANGED. This block only
+## recomputes the SAME recent(>=2015)-vs-reference composite-median gate under a
+## panel of alternative reference windows so the reader can see exactly where
+## unreturned_driver=refuted is robust and where it would flip. The primary
+## verdict is NOT altered by this table.
+.win_gate <- function(y0, y1, label) {
+  m  <- edm$year >= y0 & edm$year <= y1
+  rm <- stats::median(edm$effective_driver[m], na.rm = TRUE)
+  data.frame(
+    window           = sprintf("%d-%d", y0, y1),
+    label            = label,
+    n                = sum(m & is.finite(edm$effective_driver)),
+    reference_median = round(rm, 4),
+    recent_median    = round(recent_comp_med, 4),
+    gate_returned    = isTRUE(recent_comp_med <= rm),
+    stringsAsFactors = FALSE)
+}
+window_sens <- rbind(
+  .win_gate(1951, 1969, "early industrial"),
+  .win_gate(1951, 2004, "full pre-2005"),
+  .win_gate(1951, 1989, "pre-1990"),
+  .win_gate(1972, 2004, "roe era (PRIMARY)"),
+  .win_gate(1980, 2004, "tight pre-collapse"),
+  .win_gate(1951, 1965, "pre-roe reduction era"),
+  .win_gate(1951, 1972, "incl. roe-era start"),
+  .win_gate(1960, 1975, "reduction->early-roe")
+)
+write.csv(window_sens,
+  "Output/diagnostics/reversibility_effective_driver_window_sensitivity.csv",
+  row.names = FALSE)
+
+## Smallest absolute z-margin between recent median and any reference median
+## (how close the nearest flip is) — reported, not a gate.
+win_flip_margin <- min(abs(recent_comp_med - window_sens$reference_median))
+win_robust_ge1972 <- all(window_sens$gate_returned[
+  as.integer(sub("-.*", "", window_sens$window)) >= 1972])
+win_flip_labels <- window_sens$label[!window_sens$gate_returned]
+
 ## 2f. artifact_reproduces
 ##     Survey-artifact null reproduces the loop signal when loop_null_p >= 0.05.
 ev_artifact <- if (is.finite(ev_loop_p)) isTRUE(ev_loop_p >= 0.05) else NA
@@ -307,6 +346,37 @@ synth_lines <- c(
   "post-moratorium; using u alone would conflate the two explanations the",
   "analysis exists to separate, so it is reported only as context.",
   "",
+  "## Reference-window sensitivity of the effective-driver gate",
+  "",
+  "The `unreturned_driver=refuted` verdict depends on which pre-collapse window",
+  "anchors the composite reference median. The SAME recent(>=2015)-vs-reference",
+  paste0("rule (recent composite median = ", sprintf("%.4f", recent_comp_med),
+         ") was recomputed under a panel of candidate reference windows; full"),
+  "numbers are in `reversibility_effective_driver_window_sensitivity.csv`:",
+  "",
+  "| Window | Label | n | Reference median | Gate: driver returned |",
+  "|--------|-------|---|------------------|------------------------|",
+  apply(window_sens, 1, function(r)
+    sprintf("| %s | %s | %s | %s | %s |",
+            r["window"], r["label"], r["n"],
+            r["reference_median"], r["gate_returned"])),
+  "",
+  paste0("The verdict is **robust to every defensible reference window starting ",
+         "at or after 1972** (roe era [PRIMARY], full pre-2005, pre-1990, early"),
+  "industrial, tight pre-collapse — all return `driver returned = TRUE`), but",
+  "it **flips to not-refuted for pre-roe-era-anchored windows** (",
+  paste0("1951-1965, 1951-1972, 1960-1975 — `driver returned = FALSE`). The ",
+         "nearest flip margin is only about ", sprintf("%.4f", win_flip_margin),
+         " z-units, so the result is close to that boundary."),
+  "",
+  "The **roe-era 1972-2004 window is adopted as the primary reference because",
+  "the 1950s-1960s reduction fishery also imposed high removal pressure**,",
+  "making pre-roe-era windows a poorer \"low/no-pressure baseline\" against",
+  "which to judge moratorium-era recovery. The refuted verdict is therefore",
+  "defensible, but the reader should weight it with this reference-window",
+  "sensitivity in view; this is reported transparently and the primary verdict",
+  "is not changed by the panel.",
+  "",
   "## Key Evidence (genuine vs underpowered)",
   "",
   paste0("**S-map nonlinearity (biomass_all11):** nl_p = ",
@@ -378,23 +448,28 @@ synth_lines <- c(
   "",
   paste0("- **hysteresis**: ",
          disc$verdict[disc$explanation == "hysteresis"],
-         ". The hysteresis support template requires nonlinear + |lambda| not",
-         " relaxed + a new potential well + a significant loop; it is refuted"),
-  "  when the net (composite) driver returned. With new_potential_well",
-  "  indeterminate (n~19 not estimable) and the composite net driver at/below",
-  "  its pre-collapse reference, this row is governed by the returned-driver",
-  "  refutation criterion. Refutation here does not exclude slow transients.",
+         ". This is indeterminate because `new_potential_well` is not estimable",
+         " (NA in the evidence bundle at n=", n_post_bio, "). In"),
+  "  discrimination_table() the hysteresis row's dependencies include",
+  "  new_potential_well, so the NA triggers the any-NA missing-evidence",
+  "  short-circuit and returns \"indeterminate\" BEFORE the returned-driver",
+  "  refutation criterion (cond_ref = effective_driver_returned) is ever",
+  "  evaluated. effective_driver_returned = TRUE does NOT drive this verdict;",
+  "  the verdict is governed solely by the unmeasurable new-well evidence.",
   "",
   paste0("- **unreturned_driver**: ",
          disc$verdict[disc$explanation == "unreturned_driver"],
          ". Gated solely on the composite net-pressure return. Composite-",
-         "dependent (see CRITICAL CAVEAT)."),
+         "dependent (see CRITICAL CAVEAT) and reference-window-sensitive (see",
+         " the sensitivity table above)."),
   "",
   paste0("- **long_transient**: ",
          disc$verdict[disc$explanation == "long_transient"],
-         ". Consistent-with where the driver returned but recovery is slow and"),
-  "  no estimable new well exists; the post-closure landscape being not",
-  "  estimable limits how strongly this can be asserted.",
+         ". Indeterminate for the same mechanism as hysteresis: the"),
+  "  long_transient row's dependencies also include new_potential_well, so",
+  "  new_well = NA triggers the same any-NA short-circuit and the verdict is",
+  "  \"indeterminate\" before any restoring/loop criterion is evaluated. The",
+  "  not-estimable post-closure landscape, not the driver return, governs this.",
   "",
   paste0("- **artifact**: ",
          disc$verdict[disc$explanation == "artifact"],

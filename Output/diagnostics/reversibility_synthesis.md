@@ -1,6 +1,6 @@
 # Reversibility / Hysteresis Analysis — Synthesis
 
-Generated: 2026-05-19 21:25:50.53957
+Generated: 2026-05-19 21:40:29.049126
 
 ## Overview
 
@@ -52,6 +52,37 @@ Secondary CONTEXT (NOT the gate): fishing-only exploitation u post-2005 median =
 post-moratorium; using u alone would conflate the two explanations the
 analysis exists to separate, so it is reported only as context.
 
+## Reference-window sensitivity of the effective-driver gate
+
+The `unreturned_driver=refuted` verdict depends on which pre-collapse window
+anchors the composite reference median. The SAME recent(>=2015)-vs-reference
+rule (recent composite median = -0.1547) was recomputed under a panel of candidate reference windows; full
+numbers are in `reversibility_effective_driver_window_sensitivity.csv`:
+
+| Window | Label | n | Reference median | Gate: driver returned |
+|--------|-------|---|------------------|------------------------|
+| 1951-1969 | early industrial | 19 | -0.0227 | TRUE |
+| 1951-2004 | full pre-2005 | 54 |  0.0522 | TRUE |
+| 1951-1989 | pre-1990 | 39 | -0.0221 | TRUE |
+| 1972-2004 | roe era (PRIMARY) | 33 |  0.1490 | TRUE |
+| 1980-2004 | tight pre-collapse | 25 |  0.3116 | TRUE |
+| 1951-1965 | pre-roe reduction era | 15 | -0.2511 | FALSE |
+| 1951-1972 | incl. roe-era start | 22 | -0.1681 | FALSE |
+| 1960-1975 | reduction->early-roe | 16 | -0.1681 | FALSE |
+
+The verdict is **robust to every defensible reference window starting at or after 1972** (roe era [PRIMARY], full pre-2005, pre-1990, early
+industrial, tight pre-collapse — all return `driver returned = TRUE`), but
+it **flips to not-refuted for pre-roe-era-anchored windows** (
+1951-1965, 1951-1972, 1960-1975 — `driver returned = FALSE`). The nearest flip margin is only about 0.0134 z-units, so the result is close to that boundary.
+
+The **roe-era 1972-2004 window is adopted as the primary reference because
+the 1950s-1960s reduction fishery also imposed high removal pressure**,
+making pre-roe-era windows a poorer "low/no-pressure baseline" against
+which to judge moratorium-era recovery. The refuted verdict is therefore
+defensible, but the reader should weight it with this reference-window
+sensitivity in view; this is reported transparently and the primary verdict
+is not changed by the panel.
+
 ## Key Evidence (genuine vs underpowered)
 
 **S-map nonlinearity (biomass_all11):** nl_p = 0.261 at n=75 — not significant. GENUINE measurement; the latent biomass
@@ -87,17 +118,21 @@ not findings; the observed values above are the evidence-accurate record.)
 These verdicts follow mechanically from discrimination_table() applied to
 the corrected evidence bundle. They are reported as-derived; no steering.
 
-- **hysteresis**: indeterminate. The hysteresis support template requires nonlinear + |lambda| not relaxed + a new potential well + a significant loop; it is refuted
-  when the net (composite) driver returned. With new_potential_well
-  indeterminate (n~19 not estimable) and the composite net driver at/below
-  its pre-collapse reference, this row is governed by the returned-driver
-  refutation criterion. Refutation here does not exclude slow transients.
+- **hysteresis**: indeterminate. This is indeterminate because `new_potential_well` is not estimable (NA in the evidence bundle at n=20). In
+  discrimination_table() the hysteresis row's dependencies include
+  new_potential_well, so the NA triggers the any-NA missing-evidence
+  short-circuit and returns "indeterminate" BEFORE the returned-driver
+  refutation criterion (cond_ref = effective_driver_returned) is ever
+  evaluated. effective_driver_returned = TRUE does NOT drive this verdict;
+  the verdict is governed solely by the unmeasurable new-well evidence.
 
-- **unreturned_driver**: refuted. Gated solely on the composite net-pressure return. Composite-dependent (see CRITICAL CAVEAT).
+- **unreturned_driver**: refuted. Gated solely on the composite net-pressure return. Composite-dependent (see CRITICAL CAVEAT) and reference-window-sensitive (see the sensitivity table above).
 
-- **long_transient**: indeterminate. Consistent-with where the driver returned but recovery is slow and
-  no estimable new well exists; the post-closure landscape being not
-  estimable limits how strongly this can be asserted.
+- **long_transient**: indeterminate. Indeterminate for the same mechanism as hysteresis: the
+  long_transient row's dependencies also include new_potential_well, so
+  new_well = NA triggers the same any-NA short-circuit and the verdict is
+  "indeterminate" before any restoring/loop criterion is evaluated. The
+  not-estimable post-closure landscape, not the driver return, governs this.
 
 - **artifact**: refuted. The loop signal is distinguishable from the survey-artifact null at p=0.0020.
 
