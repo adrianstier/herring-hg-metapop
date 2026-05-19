@@ -167,3 +167,13 @@ test_that("smap_nonlinearity flags the nonlinear logistic map, not AR(1) noise",
   nl2 <- smap_nonlinearity(ar, E = 2, n_surr = 50, seed = 7)
   expect_gte(nl2$p_value, 0.05)
 })
+
+test_that("smap_jacobian_eigen recovers the eigenvalue of a known linear AR system", {
+  set.seed(3)
+  phi <- 0.7
+  x <- as.numeric(stats::arima.sim(list(ar = phi), 300))
+  j <- smap_jacobian_eigen(x, E = 1, theta = 0)
+  expect_true(abs(median(j$lambda_max, na.rm = TRUE) - phi) < 0.2)
+  expect_equal(length(j$lambda_max), length(x))
+  expect_true(all(c("t","lambda_max") %in% names(j)))
+})

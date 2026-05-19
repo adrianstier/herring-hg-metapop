@@ -163,6 +163,57 @@ smap_nonlinearity <- function(x, E, n_surr = 200, seed) {
   )
 }
 
+#' S-map time-varying Jacobian: |lambda_max(t)| from local linear coefficients.
+#'
+#' rEDM 1.15.4 SMap coefficients frame: columns are t, C0 (intercept), then
+#' partial-derivative columns named "dx/dx(t-0)", "dx/dx(t-1)", etc. (unicode ∂).
+#' The Jacobian row is assembled from those partial-derivative columns only;
+#' companion-form eigenvalue is returned.
+#'
+#' The coefficients frame may have up to n+1 rows and the last row's t may
+#' exceed length(x). We left-join onto t = 1:length(x) so the returned frame
+#' has exactly length(x) rows; early/edge rows without SMap estimates are NA.
+#'
+#' @param x      Numeric vector (univariate time series).
+#' @param E      Embedding dimension (integer >= 1).
+#' @param theta  S-map localisation parameter (0 = global/linear).
+#' @return  data.frame with columns t (integer, 1..length(x)) and lambda_max
+#'          (numeric, NA where SMap could not estimate).
+smap_jacobian_eigen <- function(x, E, theta = 2) {
+  n  <- length(x)
+  df <- data.frame(t = seq_len(n), x = as.numeric(x))
+  sm <- rEDM::SMap(
+    dataFrame = df,
+    lib       = c(1, n),
+    pred      = c(1, n),
+    columns   = "x",
+    target    = "x",
+    E         = E,
+    theta     = theta,
+    embedded  = FALSE,
+    showPlot  = FALSE
+  )
+  co <- sm$coefficients
+  # Jacobian columns: exclude the time index ("t") and constant term ("C0").
+  # rEDM 1.15.4 uses unicode partial-derivative names; exclude by position/name.
+  jcols <- setdiff(names(co), c("t", "C0"))
+  # Restrict to t values within the original series (coefficients may have
+  # one extra row at t = n+1 for the one-step-ahead prediction).
+  co_in <- co[co$t <= n, , drop = FALSE]
+  # Left-join onto the full t = 1..n index so length is always n.
+  base  <- data.frame(t = seq_len(n))
+  merged <- merge(base, co_in[, c("t", jcols), drop = FALSE],
+                  by = "t", all.x = TRUE, sort = TRUE)
+  # Compute |lambda_max| from the companion-form Jacobian for each time step.
+  lam <- apply(merged[, jcols, drop = FALSE], 1, function(r) {
+    if (any(is.na(r))) return(NA_real_)
+    if (length(r) == 1L) return(abs(r))
+    J <- rbind(r, cbind(diag(length(r) - 1L), 0))
+    max(Mod(eigen(J, only.values = TRUE)$values))
+  })
+  data.frame(t = seq_len(n), lambda_max = as.numeric(lam))
+}
+
 #' Survey-method false-positive generator: a series with NO resilience change
 #' but the documented two-era catchability shift + lognormal obs error.
 #' Self-contained copy of the EWS-shared util (Phase 9 dedupe).
