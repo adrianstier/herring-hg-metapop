@@ -573,3 +573,72 @@ reversibility_controls <- function(seed, n = 70) {
   }
   list(positive = summ(pos), negative = summ(neg), seed = seed)
 }
+
+# ============================================================================
+# Task 15: discrimination_table
+# ============================================================================
+
+#' Map the evidence bundle onto the four non-exclusive explanations (spec
+#' §2.4). Returns a verdict + the supporting signatures per row. Never emits
+#' "the system tipped"; honest negatives are first-class verdicts.
+#'
+#' NA-robustness: any ev field that is NA or NULL is treated as missing
+#' evidence. Each explanation tracks which ev fields it depends on; if any
+#' relevant field is NA/NULL the verdict is "indeterminate" for that row —
+#' never a false "supported" or "refuted", never a crash. Fields not used by
+#' a given explanation do not affect its verdict.
+discrimination_table <- function(ev) {
+  # Helper: extract one ev field; NULL -> NA (avoids && crash on NULL).
+  .f <- function(field) {
+    x <- ev[[field]]
+    if (is.null(x)) NA else x
+  }
+  # Helper: TRUE iff a scalar value is strictly NA or NULL (length-1 check).
+  .is_missing <- function(x) is.null(x) || (length(x) == 1L && is.na(x))
+  # Core row builder. ev_deps: named list of ev field values this row uses.
+  # If any dep is NA/NULL -> "indeterminate" (trumps cond_ref).
+  # Otherwise: cond_sup TRUE & cond_ref FALSE -> "supported";
+  #            cond_ref TRUE -> "refuted"; cond_sup NA -> "indeterminate";
+  #            else "weak".
+  row <- function(expl, cond_sup, cond_ref, signs, ev_deps) {
+    if (any(sapply(ev_deps, .is_missing))) {
+      return(data.frame(explanation = expl, verdict = "indeterminate",
+                        signatures = signs, stringsAsFactors = FALSE))
+    }
+    v <- if (isTRUE(cond_sup) && !isTRUE(cond_ref)) "supported"
+         else if (isTRUE(cond_ref)) "refuted"
+         else if (is.na(cond_sup)) "indeterminate" else "weak"
+    data.frame(explanation = expl, verdict = v, signatures = signs,
+               stringsAsFactors = FALSE)
+  }
+  # Extract ev fields once (NULL -> NA where needed).
+  nonlinear             <- .f("nonlinear")
+  ltr                   <- .f("lambda_failed_to_relax")
+  new_well              <- .f("new_potential_well")
+  loop_p                <- .f("loop_p")
+  eff_ret               <- .f("effective_driver_returned")
+  artifact_reproduces   <- .f("artifact_reproduces")
+  rbind(
+    row("hysteresis",
+        cond_sup = isTRUE(nonlinear) && isTRUE(ltr) &&
+                   isTRUE(new_well) && isTRUE(loop_p < 0.05),
+        cond_ref = isTRUE(eff_ret),
+        signs    = "nonlinear + |lambda| not relaxed + new well + sig. loop",
+        ev_deps  = list(nonlinear, ltr, new_well, loop_p, eff_ret)),
+    row("unreturned_driver",
+        cond_sup = identical(eff_ret, FALSE),
+        cond_ref = isTRUE(eff_ret),
+        signs    = "fishing removed but effective driver did not return",
+        ev_deps  = list(eff_ret)),
+    row("long_transient",
+        cond_sup = isTRUE(ltr == FALSE) && isTRUE(loop_p >= 0.05),
+        cond_ref = isTRUE(new_well),
+        signs    = "restoring but slow; no new well; n.s. loop",
+        ev_deps  = list(ltr, loop_p, new_well)),
+    row("artifact",
+        cond_sup = isTRUE(artifact_reproduces),
+        cond_ref = identical(artifact_reproduces, FALSE),
+        signs    = "survey-artifact null reproduces the observed signal",
+        ev_deps  = list(artifact_reproduces))
+  )
+}

@@ -488,3 +488,38 @@ test_that("battery detects an approaching fold and stays quiet on a stationary s
   expect_false(ctl$negative$nonlinearity_detected)
   expect_lt(abs(ctl$negative$lambda_trend), abs(ctl$positive$lambda_trend))
 })
+
+# ============================================================================
+# Task 15: discrimination_table
+# ============================================================================
+
+test_that("discrimination_table scores the four explanations with verdicts", {
+  ev <- list(
+    nonlinear = TRUE, lambda_failed_to_relax = TRUE,
+    state_dependent_dF = TRUE, new_potential_well = TRUE,
+    effective_driver_returned = FALSE, loop_p = 0.02,
+    regime_best = "depensatory", artifact_reproduces = FALSE)
+  tab <- discrimination_table(ev)
+  expect_setequal(tab$explanation,
+    c("hysteresis","unreturned_driver","long_transient","artifact"))
+  expect_true(all(tab$verdict %in%
+    c("supported","weak","refuted","indeterminate")))
+  expect_equal(tab$verdict[tab$explanation == "artifact"], "refuted")
+})
+
+test_that("discrimination_table: NA ev fields -> indeterminate (not crash, not false supported/refuted)", {
+  ev_na <- list(
+    nonlinear = TRUE, lambda_failed_to_relax = NA,
+    state_dependent_dF = TRUE, new_potential_well = TRUE,
+    effective_driver_returned = FALSE, loop_p = NA,
+    regime_best = "depensatory", artifact_reproduces = FALSE)
+  expect_silent(tab_na <- discrimination_table(ev_na))
+  # hysteresis: loop_p = NA -> cond_sup is NA/indeterminate
+  expect_equal(tab_na$verdict[tab_na$explanation == "hysteresis"], "indeterminate")
+  # long_transient: lambda_failed_to_relax = NA -> cond_sup is indeterminate
+  expect_equal(tab_na$verdict[tab_na$explanation == "long_transient"], "indeterminate")
+  # artifact: artifact_reproduces = FALSE -> explicitly refuted (unaffected by other NAs)
+  expect_equal(tab_na$verdict[tab_na$explanation == "artifact"], "refuted")
+  # No errors, no NA verdicts -- every row has a real verdict string
+  expect_false(any(is.na(tab_na$verdict)))
+})
