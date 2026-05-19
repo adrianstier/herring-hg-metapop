@@ -87,3 +87,6 @@ logs/
 talk-usuk-forum-2026/Talk_Materials/deck_build/node_modules/
 talk-usuk-forum-2026/Talk_Materials/deck_build/q-*.jpg
 talk-usuk-forum-2026/Talk_Materials/deck_build/qx-*.jpg
+
+# isolated dev worktrees
+.worktrees/
