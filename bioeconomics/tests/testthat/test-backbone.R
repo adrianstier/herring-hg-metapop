@@ -27,3 +27,12 @@ test_that("assembled backbone conforms to schema and reconciles anchors", {
   expect_true("regime" %in% names(bb))
   expect_equal(nrow(bb), length(REGIONS) * length(1950:2026))
 })
+
+test_that("if Comtrade cache exists, kazunoko columns reach the backbone (regression guard)", {
+  cache <- here::here("data-raw","trade","comtrade_jpn_030520.csv")
+  testthat::skip_if_not(file.exists(cache), "Comtrade cache not present (Task 7 needs COMTRADE_PRIMARY_KEY)")
+  source(here::here("R","schema.R")); source(here::here("R","assemble_backbone.R"))
+  bb <- assemble_backbone()
+  expect_true("kazunoko_import_qty_t" %in% names(bb))
+  expect_true(any(!is.na(bb$kazunoko_import_qty_t)))
+})

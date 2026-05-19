@@ -40,7 +40,7 @@ assemble_backbone <- function() {
   # --- L3b: kazunoko Comtrade (optional, broadcasts across regions by year) ---
   L3b <- tryCatch({
     source(here::here("R", "layer_L3b_kazunoko.R"), local = TRUE)
-    build_kazunoko()
+    build_L3b()
   }, error = function(e) {
     tibble::tibble(year = integer())
   })
