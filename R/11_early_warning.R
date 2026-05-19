@@ -69,7 +69,8 @@ ews_synchrony_eta <- function(mat) {
 #'
 #' @param mat Numeric matrix with rows = time steps and columns =
 #'   subpopulations (sections). At least 2 columns and 3 rows are required
-#'   for a meaningful covariance estimate.
+#'   for a meaningful covariance estimate. NA handled pairwise (incomplete
+#'   pairs dropped); windows with no usable covariance return all-NA.
 #' @return A named list with three elements:
 #'   \describe{
 #'     \item{lambda_max}{Numeric scalar. The leading eigenvalue of the sample
@@ -85,21 +86,32 @@ ews_synchrony_eta <- function(mat) {
 #'       relative contribution to the dominant mode of co-variation. Returns a
 #'       vector of \code{NA_real_} values when the NA-guard is triggered.}
 #'   }
-#'   NA-guard: if \code{mat} has fewer than 2 columns or fewer than 3 rows all
-#'   three elements are returned as \code{NA_real_} (or a vector of
-#'   \code{NA_real_} for \code{loadings}).
+#'   NA-guard: all three elements are returned as \code{NA_real_} (or a vector
+#'   of \code{NA_real_} for \code{loadings}) if \code{mat} has fewer than 2
+#'   columns or fewer than 3 rows, if pairwise covariance still contains NA
+#'   (no overlapping observations), or if the total clipped variance is
+#'   non-finite or zero (degenerate / zero-variance window).
 ews_cov_eigen <- function(mat) {
   mat <- as.matrix(mat)
   if (ncol(mat) < 2L || nrow(mat) < 3L) {
     return(list(lambda_max = NA_real_, eig_share = NA_real_,
                 loadings = rep(NA_real_, ncol(mat))))
   }
-  S <- stats::cov(mat)
+  S <- stats::cov(mat, use = "pairwise.complete.obs")
+  if (anyNA(S)) {
+    return(list(lambda_max = NA_real_, eig_share = NA_real_,
+                loadings = rep(NA_real_, ncol(mat))))
+  }
   e <- eigen(S, symmetric = TRUE)
-  lam <- e$values
+  lam <- pmax(e$values, 0)
+  den <- sum(lam)
+  if (!is.finite(den) || den == 0) {
+    return(list(lambda_max = NA_real_, eig_share = NA_real_,
+                loadings = rep(NA_real_, ncol(mat))))
+  }
   list(
     lambda_max = lam[1],
-    eig_share  = lam[1] / sum(lam),
+    eig_share  = lam[1] / den,
     loadings   = e$vectors[, 1]
   )
 }

@@ -57,3 +57,13 @@ test_that("leading eigen share ~ 1/p for independent equal-variance columns", {
   out <- ews_cov_eigen(m)
   expect_equal(out$eig_share, 0.25, tolerance = 0.06)
 })
+
+test_that("ews_cov_eigen is guard- and NA-robust", {
+  g <- ews_cov_eigen(matrix(1:4, ncol = 1))           # ncol<2 guard
+  expect_true(is.na(g$lambda_max) && length(g$loadings) == 1)
+  s <- ews_cov_eigen(matrix(c(1,1,1,1,1,1), ncol = 2)) # zero-variance / degenerate
+  expect_true(is.na(s$eig_share) || (is.finite(s$eig_share) && s$eig_share <= 1 + 1e-9))
+  m <- cbind(c(1,2,3,NA,5,6), c(2,1,4,3,5,4), c(1,3,2,4,6,5))
+  out <- ews_cov_eigen(m)                              # NA present -> no crash
+  expect_true(is.na(out$eig_share) || (out$eig_share >= 0 && out$eig_share <= 1 + 1e-9))
+})
