@@ -91,6 +91,55 @@ retunes (S2/S3/S3.5 notes, S13/S14 text). Deck → ~30 slides incl. backups.
 Pipeline: redesign → preprocess → node build → PDF QA → dated checkpoint →
 board log → quit+reopen PowerPoint (cache).
 
+## ADDENDUM (2026-05-19, post-approval) — 3 more elements + timing
+
+Okamoto et al. 2020 *Ecol Appl* ("Spatial variation in exploited
+metapopulations obscures risk of collapse"; Okamoto, Hessing-Lewis,
+Samhouri, Shelton, **Stier**, Levin, Salomon) is Adrian's own co-authored
+paper — it is the published basis for the scale-mismatch analysis AND
+states the solution explicitly: dynamically optimizing harvest minimizes
+local risk without sacrificing yield; multiple nested scales of management;
+ecological, social, economic consequences. It legitimizes the methods and
+supplies the solution.
+
+### §5 — Methods/legitimacy slide (NEW native, after S4)
+Tight honest m1_stier_11 description (Bayesian state-space metapopulation;
+spawn-index data; 11 sections; spatially-correlated process error;
+survey-scaling; ambiguous zeros = missing) explicitly framed as the
+published, peer-reviewed **Okamoto et al. 2020 (Ecol Appl)** approach,
+extended. ~40 s. Claim-control safe (no fitted predator coefficient claim).
+
+### §6 — Economics↔ecology slide (NEW native, feeding S11)
+Resolved framing: **coupled supply + demand**, not either/or. The BC
+sac-roe fishery existed only via a narrow foreign-demand niche — Japanese
+*kazunoko* demand created by Japan's own (Hokkaido) Pacific-herring
+collapse. Then BOTH failed: Japanese demand fell (post-1990s consumption
+change) AND ecological supply collapsed (HG stock + closures). Herring's
+*market* value evaporated while its *ecological + cultural* value (forage;
+kʼaaw) did not — the economics were only ever legible as extracted export,
+decoupled from ecological role. On-slide = sourced trajectory only (roe
+value peaked 1980s→declined; SOK $62.88/lb 1995→$11–14/lb, Rebuilding Plan
+§5.2.3); Japan-collapse driver flagged as documented context. Feeds S11
+"value moved, didn't vanish."
+
+### §7 — Okamoto solution slide (NEW native, immediately before S13)
+Visualize the Okamoto et al. 2020 strategy as THE solution: nested-scale +
+dynamically-optimized harvest allocating herring across the triple bottom
+line — industry (commercial) · Haida (kʼaaw/FSC) · ecosystem (predators:
+marine mammals + commercial fishes like salmon) — managed at the cove
+scale, not just archipelago-wide. Attributed Okamoto et al. 2020. S13
+tightened so it does not duplicate (Okamoto = the "how"; S13 = transferable
+lessons).
+
+### Timing decision (user, 2026-05-19)
+**Target ~20 min, build all 6 additions, fast visual beats.** Locator
+~20 s, whale ~15 s, S9b animation ~20 s; S6 (climate) + S9b explicitly
+marked drop-on-the-day in speaker notes. Nothing cut from the deck.
+
+Total new spine slides: **6** (S1b locator, methods, economics,
+Okamoto-solution, S10b, S12b) + retunes (S2/S3/S3.5, S13/S14) + S6/S9b
+drop-on-day notes. Deck → ~33 slides incl. backups.
+
 ## Deadline note
 
 Talk is tomorrow. Per explicit user go-ahead ("ok do that"), the brainstorming
