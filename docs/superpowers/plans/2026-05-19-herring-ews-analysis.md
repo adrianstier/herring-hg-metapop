@@ -105,7 +105,7 @@ Expected: FAIL listing any missing packages.
 
 Run (only those reported missing):
 ```bash
-Rscript -e 'install.packages(c("earlywarnings","spatialwarnings","MARSS","posterior","Kendall"), repos="https://cloud.r-project.org")'
+Rscript -e 'install.packages(c("earlywarnings","spatialwarnings","MARSS","posterior","Kendall","strucchange","zoo"), repos="https://cloud.r-project.org")'  # (strucchange/zoo folded in here for Tasks 1.7/1.8)
 ```
 
 - [ ] **Step 4: Re-run the probe test**
