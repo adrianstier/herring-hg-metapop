@@ -380,3 +380,20 @@ test_that("surrogate significance output: schema, ranges, both pre_window varian
   # at least one strong-trend row should be significant (sanity)
   expect_true(any(finite$p_value < 0.05))
 })
+
+test_that("sensitivity grid output: schema, robust flag, leave-out coverage", {
+  f <- here::here("Output","diagnostics","ews_sensitivity_grid.csv")
+  skip_if_not(file.exists(f), "ews_sensitivity_grid.csv absent — run Code/11_ews_06_sensitivity_grid.R first")
+  d <- readr::read_csv(f, show_col_types = FALSE)
+  expect_true(all(c("indicator","layer","unit","window","detrend","estimator",
+                    "leave_out","tau","p_value","n","robust") %in% names(d)))
+  expect_setequal(unique(d$layer), c("observed","latent"))
+  expect_setequal(unique(d$unit),  c("all11","core9"))
+  expect_true("none" %in% unique(d$leave_out))
+  expect_true(length(unique(d$leave_out)) > 1)   # actual leave-outs present
+  expect_true(is.logical(d$robust))
+  fin <- d[is.finite(d$tau) & is.finite(d$p_value), ]
+  expect_true(nrow(fin) > 100)
+  expect_true(all(fin$tau >= -1 - 1e-9 & fin$tau <= 1 + 1e-9))
+  expect_true(all(fin$p_value >= 0 - 1e-9 & fin$p_value <= 1 + 1e-9))
+})
