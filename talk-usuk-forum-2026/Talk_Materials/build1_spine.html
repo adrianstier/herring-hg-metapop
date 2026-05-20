@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BUILD #1 - Three-layer spine - Coupled tipping points</title>
+<!--
+  Talk artifact for the US-UK Royal Society forum (Session 5, 20 May 2026).
+  BUILD #1 = the recurring SPINE (slides 2 / 12 / 20). Event-driven: click or
+  Right arrow/Space advances one step. Visual language = herring_haida_gwaii_timeline.html.
+
+  DATA HONESTY (see provenance docs in this folder):
+   - Ecological track: shape anchored to current m1_stier_11 portfolio metrics
+     (recent synchrony 0.63 all-11 / 0.70 focal-9; Simpson eff. sections 3.26;
+     recent-period top-3 share 84%) - Output/diagnostics/m1_stier_11_portfolio_metrics.md.
+   - Value track: shape per the SOURCED wording - DFO/CHN/Parks Canada 2024
+     HG Rebuilding Plan Figs 31/32 (Haida Gwaii 2E roe landed value, 2020$,
+     DFO fish slips): peaked 1980s, high to mid-1990s, dropped 1995-2005 &
+     post-2008. See S8_landed_value_provenance.md / figs/PROVENANCE.md.
+   - Cultural track: schematic - flat across the ~10,000-yr archaeological
+     baseline (McKechnie et al. 2014), late drop at the post-2002 HG closure.
+   - "2.1x more stable" / "65% vs 4%" are Stier et al. 2020 (published), NOT
+     m1_stier_11 outputs - shown only as labelled motivation. numbers_provenance.md.
+   Curves are SCHEMATIC (qualitative shape from the cited sources), not
+   digitized series. Any exact number for a slide must be read off the cited
+   source, not this artifact.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff; --ink:#111111; --ink-soft:#4a4a4a; --rule:#d8d8d8;
+    --accent-rust:#8b3a23; --accent-marine:#1c3a52; --accent-kelp:#4a5d3a;
+    --accent-amber:#a07028; --accent-plum:#5d3d52; --accent-slate:#4d4d52;
+    --eco:var(--accent-kelp); --value:var(--accent-rust); --culture:var(--accent-plum);
+    --window:rgba(160,112,40,0.13);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0e0e0e; --ink:#f0eee9; --ink-soft:#a8a59f; --rule:#2e2c28;
+      --accent-rust:#d9714f; --accent-marine:#6e9bc4; --accent-kelp:#8aa074;
+      --accent-amber:#cfa055; --accent-plum:#b685a8; --accent-slate:#9c9ca3;
+      --window:rgba(207,160,85,0.16);}
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--ink);
+    font-family:"IBM Plex Sans",-apple-system,sans-serif;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;user-select:none;overflow:hidden}
+  .stage{width:min(1180px,94vw)}
+  .masthead{font-family:"IBM Plex Mono",monospace;font-size:.72rem;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--accent-rust);
+    margin-bottom:.4rem}
+  h1{font-family:"Crimson Pro",Georgia,serif;font-weight:600;
+    font-size:clamp(1.5rem,3.2vw,2.5rem);line-height:1.12;margin-bottom:.2rem}
+  h1 .accent{font-style:italic;color:var(--accent-rust)}
+  .thesis{font-family:"Crimson Pro",Georgia,serif;font-size:clamp(1rem,1.6vw,1.3rem);
+    color:var(--ink-soft);max-width:60ch;margin:.5rem 0 1.1rem;line-height:1.4}
+  svg{display:block;width:100%;height:auto}
+  .axis{stroke:var(--rule);stroke-width:1.5}
+  .tick{font-family:"IBM Plex Mono",monospace;font-size:11px;fill:var(--ink-soft)}
+  .lab{font-family:"IBM Plex Mono",monospace;font-size:12.5px;letter-spacing:.04em}
+  .track{fill:none;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round;
+    stroke-dasharray:2600;stroke-dashoffset:2600;
+    transition:stroke-dashoffset 1.15s cubic-bezier(.4,0,.2,1)}
+  .track.on{stroke-dashoffset:0}
+  .bp{opacity:0;transition:opacity .5s ease .6s}
+  .bp.on{opacity:1}
+  .bp line{stroke-width:1.4;stroke-dasharray:3 3}
+  .win{opacity:0;transition:opacity .7s ease}
+  .win.on{opacity:1}
+  .footer{display:flex;justify-content:space-between;align-items:flex-end;
+    margin-top:1rem;gap:2rem}
+  .src{font-family:"IBM Plex Mono",monospace;font-size:.66rem;color:var(--ink-soft);
+    line-height:1.5;max-width:74ch;border-left:3px solid var(--accent-rust);
+    padding-left:.7rem}
+  .step{font-family:"IBM Plex Mono",monospace;font-size:.7rem;color:var(--ink-soft);
+    white-space:nowrap}
+  .step b{color:var(--accent-rust)}
+  .hint{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);
+    font-family:"IBM Plex Mono",monospace;font-size:.62rem;color:var(--ink-soft);
+    opacity:.6;text-transform:uppercase;letter-spacing:.15em}
+  .legend{display:flex;gap:1.3rem;font-family:"IBM Plex Mono",monospace;
+    font-size:.7rem;color:var(--ink-soft);margin:.1rem 0 .8rem;flex-wrap:wrap}
+  .legend span{display:flex;align-items:center;gap:.4rem}
+  .sw{width:22px;height:3.4px;border-radius:2px;display:inline-block}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="masthead">Coupled tipping points | Pacific herring | Haida Gwaii</div>
+  <h1 id="title"></h1>
+  <p class="thesis" id="thesis"></p>
+
+  <div class="legend">
+    <span><i class="sw" style="background:var(--eco)"></i>Ecological structure</span>
+    <span><i class="sw" style="background:var(--value)"></i>Landed value (HG 2E)</span>
+    <span><i class="sw" style="background:var(--culture)"></i>Cultural service (k'aaw)</span>
+    <span><i class="sw" style="background:var(--accent-amber);opacity:.5"></i>Management window</span>
+  </div>
+
+  <svg viewBox="0 0 1100 460" id="svg" aria-label="Three-layer spine">
+    <g class="win" id="win">
+      <rect x="470" y="40" width="250" height="300" fill="var(--window)"/>
+      <text x="595" y="32" text-anchor="middle" class="lab" fill="var(--accent-amber)">management window</text>
+    </g>
+    <line class="axis" x1="70" y1="340" x2="1060" y2="340"/>
+    <text class="tick" x="70"  y="360">1950</text>
+    <text class="tick" x="370" y="360">1980</text>
+    <text class="tick" x="545" y="360">1994</text>
+    <text class="tick" x="745" y="360">2010</text>
+    <text class="tick" x="1028" y="360">now</text>
+    <path class="track" id="t-eco" stroke="var(--eco)"
+      d="M70,120 C220,118 330,120 470,128 C560,140 640,210 760,270 C860,300 960,310 1060,312"/>
+    <text class="lab" id="lab-eco" fill="var(--eco)" x="78" y="104" opacity="0">ecological structure (portfolio)</text>
+    <path class="track" id="t-val" stroke="var(--value)"
+      d="M70,210 C200,195 330,178 470,176 C540,176 590,196 650,250 C720,300 800,318 900,322 C960,322 1010,316 1060,318"/>
+    <text class="lab" id="lab-val" fill="var(--value)" x="300" y="166" opacity="0">landed value (HG 2E roe, 2020$)</text>
+    <path class="track" id="t-cul" stroke="var(--culture)"
+      d="M70,150 C300,150 520,150 720,151 C780,152 815,200 850,275 C895,318 970,326 1060,328"/>
+    <text class="lab" id="lab-cul" fill="var(--culture)" x="120" y="138" opacity="0">cultural service - k'aaw (about 10,000-yr baseline)</text>
+    <g class="bp" id="bp-eco"><line x1="470" y1="40" x2="470" y2="340" stroke="var(--eco)"/><circle cx="470" cy="128" r="5" fill="var(--eco)"/></g>
+    <g class="bp" id="bp-val"><line x1="650" y1="40" x2="650" y2="340" stroke="var(--value)"/><circle cx="650" cy="250" r="5" fill="var(--value)"/></g>
+    <g class="bp" id="bp-cul"><line x1="815" y1="40" x2="815" y2="340" stroke="var(--culture)"/><circle cx="815" cy="200" r="5" fill="var(--culture)"/></g>
+  </svg>
+
+  <div class="footer">
+    <div class="src" id="src"></div>
+    <div class="step">step <b id="st-n"></b> / 4 | <span id="st-l"></span></div>
+  </div>
+</div>
+<div class="hint">click | right arrow | space to advance &nbsp;|&nbsp; left arrow to go back</div>
+
+<script>
+(function(){
+  var step=0;
+  var titleEl=document.getElementById('title'),
+      thesisEl=document.getElementById('thesis'),
+      srcEl=document.getElementById('src'),
+      stN=document.getElementById('st-n'), stL=document.getElementById('st-l');
+  var eco=document.getElementById('t-eco'), val=document.getElementById('t-val'),
+      cul=document.getElementById('t-cul'),
+      le=document.getElementById('lab-eco'), lv=document.getElementById('lab-val'),
+      lc=document.getElementById('lab-cul'),
+      be=document.getElementById('bp-eco'), bv=document.getElementById('bp-val'),
+      bc=document.getElementById('bp-cul'), win=document.getElementById('win');
+  function show(el,on){ el.classList[on?'add':'remove']('on'); }
+  function lab(el,on){ el.setAttribute('opacity', on?1:0); }
+  // title rendered as safe DOM segments: [text, isAccent]
+  function renderTitle(segs){
+    titleEl.textContent='';
+    segs.forEach(function(s){
+      var n=document.createElement('span');
+      if(s[1]) n.className='accent';
+      n.textContent=s[0];
+      titleEl.appendChild(n);
+    });
+  }
+  var STEPS=[
+    { titleSeg:[['The argument: three layers, ',0],['three clocks',1]],
+      thesis:"Ecological state, the service it delivers, and its economic & cultural value each tip on their own schedule. The offsets between them are the interval in which management still has leverage.",
+      eco:0,val:0,cul:0, be:0,bv:0,bc:0, win:0, n:'1', l:'S2 - scaffold',
+      src:"Empty scaffold. Predictions: (1) service breakpoints are not coincident with ecological ones; (2) recovery of state does not retrace service; (3) the offset is a measurable window." },
+    { titleSeg:[['The value layer ',0],['lags',1],[' the ecological one',0]],
+      thesis:"Spatial structure erodes from the mid-1990s - but Haida Gwaii roe landed value stays high into the mid-1990s and only falls later. The gap is the management window.",
+      eco:1,val:1,cul:0, be:1,bv:1,bc:0, win:1, n:'2', l:'S12 - eco + value',
+      src:"Ecological: current m1_stier_11 portfolio metrics - recent synchrony 0.63 (all-11)/0.70 (focal-9); Simpson eff. sections 3.26; recent-period top-3 share 84% (Output/diagnostics/m1_stier_11_portfolio_metrics.md). Value: DFO/CHN/Parks Canada 2024 HG Rebuilding Plan Figs 31/32 - Haida Gwaii (2E) roe landed value, 2020$, DFO fish slips; peaked 1980s, high to mid-1990s, dropped 1995-2005 & post-2008. Motivation (Stier et al. 2020, published - NOT m1_stier_11): about 2.1x portfolio stability; local harvest 65% vs archipelago 4%. Curves schematic." },
+    { titleSeg:[['All three tipped - the window has ',0],['closed',1]],
+      thesis:"The cultural service held flat across ~10,000 years, then dropped at the post-2002 Haida Gwaii closure. Three non-coincident breakpoints; the management window is now behind us.",
+      eco:1,val:1,cul:1, be:1,bv:1,bc:1, win:1, n:'3', l:'S20 - all layers',
+      src:"Cultural track schematic: about 10,000-yr archaeological superabundance baseline (McKechnie et al. 2014 - 435,777 bones / 171 sites / 99% ubiquity), late drop at the post-2002 HG roe closure & functional k'aaw closure. Ecological/value sources as prior step. This artifact recurs as the talk's SPINE at slides 2 / 12 / 20." },
+    { titleSeg:[['Measure structure | manage exposure | ',0],['act before the window closes',1]],
+      thesis:"Three transferable lessons: watch structure not tonnage; removing the stressor does not equal recovery (budget for hysteresis); govern the proportion exposed at the system's real scale, on a long baseline.",
+      eco:1,val:1,cul:1, be:1,bv:1,bc:1, win:1, n:'4', l:'close',
+      src:"Provenance: numbers_provenance.md | S8_landed_value_provenance.md | figs/PROVENANCE.md | docs/herring-non-recovery-hypotheses.md. No unsourced figure on any slide." }
+  ];
+  function render(){
+    var s=STEPS[step];
+    renderTitle(s.titleSeg);
+    thesisEl.textContent=s.thesis; srcEl.textContent=s.src;
+    stN.textContent=s.n; stL.textContent=s.l;
+    show(eco,s.eco); show(val,s.val); show(cul,s.cul);
+    lab(le,s.eco); lab(lv,s.val); lab(lc,s.cul);
+    show(be,s.be); show(bv,s.bv); show(bc,s.bc); show(win,s.win);
+  }
+  function go(d){ step=Math.max(0,Math.min(STEPS.length-1,step+d)); render(); }
+  document.body.addEventListener('click',function(){go(1)});
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();go(1);}
+    else if(e.key==='ArrowLeft'){e.preventDefault();go(-1);}
+  });
+  render();
+})();
+</script>
+</body>
+</html>

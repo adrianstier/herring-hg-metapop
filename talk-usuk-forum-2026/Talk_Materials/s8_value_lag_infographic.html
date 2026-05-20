@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Slide 8 — The value signal lagged the ecosystem</title>
+<!--
+  Talk artifact, US-UK Royal Society forum (Session 5, 20 May 2026).
+  SLIDE 8 = the ECONOMIC / VALUE track of the separability thesis (Spine B,
+  Prediction 1): aggregate value & price stayed high into the mid-1990s while
+  the spatial portfolio had ALREADY eroded — the value layer LAGS the
+  ecological layer and masked the collapse. Static, slide-ready. Visual
+  language = s5_two_collapses.html / build1_spine.html. Light zone (F).
+
+  CLAIM-CONTROL / DATA HONESTY (governs every number here):
+  Authoritative source = Haida Gwaii ʹíináang|iinang Pacific Herring
+  Rebuilding Plan 2024 (CHN/DFO/Parks Canada), DFO fish-slip basis, 2020$:
+   - SOK real price: $16–31/lb in the 1970s; PEAK $62.88/lb in 1995;
+     $11–14/lb in recent years (Figs 25/26; §5.2.3.4.3).
+   - Roe-herring landed value: peaked in the 1980s, relatively high to the
+     mid-1990s, dropped 1995–2005, declined again 2008–present, modest
+     2016–18 uptick (~$16M landed + >$29M processing) (Figs 31/32; §5.2.3.5.2).
+   - HG supported significant roe fisheries to 1994; most recent HG roe
+     fishery 2002. SOK ≈ $3.6M/yr average 1982–2008.
+  Do NOT use "1993 peak / ~$40M / ~$50M / ~93% collapse" — unsourced teaching
+  shorthand, explicitly excluded (see S8_landed_value_provenance.md).
+  Portfolio-lag context = m1_stier_11 (promoted baseline; structure/portfolio
+  remains low — claim-control sheet). Demand-decline context = 2024 KCAW
+  reporting + docs/2026-05-19-kazunoko-demand-context-brief.md. Curve SHAPES
+  are schematic; the only hard numbers on the slide are the sourced SOK price
+  points. Any exact figure must be read off the cited source.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fbfaf7; --ink:#111111; --ink-soft:#4a4a4a; --rule:#d8d8d8;
+    --accent-rust:#8b3a23; --accent-rust-soft:#b06a4f;
+    --accent-marine:#1c3a52; --accent-kelp:#4a5d3a;
+    --accent-amber:#a07028; --accent-plum:#5d3d52; --accent-slate:#6a6a70;
+    --value:var(--accent-rust); --eco:var(--accent-kelp);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--ink);
+    font-family:"IBM Plex Sans",-apple-system,sans-serif;
+    display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .stage{width:min(1180px,95vw)}
+  .masthead{font-family:"IBM Plex Mono",monospace;font-size:.72rem;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--accent-rust);
+    margin-bottom:.4rem}
+  h1{font-family:"Crimson Pro",Georgia,serif;font-weight:600;
+    font-size:clamp(1.5rem,3.2vw,2.5rem);line-height:1.12;margin-bottom:.2rem}
+  h1 .accent{font-style:italic;color:var(--accent-rust)}
+  .thesis{font-family:"Crimson Pro",Georgia,serif;font-size:clamp(1rem,1.6vw,1.22rem);
+    color:var(--ink-soft);max-width:74ch;margin:.4rem 0 .55rem;line-height:1.38}
+  svg{display:block;width:100%;height:auto}
+  .axis{stroke:var(--rule);stroke-width:1.5}
+  .tick{font-family:"IBM Plex Mono",monospace;font-size:11px;fill:var(--ink-soft)}
+  .lab{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.02em}
+  .actlab{font-family:"IBM Plex Mono",monospace;font-size:12.5px;
+    letter-spacing:.16em;text-transform:uppercase}
+  .track{fill:none;stroke:var(--value);stroke-width:3.6;
+    stroke-linecap:round;stroke-linejoin:round}
+  .track-nodata{stroke:var(--accent-slate);stroke-width:2.2;stroke-dasharray:2 5}
+  .eco{fill:none;stroke:var(--eco);stroke-width:2.4;stroke-dasharray:7 5;
+    stroke-linecap:round;opacity:.9}
+  .ann{font-family:"Crimson Pro",Georgia,serif;font-size:15px;fill:var(--ink)}
+  .ann-v{fill:var(--accent-rust)} .ann-e{fill:var(--accent-kelp)}
+  .icn{stroke:var(--accent-slate);stroke-width:1.6;fill:none;
+    stroke-linecap:round;stroke-linejoin:round}
+  .icn-v{stroke:var(--accent-rust)}
+  .brk line{stroke-width:1.4;stroke-dasharray:3 3}
+  .takeaway{font-family:"Crimson Pro",Georgia,serif;
+    font-size:clamp(1rem,1.55vw,1.2rem);color:var(--ink);
+    border-left:4px solid var(--accent-amber);padding:.15rem 0 .15rem .7rem;
+    margin-top:.5rem;line-height:1.34}
+  .takeaway b{font-weight:600}
+  .src-foot{font-family:"IBM Plex Mono",monospace;font-size:.6rem;
+    color:var(--ink-soft);line-height:1.5;max-width:96ch;margin-top:.55rem;
+    border-left:3px solid var(--accent-rust);padding-left:.7rem}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="masthead">Coupled tipping points | Pacific herring | Haida Gwaii</div>
+  <h1>The price held <span class="accent">while the system fell</span></h1>
+  <p class="thesis">A demand shock from Japan made herring valuable; that value stayed high into the mid-1990s — even as the spatial structure had already eroded. The economic signal <em>lagged</em> the ecological one, and the market that created the fishery is not coming back.</p>
+
+  <svg viewBox="0 0 1180 478" aria-label="Real spawn-on-kelp price (2020 dollars per pound) for Haida Gwaii / BC herring: no priced market in the reduction era, a rise from 1972 to a 1995 peak of $62.88/lb after Japan's domestic herring fishery collapsed, then a decline to $11–14/lb as Japanese demand fell and supply flooded. An ecological-structure line turns down earlier, showing value lagging structure.">
+    <!-- ===== act bands ===== -->
+    <rect x="70"  y="40" width="417" height="320" fill="var(--accent-slate)" opacity="0.05"/>
+    <rect x="544" y="40" width="259" height="320" fill="var(--accent-rust)"  opacity="0.06"/>
+    <rect x="803" y="40" width="327" height="320" fill="var(--accent-plum)"  opacity="0.06"/>
+    <text class="actlab" x="80"  y="34" fill="var(--accent-slate)">I · Reduction</text>
+    <text class="actlab" x="554" y="34" fill="var(--accent-rust)">II · Kazunoko boom</text>
+    <text class="actlab" x="813" y="34" fill="var(--accent-plum)">III · Demand falls + market floods</text>
+
+    <!-- ===== axes ===== -->
+    <line class="axis" x1="70" y1="360" x2="1130" y2="360"/>
+    <line class="axis" x1="70" y1="50"  x2="70"   y2="360"/>
+    <text class="tick" x="16" y="96">SOK price</text>
+    <text class="tick" x="16" y="110">2020$ / lb</text>
+    <text class="tick" x="40" y="95"  text-anchor="end">$60</text>
+    <text class="tick" x="40" y="184" text-anchor="end">$40</text>
+    <text class="tick" x="40" y="274" text-anchor="end">$20</text>
+    <line class="axis" x1="66" y1="91"  x2="70" y2="91"  opacity=".5"/>
+    <line class="axis" x1="66" y1="180" x2="70" y2="180" opacity=".5"/>
+    <line class="axis" x1="66" y1="270" x2="70" y2="270" opacity=".5"/>
+    <text class="tick" x="70"  y="378" text-anchor="middle">1930</text>
+    <text class="tick" x="487" y="378" text-anchor="middle">1967</text>
+    <text class="tick" x="544" y="392" text-anchor="middle">1972</text>
+    <text class="tick" x="803" y="378" text-anchor="middle">1995</text>
+    <text class="tick" x="882" y="392" text-anchor="middle">2002</text>
+    <text class="tick" x="1130" y="378" text-anchor="middle">now</text>
+
+    <!-- ===== ecological-structure line (turns DOWN first) ===== -->
+    <path class="eco" d="M150,150 C320,150 420,168 487,196
+      C560,232 620,288 700,308 C780,322 920,326 1120,328"/>
+    <text class="ann ann-e" x="150" y="138">spatial portfolio / structure — eroding by the 1980s</text>
+    <text class="ann ann-e" x="150" y="156" font-style="italic" font-size="13">schematic · m1_stier_11 (structure remains low)</text>
+
+    <!-- ===== SOK price track ===== -->
+    <!-- no priced market in the reduction era -->
+    <path class="track-nodata" d="M74,344 L540,344"/>
+    <text class="lab" x="150" y="336" fill="var(--accent-slate)">no $/lb on record — herring is an industrial input</text>
+    <!-- 1972 → 1995 peak → recent -->
+    <path class="track" d="M544,300
+      C575,288 600,262 634,253
+      C690,238 730,150 803,91
+      C840,118 858,176 882,212
+      C915,262 950,300 1000,309
+      C1050,313 1090,312 1130,312"/>
+
+    <!-- 1995 peak marker (the one hard number) -->
+    <g class="brk">
+      <line x1="803" y1="91" x2="803" y2="360" stroke="var(--value)"/>
+      <circle cx="803" cy="91" r="5.5" fill="var(--value)"/>
+      <text class="lab" x="803" y="79" text-anchor="middle" fill="var(--value)">$62.88 / lb · 1995 (2020$)</text>
+    </g>
+    <!-- 1970s level + recent level callouts -->
+    <text class="lab" x="600" y="246" fill="var(--value)">$16–31/lb · 1970s</text>
+    <text class="lab" x="1126" y="300" text-anchor="end" fill="var(--value)">$11–14/lb · recent</text>
+
+    <!-- roe-value qualitative lane (NO fabricated $; sourced wording) -->
+    <text class="lab" x="74" y="420" fill="var(--accent-rust-soft)">ROE LANDED VALUE (BC, 2020$, qualitative)</text>
+    <rect x="544" y="426" width="259" height="14" fill="var(--accent-rust)" opacity=".34"/>
+    <rect x="803" y="426" width="150" height="14" fill="var(--accent-rust)" opacity=".16"/>
+    <rect x="953" y="426" width="60"  height="14" fill="var(--accent-rust)" opacity=".10"/>
+    <rect x="1013" y="426" width="35" height="14" fill="var(--accent-rust)" opacity=".18"/>
+    <rect x="1048" y="426" width="82" height="14" fill="var(--accent-rust)" opacity=".09"/>
+    <text class="lab" x="560" y="437" fill="#fff" font-size="10.5">peaked 1980s · high to mid-90s</text>
+    <text class="lab" x="1018" y="421" fill="var(--accent-rust-soft)" font-size="10">’16–18 uptick</text>
+
+    <!-- ===== event markers + icons ===== -->
+    <!-- Act I: reduction destinations -->
+    <g class="icn" transform="translate(120,250)">
+      <path d="M0,14 L4,0 L20,0 L24,14 Z"/><path d="M2,7 L22,7"/>
+      <text class="lab" x="32" y="6" fill="var(--accent-slate)" stroke="none">fishmeal → poultry feed</text>
+      <text class="lab" x="32" y="20" fill="var(--accent-slate)" stroke="none">oil → paint · industrial</text>
+    </g>
+    <g class="brk">
+      <line x1="487" y1="196" x2="487" y2="360" stroke="var(--accent-slate)"/>
+      <text class="lab" x="483" y="214" text-anchor="end" fill="var(--accent-slate)">1967/68 collapse → moratorium</text>
+    </g>
+
+    <!-- Act II trigger: Japan's domestic fishery collapses -->
+    <g transform="translate(548,322)">
+      <circle class="icn icn-v" cx="8" cy="8" r="8"/>
+      <path class="icn icn-v" d="M8,8 L8,22 M3,17 L8,24 L13,17"/>
+      <text class="ann ann-v" x="23" y="4">Japan's domestic fishery collapses, 1972</text>
+      <text class="ann ann-v" x="23" y="20" font-style="italic" font-size="13">demand shock, exogenous to BC → roe boom</text>
+    </g>
+
+    <!-- 2002 last HG roe fishery -->
+    <g class="brk">
+      <line x1="882" y1="212" x2="882" y2="360" stroke="var(--accent-plum)"/>
+      <circle cx="882" cy="212" r="4.5" fill="var(--accent-plum)"/>
+      <text class="lab" x="888" y="206" fill="var(--accent-plum)">last HG roe fishery · 2002</text>
+    </g>
+
+    <!-- Act III drivers: demand down + supply flood (upper-right open band) -->
+    <g transform="translate(905,66)">
+      <!-- aging / fewer births -->
+      <circle class="icn" cx="5" cy="4" r="3.6"/><path class="icn" d="M5,8 L5,16 M0,11 L10,11 M5,16 L1,23 M5,16 L9,23"/>
+      <text class="ann" x="18" y="3" fill="var(--ink)">Demand falls — aging Japan,</text>
+      <text class="ann" x="18" y="19" fill="var(--ink)">fewer births, taste shift</text>
+      <!-- recovered supply / flood -->
+      <g transform="translate(0,42)">
+        <path class="icn" d="M0,7 q5,-6 11,0 q-5,6 -11,0 Z M11,3.5 l4,-2.5 0,9 -4,-2.5"/>
+        <path class="icn" d="M19,1 l7,6 -7,6" stroke="var(--accent-marine)"/>
+        <text class="ann" x="32" y="3" fill="var(--ink)">Supply floods — Japan recovers</text>
+        <text class="ann" x="32" y="19" fill="var(--ink)">(hatcheries) + Russia / Alaska</text>
+      </g>
+    </g>
+
+    <!-- the LAG bracket: value held while structure had already eroded -->
+    <g>
+      <path d="M700,308 C742,292 772,150 800,98" fill="none" stroke="var(--accent-amber)" stroke-width="1.6" stroke-dasharray="4 3"/>
+      <text class="ann" x="726" y="232" fill="var(--accent-amber)" font-style="italic">the lag — value held while<tspan x="726" dy="17">structure had already eroded</tspan></text>
+    </g>
+  </svg>
+
+  <p class="takeaway">The value signal <b>lagged the ecosystem</b> — herring stayed valuable while the structure that produced it was already gone. And the demand that created the fishery has structurally faded, so <b>recovery must be governed, not waited for.</b></p>
+
+  <div class="src-foot">Real spawn-on-kelp price and roe landed value: Haida Gwaii ʹíináang|iinang Pacific Herring Rebuilding Plan 2024 (CHN/DFO/Parks Canada), DFO fish-slip basis, 2020$ — SOK $16–31/lb (1970s) → $62.88/lb (1995 peak) → $11–14/lb recent (Figs 25/26); roe landed value peaked in the 1980s, high to mid-1990s, declined 1995–2005 and 2008–present, modest 2016–18 uptick (≈$16M landed + >$29M processing) (Figs 31/32). SOK ≈ $3.6M/yr 1982–2008; last HG roe fishery 2002. Structure/portfolio context: m1_stier_11 (remains low). Demand-decline context: 2024 KCAW reporting; kazunoko-demand brief (this repo). Curve shapes schematic; the SOK price points are the only hard figures and are read off the cited source.</div>
+</div>
+</body>
+</html>

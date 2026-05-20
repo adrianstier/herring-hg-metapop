@@ -5,13 +5,18 @@ Variables across all data sources for the Haida Gwaii herring metapopulation ana
 > Note
 > Raw file headers, cleaned column names, and Stan variable names are intentionally different in some places.
 > Use this file together with [`docs/theory-data-model-integration.md`](/Users/adrianstier/stier-2027-herring-metapopulation/docs/theory-data-model-integration.md) if you need to trace a variable from a raw source into a model.
+> For the current Doherty-style HG public-assessment and predator-source map,
+> use [`docs/doherty-style-hg-source-provenance.md`](/Users/adrianstier/stier-2027-herring-metapopulation/docs/doherty-style-hg-source-provenance.md).
 > The maintained pipeline reads a subset of these sources directly; some "processed file" paths below are reference outputs from earlier or exploratory workflows rather than required inputs to `_targets.R`.
 
 ---
 
 ## 1. Spawn Index Data
 
-**Source:** DFO Pacific Herring spawn survey releases plus the legacy 2019 analysis file
+**Source:** DFO Pacific Herring spawn survey releases, including the public Open
+Canada spawn-index record
+<https://open.canada.ca/data/en/dataset/d892511c-d851-4f85-a0ec-708bc05d2810>,
+plus the legacy 2019 analysis file
 **Maintained source files:** `Data/raw/legacy-2019/HG_Spawn_Survey_1940_2015.csv`, `Data/processed/HG_Spawn_Survey_1951_2025_all_sections.csv`
 **Legacy raw aggregate:** `Data/raw/dfo-spawn/HG_spawn_index_by_section_1951_2025.csv`
 **Coverage:** 1940--2025 across source files; maintained model window is 1951--2025 for 13 DFO statistical sections before section filtering
@@ -22,7 +27,7 @@ Variables across all data sources for the Haida Gwaii herring metapopulation ana
 | `section` | integer | — | Legacy section identifier (1--6, 11--12, 21--25). Sections 4 (Cartwright Sound) and 11 (Masset Inlet) are dropped in analysis due to sparse data. |
 | `section_name` | character | — | Human-readable section name (e.g., "Skidegate Inlet", "Juan Perez Sound") |
 | `totalrecords` | integer | count | Number of spawn survey location records aggregated for that section-year. Zero if no spawning observed. |
-| `SHI` | numeric | tonnes | Spawn Habitat Index. Sum of Surface + Macrocystis + Understory egg deposition estimates across all locations in the section-year. Zero indicates no spawning detected. |
+| `spawn_index_tonnes` | numeric | tonnes | DFO spawn index. Sum of Surface + Macrocystis + Understory egg deposition estimates across all locations in the section-year. Zero indicates no spawning detected. Older exploratory scripts may map this to `SHI` locally for backward compatibility. |
 | `total_length` | numeric | m | Total linear extent of spawn observed across all locations in the section-year |
 | `mean_width` | numeric | m | Mean width of spawn deposits across locations |
 | `spawn_date_xbar` | numeric | day-of-year | Mean spawn start date (Julian day) across locations |
@@ -34,8 +39,9 @@ Variables across all data sources for the Haida Gwaii herring metapopulation ana
 | `longitude` | numeric | decimal degrees E | Mean longitude of spawn locations (negative = west) |
 
 **Notes:**
-- Spawn index = 0 with survey records means no spawning was detected; these are real surveyed zeros, not missing data.
-- Positive spawn index values are logged. Surveyed zeros are retained separately as left-censored cells in `Y_censored`; unsurveyed cells are `Y_missing`.
+- Spawn index = 0 with survey records means no spawning was recorded in the source data. This is a data code, not automatically biological evidence of absence.
+- Positive spawn index values are logged. The data contract can retain zero records separately as `Y_censored`, but the Stier-aligned baseline should treat zero spawn as ambiguous/missing unless survey metadata justify a true nondetection interpretation. Detection-aware / left-censored zero models are sensitivity analyses.
+- Unsurveyed cells are `Y_missing`. Lack of survey effort may reflect governance/access decisions, including Haida preferences, and must not be interpreted as low biomass.
 - 11 sections retained for analysis after dropping sections 4 and 11.
 - Survey method eras: surface (`q_idx = 1`, 1951--1989), mixed transition (`q_idx = 2`, 1990--1992), and dive-dominant (`q_idx = 3`, 1993--2025).
 

@@ -1,0 +1,135 @@
+
+                 model {  
+                
+                 #####
+                 #PRIORS - PROCESS MODEL
+                 #####
+                 
+                 # POPULATION GROWTH: random variable from shared mean and sd across populations
+                 #Umu ~ dnorm(0,1); #average population growth
+                 #Usig ~ dunif(0,100); 
+                 #Utau <- 1/(Usig*Usig); 
+                 
+                 #COVARIATES
+                 pdocoef~dnorm(0,1);
+                 
+                 #SPATIAL COVARIANCE
+                 tau ~ dgamma(0.01,0.01);
+                 sigma2 <- 1/tau;
+                 theta ~ dunif(-1,1);
+                 
+                 
+                 #####
+                 #PRIORS - OBSERVATION MODEL  
+                 ####
+                 
+                 #Variance Terms for Obs Model PRIORS
+                 #tauR ~ dgamma(0.001,0.001);
+                 tauR ~ dunif(1,100); #this is in variance prior for SHI
+                 #psi ~ 0.1 #dunif(0,10) #this is in variance for fishing increase 2nd val for lower var window
+                 
+
+                 #LOOP THROUGH TO ESTIMATE Prior for U[i] and Utau
+                 for(i in 1:nSites) {
+                   U[i] ~ dnorm(0,.1)
+                   #U[i] ~ dnorm(Umu,Utau); #this is what you'd want if it were hierarchical pulling from a distribution of U's
+                    }
+                 
+                 
+                 #####
+                 #SET UP Variance Covariance Matrix Q
+                 #####
+                 
+                #how about in one step. first set the diagonal
+                for(i in 1:nSites) {
+                      tmat[i,i]<-1
+                }
+
+                #then set the off diag
+                  for(j in 1:1) {
+                      tmat[2,j]<-theta
+                      tmat[j,2]<-theta
+                    }
+                  
+                 #make a sigma2 2x2
+                 for(i in 1:nSites) {
+                   for(j in 1:nSites) {
+                     smat[i,j]<-sigma2
+                   }
+                 }
+                     
+
+
+                #multiply the matrix to get var cov matrix
+                
+                for(i in 1:nSites){
+                  for(j in 1:nSites){
+                Q[i,j] <- tmat[i,j]*smat[i,j]
+                }
+                 }
+
+
+                  #PRECISION OF Q: JAGS wants us to use the matrix inverse
+                 tauQ[1:nSites,1:nSites] <- inverse(Q[1:nSites,1:nSites]);
+                 
+                 #####
+                 #Estimate the initial state vector of population abundances
+                 #####
+                 
+                 for(j in 1:nSites) {
+                        X[1,j] ~ dnorm(20,0.1); # vague normal prior for first time step
+                        Z[1,j] <- X[1,j]-log(1-Pc[1,j])
+                 }
+
+                
+
+                 #NON AUTO REGRESSIVE VARIANCE
+                 for(j in 1:nSites) {zeros[j]<-0;}
+                 delta[1,1:nSites] ~ dmnorm(zeros,tauQ[1:nSites,1:nSites]);
+
+                   for(i in 2:nYears){
+                          delta[i,1:nSites] ~ dmnorm(zeros,tauQ[1:nSites,1:nSites]) # this uses the zeros vector above (0,0)
+  
+                      for(j in 1:nSites) {
+   
+                
+                 # AUTOREGRESSIVE PROCESS for POPULATION GROWTH
+                      
+                 #DUMMY VARIAVBLE (dummy) FOR EFFECT OF GROWTH AND PDO
+                 dummy[i-1,j] <- X[i-1,j]+U[j]+pdocoef*pdo[i-1]; 
+            
+                 
+                 #SECOND DUMMY VARIABLE (Z) to add in the DELTA parameter - detrended variance
+                 Z[i,j] <- dummy[i-1,j]+delta[i,j]; 
+                 
+                 
+                 #ESTIAMTE THE POPULATION STATE (X) by including catch data 
+                 X[i,j] <- Z[i,j]+log(1-Pc[i,j]);
+
+                   }
+                 }
+                 
+                 #####
+                 # OBSERVATION MODEL  
+                 ####
+                                
+                for(i in 1:nYears) {
+                  for(j in 1:nSites) {
+                Pc[i,j] ~ dbeta(1,1);#Fraction of Catch Observed 
+                  }
+                }
+
+                q ~ dgamma(.02,0.001);  #Fraction of Spawn Observed: Pc
+
+              
+                 for(i in 1:nYears) {
+                  for(j in 1:nSites) {
+                    Y[i,j] ~ dnorm(X[i,j]*q,1/tauR); #obs eq for spawn index 
+                    tl[i,j]<-Z[i,j]+log(Pc[i,j])+1
+                    ctab[i,j] ~ dnorm(tl[i,j],1/.1)
+                    #ctab[i,j] ~ dnorm(tl[i,j],1/psi) #obs equation for catch
+                    }
+                   }
+                  }  
+                 
+                 

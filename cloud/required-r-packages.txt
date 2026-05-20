@@ -1,0 +1,14 @@
+tidyverse
+here
+janitor
+rstan
+StanHeaders
+posterior
+loo
+bayesplot
+tidybayes
+readxl
+patchwork
+scales
+ggrepel
+targets

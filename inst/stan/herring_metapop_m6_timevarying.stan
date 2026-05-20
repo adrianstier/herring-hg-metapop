@@ -5,6 +5,11 @@
 // phi follows a random walk on the log scale:
 //   log_phi[t] = log_phi[t-1] + sigma_phi * eta[t]
 //
+// READER GUIDE:
+//   Read this after M5 and focus on the extra time index on `phi`.
+//   Most of the file is inherited structure; the conceptual novelty is the
+//   time-varying spatial range process.
+//
 // When phi increases over time, sites become more correlated (synchrony rises).
 // When phi decreases, correlation weakens (sites become more independent).
 //
@@ -47,7 +52,7 @@ data {
   array[N_years] int<lower=0, upper=1> whale_obs;
   array[N_years] int<lower=0, upper=1> pred_obs;
 
-  array[N_years] int<lower=1, upper=2> q_idx;
+  array[N_years] int<lower=1, upper=3> q_idx;
 
   // Effective distance matrix
   matrix[N_sites, N_sites] dist_mat;
@@ -101,7 +106,7 @@ parameters {
   real<lower=0> sigma_obs;
 
   // -- Catchability --
-  vector[2] log_q;
+  vector[3] log_q;
 
   // -- Proportion catch (logit scale) --
   vector[N_catch] Pc_logit;

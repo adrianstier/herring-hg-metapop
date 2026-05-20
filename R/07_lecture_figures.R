@@ -8,6 +8,12 @@
 # All figures output at 4K resolution (3840 x 2160 px at 288 dpi).
 # ============================================================================
 
+# Reader note:
+# These helpers intentionally mirror the publication figures but with a
+# presentation-specific visual style. They should accept the same maintained
+# posterior summaries so collaborators do not have to learn a second data
+# contract just to build lecture slides.
+
 
 # ── Helper: save a lecture figure at 4K ─────────────────────────────────────
 
@@ -58,12 +64,20 @@ fig_lecture_biomass <- function(
     biomass_est,
     sections_drop = c("Tasu Sound & Gowgaia Bay", "Naden Harbour")
 ) {
+  site_col <- if ("site" %in% names(biomass_est)) {
+    "site"
+  } else if ("section_name" %in% names(biomass_est)) {
+    "section_name"
+  } else {
+    cli::cli_abort("biomass_est must contain either `site` or `section_name`.")
+  }
 
   subpop <- biomass_est |>
     filter(
       .width == 0.9,
-      !site %in% sections_drop
+      !.data[[site_col]] %in% sections_drop
     ) |>
+    mutate(site = .data[[site_col]]) |>
     group_by(site) |>
     mutate(biomass_scaled = scale(biomass)[, 1]) |>
     ungroup()
@@ -113,16 +127,23 @@ fig_lecture_biomass <- function(
 #' @param fishing_est Tibble from extract_posteriors()$fishing_rate
 #' @return ggplot object
 fig_lecture_fishing_rates <- function(fishing_est) {
+  fishing_col <- if ("fishing_rate" %in% names(fishing_est)) {
+    "fishing_rate"
+  } else if ("pc_median" %in% names(fishing_est)) {
+    "pc_median"
+  } else {
+    cli::cli_abort("fishing_est must contain either `fishing_rate` or `pc_median`.")
+  }
 
   arch <- fishing_est |>
     group_by(year) |>
-    summarise(pc = mean(fishing_rate, na.rm = TRUE), .groups = "drop") |>
+    summarise(pc = mean(.data[[fishing_col]], na.rm = TRUE), .groups = "drop") |>
     mutate(scale = "Archipelago")
 
   subpop <- fishing_est |>
-    filter(fishing_rate > 0) |>
+    filter(.data[[fishing_col]] > 0) |>
     group_by(year) |>
-    summarise(pc = mean(fishing_rate, na.rm = TRUE), .groups = "drop") |>
+    summarise(pc = mean(.data[[fishing_col]], na.rm = TRUE), .groups = "drop") |>
     mutate(scale = "Subpopulation (fished only)")
 
   fish_combined <- bind_rows(arch, subpop)

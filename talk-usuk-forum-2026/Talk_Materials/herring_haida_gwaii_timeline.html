@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Herring & Haida Gwaii — Tipping Points & Punctuated Events, 1870–Present</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-card: #ffffff;
+    --ink: #111111;
+    --ink-soft: #4a4a4a;
+    --rule: #d8d8d8;
+    --accent-rust: #8b3a23;
+    --accent-rust-soft: #a85a3f;
+    --accent-marine: #1c3a52;
+    --accent-marine-soft: #2c5273;
+    --accent-kelp: #4a5d3a;
+    --accent-amber: #a07028;
+    --accent-slate: #4d4d52;
+    --accent-plum: #5d3d52;
+    --knob: #ffffff;
+    --shadow: 0 1px 0 rgba(26,25,22,0.04), 0 8px 24px -12px rgba(26,25,22,0.1);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e0e0e;
+      --bg-card: #181818;
+      --ink: #f0eee9;
+      --ink-soft: #a8a59f;
+      --rule: #2e2c28;
+      --accent-rust: #d9714f;
+      --accent-rust-soft: #c66a4a;
+      --accent-marine: #6e9bc4;
+      --accent-marine-soft: #7faecb;
+      --accent-kelp: #8aa074;
+      --accent-amber: #cfa055;
+      --accent-slate: #9c9ca3;
+      --accent-plum: #b685a8;
+      --knob: #e8e8e8;
+      --shadow: 0 1px 0 rgba(0,0,0,0.5), 0 8px 24px -12px rgba(0,0,0,0.6);
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", -apple-system, sans-serif;
+    font-weight: 400;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    padding: 0;
+    min-height: 100vh;
+  }
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 32px 20px 80px;
+    position: relative;
+    z-index: 1;
+  }
+  .masthead {
+    border-top: 3px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding: 18px 0 14px;
+    margin-bottom: 28px;
+  }
+  .kicker {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent-rust);
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+  h1 {
+    font-family: "Crimson Pro", Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(28px, 6.5vw, 42px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  h1 em { font-style: italic; color: var(--accent-rust); }
+  .lede {
+    font-family: "Crimson Pro", Georgia, serif;
+    font-size: clamp(15px, 3.6vw, 17px);
+    line-height: 1.5;
+    color: var(--ink-soft);
+    font-style: italic;
+    margin-top: 8px;
+    max-width: 58ch;
+  }
+  .context {
+    background: var(--bg-card);
+    border-left: 3px solid var(--accent-rust);
+    padding: 14px 16px;
+    margin: 22px 0 24px;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+  .context strong { color: var(--ink); font-weight: 600; }
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 20px 0 8px;
+    padding-bottom: 18px;
+    border-bottom: 1px dotted var(--rule);
+  }
+  .filter-label {
+    width: 100%;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 11px;
+    border: 1px solid var(--rule);
+    background: transparent;
+    color: var(--ink-soft);
+    font-family: "IBM Plex Sans", sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .chip:hover { border-color: var(--ink); color: var(--ink); }
+  .chip.active {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+  }
+  .chip-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent-slate);
+  }
+  .tp-toggle {
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .tp-toggle input { display: none; }
+  .tp-toggle .switch {
+    width: 32px; height: 18px;
+    background: var(--rule);
+    border-radius: 100px;
+    position: relative;
+    transition: background 0.2s;
+  }
+  .tp-toggle .switch::after {
+    content: "";
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 14px; height: 14px;
+    background: var(--knob);
+    border-radius: 50%;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+  }
+  .tp-toggle input:checked + .switch { background: var(--accent-rust); }
+  .tp-toggle input:checked + .switch::after { transform: translateX(14px); }
+  .era-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 10px 0 0;
+  }
+  .era-nav .filter-label { margin-bottom: 6px; }
+  .era-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border: 1px solid var(--rule);
+    background: transparent;
+    color: var(--ink-soft);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+    text-decoration: none;
+  }
+  .era-chip:hover { border-color: var(--accent-rust); color: var(--accent-rust); }
+  .timeline {
+    margin-top: 30px;
+    position: relative;
+    padding-left: 80px;
+  }
+  .timeline::before {
+    content: "";
+    position: absolute;
+    left: 64px;
+    top: 8px;
+    bottom: 8px;
+    width: 1px;
+    background: var(--ink);
+  }
+  .epoch {
+    position: relative;
+    margin: 0 0 8px -80px;
+    padding: 26px 0 10px 80px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent-rust);
+    border-top: 1px solid var(--rule);
+    scroll-margin-top: 12px;
+  }
+  .epoch:first-child { border-top: none; padding-top: 8px; }
+  .event {
+    position: relative;
+    margin: 0 0 22px 0;
+    padding: 0;
+    transition: opacity 0.2s;
+  }
+  .event.hidden { display: none; }
+  .event .year {
+    position: absolute;
+    left: -80px;
+    top: 0;
+    width: 60px;
+    text-align: right;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: 0.01em;
+    padding-top: 6px;
+    line-height: 1.3;
+  }
+  .event::before {
+    content: "";
+    position: absolute;
+    left: -19px;
+    top: 11px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1.5px solid var(--ink-soft);
+    z-index: 2;
+  }
+  .event.tipping::before {
+    background: var(--accent-rust);
+    border-color: var(--accent-rust);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-rust) 18%, transparent);
+  }
+  .event-card {
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 12px 14px 14px;
+    box-shadow: var(--shadow);
+  }
+  .event.tipping .event-card {
+    border-color: var(--accent-rust);
+    border-left-width: 3px;
+  }
+  .event-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .event-title {
+    font-family: "Crimson Pro", Georgia, serif;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .tp-badge {
+    flex-shrink: 0;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent-rust);
+    border: 1px solid var(--accent-rust);
+    padding: 2px 6px;
+    border-radius: 2px;
+    margin-top: 3px;
+    white-space: nowrap;
+  }
+  .event-desc {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 4px 0 10px;
+  }
+  .event-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    padding-top: 8px;
+    border-top: 1px dotted var(--rule);
+  }
+  .cat-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+  .cat-tag .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .dot.climate { background: var(--accent-marine); }
+  .dot.fishery { background: var(--accent-rust-soft); }
+  .dot.ecology { background: var(--accent-kelp); }
+  .dot.culture { background: var(--accent-amber); }
+  .dot.governance { background: var(--accent-slate); }
+  .dot.science { background: var(--accent-plum); }
+  .count-strip {
+    margin-top: 14px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .footer {
+    margin-top: 50px;
+    padding-top: 22px;
+    border-top: 1px solid var(--ink);
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+  .footer .src {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    color: var(--accent-rust);
+  }
+  @media (max-width: 520px) {
+    .timeline { padding-left: 64px; }
+    .timeline::before { left: 48px; }
+    .event .year { left: -64px; width: 48px; font-size: 11px; }
+    .event::before { left: -19px; }
+    .epoch { margin-left: -64px; padding-left: 64px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="kicker">Royal Society · Session 5 · 20 May 2026</div>
+    <h1>Coupled tipping points in Pacific herring <em>&amp; Haida Gwaii</em></h1>
+    <p class="lede">A chronology of punctuated events shaping the ecological, economic, cultural, governance, scientific, and predator-prey landscape — from the first industrial fishery to the present.</p>
+  </header>
+
+  <div class="context">
+    <strong>Baseline.</strong> McKechnie et al. (2014, PNAS) analyzed 435,777 fish bones from 171 coastal archaeological sites across the Northwest Coast — Puget Sound to SE Alaska — spanning 10,700 cal BP to the contact era. Pacific herring is the single most abundant fish taxon: 49% of all identified bones, 99% ubiquity (169 of 171 sites), top-ranked taxon in 56% of assemblages, with temporal variance <±10% in 96% of well-sampled sites. The deepest pre-industrial baseline yet documented for any forage fish in the Northeast Pacific. Haida clan-based stewardship — family-owned harvest sites carved with wooden posts, "kelp gardens" of unharvested spawn, taboos against full-school harvest, spawn-on-kelp (<em>k'aaw</em>) traded for eulachon grease at ~1 bucket per ~2 gallons — operated as a place-based management system through ten millennia. The events below mark deviations from that long baseline.
+  </div>
+
+  <div class="filters">
+    <div class="filter-label">Filter by domain</div>
+    <button class="chip active" data-cat="all">All</button>
+    <button class="chip" data-cat="climate"><span class="chip-dot" style="background:var(--accent-marine)"></span>Climate &amp; ocean</button>
+    <button class="chip" data-cat="fishery"><span class="chip-dot" style="background:var(--accent-rust-soft)"></span>Fishery</button>
+    <button class="chip" data-cat="ecology"><span class="chip-dot" style="background:var(--accent-kelp)"></span>Ecology &amp; food web</button>
+    <button class="chip" data-cat="culture"><span class="chip-dot" style="background:var(--accent-amber)"></span>Haida cultural</button>
+    <button class="chip" data-cat="governance"><span class="chip-dot" style="background:var(--accent-slate)"></span>Governance &amp; law</button>
+    <button class="chip" data-cat="science"><span class="chip-dot" style="background:var(--accent-plum)"></span>Science</button>
+
+    <label class="tp-toggle">
+      <input type="checkbox" id="tp-only" />
+      <span class="switch"></span>
+      <span>Show tipping points only</span>
+    </label>
+  </div>
+
+  <nav class="era-nav">
+    <div class="filter-label">Jump to era</div>
+    <a class="era-chip" href="#era-0">0 · Pre-industrial baseline</a>
+    <a class="era-chip" href="#era-1">1 · Industrial onset</a>
+    <a class="era-chip" href="#era-2">2 · Reduction collapse</a>
+    <a class="era-chip" href="#era-3">3 · Roe &amp; reframing</a>
+    <a class="era-chip" href="#era-4">4 · Co-governance &amp; closures</a>
+    <a class="era-chip" href="#era-5">5 · Synthesis &amp; warming</a>
+  </nav>
+
+  <div class="count-strip" id="count-strip"></div>
+
+  <main class="timeline" id="timeline"></main>
+
+  <footer class="footer">
+    <div class="src">Sources</div>
+    Stier et al. 2020 (<em>Ecosphere</em>), portfolio erosion · Stier et al. 2016 (<em>Conservation Letters</em>), cognitive maps · Shelton, Samhouri, Stier &amp; Levin 2014 (<em>Sci. Reports</em>), egg vs adult harvest · McKechnie et al. 2014 (<em>PNAS</em>), archaeological baseline · Haida Marine Traditional Knowledge Study, vols. 1–3 (HMTK) · Jones, Rigg &amp; Lee 2010 (<em>Ecology &amp; Society</em>), AMB governance · Powell 2012 (<em>Western Historical Quarterly</em>), Heiltsuk SOK history · Piatt et al. 2020 (<em>PLoS ONE</em>), murre die-off · Doherty 2025 (<em>ICES J. Mar. Sci.</em>), humpback predation on herring · Beamish et al. 2012, Boldt et al. 2015, juvenile herring indices · Gwaii Haanas Agreement (1993), Marine Agreement (2010), Pacific Herring Ecosystem-Based Rebuilding Plan (2024). Indigenous testimony cited from HMTK study and Jones 1998 interviews.
+  </footer>
+
+</div>
+
+<script>
+const events = [
+  // ============ ERA 0: Pre-industrial baseline · 10,000 BP – 1870 ============
+  { year: "~10,700 BP", sortYear: 1700, title: "Earliest archaeological evidence of herring fishing", desc: "Oldest dated assemblage in the McKechnie et al. (2014) synthesis: 10,700 calibrated years Before Present. Across 171 Northwest Coast sites (Puget Sound to SE Alaska), 435,777 fish bones recovered via fine-screen (≤3.2 mm) excavation. Pacific herring is the single most abundant fish taxon at 49% of all identified bones, present in 169 of 171 sites (99% ubiquity), top-ranked taxon in 56% of assemblages, and >20% of bones in 71% of sites. Within 50 well-sampled stratified sites, temporal variance in herring relative abundance is less than ±10% in 96% of cases. Ten millennia of consistent superabundance — the deepest documented pre-industrial baseline for any forage fish in the Northeast Pacific.", category: "ecology", tipping: false, epoch: "Pre-industrial baseline · 10,000 BP – 1870", epochId: "era-0" },
+  { year: "Pre-contact", sortYear: 1701, title: "Haida and Northwest Coast marine governance", desc: "Family- and lineage-based ownership of marine harvest sites operates as the dominant property system across the Northwest Coast. Sovereign claims marked by carved wooden posts at seasonal camps. Specific documented examples: Campbell Island belonged to the Oyaltx kin group of the Heiltsuk \"for herring and herring eggs\"; Cascade Inlet to the Raven sept; Haida halibut grounds were named and family-owned. Mauwash (\"You just have to go and ask me\") was a Heiltsuk shared camp. Nuu-chah-nulth HaaHuulhi system codified hereditary chiefly authority over specific places and resources. Sustained harvest enforced via three mechanisms: kin-based access exclusivity, kelp gardens with intentional unharvested spawn fronds, and spiritual taboos (silence during spawning, prohibition of menstruating/pregnant women and recent widows from fish-egg camps). The teaching never to take a whole school.", category: "governance", tipping: false, epoch: "Pre-industrial baseline · 10,000 BP – 1870", epochId: "era-0" },
+  { year: "Pre-contact", sortYear: 1702, title: "Pacific herring harvest technologies", desc: "The herring rake: 6–8 ft cedar pole, oval-shaped, ~1.5 in thick, fitted with sharp nails or bone spikes through one end like a comb — operated from rowboats, sweeping schools at the bow while another rows. K'aaw harvested from giant kelp (<em>ngaal</em>), eelgrass (<em>t'aanuu</em>), or actively placed hemlock and red cedar boughs anchored in spawning bays. Sun-dried on gravel beaches, salted when thickly spawned, stored in bentwood cedar boxes (<em>Guuda</em>). Seasonal calendar: spawning begins in late February on the west coast (Flamingo, Louscoone), progresses to the east coast (Burnaby, Skincuttle) through March–May, occurs in Skidegate Inlet April–July, and in northern Haida Gwaii (Naden, Masset Inlet) February–July. Haida names for the system: <em>iinaang</em>/<em>7iinang</em> = herring (root: \"plentiful,\" from <em>ii</em> + <em>nang</em>, \"to have intercourse\" + \"play\"); <em>k'aaw</em> = spawn-on-kelp; <em>k'aawdang</em> = the act of harvesting it.", category: "culture", tipping: false, epoch: "Pre-industrial baseline · 10,000 BP – 1870", epochId: "era-0" },
+  { year: "Pre-contact", sortYear: 1703, title: "K'aaw trade networks across the Northwest Coast", desc: "Dried and salted k'aaw functions as a high-value commodity. Standard Skidegate exchange rate: ~1 bucket of k'aaw for ~2 gallons of eulachon grease. Trade routes link Haida Gwaii to Tsimshian, Nisga'a, Haisla, Heiltsuk, and Tlingit territories — Skeena and Nass rivers, Prince Rupert, Port Simpson, Metlakatla, Kitkatla. Place names across the coast preserve the historical superabundance: <em>Yaaw Teiyi</em> \"Herring Rock\" (the sacred place where the first herring arrived); <em>Shaan Daa</em> \"White Island\" / \"Fish Egg Island\" (named for the water turning white each spring); <em>Teeshoshum</em> \"milky waters from herring spawn\"; <em>K'i:na?a</em> \"herring guts on rocks\"; <em>Ch'axa'y</em> \"Sizzling [with herring] Water.\" K'aaw was high-status food at potlatches — a vehicle for ceremonial wealth redistribution.", category: "culture", tipping: false, epoch: "Pre-industrial baseline · 10,000 BP – 1870", epochId: "era-0" },
+  { year: "~2,400 BP", sortYear: 1710, title: "Nulu site: 85% herring bones", desc: "Archaeological site of Nulu on the Central BC Coast, dated ~2,400 years BP, yields a fish bone assemblage 85% (±11%) Pacific herring. According to Heiltsuk oral tradition, Nulu is the place where Raven first obtained herring — archaeology and origin narrative converge on the same site. A culturally affiliated site at the Koeye River 25 km away shows only 10% herring NISP; the system is locally specific, not uniformly herring-saturated.", category: "culture", tipping: false, epoch: "Pre-industrial baseline · 10,000 BP – 1870", epochId: "era-0" },
+  { year: "~800 BP", sortYear: 1720, title: "Teeshoshum: 93% herring bones", desc: "Archaeological assemblage at Teeshoshum in the northeastern Salish Sea, dated ~800 years BP, comprises 93% Pacific herring bones. The Coast Salish place name <em>Teeshoshum</em> translates as \"waters white with herring spawn.\" Extensive spawning at this ecologically suitable location has not been documented since 1998 — a place name preserves what is no longer present.", category: "culture", tipping: false, epoch: "Pre-industrial baseline · 10,000 BP – 1870", epochId: "era-0" },
+  { year: "Jul 1774", sortYear: 1774, title: "First documented European contact with Haida", desc: "Spanish vessel <em>Santiago</em> under Juan Pérez encounters Haida off western Langara Island — the first documented contact with Haidas from the European world (Russian traders may have preceded). Spanish exchange cloth, knives, and abalone shell (from Spanish-occupied California) for sea otter and other pelts. The trade brings a pulse of material wealth (iron, cloth, beads, firearms, molasses, rum) into Haida communities; smallpox epidemics in the 1860s eventually devastate the population (see 1860s entry).", category: "governance", tipping: false, epoch: "Pre-industrial baseline · 10,000 BP – 1870", epochId: "era-0" },
+  { year: "1778", sortYear: 1778, title: "Cook initiates the maritime fur trade", desc: "Captain James Cook takes sea otter pelts from Nootka Sound; the following year his crew trades them in Canton at ~1800% profit (Gibson 1992). The Pacific Northwest sea otter pelt trade is born — the catalyst for sustained European commercial engagement on the coast.", category: "fishery", tipping: false, epoch: "Pre-industrial baseline · 10,000 BP – 1870", epochId: "era-0" },
+  { year: "1787", sortYear: 1787, title: "Sea otter pelt trade reaches Haida Gwaii", desc: "British Captain George Dixon trades for sea otter pelts in Haida Gwaii, extending the Cook-initiated North Pacific pelt trade to the archipelago. Chief Cuneah of Kiusta village on the northwest tip of Graham Island acquires thousands of sea otter pelts in the China trade and becomes \"enormously wealthy\" (Robinson 1996). The 1790s see intensive commercial engagement on Haida Gwaii.", category: "fishery", tipping: false, epoch: "Pre-industrial baseline · 10,000 BP – 1870", epochId: "era-0" },
+  { year: "1789", sortYear: 1789, title: "Nuu-chah-nulth herring closure protocol documented", desc: "American sailor Robert Haswell records that prior to spawn harvest, the Nuu-chah-nulth \"forbit\" anyone from \"the taking of [herring]\" in Nootka Sound — a formal pre-harvest closure protocol enforced by hereditary chiefs. The earliest detailed European observation of Indigenous spatial governance of a herring fishery.", category: "governance", tipping: false, epoch: "Pre-industrial baseline · 10,000 BP – 1870", epochId: "era-0" },
+  { year: "1793", sortYear: 1793, title: "Mackenzie records Heiltsuk fish-spawn trade", desc: "Alexander Mackenzie encounters Heiltsuk traders carrying \"cedar-bark, fish-spawn, copper, iron, and beads,\" who seek \"salmon roes\" in exchange. The unspecified \"fish-spawn\" is almost certainly dried herring eggs. The earliest European documentation of the established cross-coastal k'aaw trade network operating at full scale.", category: "culture", tipping: false, epoch: "Pre-industrial baseline · 10,000 BP – 1870", epochId: "era-0" },
+  { year: "1834", sortYear: 1834, title: "HBC's Tolmie documents Wacash and Kyeet", desc: "Hudson's Bay Company agent William Fraser Tolmie logs that 15 to 20 large canoes of Heiltsuk Chief Wacash's people head to \"Caughquil country\" specifically to barter dried herring spawn for eulachons. The same season, Tolmie records Chief Kyeet examining Captain George Vancouver's coastal charts: where Vancouver sees unfamiliar spaces, Kyeet recognizes intimately managed and historically deep places. Trade networks and oral-historical geography operating at full scale, recorded by European witnesses.", category: "culture", tipping: false, epoch: "Pre-industrial baseline · 10,000 BP – 1870", epochId: "era-0" },
+  { year: "1840s", sortYear: 1845, title: "Sea otter pelt trade collapses", desc: "Maritime fur trade ends after sea otter populations collapse from sustained over-hunting (Gibson 1992); trade pivots to lower-value commodities and, by 1825, potatoes become the major Haida commodity. Sea otter populations do not recover — extirpated from Haida Gwaii by ~1920 (Kenyon 1969), last BC sea otter recorded in 1929 off Vancouver Island (McAskie 1987). Their absence releases red sea urchin populations, eventually contracting kelp forests — herring's preferred spawning substrate. Pre-industrial cascading effects still shape the system.", category: "ecology", tipping: true, epoch: "Pre-industrial baseline · 10,000 BP – 1870", epochId: "era-0" },
+  { year: "1860s", sortYear: 1865, title: "Smallpox epidemics ravage Haida population", desc: "Haida population estimated at 10,000–30,000 in the early 1800s (Boyd 1999). Successive smallpox epidemics through the 19th century reduce the population to fewer than 2,000 by the century's end. Family, clan, and political structures are fractured; many ancestral villages are abandoned and people relocate to Skidegate and Old Massett. The demographic collapse alters the operational scale of every traditional governance and harvest system documented in the preceding entries.", category: "culture", tipping: true, epoch: "Pre-industrial baseline · 10,000 BP – 1870", epochId: "era-0" },
+  { year: "1880", sortYear: 1880, title: "Dawson publishes Haida ethnography", desc: "George M. Dawson's <em>Report on the Queen Charlotte Islands 1878</em> (Geological Survey of Canada), with Appendix A \"On the Haida Indians of the Queen Charlotte Islands,\" documents the more important food resources used by the Haida. Among the earliest written records of Haida marine resource use that had been transmitted orally for millennia — the documentary anchor that allows later integration of archaeological, oral-historical, and ecological evidence.", category: "science", tipping: false, epoch: "Pre-industrial baseline · 10,000 BP – 1870", epochId: "era-0" },
+
+  // ============ ERA 1: Industrial fishery onset · 1870–1940 ============
+  { year: "1870s", sortYear: 1875, title: "First non-Aboriginal commercial herring catches in BC", desc: "Catch records dating to 1877 affirm Pacific herring as one of the most commercially important fish on Canada's Pacific coast. Initial focus is bait fishery.", category: "fishery", tipping: false, epoch: "Industrial fishery onset · 1870–1940", epochId: "era-1" },
+  { year: "1882", sortYear: 1882, title: "Alaska herring reduction industry begins", desc: "Statewide harvests will reach a peak of 75,000 tons in 1929. Sets regional industrial template.", category: "fishery", tipping: false, epoch: "Industrial fishery onset · 1870–1940", epochId: "era-1" },
+  { year: "1910", sortYear: 1910, title: "BC briefly prohibits herring reduction into oil and fertilizer", desc: "Officials note larger bays \"being gradually deserted by the larger schools where they were formerly easily obtained.\" Ban is later lifted as commercial pressure grows.", category: "governance", tipping: false, epoch: "Industrial fishery onset · 1870–1940", epochId: "era-1" },
+  { year: "~1920", sortYear: 1920, title: "Sea otters extirpated from Haida Gwaii", desc: "Maritime fur trade completes regional extirpation; last Haida Gwaii sea otter recorded before 1920, last BC sea otter ~1929. Apex predator removal releases red sea urchin populations, eventually contracting kelp forests — herring's preferred spawning substrate. A pre-industrial tipping point whose cascading consequences still shape the system today.", category: "ecology", tipping: false, epoch: "Industrial fishery onset · 1870–1940", epochId: "era-1" },
+  { year: "1927", sortYear: 1927, title: "Eastern Vancouver Island fishery processes 31,103 tons", desc: "Roughly twice the 2012 annual harvest rate and ~38% of the 2013 Strait of Georgia biomass estimate. Sets the scale of pre-collapse extraction.", category: "fishery", tipping: false, epoch: "Industrial fishery onset · 1870–1940", epochId: "era-1" },
+  { year: "1929", sortYear: 1929, title: "Alaska reduction harvest peaks at 75,000 tons", desc: "Regional industrial extraction climax across the North Pacific.", category: "fishery", tipping: false, epoch: "Industrial fishery onset · 1870–1940", epochId: "era-1" },
+  { year: "1930s", sortYear: 1935, title: "BC herring reduction fishery scales up", desc: "By 1940 the entire BC coast is being heavily fished. Coastwide catches rise from ~25,000 tons in 1935 to ~240,000 tons by 1963. Fisheries scientists begin expressing concerns about overfishing.", category: "fishery", tipping: false, epoch: "Industrial fishery onset · 1870–1940", epochId: "era-1" },
+  { year: "1937", sortYear: 1937, title: "First Haida Gwaii reduction catches recorded", desc: "Industrial fishery formally extends to Haida Gwaii. Due to remote location, fishing remains intermittent until the 1950s.", category: "fishery", tipping: false, epoch: "Industrial fishery onset · 1870–1940", epochId: "era-1" },
+  { year: "1938–43", sortYear: 1940, title: "Pacofi reduction plant operates on Moresby Island", desc: "First dedicated industrial herring operation in Haida Gwaii. Elders including Dempsey Collinson recall 40–50 ton herring deliveries. Cumshewa and Selwyn Inlet — known as \"Million Dollar Bay\" — bear the brunt.", category: "fishery", tipping: false, epoch: "Industrial fishery onset · 1870–1940", epochId: "era-1" },
+
+  // ============ ERA 2 ============
+  { year: "1940s", sortYear: 1945, title: "Reduction fishery flourishes; DFO begins recording spawning", desc: "Bulk of catch taken January–March each year by just 2–3 seine boats. Industrial catches go largely unregulated, limited only by market demand.", category: "fishery", tipping: false, epoch: "Reduction era and collapse · 1940–1970", epochId: "era-2" },
+  { year: "1951", sortYear: 1951, title: "Extraordinary herring year-class born", desc: "The 1951 cohort drives subsequent record catches in Haida Gwaii. Strong recruitment masks underlying fragility.", category: "ecology", tipping: false, epoch: "Reduction era and collapse · 1940–1970", epochId: "era-2" },
+  { year: "1950s", sortYear: 1953, title: "Peak Haida Gwaii reduction harvest; exploitation rates 50–90%", desc: "Largest recorded catches from Skidegate Inlet, Selwyn Inlet, and Burnaby Straits — each a traditional Haida fishing and gathering area. Dempsey Collinson and other elders witness dramatic abundance declines: \"Why kill all that herring just for reduction? They could let them spawn and keep an abundance of herring.\"", category: "fishery", tipping: false, epoch: "Reduction era and collapse · 1940–1970", epochId: "era-2" },
+  { year: "1956", sortYear: 1956, title: "Record 77,500-ton Haida Gwaii catch", desc: "Single-year peak driven by the 1951 year-class. The largest extraction event in the regional record.", category: "fishery", tipping: false, epoch: "Reduction era and collapse · 1940–1970", epochId: "era-2" },
+  { year: "1957–58", sortYear: 1957, title: "Skidegate Inlet stock collapses", desc: "Fishers report sharply shrinking herring sizes; no spawning observed for three consecutive years. First Haida Gwaii localized stock failure of the industrial era. Once a major contributor to archipelago biomass, Skidegate never recovers its 1950s standing.", category: "ecology", tipping: false, epoch: "Reduction era and collapse · 1940–1970", epochId: "era-2" },
+  { year: "1964–66", sortYear: 1965, title: "Coastwide BC catches plunge: 241k → 181k → 135k tons", desc: "Three-season decline. Leading indicators of imminent collapse: spatial contraction, increased search effort by fleets, reduced spawn deposition, truncation of age structure to younger fish. DFO remains reluctant to restrict the fishery.", category: "ecology", tipping: false, epoch: "Reduction era and collapse · 1940–1970", epochId: "era-2" },
+  { year: "1967", sortYear: 1967, title: "Coastwide BC reduction fishery collapses; closure imposed", desc: "The BC commercial herring reduction fishery collapses and is closed by the federal government in 1967. Closed from 1968 to 1971 to enable stock rebuilding (Hourston 1980). By 1965 most of the older fish had been depleted by overfishing combined with weak 1954–57 year-classes. The clearest aggregate-biomass tipping point of the 20th century — and the one DFO scientists had been warning about for years before political will to act emerged. Stocks recover sufficiently for reopening in 1972 with shift to roe focus for Japanese markets.", category: "fishery", tipping: true, epoch: "Reduction era and collapse · 1940–1970", epochId: "era-2" },
+  { year: "1969–72", sortYear: 1970, title: "Sea otter translocations begin on BC coast", desc: "Reintroduction efforts in northern Vancouver Island and SE Alaska set up eventual recolonization. Eight confirmed Haida Gwaii sightings between 1972 and 2002 in the Gwaii Haanas GIS database — one a pair (1980), the rest individuals likely free-ranging males. No breeding population yet on Haida Gwaii.", category: "ecology", tipping: false, epoch: "Reduction era and collapse · 1940–1970", epochId: "era-2" },
+
+  // ============ ERA 3 ============
+  { year: "1971", sortYear: 1971, title: "First experimental SOK (k'aaw) commercial permit issued", desc: "Issued for southeast Haida Gwaii, built on traditional Haida ponding methods. Commercialization of an ancient practice — but on industrial terms.", category: "fishery", tipping: false, epoch: "Roe fishery and political reframing · 1971–1990", epochId: "era-3" },
+  { year: "1972", sortYear: 1972, title: "Commercial roe herring fishery opens for Japanese market", desc: "DFO determines stocks recovered after 4-year closure. Reopens with focus on kazunoko export; gillnet-targeted at pre-spawning females. Regime shift in how the fishery interacts with metapopulation structure.", category: "fishery", tipping: false, epoch: "Roe fishery and political reframing · 1971–1990", epochId: "era-3" },
+  { year: "1974", sortYear: 1974, title: "Council of the Haida Nation formed", desc: "National political body to govern and protect Haida Gwaii. The CHN Constitution will later proclaim the Haida Nation's inherent authority over the environment of Haida Gwaii. Foundation for every subsequent co-governance arrangement.", category: "governance", tipping: false, epoch: "Roe fishery and political reframing · 1971–1990", epochId: "era-3" },
+  { year: "1975", sortYear: 1975, title: "Full commercial SOK production begins; Haida open-pond petition denied", desc: "13 licenses issued; Haida hold 8 of original 12 (11 of Haida Gwaii's by 1978). Chief Cecil Reid petitions DFO to formally permit traditional open-pond harvest; DFO refuses, mandating closed-pond impoundment to maximize product uniformity and regulatory control. A foundational moment of governance friction.", category: "fishery", tipping: false, epoch: "Roe fishery and political reframing · 1971–1990", epochId: "era-3" },
+  { year: "1976–77", sortYear: 1976, title: "PDO regime shift (cool → warm)", desc: "Major Pacific Decadal Oscillation shift. NE Pacific moves to warm phase; broad productivity and predator-prey reorganization.", category: "climate", tipping: false, epoch: "Roe fishery and political reframing · 1971–1990", epochId: "era-3" },
+  { year: "1979", sortYear: 1979, title: "Last documented full Burnaby Island white spawn", desc: "Tommy Greene: \"I seen the whole of [Burnaby] island, was white with herring spawn.\" Subsequent years show only spot spawns. Reference image for what was lost.", category: "ecology", tipping: false, epoch: "Roe fishery and political reframing · 1971–1990", epochId: "era-3" },
+  { year: "1981", sortYear: 1981, title: "Haida Gwaii Watchmen Program established", desc: "Skidegate Band Council launches guardianship program protecting southern Haida cultural sites from inappropriate use and artifact theft. Institutional precursor to AMB-era stewardship.", category: "culture", tipping: false, epoch: "Roe fishery and political reframing · 1971–1990", epochId: "era-3" },
+  { year: "1980s", sortYear: 1984, title: "West coast herring abundance peaks in living memory", desc: "Percy Williams: \"Around Hunter Point it used to just come alive. And Marble Island? At slack water it just used to come alive. I haven't seen Hunter or Marble like that since.\" Last era of pre-decline abundance in west-coast Haida Gwaii.", category: "ecology", tipping: false, epoch: "Roe fishery and political reframing · 1971–1990", epochId: "era-3" },
+  { year: "1980s", sortYear: 1984.5, title: "Louscoone Inlet seine fishery forced closed", desc: "Population decline in this historically major spawning area forces seine fishery closure, though SOK continues. First major subpopulation-specific commercial closure within Haida Gwaii.", category: "fishery", tipping: false, epoch: "Roe fishery and political reframing · 1971–1990", epochId: "era-3" },
+  { year: "1983", sortYear: 1983, title: "DFO introduces 20% target harvest rate", desc: "Coastwide fixed rate based on analyses of stock dynamics.", category: "governance", tipping: false, epoch: "Roe fishery and political reframing · 1971–1990", epochId: "era-3" },
+  { year: "1985", sortYear: 1985, title: "Athlii Gwaii blockades on Lyell Island", desc: "Haida Nation blockades against industrial logging. Watershed political moment establishing the assertion of Haida governance authority over the archipelago.", category: "governance", tipping: false, epoch: "Roe fishery and political reframing · 1971–1990", epochId: "era-3" },
+  { year: "1985", sortYear: 1985.5, title: "CHN unilaterally designates Gwaii Haanas Haida Heritage Site", desc: "Council of the Haida Nation declares cultural and ecological protection over the southern Moresby land and marine area — without waiting for federal recognition.", category: "governance", tipping: false, epoch: "Roe fishery and political reframing · 1971–1990", epochId: "era-3" },
+  { year: "1986", sortYear: 1986, title: "DFO introduces commercial fishery cut-off thresholds", desc: "Sets a fishery floor at 25% of estimated unfished spawning biomass. Below cut-off, commercial fishing should be suspended.", category: "governance", tipping: false, epoch: "Roe fishery and political reframing · 1971–1990", epochId: "era-3" },
+  { year: "1987", sortYear: 1987, title: "Canada–BC MOU halts logging in Gwaii Haanas", desc: "Under pressure from the Haida and international supporters, governments commit to ending logging. Funding secured to compensate logging tenures and create the Gwaii Trust Fund.", category: "governance", tipping: false, epoch: "Roe fishery and political reframing · 1971–1990", epochId: "era-3" },
+  { year: "1988", sortYear: 1988, title: "South Moresby Agreement", desc: "Federal–provincial commitment to establish both land and marine protected areas in Gwaii Haanas.", category: "governance", tipping: false, epoch: "Roe fishery and political reframing · 1971–1990", epochId: "era-3" },
+  { year: "1989", sortYear: 1988.9, title: "Haida Fisheries Program established", desc: "CHN founds the Haida Fisheries Program with federal seed funding. By 1999–2000 it operates a $2.2M budget with 11 full-time and 30+ part-time staff (~52% from DFO's Aboriginal Fisheries Strategy). Fields Fisheries Guardians with training equivalent to DFO Fishery Officers — joint patrols, independent surveillance, stock assessment, regulatory enforcement. The Indigenous institutional capacity that makes co-governance operationally possible.", category: "governance", tipping: false, epoch: "Roe fishery and political reframing · 1971–1990", epochId: "era-3" },
+
+  // ============ ERA 4 ============
+  { year: "1990", sortYear: 1990, title: "R. v. Sparrow (SCC) affirms Aboriginal fishing rights", desc: "Landmark ruling: Aboriginal rights to fish for food, social, and ceremonial purposes take priority over commercial and recreational fisheries. Requires Crown consultation before imposing conservation-related restrictions on access.", category: "governance", tipping: true, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "30 Jan 1993", sortYear: 1993, title: "Gwaii Haanas Agreement signed; AMB established", desc: "CHN and Canada sign cooperative management agreement establishing the Archipelago Management Board — the first equal-power consensus co-governance arrangement of its kind. The parties \"agree to disagree\" on sovereignty while committing to cooperative protection.", category: "governance", tipping: true, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "1993", sortYear: 1993.5, title: "Voluntary closure: fleet stops at 800 of 1,000-ton quota", desc: "West-coast roe seine fleet halts a year before formal closure because they cannot find enough fish. Vince Pearson (Aug. 1998): \"One year before the closure… they fished every fish out of Rennell Sound and Inskip… to get their 1000 tons. And they didn't even get their 1000 tons. They quit at 800 tons because they couldn't find any more fish… The fishermen finally shut it down themselves; the Fisheries didn't.\" The formal roe herring fishery closure follows in 1994. Stier et al. 2020 dates the synchrony shift from this period forward.", category: "fishery", tipping: true, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "1993–96", sortYear: 1994.5, title: "Roe value remains high while ecology fails", desc: "The 2024 Haida Gwaii Herring Rebuilding Plan reports that BC roe herring landed and wholesale value peaked in the 1980s, stayed relatively high until the mid-1990s, dropped during 1995–2005, and declined again from 2008 onward. The key service point is the lag: aggregate commercial value remains high into the same window when Haida Gwaii portfolio structure is already failing.", category: "fishery", tipping: false, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "1996", sortYear: 1996, title: "R. v. Gladstone (SCC): commercial SOK Aboriginal right", desc: "Arising from the arrest of two Heiltsuk fishermen, the Court recognizes the Heiltsuk Nation's unextinguished Aboriginal right to harvest and commercially sell herring roe — a powerful precedent for Indigenous commercial fishing rights on the BC coast.", category: "governance", tipping: false, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "1996", sortYear: 1996.5, title: "Gwaii Haanas National Park Reserve formalized", desc: "Terrestrial protected area established under AMB co-management.", category: "governance", tipping: false, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "1997", sortYear: 1997, title: "Delgamuukw v. BC (SCC) lays out Aboriginal title test", desc: "Supreme Court establishes the legal test for proving Aboriginal title (occupation in 1846). Reshapes resource negotiations across BC.", category: "governance", tipping: false, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "1998", sortYear: 1998, title: "Operation Herring Storm", desc: "Dissatisfied with DFO's management of depleted stocks, the CHN attempts an on-water blockade of commercial herring fishing and occupies the DFO office in Queen Charlotte. First direct-action Haida intervention specifically against herring management.", category: "governance", tipping: false, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "1998", sortYear: 1998.2, title: "PDO returns to cool phase", desc: "Climate regime shifts back toward cool, productive conditions in NE Pacific. Yet portfolio dynamics do not recover — climate is not the limiting driver.", category: "climate", tipping: false, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "1998", sortYear: 1998.4, title: "Huston Inlet spawn failure", desc: "Vince Pearson: \"Huston, usually they spawn right up in the head of Huston, but I didn't see the spawn there this year… probably about twenty years\" since the last failure. Immediately follows a roe fishery.", category: "ecology", tipping: false, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "1998", sortYear: 1998.6, title: "IVQ system introduced for roe herring fishery", desc: "Quota for an area divided equally among licensed vessels; fishery now operates in pools. Major change in commercial structure.", category: "governance", tipping: false, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "1999–2001", sortYear: 2000, title: "Haida Gwaii commercial roe herring fishery shut down", desc: "First multi-year DFO closure of the roe fishery due to persistently low stocks.", category: "fishery", tipping: false, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "2002", sortYear: 2002, title: "Haida blockade reopening of roe fisheries", desc: "Second direct-action blockade by the CHN. Causes substantial delays in the planned harvest.", category: "governance", tipping: false, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "2002", sortYear: 2002.2, title: "Canada National Marine Conservation Areas Act passed", desc: "Legal pathway opens for the marine extension of Gwaii Haanas.", category: "governance", tipping: false, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "2003", sortYear: 2003, title: "Constitution of the Haida Nation formally adopted; roe fishery re-closed", desc: "CHN Constitution declares the inherent right of Haidas to authority over the environment. DFO closes Haida Gwaii roe fisheries again — and they remain largely closed.", category: "governance", tipping: false, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "2003–05", sortYear: 2003.9, title: "PNCIMA marine planning launched", desc: "Government of Canada and the Coastal First Nations Turning Point Initiative (now Great Bear Initiative) agree to comprehensive marine use planning for the BC north coast under Canada's Oceans Strategy in 2003. In 2005, DFO identifies the Pacific North Coast Integrated Management Area (PNCIMA) — stretching from northern Vancouver Island to the BC–Alaska border, ~75,000 residents, roughly a third First Nations — as one of five national pilots for integrated oceans management. The institutional scaffolding for ecosystem-based, multi-Nation marine governance.", category: "governance", tipping: false, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "2004", sortYear: 2004, title: "Haida Nation v. BC (SCC): duty to consult", desc: "Court rules that the Crown has a legal duty to consult and accommodate First Nations if proposed actions might adversely affect Aboriginal rights and title — even before title is formally proven.", category: "governance", tipping: false, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "1995–2005", sortYear: 2004.8, title: "Commercial herring value declines", desc: "The Rebuilding Plan's roe gillnet and seine value figures show the value layer dropping after the ecological warning period: high values persisted to the mid-1990s, then fell through 1995–2005, with further decline after 2008 and a modest 2016–18 uptick. Aggregate biomass, spatial structure, and aggregate value no longer move as a single simple state variable.", category: "fishery", tipping: true, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "2005", sortYear: 2005, title: "DFO officially closes Haida Gwaii major stock assessment area", desc: "Persistent low biomass justifies formal closure. The Haida Gwaii commercial roe fishery has not opened since.", category: "fishery", tipping: false, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "2007", sortYear: 2006, title: "Strait of Georgia synchronous juvenile salmon and herring failure", desc: "Beamish et al. (2012) document the synchronous failure of juvenile Pacific salmon and Pacific herring production in the Strait of Georgia in 2007, directly predicting the catastrophically poor 2009 Fraser River sockeye return. Demonstrates juvenile indices as leading-indicator signals for adult biomass, building on Schweigert et al. (2009) on age-0 herring abundance as a recruitment forecast tool.", category: "ecology", tipping: false, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "2007", sortYear: 2007, title: "HMTK Study initiated by Council of Haida Nation", desc: "The Haida Fisheries Program (founded 1989) launches the Haida Marine Traditional Knowledge Study — systematically documenting Haida marine traditional knowledge through interviews, maps, and a GIS database. Eldest participant Chief Niis Wes (Ernie Wilson), born ~1912, provides century-deep baselines. Foundation for later quantitative integration of TEK with stock assessment science.", category: "culture", tipping: false, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "Dec 2007", sortYear: 2007.95, title: "Strategic Land Use Agreement (Haida Nation–BC)", desc: "Haida Nation and Province of BC sign a strategic land use agreement for Haida Gwaii — the first formal commitment to ecosystem-based management and shared decision-making between the parties. Land-based parallel to the AMB co-governance arrangement.", category: "governance", tipping: false, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "2008", sortYear: 2008, title: "Central Coast commercial herring fishery closed", desc: "Second of BC's five major herring stocks closed by DFO. Pattern of closures extending across the coast.", category: "fishery", tipping: false, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "2008", sortYear: 2008.5, title: "Gwaii Haanas Marine Advisory Committee established", desc: "12-member interest-based committee including Haida traditional knowledge, fisheries, ecotourism, and a DFO liaison. Begins drafting interim management plan.", category: "governance", tipping: false, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "2009", sortYear: 2009, title: "Ahousaht v. Canada (BCSC): commercial fishing rights", desc: "BC Supreme Court recognizes that five Nuu-chah-nulth First Nations have an Aboriginal right to fish for any species (except geoduck) — and to sell that fish commercially.", category: "governance", tipping: false, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "11 Dec 2009", sortYear: 2009.95, title: "Reconciliation Protocol; name \"Haida Gwaii\" restored", desc: "Reconciliation protocol signed between the Province of BC and the Haida Nation. The colonial name \"Queen Charlotte Islands\" is returned to the Province; \"Haida Gwaii\" (Islands of the People) is formally restored. Symbolic and operational political tipping point in the provincial relationship.", category: "governance", tipping: false, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "Jan 2010", sortYear: 2010, title: "Gwaii Haanas Marine Agreement signed", desc: "AMB expanded to include Fisheries and Oceans Canada alongside Parks Canada and the CHN. 6 seats total — 3 federal, 3 Haida — with two co-chairs (one from each party). Decisions made by consensus, not majority; unresolved matters held in abeyance and escalated to the parties; if still unresolved, escalated to the Minister responsible for Parks Canada. Meets at least twice annually. To date, the majority of decisions have reached consensus at the AMB table; none have required ministerial intervention. First federal marine protected area co-managed under consensus with 50% Indigenous representation.", category: "governance", tipping: true, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+  { year: "Jun 2010", sortYear: 2010.5, title: "Gwaii Haanas National Marine Conservation Area Reserve established", desc: "~3,400 km² of co-managed marine protected area surrounding the national park reserve. Identified as a primary humpback whale feeding habitat in Canadian Pacific waters.", category: "governance", tipping: false, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+
+  { year: "2011", sortYear: 2011, title: "Kunst'aa guu – Kunst'aayah Reconciliation Protocol", desc: "Province of BC and Haida Nation sign the Kunst'aa guu – Kunst'aayah Reconciliation Protocol, establishing the Haida Gwaii Management Council — 2 CHN + 2 BC + 1 neutral chairperson — with strategic shared decision-making over total allowable cut, protected-area management plans, archaeological policy, and ecosystem-based management. Land-side structural intervention paralleling the AMB offshore. Co-governance is now the default mode across Haida Gwaii.", category: "governance", tipping: true, epoch: "Co-governance and contested closures · 1990–2013", epochId: "era-4" },
+
+  // ============ ERA 5 ============
+  { year: "23 Dec 2013", sortYear: 2013.95, title: "Minister Shea announces 2014 reopening over scientists' objections", desc: "Federal Fisheries Minister Gail Shea authorizes 10% harvest reopening of Haida Gwaii, Central Coast, and WCVI roe fisheries. Internal DFO documents made public in court reveal she explicitly ignored her own scientists' Dec 9, 2013 memorandum recommending continued closure.", category: "governance", tipping: false, epoch: "Synthesis, warming, and rebuilding · 2014–present", epochId: "era-5" },
+  { year: "7 Feb 2014", sortYear: 2014.05, title: "Joint declaration: CHN, Heiltsuk, Nuu-chah-nulth", desc: "Three Indigenous Nations issue a unified media release opposing the proposed commercial roe herring fisheries in their territories. CHN President Peter Lantin: \"Minister Shea has made a serious mistake in proposing to open commercial herring fisheries in our territories.\"", category: "governance", tipping: false, epoch: "Synthesis, warming, and rebuilding · 2014–present", epochId: "era-5" },
+  { year: "21 Feb 2014", sortYear: 2014.1, title: "Judge Mandamin: DFO \"fudging the numbers\"", desc: "Federal Court rules in favour of a Nuu-chah-nulth injunction halting the reopening. Mandamin J: the decision was \"not science-based, but in effect a statement 'there is a conservation concern here, but if the fishery is to be opened, take less.'\" Operational test of legal limits on DFO's discretion.", category: "governance", tipping: false, epoch: "Synthesis, warming, and rebuilding · 2014–present", epochId: "era-5" },
+  { year: "2014", sortYear: 2014.3, title: "Foundational science published", desc: "Three landmark papers anchor the case. McKechnie et al. (PNAS) establish a ~10,000-year archaeological baseline from 171 Northwest Coast sites and 435,777+ fish bones. Shelton et al. (Sci. Reports) model the egg-vs-adult harvest asymmetry — herring stocks can withstand much higher egg harvest before depletion, and ecosystem thresholds for predators don't necessarily constrain the fishery more than conventional rules. Gerrard MSc maps Heiltsuk Traditional Ecological Knowledge of herring spawn across ~2,500 km of BC central coast from the 1940s to the 2000s, documenting a 7.6% per-decade spatial contraction over 70 years — the cleanest TEK-derived quantification of the cultural service threshold's approach.", category: "science", tipping: false, epoch: "Synthesis, warming, and rebuilding · 2014–present", epochId: "era-5" },
+  { year: "2014", sortYear: 2014.4, title: "Tsilhqot'in v. BC (SCC): first Aboriginal title declaration", desc: "Supreme Court grants the first declaration of Aboriginal land title in Canadian history. Further solidifies the legal foundation for Indigenous co-governance of resources.", category: "governance", tipping: false, epoch: "Synthesis, warming, and rebuilding · 2014–present", epochId: "era-5" },
+  { year: "2015", sortYear: 2014.8, title: "Heiltsuk Nation occupies DFO Bella Bella office", desc: "Heiltsuk Nation members occupy the Department of Fisheries and Oceans field office in Bella Bella to halt the commercial Pacific herring fishery in their Central Coast territory. Parallel direct-action escalation alongside the legal challenges. Demonstrates the herring conflict is not idiosyncratic to Haida Gwaii — the same coupled tipping-point dynamics drive parallel responses across BC Indigenous Nations.", category: "governance", tipping: false, epoch: "Synthesis, warming, and rebuilding · 2014–present", epochId: "era-5" },
+  { year: "2014–16", sortYear: 2015, title: "The Blob: NE Pacific marine heatwave", desc: "Most powerful marine heatwave on record. Mechanism — the \"ectothermic vise\": warm-water predator metabolic demand rises up to 70% while forage-fish biomass and lipid content drop. Cascading mortalities: ~1 million common murres die (10–20% of regional population), Cassin's auklet die-off California to BC, rhinoceros auklet die-off 2016, large baleen whale die-off in Gulf of Alaska 2015–16, California sea lion and Guadalupe fur seal mortality. Salmon returns in 2016–17 severely depressed.", category: "climate", tipping: true, epoch: "Synthesis, warming, and rebuilding · 2014–present", epochId: "era-5" },
+  { year: "2015–17", sortYear: 2016, title: "Complete murre breeding failure at 13 colonies", desc: "Across the Gulf of Alaska and Bering Sea, common murres experience complete reproductive failure at 13 colonies — multi-year failures at 8. A trophically dominant piscivore takes a generational hit.", category: "ecology", tipping: false, epoch: "Synthesis, warming, and rebuilding · 2014–present", epochId: "era-5" },
+  { year: "2016", sortYear: 2016.2, title: "Stier et al. cognitive maps published (Conservation Letters)", desc: "Fuzzy cognitive maps from 27 regional experts (8 academics, 9 agency scientists/managers from DFO and Parks Canada, 5 Haida Nation members and officials, 12 local residents, and NGO affiliates) cluster into two structurally distinct mental models of the Haida Gwaii herring food web — but the two clusters are UNRELATED to demographic background, years of experience, or institutional affiliation. Under a simulated herring recovery, one cluster predicts 182% greater ecosystem reorganization, 78% higher average abundance change, and 89% greater whale increase than the other; the two clusters also disagree on the direction of response for pink and chum salmon. The social-side tipping point becomes empirically visible — and \"binning\" knowledge by who someone is fails to predict how they actually understand the system.", category: "science", tipping: true, epoch: "Synthesis, warming, and rebuilding · 2014–present", epochId: "era-5" },
+  { year: "2016", sortYear: 2016.4, title: "DFO commits to Management Strategy Evaluation", desc: "Beginning of the formal renewal of the BC herring management framework. Closed-loop simulation of management procedures against multiple natural mortality scenarios.", category: "governance", tipping: false, epoch: "Synthesis, warming, and rebuilding · 2014–present", epochId: "era-5" },
+  { year: "2019", sortYear: 2019, title: "MSE process extended to Haida Gwaii", desc: "Closed-loop simulation evaluation of management procedures begins for Haida Gwaii, Prince Rupert, and Central Coast stock assessment regions.", category: "governance", tipping: false, epoch: "Synthesis, warming, and rebuilding · 2014–present", epochId: "era-5" },
+  { year: "2019", sortYear: 2019.5, title: "Second NE Pacific marine heatwave", desc: "Repeat warm anomaly within the new climate regime. Spawn timing further perturbed.", category: "climate", tipping: false, epoch: "Synthesis, warming, and rebuilding · 2014–present", epochId: "era-5" },
+  { year: "2020", sortYear: 2020, title: "Stier et al. portfolio erosion published (Ecosphere)", desc: "65-year time-series quantifies the ecological tipping point: synchrony among 9 focal subpopulations has risen >60% since 1994, dismantling the asynchrony that historically held the metapopulation 2.1× more stable than a homogenous one. 7 of 9 subpopulations show major declines in realized growth rate. Local harvest rates reached 65% even when the archipelago-wide rate was 4%.", category: "science", tipping: false, epoch: "Synthesis, warming, and rebuilding · 2014–present", epochId: "era-5" },
+  { year: "2020", sortYear: 2020.5, title: "Mechanism debate: portfolio erosion is robust; single-cause attribution is not", desc: "Stier et al. 2020 and Okamoto et al. 2020 make the spatial-structure result hard to ignore: aggregate metrics can look safer than local spawning systems. Current model-farm diagnostics keep the causal story conservative: historical fishing is the cleanest descriptive recovery axis, PDO and predators remain plausible but confounded, and no predator coefficient is promoted for Haida Gwaii.", category: "science", tipping: false, epoch: "Synthesis, warming, and rebuilding · 2014–present", epochId: "era-5" },
+  { year: "2010s-22", sortYear: 2021, title: "Predator demand becomes a major pressure field", desc: "North Pacific humpbacks rebound from roughly 1,000 in the 1970s to tens of thousands by 2021, and BC abundance more than doubles from 2006 to 2022. Doherty 2025 shows a strong humpback-driven predation signal for West Coast Vancouver Island; the Haida Gwaii predator repo estimates large recent HG predator demand. The HG model screens treat this as ecological scale and future data-product motivation, not as a proven predator-causation result.", category: "ecology", tipping: false, epoch: "Synthesis, warming, and rebuilding · 2014–present", epochId: "era-5" },
+  { year: "ongoing", sortYear: 2022, title: "Cultural service threshold crossed at named harvest sites", desc: "Burnaby Narrows, Skidegate Inlet, Louscoone Inlet, Cumshewa, Selwyn, Rennell Sound, Hunter Point, Marble Island, Scudder Point, Juan Perez, Skincuttle — historically productive k'aaw sites now functionally closed for traditional harvest. The cultural service threshold has been crossed for the first time in approximately 10,000 years.", category: "culture", tipping: false, epoch: "Synthesis, warming, and rebuilding · 2014–present", epochId: "era-5" },
+  { year: "2024", sortYear: 2024.2, title: "Strait of Georgia counterfactual: the stock still open", desc: "Only one of BC's five major herring stocks remains commercially open: Strait of Georgia, with 2024 spawning biomass estimated at ~100,000+ tonnes and a 2023/2024 commercial catch of 7,000 tonnes. The contrast sharpens the Haida Gwaii diagnosis. SoG supports resident (non-migratory) populations with all age-0 juveniles resident year-round; it acts as a metapopulation source, historically exporting ~12,000 tonnes/year to the other four BC stocks. Industrial fishing did not concentrate the same way; humpback predation pressure is structurally different. DFO has implemented a new Spatially Integrated Statistical Catch at Age Herring (SISCAH) modelling framework specifically for SoG. The counterfactual confirms that Haida Gwaii's coupled tipping-point dynamics are mechanism-specific — not universal to forage fish.", category: "ecology", tipping: false, epoch: "Synthesis, warming, and rebuilding · 2014–present", epochId: "era-5" },
+  { year: "Apr 2024", sortYear: 2024.3, title: "Haida Gwaii Pacific Herring Ecosystem-Based Rebuilding Plan finalized", desc: "iináang | iinang Pacific Herring rebuilding plan formally approved by the Minister of Fisheries and Oceans, the Council of the Haida Nation, and Parks Canada — co-developed under the AMB. First ecosystem-based rebuilding plan of its kind in BC. Operational embodiment of consensus co-governance.", category: "governance", tipping: true, epoch: "Synthesis, warming, and rebuilding · 2014–present", epochId: "era-5" },
+  { year: "2025", sortYear: 2025, title: "DFO recommends 0 tonnes harvest for Haida Gwaii", desc: "Spawning biomass forecast for 2025 is 7,556 t — below the Limit Reference Point of 6,452 t with 37.8% probability, even in the absence of fishing. None of the proposed management procedures, including \"no fishing,\" maintains spawning biomass above the LRP with high probability. Harvest recommendation: zero.", category: "fishery", tipping: false, epoch: "Synthesis, warming, and rebuilding · 2014–present", epochId: "era-5" },
+  { year: "Present", sortYear: 2026, title: "Coupled state, 2026", desc: "Aggregate biomass below LRP. Portfolio dismantled. Cultural service crossed. Humpback predation now exceeds historical fishery. Experts divided in mental models. AMB operating as the principal structural intervention on the coupled system. This is the talk.", category: "ecology", tipping: false, epoch: "Synthesis, warming, and rebuilding · 2014–present", epochId: "era-5" }
+];
+
+const catNames = {
+  climate: "Climate &amp; ocean",
+  fishery: "Fishery",
+  ecology: "Ecology &amp; food web",
+  culture: "Haida cultural",
+  governance: "Governance &amp; law",
+  science: "Science"
+};
+
+const timelineEl = document.getElementById("timeline");
+const countStripEl = document.getElementById("count-strip");
+let activeCat = "all";
+let tpOnly = false;
+
+function render() {
+  timelineEl.innerHTML = "";
+  const filtered = events.filter(e => {
+    if (activeCat !== "all" && e.category !== activeCat) return false;
+    if (tpOnly && !e.tipping) return false;
+    return true;
+  });
+  let lastEpoch = null;
+  filtered.forEach(e => {
+    if (e.epoch !== lastEpoch) {
+      const hdr = document.createElement("div");
+      hdr.className = "epoch";
+      hdr.id = e.epochId;
+      hdr.textContent = e.epoch;
+      timelineEl.appendChild(hdr);
+      lastEpoch = e.epoch;
+    }
+    const node = document.createElement("article");
+    node.className = "event" + (e.tipping ? " tipping" : "");
+    node.innerHTML = `
+      <div class="year">${e.year}</div>
+      <div class="event-card">
+        <div class="event-head">
+          <h3 class="event-title">${e.title}</h3>
+          ${e.tipping ? '<span class="tp-badge">Tipping</span>' : ''}
+        </div>
+        <p class="event-desc">${e.desc}</p>
+        <div class="event-meta">
+          <span class="cat-tag"><span class="dot ${e.category}"></span>${catNames[e.category]}</span>
+        </div>
+      </div>
+    `;
+    timelineEl.appendChild(node);
+  });
+  if (filtered.length === 0) {
+    timelineEl.innerHTML = '<div style="padding:40px 0;text-align:center;color:var(--ink-soft);font-style:italic;font-family:Crimson Pro,serif;">No events match this filter combination.</div>';
+  }
+  const tipCount = filtered.filter(e => e.tipping).length;
+  countStripEl.textContent = `${filtered.length} events shown · ${tipCount} marked as tipping points`;
+}
+
+document.querySelectorAll(".chip[data-cat]").forEach(chip => {
+  chip.addEventListener("click", () => {
+    document.querySelectorAll(".chip[data-cat]").forEach(c => c.classList.remove("active"));
+    chip.classList.add("active");
+    activeCat = chip.dataset.cat;
+    render();
+  });
+});
+
+document.getElementById("tp-only").addEventListener("change", e => {
+  tpOnly = e.target.checked;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

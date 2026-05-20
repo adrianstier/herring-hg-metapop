@@ -1,0 +1,99 @@
+
+                 model {  
+                
+##########################
+#OBSERVATION MODEL PRIORS and LIKLIHOODs
+##########################
+
+tauR ~ dunif(100,101); #this is the estimated variance prior for Spawn Index
+q ~ dnorm(0,1);  # (Log q) Fraction of Spawn Observed on spawn surveys estiamted across all sites
+
+# psi ~ dgamma(10,1) #variance on fishing
+psi ~ dunif(0,10) #this is in variance for fishing set fixed to try to get convergence
+
+for(i in 1:nYears) {
+  for(j in 1:nSites) {
+    Y[i,j] ~  dnorm(X[i,j]+q,1/tauR); #obs eq for spawn index. a normal pull with meam Xq LIKELIHOOD STATEMENT ****
+    
+    tl[i,j]<-Z[i,j]+log(Pc[i,j]) #total biomass (tl) is qual to to estimated biomass pre catch  (Z) + catch (Pc) 
+    
+   ctab[i,j] ~ dnorm(tl[i,j],1/psi) #distribution of catch data  LIKELIHOOD STATEMENT with variance****
+    # ctab[i,j] ~ dnorm(tl[i,j],1/.1) #distribution of catch data  LIKELIHOOD STATEMENT ****
+  }
+}
+
+for(i in 1:nYears) {
+  for(j in 1:nSites) {
+    Pc[i,j] ~ dunif(0,c_prior[i,j]) #dbeta(1,1) #Fraction of Spawn Caught for each site, c_prior catches the hard variance for catch=0
+  }
+}
+
+##########################
+#PROCESS MODEL PRIORS
+##########################
+
+# POPULATION GROWTH parameters U: 
+Umu ~ dnorm(0,1); #average population growth
+Usig ~ dunif(0,100); #variance in population growth 
+Usig2<-Usig*Usig
+
+for(i in 1:nSites) {
+  U[i] ~ dnorm(Umu,1/Usig2) #for each site U set as random variable prior 
+}
+
+#COVARIATE
+pdoz2<-1
+
+pdocoef~dnorm(0,1/pdoz2); #estimated impact of pdo of herring
+
+# VARIANCE AND COVARIANCE ESTIMATES
+#########################################################################################################
+
+phi  	~ dunif(PHI.min+1e-6,PHI.max-1e-6) #modifier of cov param
+
+#loop through and creat vector of inverse variance estimates for nSites
+
+for(i in 1:nSites) {
+  tau2[i] ~ dgamma(0.01,0.01); #this is for sd in cov matrix
+}
+
+for(i in 1:nSites){ 
+  for(j in 1:nSites){
+M[i,j]<-tau2[i]*IDEN[i,j]
+}}
+
+Qinv<-inverse(M)%*%(IDEN - phi * H)
+
+
+#########################################################################################################
+
+# Estimate the initial state vector of population abundances
+
+zeta<-10
+zeta2<-zeta*zeta
+
+for(j in 1:nSites) {
+      X[1,j] ~ dnorm(10,1/zeta2); # vague normal prior for first time step
+      Z[1,j] <- X[1,j]+log(1-Pc[1,j])
+  }
+
+# Initial Values for Delta
+for(j in 1:nSites) {zeros[j]<-0;}
+delta[1,1:nSites] ~ dmnorm(zeros,Qinv[1:nSites,1:nSites]); 
+
+# change in pop through time that's uniqe to site/time
+for(i in 2:nYears) {
+        delta[i,1:nSites] ~ dmnorm(zeros,Qinv[1:nSites,1:nSites]); 
+  
+   for(j in 1:nSites) {
+
+      #fishing by site and global pdo estimates and U estimates 
+      Z[i,j] <- X[i-1,j]+U[j]+pdocoef*pdo[i-1]+delta[i,j]
+      
+      #Estimate the state X with catch by site 
+      X[i,j] <-Z[i,j]+log(1-Pc[i,j]);
+
+  }
+ }
+} 
+ 

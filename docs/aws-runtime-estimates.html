@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Herring AWS Model Runtime Estimates</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #17202a;
+      background: #f6f7f9;
+    }
+    main {
+      max-width: 1120px;
+      margin: 36px auto;
+      padding: 0 24px 40px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      line-height: 1.15;
+    }
+    .meta {
+      margin: 0 0 24px;
+      color: #5f6b7a;
+      font-size: 15px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border: 1px solid #d8dee8;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+    th, td {
+      padding: 13px 14px;
+      border-bottom: 1px solid #e5e9f0;
+      text-align: left;
+      vertical-align: top;
+      font-size: 14px;
+    }
+    th {
+      background: #eef3f8;
+      font-weight: 700;
+      color: #263445;
+    }
+    tr:last-child td {
+      border-bottom: 0;
+    }
+    .group {
+      font-weight: 700;
+      color: #0b5cab;
+      white-space: nowrap;
+    }
+    .risk-high {
+      color: #a33a00;
+      font-weight: 700;
+    }
+    .risk-med {
+      color: #735c00;
+      font-weight: 700;
+    }
+    .risk-low {
+      color: #116329;
+      font-weight: 700;
+    }
+    .note {
+      margin-top: 18px;
+      padding: 14px 16px;
+      background: #fff9e6;
+      border: 1px solid #ead28a;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Expected AWS Runtime for Herring Model Farm</h1>
+    <p class="meta">Updated May 10, 2026. Estimates are wall-clock per submitted AWS Batch job after container startup and Stan compilation. AWS mainly improves throughput by running branches in parallel.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Model / Task</th>
+          <th>Purpose</th>
+          <th>Local Reference</th>
+          <th>Expected AWS Runtime</th>
+          <th>Risk</th>
+          <th>How to Run</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="group">Smoke fit</td>
+          <td>Verify image, S3 bundle, R/rstan interface, Stan compile, and result upload.</td>
+          <td>Short 1-chain reduced iteration run.</td>
+          <td>20-60 minutes</td>
+          <td class="risk-low">Low</td>
+          <td>Run first on Spot. Do not submit the full farm until this passes.</td>
+        </tr>
+        <tr>
+          <td class="group">M1 observation branches</td>
+          <td>Baseline Stier-style observation/detection variants; best current family for fit diagnostics.</td>
+          <td>m1_stier_11 roughly 3.5-3.6 h locally.</td>
+          <td>2-5 hours each</td>
+          <td class="risk-low">Low to medium</td>
+          <td>Good first full candidates. Run several variants in parallel.</td>
+        </tr>
+        <tr>
+          <td class="group">M2 site-growth</td>
+          <td>Site-specific growth/productivity extension.</td>
+          <td>m2_stier_site_growth roughly 3.0 h locally.</td>
+          <td>2-5 hours</td>
+          <td class="risk-med">Medium</td>
+          <td>Run after smoke. Compare against M1 on diagnostics, not only LOO.</td>
+        </tr>
+        <tr>
+          <td class="group">M3 spatial distance</td>
+          <td>Spatially structured process error / distance-decay branch.</td>
+          <td>m3_stier_distance roughly 4.5-4.7 h locally.</td>
+          <td>3-8 hours</td>
+          <td class="risk-med">Medium</td>
+          <td>Run on Spot first; promote only if sampler-clean.</td>
+        </tr>
+        <tr>
+          <td class="group">Exact re-LOO array</td>
+          <td>Refit problematic observations for reliable model comparison.</td>
+          <td>Expensive if serial on laptop.</td>
+          <td>2-8 hours per array child; wall time near the slowest child</td>
+          <td class="risk-med">Medium</td>
+          <td>Strong AWS use case because children are independent.</td>
+        </tr>
+        <tr>
+          <td class="group">Predator / time-varying branches</td>
+          <td>Predator covariates, climate interactions, or more complex process structure.</td>
+          <td>Older m5_v3 was pathological and ran 14-32 h per chain locally.</td>
+          <td>6-24+ hours</td>
+          <td class="risk-high">High</td>
+          <td>Exploratory only until observation model is stable; use Spot and tight smoke tests.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note">
+      Laptop closure rule: after the image is pushed and AWS Batch has accepted job IDs, cloud jobs keep running if the laptop sleeps. The laptop is still needed to submit more jobs, monitor, download results, and rerun follow-up branches.
+    </div>
+  </main>
+</body>
+</html>

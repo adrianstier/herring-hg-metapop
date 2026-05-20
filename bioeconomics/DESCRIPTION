@@ -1,0 +1,7 @@
+Package: herringbioeconomics
+Title: Bioeconomic Backbone for BC/Haida Gwaii Pacific Herring
+Encoding: UTF-8
+License: CC BY 4.0
+Authors@R: person("Adrian", "Stier", email = "astier@ucsb.edu", role = c("aut", "cre"))
+Version: 0.0.0.9000
+Imports: targets, tarchetypes, tidyverse, here, testthat, fredr, comtradr, metaDigitise, janitor, readr, digest, glue, stringr

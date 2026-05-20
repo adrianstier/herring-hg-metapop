@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Silver Wave — Real Ex-Vessel Value of Haida Gwaii Herring</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0b1316; --silver:#aebfc7; --silver-bright:#dcebef; --silver-dim:#7e949d;
+    --gold:#e6b450; --gold-deep:#b07d24; --gold-glow:#f4d488;
+    --ash:#9a9387; --ash-dim:#4d4942; --red:#bb3b2f;
+    --paper:#ece2cf; --muted:#8a989e; --line:#22343a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:
+      radial-gradient(1100px 720px at 70% -8%, #16323a 0%, transparent 60%),
+      radial-gradient(900px 600px at 8% 12%, #122a30 0%, transparent 55%),
+      linear-gradient(180deg,#0c181c 0%, #0a1216 55%, #08100f 100%);
+    color:var(--paper); font-family:"Newsreader",Georgia,serif;
+    min-height:100vh; overflow-x:hidden; -webkit-font-smoothing:antialiased;
+  }
+  body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:9999;opacity:.05;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>")}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9998;box-shadow:inset 0 0 320px 60px rgba(0,0,0,.55)}
+  .wrap{max-width:1280px;margin:0 auto;padding:clamp(28px,5vw,80px) clamp(20px,4vw,56px) 90px}
+
+  .kicker{font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.42em;text-transform:uppercase;color:var(--silver-dim);display:flex;align-items:center;gap:16px;opacity:0;animation:rise .9s .1s both}
+  .kicker::before{content:"";width:46px;height:1px;background:var(--gold)}
+  h1{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(2.4rem,6.4vw,5.1rem);line-height:.98;letter-spacing:-.02em;margin:.34em 0 .26em;color:var(--silver-bright);text-wrap:balance}
+  h1 .em{font-style:italic;font-weight:400;color:var(--gold)}
+  h1 span{display:inline-block;opacity:0;animation:rise 1s both}
+  h1 span:nth-child(1){animation-delay:.16s}h1 span:nth-child(2){animation-delay:.26s}h1 span:nth-child(3){animation-delay:.36s}
+  .thesis{font-size:clamp(1.04rem,1.9vw,1.36rem);color:var(--paper);max-width:64ch;line-height:1.5;opacity:0;animation:rise 1s .5s both}
+  .thesis b{font-weight:500;color:var(--gold-glow)}
+  .thesis .red{color:var(--red);font-weight:500}
+
+  .chartcard{margin-top:clamp(30px,4.5vw,56px);position:relative;border:1px solid var(--line);background:linear-gradient(180deg,rgba(20,38,43,.42),rgba(8,16,18,.42));border-radius:4px;padding:14px 14px 6px;box-shadow:0 40px 90px -50px rgba(0,0,0,.9);opacity:0;animation:rise 1s .55s both}
+  .chartcard svg{display:block;width:100%;height:auto}
+  .ax{font-family:"Space Mono",monospace;font-size:11px;fill:var(--silver-dim);letter-spacing:.1em}
+  .axn{font-family:"Space Mono",monospace;font-size:10px;fill:#5f7178;letter-spacing:.08em}
+  .band{font-family:"Space Mono",monospace;letter-spacing:.32em;text-transform:uppercase}
+  .nl{font-family:"Space Mono",monospace;font-size:12.5px;fill:var(--paper);font-weight:700}
+  .ns{font-family:"Space Mono",monospace;font-size:10.5px;fill:var(--muted)}
+  .pathmain{stroke-dasharray:6 7;stroke-dashoffset:1400;animation:draw 2.6s 1s ease forwards}
+  .solidseg{stroke-dasharray:600;stroke-dashoffset:600;animation:draw 1.4s 3.2s ease forwards}
+  .node{opacity:0;animation:pop .7s both}
+  .vbar{opacity:0;animation:fadein .5s both}
+
+  .methods{margin-top:18px;border:1px dashed var(--line);border-radius:3px;padding:16px 20px;font-family:"Space Mono",monospace;font-size:11.5px;line-height:1.85;color:var(--muted);opacity:0;animation:rise 1s 1s both}
+  .methods b{color:var(--silver);font-weight:700}
+
+  .acts{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.6vw,24px);margin-top:clamp(30px,4.5vw,52px)}
+  .act{position:relative;padding:28px 26px 26px;border-radius:3px;background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,0));border:1px solid var(--line);border-top:2px solid var(--ac);opacity:0;transform:translateY(26px)}
+  .act.in{animation:rise .9s both}.act:nth-child(2).in{animation-delay:.12s}.act:nth-child(3).in{animation-delay:.24s}
+  .act .num{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(2.6rem,5vw,4rem);line-height:.8;color:var(--ac);opacity:.5;letter-spacing:-.03em}
+  .act .era{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.24em;color:var(--muted);margin:14px 0 4px;text-transform:uppercase}
+  .act h3{font-family:"Fraunces",serif;font-weight:600;font-size:1.5rem;line-height:1.1;color:var(--silver-bright);margin-bottom:12px}
+  .act p{font-size:.99rem;line-height:1.6;color:#cdd6d3}
+  .act p em{color:var(--ac);font-style:italic}
+  .chips{list-style:none;margin-top:18px;display:flex;flex-direction:column;gap:9px}
+  .chips li{font-family:"Space Mono",monospace;font-size:12px;color:var(--paper);padding-bottom:9px;border-bottom:1px dotted var(--line)}
+  .chips li:last-child{border-bottom:0}
+  .chips .v{color:var(--ac);font-weight:700}
+  .chips .r{color:var(--silver-dim)}
+
+  .coda{margin-top:clamp(30px,4.5vw,52px);display:grid;grid-template-columns:1.15fr 1fr;gap:clamp(20px,4vw,56px);border-top:1px solid var(--line);padding-top:38px;opacity:0;animation:rise 1s both}
+  .coda h4{font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+  .commod{list-style:none;font-family:"Space Mono",monospace;font-size:12px;line-height:1.5}
+  .commod li{padding:7px 0;border-bottom:1px dotted var(--line);display:flex;justify-content:space-between;gap:14px}
+  .commod li:last-child{border-bottom:0}
+  .commod .c{color:#bcc7c4}.commod .p{color:var(--gold);font-weight:700;white-space:nowrap}
+  .prov{font-size:.92rem;line-height:1.7;color:var(--muted)}.prov b{color:var(--paper);font-weight:500}
+  .sig{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.18em;color:var(--silver-dim);margin-top:24px;text-transform:uppercase}
+
+  @keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  @keyframes pop{0%{opacity:0;transform:scale(.4)}60%{opacity:1;transform:scale(1.15)}100%{opacity:1;transform:scale(1)}}
+  @media (max-width:880px){.acts{grid-template-columns:1fr}.coda{grid-template-columns:1fr}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important}.pathmain,.solidseg{stroke-dashoffset:0}.node,.vbar{opacity:1}h1 span,.kicker,.thesis,.chartcard,.methods,.act,.coda{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="kicker">Stier Lab · Bioeconomics of a Forage Fish · Haida Gwaii</div>
+  <h1><span>The&nbsp;Silver&nbsp;Wave,</span> <span>in</span> <span class="em">Real&nbsp;Dollars</span></h1>
+  <p class="thesis">Put every figure in one honest unit — <b>constant 2020 CAD per tonne of herring</b>, ex-vessel — and the story sharpens: prime roe herring fetched <b>≈ $17,000 / t</b> in 1979; by 2006 the same tonne was worth <span class="red">≈ $150</span>. A <span class="red">~99% real collapse</span> — most of it driven from Tokyo, not Hecate Strait.</p>
+
+  <!-- ============ REAL VALUE, ONE UNIT, LOG SCALE ============ -->
+  <div class="chartcard">
+  <svg viewBox="0 0 1240 640" role="img" aria-label="Real ex-vessel value of Pacific herring at Haida Gwaii in constant 2020 Canadian dollars per tonne, log scale: ~$17,000/t in 1979, ~$2,300/t average 1993-2002, ~$150/t in 2006, with no continuous series in the gaps.">
+    <defs>
+      <linearGradient id="g-area" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#e6b450" stop-opacity=".22"/><stop offset="1" stop-color="#0b1316" stop-opacity="0"/>
+      </linearGradient>
+      <radialGradient id="g-peak" cx=".5" cy=".5" r=".5">
+        <stop offset="0" stop-color="#f4d488" stop-opacity=".5"/><stop offset="1" stop-color="#f4d488" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+
+    <!-- regime bands -->
+    <rect x="70"  y="64" width="528" height="392" fill="#9fb6bd" opacity=".045"/>
+    <rect x="598" y="64" width="500" height="392" fill="#e6b450" opacity=".07"/>
+    <rect x="1098" y="64" width="72" height="392" fill="#6f6a63" opacity=".10"/>
+    <line x1="598" y1="64" x2="598" y2="456" stroke="#22343a"/>
+    <line x1="1098" y1="64" x2="1098" y2="456" stroke="#22343a"/>
+    <text class="band" x="90"  y="56" font-size="12.5" fill="#7e949d">I · Reduction</text>
+    <text class="band" x="618" y="56" font-size="12.5" fill="#e6b450">II · Kazunoko Boom &amp; Bust</text>
+    <text class="band" x="1014" y="56" font-size="12.5" fill="#9a9387">III · Closed</text>
+
+    <!-- log gridlines + y labels ($/t, 2020 CAD) -->
+    <g stroke="#1a2a30">
+      <line x1="70" y1="150" x2="1170" y2="150"/><line x1="70" y1="276" x2="1170" y2="276"/><line x1="70" y1="402" x2="1170" y2="402"/>
+    </g>
+    <text class="ax" x="78" y="146">$10,000</text>
+    <text class="ax" x="78" y="272">$1,000</text>
+    <text class="ax" x="78" y="398">$100</text>
+    <text class="ax" x="70" y="40" fill="#7e949d">↑ EX-VESSEL VALUE — constant 2020 CAD per tonne of whole herring · log scale</text>
+    <line x1="70" y1="456" x2="1170" y2="456" stroke="#3a4f56" stroke-width="1.5"/>
+
+    <!-- area glow under the documented arc -->
+    <path class="areafill" fill="url(#g-area)" d="M741,120 L741,456 L1045,456 L1045,234 Z" opacity=".5"/>
+    <circle cx="741" cy="120" r="118" fill="url(#g-peak)"/>
+
+    <!-- INFERRED trajectory (dashed = no continuous data; this is the open task) -->
+    <path class="pathmain" fill="none" stroke="#7e949d" stroke-width="2.4" stroke-linecap="round"
+      d="M95,430 L596,430"/>
+    <path class="pathmain" fill="none" stroke="#c98f2f" stroke-width="2.4" stroke-linecap="round"
+      d="M649,410 C690,360 715,210 741,120"/>
+    <path class="pathmain" fill="none" stroke="#c08a3a" stroke-width="2.4" stroke-linecap="round"
+      d="M741,120 C800,150 870,210 926,229"/>
+    <!-- documented band 1993–2002 (fleet-average roe) -->
+    <path d="M926,224 L1045,232 L1045,240 L926,234 Z" fill="#aebfc7" opacity=".5"/>
+    <!-- 2002 → 2006 → closed (implied, near-solid) -->
+    <path class="solidseg" fill="none" stroke="#9a9387" stroke-width="2.4" stroke-linecap="round"
+      d="M1045,236 C1070,300 1086,355 1097,380 L1150,392"/>
+
+    <!-- anchor nodes -->
+    <g>
+      <!-- reduction: no data -->
+      <text class="ns" x="330" y="424" text-anchor="middle">no $/t on record — industrial reduction (fishmeal &amp; oil)</text>
+      <line x1="596" y1="430" x2="596" y2="470" stroke="#7e949d" stroke-width="1"/>
+      <text class="ns" x="596" y="484" text-anchor="middle">1968 moratorium · value→0</text>
+
+      <!-- 1972 roe born -->
+      <circle class="node" cx="649" cy="410" r="4" fill="none" stroke="#e6b450" stroke-width="2"/>
+      <text class="ns" x="649" y="402" text-anchor="middle" fill="#c98f2f">1972 · roe fishery born</text>
+
+      <!-- 1979 PEAK — the one clean ex-vessel point -->
+      <circle class="node" cx="741" cy="120" r="6" fill="#f4d488"/>
+      <text class="nl" x="741" y="104" text-anchor="middle" fill="#f4d488">1979 · ≈ $17,300 / t</text>
+      <text class="ns" x="741" y="90" text-anchor="middle" fill="#e6b450">$5,500/ton nominal · prime gillnet roe · SOURCE-STATED</text>
+
+      <!-- 1993–2002 band -->
+      <line x1="986" y1="229" x2="986" y2="200" stroke="#aebfc7" stroke-width="1"/>
+      <circle class="node" cx="986" cy="229" r="4.5" fill="#aebfc7"/>
+      <text class="nl" x="986" y="190" text-anchor="middle">1993–2002 · ≈ $2,300 / t</text>
+      <text class="ns" x="986" y="176" text-anchor="middle">$50M ÷ 32,000 t fleet-avg · IMPLIED (all-gear roe)</text>
+
+      <!-- 2006 -->
+      <line x1="1097" y1="380" x2="1097" y2="418" stroke="#9a9387" stroke-width="1"/>
+      <circle class="node" cx="1097" cy="380" r="4.5" fill="#9a9387"/>
+      <text class="nl" x="1150" y="432" text-anchor="end">2006 · ≈ $150 / t</text>
+      <text class="ns" x="1150" y="446" text-anchor="end">$2.78M ÷ 23,260 t · IMPLIED · HG 0 t through 2022</text>
+    </g>
+
+    <!-- secondary mini-panel: coastwide roe-SEINE landed value, real 2020 $M -->
+    <g transform="translate(0,512)">
+      <text class="axn" x="70" y="-4">coastwide roe-SEINE landed value · real 2020 $M · chart-read ±10% (formal digitization = Task 6)</text>
+      <line x1="70" y1="78" x2="1170" y2="78" stroke="#2a3c42"/>
+      <!-- bars 1992..2004 mapped x 905..1075, height ∝ real $M (max ~64) -->
+      <g fill="#46707a">
+        <rect class="vbar" x="905" y="36" width="9" height="42"/>
+        <rect class="vbar" x="918" y="14" width="9" height="64"/>
+        <rect class="vbar" x="931" y="23" width="9" height="55"/>
+        <rect class="vbar" x="944" y="20" width="9" height="58"/>
+        <rect class="vbar" x="957" y="22" width="9" height="56"/>
+        <rect class="vbar" x="970" y="64" width="9" height="14" fill="#3a5258"/>
+        <rect class="vbar" x="983" y="66" width="9" height="12" fill="#3a5258"/>
+        <rect class="vbar" x="996" y="69" width="9" height="9"  fill="#3a5258"/>
+        <rect class="vbar" x="1009" y="47" width="9" height="31"/>
+        <rect class="vbar" x="1022" y="57" width="9" height="21" fill="#3a5258"/>
+        <rect class="vbar" x="1035" y="55" width="9" height="23" fill="#3a5258"/>
+        <rect class="vbar" x="1048" y="60" width="9" height="18" fill="#3a5258"/>
+        <rect class="vbar" x="1061" y="62" width="9" height="16" fill="#3a5258"/>
+      </g>
+      <text class="axn" x="909" y="92">’92</text>
+      <text class="axn" x="1054" y="92">’04</text>
+      <text class="ns" x="918" y="9" fill="#e6b450">peak ’93 ≈ $64M real</text>
+      <text class="ns" x="996" y="60" text-anchor="middle" fill="#7e949d">’97–’99 crash → ≈ $9–14M</text>
+    </g>
+
+    <!-- x axis years -->
+    <text class="ax" x="95"  y="476" text-anchor="middle">1930</text>
+    <text class="ax" x="362" y="476" text-anchor="middle">1955</text>
+    <text class="ax" x="649" y="500" text-anchor="middle">1972</text>
+    <text class="ax" x="952" y="476" text-anchor="middle">1995</text>
+    <text class="ax" x="1150" y="476" text-anchor="middle">2010</text>
+  </svg>
+  </div>
+
+  <div class="methods">
+    <b>UNITS &amp; METHOD.</b> Primary axis = ex-vessel value in <b>constant 2020 CAD per tonne of whole herring</b>, log scale. Nominal→real via StatCan all-items CPI (2002=100, rebased to 2020≈137) — <b>approximate</b>; the pipeline's Task 8/9 deflation will produce the audited series. &nbsp;·&nbsp; <b>Solid marker</b> = source-stated (1979 $5,500/ton, Haida Marine TEK v3). <b>Implied</b> = annual value ÷ landed tonnage (1993–2002 IFMP avg; 2006 IFMP expected-use). <b>Dashed</b> = no continuous data — the trajectory between anchors is inferred and is precisely what this project reconstructs. &nbsp;·&nbsp; The 1979 (prime gillnet roe) and 1993–2002 (all-gear fleet average) anchors are <b>different baskets</b> — not strictly comparable; shown on one axis with that caveat. SOK / k'aaw are a <b>different commodity</b> ($/lb of product, not whole-herring $/t) and are listed separately below, never merged into this line.
+  </div>
+
+  <!-- ============ THREE ACTS — dual nominal / real 2020$ ============ -->
+  <section class="acts">
+    <article class="act" style="--ac:#9fb6bd">
+      <div class="num">I</div><div class="era">1930 – 1967</div>
+      <h3>Herring as Fertilizer</h3>
+      <p>An industrial <em>reduction</em> fishery — herring to fishmeal and oil, the lowest use a fish can have. Caught for tonnage; no per-tonne price was ever recorded. The only premium product was Haida <em>k'aaw</em>, a barter and craft good. Overfishing then broke the stock and Ottawa closed it all.</p>
+      <ul class="chips">
+        <li><span class="v">240 kt</span> coastwide catch, 1963 — peak volume</li>
+        <li><span class="v">77,500 t</span> Haida Gwaii, 1956 — by just <span class="r">2–3 seine boats</span></li>
+        <li><span class="v">$0.22/lb</span> dried k'aaw, 1930s <span class="r">(nominal, pre-CPI base)</span></li>
+        <li><span class="v">$0 / t</span> 1968 — moratorium, no fishery</li>
+      </ul>
+    </article>
+
+    <article class="act" style="--ac:#e6b450">
+      <div class="num">II</div><div class="era">1972 – 1996</div>
+      <h3>The Kazunoko Boom</h3>
+      <p>Japan's own herring fishery failed — a demand shock <em>outside</em> BC. Only the female roe now mattered, for a near price-inelastic New Year delicacy. The same fish, repriced in Tokyo. Real ex-vessel value hit its all-time high here.</p>
+      <ul class="chips">
+        <li><span class="v">$5,500 / ton</span> gillnet roe, 1979 <span class="r">≈ $17,300/t (2020$)</span></li>
+        <li><span class="v">$0.85/lb</span> early roe→middleman, ’72 <span class="r">≈ $4.5/lb real</span></li>
+        <li><span class="v">$1.2M → $22.4M</span> SOK value, 1977→1996</li>
+        <li><span class="v">≈ $2,300/t</span> fleet-avg roe, 1993–2002 <span class="r">(real)</span></li>
+        <li><span class="v">~440 vessels · 1,520</span> roe licences — the capacity the boom built</li>
+      </ul>
+    </article>
+
+    <article class="act" style="--ac:#9a9387">
+      <div class="num">III</div><div class="era">1996 – 2006 →</div>
+      <h3>The Demand Collapse</h3>
+      <p>Nothing failed in Hecate Strait. Japan stagnated, a generation turned from kazunoko, Alaska and Russia flooded the same market. Then DFO closed Haida Gwaii on a collapsed stock. Price decline and closure land on the same year — the confound this project exists to untangle.</p>
+      <ul class="chips">
+        <li><span class="v">$40 → &lt;$6/lb</span> SOK, 1995→2004 <span class="r">≈ $62 → &lt;$8 real</span></li>
+        <li><span class="v">$64M → $16M</span> roe-seine value, ’93→’04 <span class="r">(real)</span></li>
+        <li><span class="v">≈ $150 / t</span> 2006 — a <span class="r">~99% real fall</span> from ’79</li>
+        <li><span class="v">0 t</span> Haida Gwaii every year 2015–2022 — coast now <span class="r">SoG-only</span></li>
+        <li><span class="v">6,452 t</span> HG rebuilding threshold (LRP) — stock still below</li>
+      </ul>
+    </article>
+  </section>
+
+  <!-- ============ CODA ============ -->
+  <section class="coda">
+    <div>
+      <h4>The other commodity — $/lb of product, real 2020 CAD</h4>
+      <ul class="commod">
+        <li><span class="c">Dried k'aaw, 1930s (artisanal)</span><span class="p">$0.22/lb · nominal</span></li>
+        <li><span class="c">Processed roe → Vancouver buyer, ~1972</span><span class="p">≈ $4.5/lb</span></li>
+        <li><span class="c">Dried k'aaw, direct to Japanese buyers</span><span class="p">up to ≈ $24/lb*</span></li>
+        <li><span class="c">Spawn-on-kelp, 1995 (peak)</span><span class="p">≈ $62/lb</span></li>
+        <li><span class="c">Spawn-on-kelp, 2004</span><span class="p">&lt; ≈ $8/lb</span></li>
+        <li><span class="c">Food &amp; bait, 2006</span><span class="p">≈ $0.19/lb</span></li>
+        <li><span class="c">Special use, 2006</span><span class="p">≈ $0.78/lb</span></li>
+      </ul>
+      <p class="prov" style="margin-top:14px;font-size:.84rem">*undated oral history. These are <b>product</b> prices for a different commodity than the whole-herring $/t line — kept separate by design; converting between them needs roe-recovery / kelp-yield rates we don't yet have.</p>
+    </div>
+    <div>
+      <h4>Provenance &amp; the open task</h4>
+      <p class="prov"><b>Powell / Harris 2012</b>, <i>Western Historical Quarterly</i> · <b>DFO Pacific Herring IFMP</b> (Fig. 9; 2006 expected-use Table 9) · <b>Haida Marine TEK Vol. 3</b> (1979 ex-vessel) · <b>Cleary et al. 2015 / 2024</b> (DFO Pacific Herring status — fleet, post-closure landings, LRP) · Haida oral histories (Jones, Wilson, Williams) · synthesized via the Herring Haida Gwaii NotebookLM library. Haida Gwaii–specific landed values are <b>not separable</b> in the record (PFMA-level reporting); HG figures are share-of-coastwide. The continuous, audited real-price series is not in the literature — building it is the point of this work.</p>
+      <div class="sig">Stier Lab · herring-bioeconomics · backbone v0 · real 2020 CAD</div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduce){
+    const nodes=[...document.querySelectorAll('.node')];
+    nodes.forEach((n,i)=>{ n.style.animationDelay=(3.4+i*0.28)+'s'; });
+    document.querySelectorAll('.nl,.ns').forEach((el,i)=>{ el.style.opacity=0; setTimeout(()=>{el.style.transition='opacity .6s';el.style.opacity=1;}, 3500+i*120); });
+    const bars=[...document.querySelectorAll('.vbar')];
+    bars.forEach((b,i)=>{ b.style.animationDelay=(4.4+i*0.06)+'s'; });
+  }
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.25});
+  document.querySelectorAll('.act').forEach(a=>io.observe(a));
+</script>
+</body>
+</html>

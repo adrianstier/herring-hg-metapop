@@ -1,0 +1,5 @@
+"report_set","model","aic","best"
+"all_11","beverton_holt",1552.10584498944,"beverton_holt"
+"all_11","depensatory",1558.40653591055,"beverton_holt"
+"focal_9","beverton_holt",1543.64337344574,"beverton_holt"
+"focal_9","depensatory",1552.04877467581,"beverton_holt"

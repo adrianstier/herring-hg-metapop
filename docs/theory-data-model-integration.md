@@ -2,6 +2,9 @@
 
 This document is the current source of truth for how ecological ideas in the project are represented in data engineering, Stan inputs, and output products.
 
+> Current baseline, 2026-05-08
+> The promoted practical baseline is `m1_stier_11`, which follows Stier et al. (2020) by treating zero spawn records as ambiguous/missing. The data contract still preserves zero and survey-effort information so detection-aware / left-censored models can be run as sensitivity analyses.
+
 ## One-Sentence Summary
 
 The repository converts section-level spawn surveys, catch, environment, and predator data into a set of aligned matrices and vectors that let competing state-space and occupancy models ask whether herring resilience is limited by synchrony, density dependence, predator recovery, and collective-memory loss.
@@ -29,7 +32,7 @@ The code is easiest to understand if you keep those five layers separate.
 | Density dependence | Growth slows as biomass approaches carrying capacity | Spawn-derived latent biomass | model-internal use of previous `Z` or `X` | `beta`, `K_log` or site-level variants | `m3`, `m4`, `m5`, `m6` | model comparison, parameter summaries |
 | Predator recovery suppresses rebuilding | Marine mammal recovery increases natural mortality or suppresses growth | SSL counts, seal counts, whale abundance | `clean_predators()`, `build_predator_spatial_index()` | region-level `ssl`, `seal`, `whale`; site-level spatial `ssl`, `seal`; masks `pred_obs`, `whale_obs` | `herring_metapop_m5_predators.stan`, `herring_metapop_m6_timevarying.stan`, `herring_metapop_v2.stan` | predator parameter summaries, `fig_predator_effects()` |
 | Collective memory / site fidelity | Previous occupancy changes current occupancy beyond biomass alone | Spawn survey effort and detected spawning | `prepare_occupancy_data()`, `compute_site_occupancy()` | `occupied`, `surveyed`, `log_N_total`, optional `age_index` | `site_occupancy.stan` | `fig_occupancy_heatmap()`, `fig_recolonization()` |
-| Surveyed zero vs not surveyed | A biologically observed zero is not the same as missing effort | Legacy + DFO spawn survey effort | `clean_spawn()`, `prepare_model_data()`, `prepare_censored_data()`, and occupancy prep | `Y_obs`, `Y_censored`, `Y_missing`; `occupied` / `surveyed` in occupancy model | current threshold-aware observation models and occupancy model | occupancy and censored-observation diagnostics |
+| Surveyed zero vs not surveyed | A reported zero is not automatically biological absence | Legacy + DFO spawn survey effort | `clean_spawn()`, `prepare_model_data()`, `prepare_censored_data()`, and occupancy prep | `Y_obs`, `Y_censored`, `Y_missing`; `occupied` / `surveyed` in occupancy model | `m1_stier_11` baseline treats zeros as ambiguous; threshold-aware models are sensitivities | occupancy and censored-observation diagnostics |
 
 ## Data Semantics That Matter
 
@@ -37,7 +40,8 @@ The code is easiest to understand if you keep those five layers separate.
 
 This is the single most important semantic detail in the repository.
 
-- In the continuous biomass models, positive spawn values are logged, while surveyed zeros are carried as separate censored cells.
+- In the data contract, positive spawn values are logged, while zero records can be carried as separate censored cells for sensitivity models.
+- In the promoted `m1_stier_11` baseline, zero spawn records are treated as ambiguous/missing following Stier et al. (2020).
 - A log-scale `NA` for a zero does not mean the site-year is missing in a scientific sense.
 - The maintained cleaning path uses survey-effort columns to classify whether the site was:
   - surveyed and no spawning was found,

@@ -9,6 +9,12 @@
 # Source 00_setup.R before calling any of these.
 # ============================================================================
 
+# Reader note:
+# This file is where geography enters the maintained workflow. Its most
+# important job is not geospatial analysis per se, but enforcing that every
+# spatial object uses the same section order and naming contract as the
+# biomass, catch, and posterior matrices.
+
 # ── Distance matrix from Excel ──────────────────────────────────────────────
 
 #' Load the effective distance matrix between herring spawning sections
@@ -49,7 +55,11 @@ load_distance_matrix <- function(path_xlsx,
          paste(available_sheets, collapse = ", "))
   }
 
-  raw <- readxl::read_excel(path_xlsx, sheet = sheet)
+  raw <- readxl::read_excel(
+    path_xlsx,
+    sheet = sheet,
+    .name_repair = "minimal"
+  )
 
   # ---- Extract section IDs from first column (rows 1:13) ----
   # Column 1 holds section IDs as characters: "1","2","3","4","5","6",
@@ -144,12 +154,19 @@ compute_distance_matrix <- function(spawn_clean = NULL,
   # ---- Get coordinates per section ----
   if (!is.null(spawn_coords)) {
     # User-provided coordinates
+    lat_col <- if ("lat" %in% names(spawn_coords)) "lat" else "latitude"
+    lon_col <- if ("lon" %in% names(spawn_coords)) "lon" else "longitude"
+
+    if (!all(c(lat_col, lon_col) %in% names(spawn_coords))) {
+      stop("spawn_coords must contain either lat/lon or latitude/longitude")
+    }
+
     coords <- spawn_coords |>
       filter(section %in% SECTIONS_KEEP) |>
       group_by(section) |>
       summarise(
-        lat = mean(latitude, na.rm = TRUE),
-        lon = mean(longitude, na.rm = TRUE),
+        lat = mean(.data[[lat_col]], na.rm = TRUE),
+        lon = mean(.data[[lon_col]], na.rm = TRUE),
         .groups = "drop"
       )
   } else if (!is.null(path_spawn_csv)) {
@@ -548,7 +565,11 @@ get_spawn_centroids <- function(path_spawn_csv = NULL,
 #' @keywords internal
 get_coords_from_distance_xlsx <- function(path_xlsx) {
 
-  raw <- readxl::read_excel(path_xlsx, sheet = "Herring Effective")
+  raw <- readxl::read_excel(
+    path_xlsx,
+    sheet = "Herring Effective",
+    .name_repair = "minimal"
+  )
 
   # Lookup table is in rows 20-32 (1-indexed), which is R rows 20:32
   # after the header. Column 1 = section_id, column 4 (Id4 in full sheet) = longitude

@@ -1,0 +1,97 @@
+
+                 model {  
+                
+                 # POPULATION GROWTH: random variable from shared mean and sd across populations
+                 Umu ~ dnorm(0,1); #average population growth
+                 Usig ~ dunif(0,100); 
+                 Utau <- 1/(Usig*Usig); 
+                 
+                 for(i in 1:nSites) {
+                 U[i] ~ dnorm(Umu,Utau);
+                 }
+
+                 #COVARIATES
+                 pdocoef~dnorm(0,1);
+                 
+                 #SPATIAL COVARIANCE
+                 tau ~ dgamma(0.01,0.01);
+                 sigma2 <- 1/tau;
+                 invEta ~ dgamma(0.01,0.01);
+                 eta <- 1/invEta;
+                 logtheta ~ dnorm(0,0.01);
+                 theta <- exp(logtheta);
+                 
+                 for(i in 1:nSites) {
+                  for(j in 1:nSites) {
+                      Q[i,j] <- sigma2 * exp(-theta * distMat5[i,j]) + eta*diag[i,j];
+                 }
+                 }   
+                 
+                 # JAGS wants us to use the matrix inverse
+                 tauQ[1:nSites,1:nSites] <- inverse(Q[1:nSites,1:nSites]);
+                 
+                 
+                 # Estimate the initial state vector of population abundances
+                 for(j in 1:nSites) {
+                        X[1,j] ~ dnorm(20,0.1); # vague normal prior for first time step
+                        Z[1,j] <- X[1,j]-log(1-Pc[1,j])
+                 }
+
+                
+
+                 # AUTOREGRESSIVE PROCESS for remaining years
+                 for(j in 1:nSites) {zeros[j]<-0;}
+                        delta[1,1:nSites] ~ dmnorm(zeros,tauQ[1:nSites,1:nSites]);
+                 
+                 for(i in 2:nYears) {
+                        delta[i,1:nSites] ~ dmnorm(delta[i-1,1:nSites],tauQ[1:nSites,1:nSites]);
+                  for(j in 1:nSites) {
+  
+                 
+                 #fishing by site and global pdo estimates and U estimates 
+                 dummy[i-1,j] <- X[i-1,j]+U[j]+pdocoef*pdo[i-1]; 
+            
+                 
+                 #make second dummy variable Z to add in the delta param
+                 Z[i,j] <- dummy[i-1,j]+delta[i,j]; 
+                 
+                 
+                 #Estimate the state X with catch by site 
+                 
+                 X[i,j] <-Z[i,j]+log(1-Pc[i,j]);
+
+                 
+                   }
+                 }
+                 
+                 # OBSERVATION MODEL  
+                 
+                 #Variance Terms for Obs Model PRIORS
+                 #tauR ~ dgamma(0.001,0.001);
+                 tauR ~ dunif(1,100); #this is in variance prior for SHI
+                 #psi ~ 0.1 #dunif(0,10) #this is in variance for fishing increase 2nd val for lower var window
+                
+                for(i in 1:nYears) {
+                  for(j in 1:nSites) {
+                Pc[i,j] ~ dbeta(1,1);#Fraction of Spawn Observed 
+                  }
+                }
+
+                q ~ dgamma(.02,0.001);  #Fraction of Catch Observed: Pc
+
+                 
+
+
+
+
+                 for(i in 1:nYears) {
+                  for(j in 1:nSites) {
+                    Y[i,j] ~ dnorm(X[i,j]*q,1/tauR); #obs eq for spawn index 
+                    tl[i,j]<-Z[i,j]+log(Pc[i,j])+1
+                    ctab[i,j] ~ dnorm(tl[i,j],1/.1)
+                    #ctab[i,j] ~ dnorm(tl[i,j],1/psi) #obs equation for catch
+                    }
+                   }
+                  }  
+                 
+                 
