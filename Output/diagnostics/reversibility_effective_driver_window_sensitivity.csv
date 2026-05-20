@@ -1,0 +1,9 @@
+"window","label","n","reference_median","recent_median","gate_returned"
+"1951-1969","early industrial",19,-0.0227,-0.1547,TRUE
+"1951-2004","full pre-2005",54,0.0522,-0.1547,TRUE
+"1951-1989","pre-1990",39,-0.0221,-0.1547,TRUE
+"1972-2004","roe era (PRIMARY)",33,0.149,-0.1547,TRUE
+"1980-2004","tight pre-collapse",25,0.3116,-0.1547,TRUE
+"1951-1965","pre-roe reduction era",15,-0.2511,-0.1547,FALSE
+"1951-1972","incl. roe-era start",22,-0.1681,-0.1547,FALSE
+"1960-1975","reduction->early-roe",16,-0.1681,-0.1547,FALSE

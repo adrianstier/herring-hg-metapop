@@ -1,0 +1,7 @@
+"field","observed_value","measurement_status"
+"nonlinear","FALSE","GENUINE (S-map theta test, n=75)"
+"lambda_failed_to_relax","TRUE (post-closure Jacobian trend=0.0136)","GENUINE (post-closure Jacobian trend, n=20)"
+"new_potential_well","NA (NOT ESTIMABLE at n=20)","NA: post-closure potential landscape NOT ESTIMABLE at n=20 (underpowered, degenerate contract)"
+"loop_p","0.0020","GENUINE (500-replicate survey-artifact null, full series)"
+"effective_driver_returned","TRUE (composite recent median=-0.155 vs roe-era median=0.149)","GENUINE (composite net pressure: recent>=2015 median=-0.155 vs roe-era 1972-2004 median=0.149; n_ref=33, n_recent=10)"
+"artifact_reproduces","FALSE","GENUINE (loop_null_p=0.0020; >=0.05 would mean artifact reproduces)"
