@@ -362,3 +362,21 @@ test_that("candidate transitions output: schema, documented eras present, conven
   expect_true(all(d$year >= 1951 & d$year <= 2026))
   expect_true(is.integer(d$year) || all(d$year == as.integer(d$year)))
 })
+
+test_that("surrogate significance output: schema, ranges, both pre_window variants", {
+  f <- here::here("Output","diagnostics","ews_surrogate_significance.csv")
+  skip_if_not(file.exists(f), "ews_surrogate_significance.csv absent — run Code/11_ews_05_surrogate_significance.R first")
+  d <- readr::read_csv(f, show_col_types = FALSE)
+  expect_true(all(c("tier","layer","unit","indicator","window_def",
+                    "pre_window","n","tau","p_value") %in% names(d)))
+  expect_setequal(unique(d$layer), c("observed","latent"))
+  expect_setequal(unique(d$unit),  c("all11","core9"))
+  expect_setequal(unique(d$pre_window), c("full","pre1966"))
+  expect_setequal(unique(d$tier), c(1,2,3))
+  finite <- d[is.finite(d$tau) & is.finite(d$p_value), ]
+  expect_true(nrow(finite) > 50)                                           # real signal
+  expect_true(all(finite$tau >= -1 - 1e-9 & finite$tau <= 1 + 1e-9))       # Kendall in [-1,1]
+  expect_true(all(finite$p_value >= 0 - 1e-9 & finite$p_value <= 1 + 1e-9))
+  # at least one strong-trend row should be significant (sanity)
+  expect_true(any(finite$p_value < 0.05))
+})
