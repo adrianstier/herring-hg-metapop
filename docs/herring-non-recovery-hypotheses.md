@@ -262,7 +262,7 @@ SES); deYoung et al. 2008 *TREE*; Möllmann et al. 2009 *Glob Change Biol*.
 ## 12. Acquisition list (PDFs/sources to add)
 
 Priority for the talk + idea bank. Drop into `Literature/`, the dossier
-`talk-usuk-forum-2026/Reference_Papers/`, and/or the relevant NotebookLM
+`analysis/04_talks/2026-royalsociety/Reference_Papers/`, and/or the relevant NotebookLM
 notebook; then log here and re-ground citations.
 
 - **High (talk-critical):** Cleary et al. 2024 DFO CSAS (HG vs coastwide);

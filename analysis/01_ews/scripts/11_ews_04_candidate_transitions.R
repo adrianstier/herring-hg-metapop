@@ -45,7 +45,7 @@
 #   occupancy : effective_n from portfolio_metrics_annual.csv; full span
 #               1951:2025.
 #
-# Firewall: does NOT import from talk-usuk-forum-2026/; does NOT modify R/11.
+# Firewall: does NOT import from analysis/04_talks/2026-royalsociety/; does NOT modify R/11.
 # ============================================================================
 
 suppressPackageStartupMessages({

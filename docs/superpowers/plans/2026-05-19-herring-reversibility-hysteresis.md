@@ -15,7 +15,7 @@
 
 ## Self-containment & firewall invariants (hold for every task)
 
-- Nothing under `talk-usuk-forum-2026/` is ever `source()`d or read by `R/` or `Code/`. Talk pulls *from* these outputs only.
+- Nothing under `analysis/04_talks/2026-royalsociety/` is ever `source()`d or read by `R/` or `Code/`. Talk pulls *from* these outputs only.
 - Latent layer = `m1_stier_11` only. No held branches. No new Stan branches. No DFO-SCA as a data layer. Predator products enter the effective-driver composite as *context only*, provenance-tagged, no promoted coefficient.
 - Every dynamical index is computed over `m1_stier_11` posterior draws → median + CI, never a point estimate, never collapsed before the CI.
 - Fixed, recorded seeds on every surrogate/simulation/bootstrap step.
@@ -1036,7 +1036,7 @@ git commit -m "feat(reversibility): discrimination_table (four-explanation score
 
 ## Phase 7 — Diagnostic scripts + synthesis
 
-> Pattern for every script: `source("R/12_reversibility.R")`; read inputs from `Data/processed/` + `Output/diagnostics/m1_stier_11_*`; loop over posterior draws where the spec requires CIs; `dir.create("Output/diagnostics", showWarnings=FALSE)`; write CSV/MD; print a one-line `[reversibility]` summary. No `talk-usuk-forum-2026/` reads.
+> Pattern for every script: `source("R/12_reversibility.R")`; read inputs from `Data/processed/` + `Output/diagnostics/m1_stier_11_*`; loop over posterior draws where the spec requires CIs; `dir.create("Output/diagnostics", showWarnings=FALSE)`; write CSV/MD; print a one-line `[reversibility]` summary. No `analysis/04_talks/2026-royalsociety/` reads.
 
 ### Task 16: `Code/12_reversibility_01_driver_axis.R`
 

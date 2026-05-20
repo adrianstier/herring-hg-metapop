@@ -63,7 +63,7 @@ Last updated: 2026-05-18 (S8 realized-growth redesigned as a slopegraph and swit
 ### Current talk outline — 20-slide production plan
 
 The canonical talk sequence is now
-`talk-usuk-forum-2026/Talk_Materials/talk_production_plan.md`: a 20-slide
+`analysis/04_talks/2026-royalsociety/Talk_Materials/talk_production_plan.md`: a 20-slide
 working plan for the Royal Society ecosystem-services session, plus backup
 slides for likely questions. Older `talk_outline_v1.md` and
 `talk_outline_v2.md` remain useful for citation maps and rigor corrections,
@@ -124,7 +124,7 @@ plan and the claim-control sheet.
 | TP-11 | doc | **Herring non-recovery hypotheses & cross-system idea bank** | `docs/herring-non-recovery-hypotheses.md` | ready | mechanism menu (cod + herring lit), HG support ranking, contested-recovery nuance, governance-under-uncertainty solutions; **the place for talk hypotheses/ideas** |
 | TP-12 | doc | **Talk model claim control sheet** | `docs/talk-model-claim-control-sheet.md` | ready | safe/unsafe language for every model, predator, recovery, DFO, and Doherty claim |
 | TP-13 | doc | **Doherty-style HG gap table** | `docs/doherty-style-hg-gap-table.md` | ready | concise replication-gap table: present vs provisional vs missing vs proxy-only |
-| TP-14 | doc | **20-slide talk production plan + backup/Q&A slides** | `talk-usuk-forum-2026/Talk_Materials/talk_production_plan.md` | ready | canonical slide order, treatment rhythm, asset wiring, likely-question backup slides |
+| TP-14 | doc | **20-slide talk production plan + backup/Q&A slides** | `analysis/04_talks/2026-royalsociety/Talk_Materials/talk_production_plan.md` | ready | canonical slide order, treatment rhythm, asset wiring, likely-question backup slides |
 | TP-15 | doc | **Heatwave / bottom-up model scope** | `Output/diagnostics/heatwave_bottomup_scope.md` | ready | Smale/Cavan Q&A answer: Blob as stress-test context, PDO as full-era climate term, no AWS heatwave branch unless a local gate clears |
 
 ### 3b. Figures (this repo)
@@ -193,40 +193,40 @@ here). Fetch any item by id with
 | DRV-2019 | dir | `stier-2019-herring-metapop/` legacy repo snapshot (Code/Data/Output) | folder `1teV6jtggO8CwT-oZUfgLmuA2zNimBm7O` | raw-material | legacy analysis/figure provenance |
 | DRV-ARCHIVE | dir | `archive/` (2026-iterations, intermediate-extractions, legacy-source) | folder `1Lybo8zo8N6_yFzl218mEXgXsKrv_Iyxk` | external | older iterations; provenance only |
 
-### 3g. In-repo forum dossier — `talk-usuk-forum-2026/` (firewalled from core)
+### 3g. In-repo forum dossier — `analysis/04_talks/2026-royalsociety/` (firewalled from core)
 
 The Desktop `USUK_Forum_2026_Project` was moved into the repo on 2026-05-16 as
-`talk-usuk-forum-2026/` — a **TALK-ONLY** workspace, firewalled from the core
+`analysis/04_talks/2026-royalsociety/` — a **TALK-ONLY** workspace, firewalled from the core
 analysis (see that folder's `README.md`). Heavy PDFs are gitignored (on
 disk + Drive, same policy as `Literature/`); structure + working text/HTML are
 tracked. **This is the home for the talk outline / drafts / deck.**
 
 | id | type | title | location | status | use-for |
 |---|---|---|---|---|---|
-| FRM-README | doc | Workspace README + separation rule | `talk-usuk-forum-2026/README.md` | ready | read first; firewall + how it relates to this index |
-| FRM-INDEX | doc | Original archive index (provenance) | `talk-usuk-forum-2026/INDEX.txt` | ready | dossier provenance (exported 2026-05-16 Tahiti) |
-| FRM-AGENDA | pdf | Draft forum agenda (use `*_readable.pdf`) | `talk-usuk-forum-2026/Forum_Documents/` | data | confirm slot/session details |
-| FRM-TIMELINE | html | Interactive HG herring timeline | `talk-usuk-forum-2026/Talk_Materials/herring_haida_gwaii_timeline.html` | raw-material | narrative/timeline device |
-| FRM-TRIP | html | Trip dossier (flights, programme, forms, contacts) | `talk-usuk-forum-2026/Trip_Dossier/` | local-only | logistics — not talk content; gitignored because private |
-| FRM-DOSS | html/csv | **Attendee dossier + networking tool — all 49 other attendees** (booklet v3) | `talk-usuk-forum-2026/Attendee_Dossier/` | local-only | who's-in-the-room prep + networking strategy. Built from `US-UK_Forum_2026_programme_booklet_v3.pdf` (canonical; v3 dropped Beatriz Arellano Nava → 49, retimed Mon reception 18:30–20:30 and Wed Session 6). `attendee_dossier.html` (self-contained): priority-ranked photo gallery (tiers Must/Strategic/Field/Context), per-person *why-talk / opener hook / talk-resonance*, a localStorage trip tracker (spoke/follow-up/notes + export), and an itinerary tab with networking windows + your ★ talk slot. Photos verified page-by-page vs the booklet (position-based mapping; an earlier extraction-order bug that scrambled multi-photo pages was fixed; ver1-verified photos retained since v3 headshots are identical). `attendee_dossier.csv` = structured DB. **CONFIDENTIAL — built from the "do not circulate" participant list; gitignored, never commit/publish.** Method/provenance in `README.md`; disambiguations in `VERIFICATION.md`. Refresh: `python3 pull_papers.py && python3 build_dossier.py` (roster/networking/schedule are curated, edit by hand) |
-| FRM-PAPERS | pdf/doc | Curated cited papers + acquisition log (PDFs gitignored) | `talk-usuk-forum-2026/Reference_Papers/` | raw-material | Doherty 2025, Ingeman 2019, Levin 2020, Okamoto 2020, Samhouri 2017, Selkoe 2015, Shelton 2014, Stier 2016, Stier 2020, plus newly acquired forum papers; source state in `ACQUISITION_LOG.md` |
-| FRM-WORK | dir | **Talk outline / slide drafts / deck go here** | `talk-usuk-forum-2026/Talk_Materials/` | draft | working talk build location |
-| FRM-PROD | doc | **Canonical 20-slide production plan** | `talk-usuk-forum-2026/Talk_Materials/talk_production_plan.md` | ready | current slide sequence, treatment rhythm, asset wiring, backup/Q&A slides |
-| FRM-S8 | doc | **S8/S12 landed-value provenance** | `talk-usuk-forum-2026/Talk_Materials/S8_landed_value_provenance.md` | ready | source-corrected value-layer claim; Rebuilding Plan Figs 31/32; closes Gap A |
-| FRM-VALUEFIGS | png/doc | **Rebuilding Plan value figure crops** | `talk-usuk-forum-2026/Talk_Materials/figs/` | ready | rendered Fig 31/32 landed-value crops plus provenance for S12 value-layer slide |
-| FRM-BUILD1 | html | **Three-layer spine build** | `talk-usuk-forum-2026/Talk_Materials/build1_spine.html` | draft | recurring SPINE visual for slides 2, 12, and 20; structurally complete, still needs browser/render QA |
-| FRM-NUMBERS | doc | **Portfolio-number provenance** | `talk-usuk-forum-2026/Talk_Materials/numbers_provenance.md` | ready | reconciles current `m1_stier_11` metrics versus Stier 2020 published annotations |
-| FRM-DECKDEC | doc | **Deck build decision** | `talk-usuk-forum-2026/Talk_Materials/deck_build_decision.md` | ready | decision to build a fresh 20-slide expert deck, using Drive assets as source material |
-| FRM-S15 | png/doc | **S15 cognitive-map figure crops and provenance** | `talk-usuk-forum-2026/Talk_Materials/S15_cognitive_map_provenance.md`, `talk-usuk-forum-2026/Talk_Materials/figs/cognitive_maps/` | ready | Stier 2016 cognitive-map proof object; preferred Figure 5 crop plus Figure 2 backup |
-| FRM-S19 | doc | **S19 co-governance imagery provenance** | `talk-usuk-forum-2026/Talk_Materials/S19_cogovernance_imagery_provenance.md` | ready | official AMB image source, blockade/history source, signing-photo caveats |
-| FRM-S20 | doc | **S20 solution payload** | `talk-usuk-forum-2026/Talk_Materials/S20_solution_payload.md` | ready | final three-part close: measure structure, manage exposure, build missing data spine |
-| FRM-BLOCK | doc | **Talk blocker resolution log** | `talk-usuk-forum-2026/Talk_Materials/blocker_resolution_2026-05-17.md` | ready | compact handoff of resolved/bounded blockers and remaining production work |
-| FRM-ARCH | html | **Confirmed 14-slide talk architecture (3 parts)** | `talk-usuk-forum-2026/Talk_Materials/talk_architecture_{1_outline,2_speaker_notes,3_figures_layout}.html` | ready | the current confirmed spine: acts/timings, per-slide say/cue/transition, per-slide wireframe + asset manifest |
-| FRM-MAP | doc | **Slide → asset map (14-slide spine)** | `talk-usuk-forum-2026/Talk_Materials/slide_asset_map.md` | ready | production checklist: every slide wired to concrete asset files + guardrail + action; gaps and build order |
-| FRM-QA | doc | **Q&A backup slides (20 cards, themed)** | `talk-usuk-forum-2026/Talk_Materials/qa_backup_slides.md` | ready | audience-anchored appendix cards: question · answer line · proof object · do-not-say guardrail; supersedes the talk_production_plan.md B1–B8 list |
-| FRM-DECOUP | html | **Slide 12 — four-layer decoupling figure** | `talk-usuk-forum-2026/Talk_Materials/herring_decoupling_figure.html` | ready | the payoff figure: cultural/ecological/economic tips on different clocks + co-governance rising; management-window band; build1_spine visual language; governance track schematic (not an outcome metric) |
-| FRM-SLIDES | html | **Built slide artifacts S5/S7/S11/S13** | `talk-usuk-forum-2026/Talk_Materials/s5_two_collapses.html`, `s7_two_scales.html`, `s11_triple_bottom_line.html`, `s13_takeaways.html` | ready | rendered + QA'd schematic/text slides in the deck visual language; sourced/claim-safe |
-| FRM-DESIGN | doc | **Deck design system (THE build contract)** | `talk-usuk-forum-2026/Talk_Materials/deck_design_system.md` | ready | canvas, type scale, palette, zone templates, no-stretch rule, R-figure re-export spec, per-slide build map, pipeline; image-rendered deck decision (venue PC lacks the fonts) |
+| FRM-README | doc | Workspace README + separation rule | `analysis/04_talks/2026-royalsociety/README.md` | ready | read first; firewall + how it relates to this index |
+| FRM-INDEX | doc | Original archive index (provenance) | `analysis/04_talks/2026-royalsociety/INDEX.txt` | ready | dossier provenance (exported 2026-05-16 Tahiti) |
+| FRM-AGENDA | pdf | Draft forum agenda (use `*_readable.pdf`) | `analysis/04_talks/2026-royalsociety/Forum_Documents/` | data | confirm slot/session details |
+| FRM-TIMELINE | html | Interactive HG herring timeline | `analysis/04_talks/2026-royalsociety/Talk_Materials/herring_haida_gwaii_timeline.html` | raw-material | narrative/timeline device |
+| FRM-TRIP | html | Trip dossier (flights, programme, forms, contacts) | `analysis/04_talks/2026-royalsociety/Trip_Dossier/` | local-only | logistics — not talk content; gitignored because private |
+| FRM-DOSS | html/csv | **Attendee dossier + networking tool — all 49 other attendees** (booklet v3) | `analysis/04_talks/2026-royalsociety/Attendee_Dossier/` | local-only | who's-in-the-room prep + networking strategy. Built from `US-UK_Forum_2026_programme_booklet_v3.pdf` (canonical; v3 dropped Beatriz Arellano Nava → 49, retimed Mon reception 18:30–20:30 and Wed Session 6). `attendee_dossier.html` (self-contained): priority-ranked photo gallery (tiers Must/Strategic/Field/Context), per-person *why-talk / opener hook / talk-resonance*, a localStorage trip tracker (spoke/follow-up/notes + export), and an itinerary tab with networking windows + your ★ talk slot. Photos verified page-by-page vs the booklet (position-based mapping; an earlier extraction-order bug that scrambled multi-photo pages was fixed; ver1-verified photos retained since v3 headshots are identical). `attendee_dossier.csv` = structured DB. **CONFIDENTIAL — built from the "do not circulate" participant list; gitignored, never commit/publish.** Method/provenance in `README.md`; disambiguations in `VERIFICATION.md`. Refresh: `python3 pull_papers.py && python3 build_dossier.py` (roster/networking/schedule are curated, edit by hand) |
+| FRM-PAPERS | pdf/doc | Curated cited papers + acquisition log (PDFs gitignored) | `analysis/04_talks/2026-royalsociety/Reference_Papers/` | raw-material | Doherty 2025, Ingeman 2019, Levin 2020, Okamoto 2020, Samhouri 2017, Selkoe 2015, Shelton 2014, Stier 2016, Stier 2020, plus newly acquired forum papers; source state in `ACQUISITION_LOG.md` |
+| FRM-WORK | dir | **Talk outline / slide drafts / deck go here** | `analysis/04_talks/2026-royalsociety/Talk_Materials/` | draft | working talk build location |
+| FRM-PROD | doc | **Canonical 20-slide production plan** | `analysis/04_talks/2026-royalsociety/Talk_Materials/talk_production_plan.md` | ready | current slide sequence, treatment rhythm, asset wiring, backup/Q&A slides |
+| FRM-S8 | doc | **S8/S12 landed-value provenance** | `analysis/04_talks/2026-royalsociety/Talk_Materials/S8_landed_value_provenance.md` | ready | source-corrected value-layer claim; Rebuilding Plan Figs 31/32; closes Gap A |
+| FRM-VALUEFIGS | png/doc | **Rebuilding Plan value figure crops** | `analysis/04_talks/2026-royalsociety/Talk_Materials/figs/` | ready | rendered Fig 31/32 landed-value crops plus provenance for S12 value-layer slide |
+| FRM-BUILD1 | html | **Three-layer spine build** | `analysis/04_talks/2026-royalsociety/Talk_Materials/build1_spine.html` | draft | recurring SPINE visual for slides 2, 12, and 20; structurally complete, still needs browser/render QA |
+| FRM-NUMBERS | doc | **Portfolio-number provenance** | `analysis/04_talks/2026-royalsociety/Talk_Materials/numbers_provenance.md` | ready | reconciles current `m1_stier_11` metrics versus Stier 2020 published annotations |
+| FRM-DECKDEC | doc | **Deck build decision** | `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_build_decision.md` | ready | decision to build a fresh 20-slide expert deck, using Drive assets as source material |
+| FRM-S15 | png/doc | **S15 cognitive-map figure crops and provenance** | `analysis/04_talks/2026-royalsociety/Talk_Materials/S15_cognitive_map_provenance.md`, `analysis/04_talks/2026-royalsociety/Talk_Materials/figs/cognitive_maps/` | ready | Stier 2016 cognitive-map proof object; preferred Figure 5 crop plus Figure 2 backup |
+| FRM-S19 | doc | **S19 co-governance imagery provenance** | `analysis/04_talks/2026-royalsociety/Talk_Materials/S19_cogovernance_imagery_provenance.md` | ready | official AMB image source, blockade/history source, signing-photo caveats |
+| FRM-S20 | doc | **S20 solution payload** | `analysis/04_talks/2026-royalsociety/Talk_Materials/S20_solution_payload.md` | ready | final three-part close: measure structure, manage exposure, build missing data spine |
+| FRM-BLOCK | doc | **Talk blocker resolution log** | `analysis/04_talks/2026-royalsociety/Talk_Materials/blocker_resolution_2026-05-17.md` | ready | compact handoff of resolved/bounded blockers and remaining production work |
+| FRM-ARCH | html | **Confirmed 14-slide talk architecture (3 parts)** | `analysis/04_talks/2026-royalsociety/Talk_Materials/talk_architecture_{1_outline,2_speaker_notes,3_figures_layout}.html` | ready | the current confirmed spine: acts/timings, per-slide say/cue/transition, per-slide wireframe + asset manifest |
+| FRM-MAP | doc | **Slide → asset map (14-slide spine)** | `analysis/04_talks/2026-royalsociety/Talk_Materials/slide_asset_map.md` | ready | production checklist: every slide wired to concrete asset files + guardrail + action; gaps and build order |
+| FRM-QA | doc | **Q&A backup slides (20 cards, themed)** | `analysis/04_talks/2026-royalsociety/Talk_Materials/qa_backup_slides.md` | ready | audience-anchored appendix cards: question · answer line · proof object · do-not-say guardrail; supersedes the talk_production_plan.md B1–B8 list |
+| FRM-DECOUP | html | **Slide 12 — four-layer decoupling figure** | `analysis/04_talks/2026-royalsociety/Talk_Materials/herring_decoupling_figure.html` | ready | the payoff figure: cultural/ecological/economic tips on different clocks + co-governance rising; management-window band; build1_spine visual language; governance track schematic (not an outcome metric) |
+| FRM-SLIDES | html | **Built slide artifacts S5/S7/S11/S13** | `analysis/04_talks/2026-royalsociety/Talk_Materials/s5_two_collapses.html`, `s7_two_scales.html`, `s11_triple_bottom_line.html`, `s13_takeaways.html` | ready | rendered + QA'd schematic/text slides in the deck visual language; sourced/claim-safe |
+| FRM-DESIGN | doc | **Deck design system (THE build contract)** | `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_design_system.md` | ready | canvas, type scale, palette, zone templates, no-stretch rule, R-figure re-export spec, per-slide build map, pipeline; image-rendered deck decision (venue PC lacks the fonts) |
 
 ---
 
@@ -311,7 +311,7 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
     **lead with solutions.**
 - **2026-05-16 (talk outline v1 drafted):** Working slide-by-slide outline +
   speaker notes + per-slide asset map at
-  **`talk-usuk-forum-2026/Talk_Materials/talk_outline_v1.md`** — 17 slides,
+  **`analysis/04_talks/2026-royalsociety/Talk_Materials/talk_outline_v1.md`** — 17 slides,
   Spine B, hysteresis-led, solutions-forward, cod↔herring grammar, HG-as-
   within-coast-exception; predator pit explicitly down-weighted. Includes a
   CREATE-NEW figure list (priority: S9 coupled-feedback diagram, S7 mechanism
@@ -324,10 +324,10 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
   theory spine. It is now retained for its citation map and rigor corrections;
   the canonical slide order is the later 20-slide production plan. Papers
   Adrian must fetch listed in
-  **`talk-usuk-forum-2026/Talk_Materials/papers_to_acquire.md`** (7 must-get).
+  **`analysis/04_talks/2026-royalsociety/Talk_Materials/papers_to_acquire.md`** (7 must-get).
 - **Deck location:** build phase started. Canonical outline =
-  `talk-usuk-forum-2026/Talk_Materials/talk_production_plan.md`. **First built
-  artifact: `talk-usuk-forum-2026/Talk_Materials/build1_spine.html`** — the
+  `analysis/04_talks/2026-royalsociety/Talk_Materials/talk_production_plan.md`. **First built
+  artifact: `analysis/04_talks/2026-royalsociety/Talk_Materials/build1_spine.html`** — the
   recurring three-layer SPINE (slides 2/12/20), event-driven, timeline visual
   language, on-slide provenance, schematic curves clearly labelled, reconciled
   numbers + correct Stier-2020 attribution. Built & structurally complete;
@@ -372,9 +372,9 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
     EWS framing; portfolio = the *mechanism* explained, not the headline).
     Coupling (social↔ecological, bidirectional) is the novelty; close on a
     structural co-governance intervention; solutions-forward.
-  - **In-repo dossier created:** `talk-usuk-forum-2026/` (moved from Desktop),
+  - **In-repo dossier created:** `analysis/04_talks/2026-royalsociety/` (moved from Desktop),
     firewalled from core analysis, registered as §3g. Talk outline/drafts/deck
-    live in `talk-usuk-forum-2026/Talk_Materials/`.
+    live in `analysis/04_talks/2026-royalsociety/Talk_Materials/`.
   - **Still open (brainstorm):** (a) confirm hysteresis is the load-bearing
     ecological hook; (b) the close — the exact ask of the room. Then the deck.
 - **2026-05-16 (NotebookLM cod+herring synthesis → idea bank):** Queried the
@@ -411,7 +411,7 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
   2015; Gerrard 2014; Essington 2015). **Discovered + fixed:** the 9 original
   dossier "PDFs" were ZIP bundles of page JPEGs — repaired into valid
   (image-only, not text-searchable) PDFs; originals kept as `*.imgzip.bak`.
-  Full state in `talk-usuk-forum-2026/Reference_Papers/ACQUISITION_LOG.md`.
+  Full state in `analysis/04_talks/2026-royalsociety/Reference_Papers/ACQUISITION_LOG.md`.
   **This state is superseded by the acquisition updates below.** Ready
   `download-papers` TSV is in the ACQUISITION_LOG.
 - **2026-05-16 (acquisition near-complete):** ✅ HG Herring **Rebuilding Plan
@@ -432,7 +432,7 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
   gitignored.
 - **2026-05-17 (canonical production plan + asset wiring):** Adrian supplied a
   full **production plan** → canonical and later expanded to 20 slides:
-  `talk-usuk-forum-2026/Talk_Materials/talk_production_plan.md` (separability /
+  `analysis/04_talks/2026-royalsociety/Talk_Materials/talk_production_plan.md` (separability /
   three-layer / management-window thesis; 20 slides; 4 dynamic builds; 5
   treatments). `talk_outline_v2.md` demoted to citation-map/rigor-constraints.
   Appended an **Asset wiring** section mapping every slide/build to concrete
@@ -452,7 +452,7 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
   value series is the **2024 HG Rebuilding Plan, Figures 31 (roe gillnet) & 32
   (roe seine) landed value, BC coastwide + Haida Gwaii, 2020$**, basis = DFO
   fish-slip records. Full verbatim provenance + quotes in
-  `talk-usuk-forum-2026/Talk_Materials/S8_landed_value_provenance.md`. **⚠️
+  `analysis/04_talks/2026-royalsociety/Talk_Materials/S8_landed_value_provenance.md`. **⚠️
   Discrepancy corrected:** the older "1993 peak / ~$40M" language was **not**
   supported — the source says BC roe value **peaked in the 1980s**, high to
   mid-1990s, declined 1995–2005 & 2008–present. State it the sourced way
@@ -470,18 +470,18 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
   "2.1×" and "65% vs 4%" identified as **Stier et al. 2020 published results**
   (not m1_stier_11 outputs) and re-labelled accordingly — not blended into a
   current number. Durable mapping:
-  `talk-usuk-forum-2026/Talk_Materials/numbers_provenance.md`. The last
+  `analysis/04_talks/2026-royalsociety/Talk_Materials/numbers_provenance.md`. The last
   unsourced numbers are now out of the live plan.
 - **2026-05-17 (blockers resolved/bounded for deck production):**
   - **Title:** final programme booklet contains the speaker slot, bio, and
     abstract, but no separate talk-title line. Use "Coupled Tipping Points in
     Pacific Herring & Haida Gwaii" unless Adrian supplies a shorter title.
   - **Deck approach:** resolved in
-    `talk-usuk-forum-2026/Talk_Materials/deck_build_decision.md` — build a
+    `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_build_decision.md` — build a
     fresh 20-slide expert deck using `DRV-ASSETS` and the timeline visual
     language; do not cut the 35-slide EEMB142C deck into the final talk.
   - **S15:** Stier 2016 *Conservation Letters* cognitive-map figures rendered
-    into `talk-usuk-forum-2026/Talk_Materials/figs/cognitive_maps/`; preferred
+    into `analysis/04_talks/2026-royalsociety/Talk_Materials/figs/cognitive_maps/`; preferred
     proof object and caveats documented in `S15_cognitive_map_provenance.md`.
   - **S19 / Gap B:** source-bounded in
     `S19_cogovernance_imagery_provenance.md`. Use the official Parks Canada
@@ -491,7 +491,7 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
   - **S20:** solution close authored in `S20_solution_payload.md`: measure
     structure, manage exposure, build the missing data spine.
   - **Blocker log:** see
-    `talk-usuk-forum-2026/Talk_Materials/blocker_resolution_2026-05-17.md`.
+    `analysis/04_talks/2026-royalsociety/Talk_Materials/blocker_resolution_2026-05-17.md`.
 - **2026-05-17 (Cleary PDF in dossier):** found in `~/Downloads/41290963.pdf`;
   clean 52-pp `Cleary_DFO_SR2025-005_PacificHerringStatus2024.pdf` now in the
   dossier (S17/S18 source fully in hand; dossier = 18 PDFs). ACQUISITION_LOG
@@ -501,7 +501,7 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
   reconciled/attributed numbers. Browser/render QA and contact-sheet review
   are still required before final `.pptx` export.
 - **2026-05-17 (Cleary plug-point map):** Read SR 2025/005 + extracted tables;
-  wrote `talk-usuk-forum-2026/Talk_Materials/cleary_sr2025005_plug_points.md`
+  wrote `analysis/04_talks/2026-royalsociety/Talk_Materials/cleary_sr2025005_plug_points.md`
   - per-slide map with exact table provenance. Highlights: **S6** non-recovery
   thesis in DFO's own words; **S18 keystone** Table 19 confirms
   **P(SB2025<LRP)=0.378 (37.8%) no-catch** and adds
@@ -518,7 +518,7 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
   `Output/figures/stier2020_updated/fig5/fig6` are the current-refit growth +
   portfolio figures (slides 8/9); the 142C/242 lecture assets are fully
   extracted into `DRV-ASSETS` (235 files, 13 categories) and now wired
-  slide-by-slide in **`talk-usuk-forum-2026/Talk_Materials/slide_asset_map.md`**
+  slide-by-slide in **`analysis/04_talks/2026-royalsociety/Talk_Materials/slide_asset_map.md`**
   (FRM-MAP). **Findings:** (1) `herring_decoupling_figure.html` (S12, the
   payoff) **does not exist** — only the 3-layer `build1_spine.html`; S12 needs
   a 4-layer build. (2) S7 two-scale is **not** a from-scratch build — a 142C
@@ -549,7 +549,7 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
   HG non-recovery. Updated Q&A B3 to cite this proof object. No AWS heatwave
   branch is recommended unless a local residual gate first clears.
 - **2026-05-18 (S12 decoupling figure built — top build resolved):**
-  `talk-usuk-forum-2026/Talk_Materials/herring_decoupling_figure.html` created
+  `analysis/04_talks/2026-royalsociety/Talk_Materials/herring_decoupling_figure.html` created
   — static, slide-ready, 4 layers / 4 clocks (cultural ~1990 · ecological 1993
   · economic ~2005 · co-governance rising later) + management-window band, in
   the `build1_spine.html` visual language; rendered + decluttered via Chrome
@@ -668,7 +668,7 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
   cowork v3 redesign is adopted as the **single canonical talk-figure
   approach**. ALL talk figures — current and every future/added one, incl. the
   extra Q&A/backup slides — are produced by the **matplotlib + baked-chrome
-  pipeline** in `talk-usuk-forum-2026/Talk_Materials/deck_build/`
+  pipeline** in `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_build/`
   (`redesign_figs.py` → `preprocess_figures.py` → `build_pptx_native.js`) and
   must match its aesthetic/design contract. **Do not** introduce a different
   chart style, a parallel exporter, or native-PPT chart objects for the talk.
@@ -694,7 +694,7 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
   4. ✅ S10 predator figure built (`s10_predators_returned.png`). Adrian:
      pull/choose S1/S2/S3/S14 photos + the S10 humpback-feeding photo from
      `DRV-ASSETS`.
-  5. Assemble/render the `.pptx` in `talk-usuk-forum-2026/Talk_Materials/`.
+  5. Assemble/render the `.pptx` in `analysis/04_talks/2026-royalsociety/Talk_Materials/`.
   6. **Slides OVERDUE to `scientific.meetings@royalsociety.org`** (.pptx) —
      send as soon as the draft deck passes contact-sheet QA.
 - **2026-05-19 (attendee dossier):** Built FRM-DOSS — a who's-in-the-room
@@ -714,7 +714,7 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
 - **2026-05-19 (slide-review pass — 23-item list, 2 parallel Claude
   sessions):** Adrian did a slide-by-slide review → 23 actionable items
   captured in
-  `talk-usuk-forum-2026/Talk_Materials/SLIDE_REVISION_TODO_2026-05-19.md`
+  `analysis/04_talks/2026-royalsociety/Talk_Materials/SLIDE_REVISION_TODO_2026-05-19.md`
   (the live cross-session coordination board). Two sessions split the work:
   - **Session-A (figure pipeline):** fixed the systemic image-stretch bug
     (`preprocess_figures.py` `bake()` now aspect-preserving, no distortion);
@@ -743,7 +743,7 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
     S4, S9b, S11, S12, S13, S14, Q&A divider; baked images: S5–S10,
     B-DFO, SB1–SB7.
   - **Deck ASSEMBLED & QA-passed** (`node build_pptx_native.js`):
-    `talk-usuk-forum-2026/Talk_Materials/Herring_RoyalSociety_Stier_2026_clean.pptx`
+    `analysis/04_talks/2026-royalsociety/Talk_Materials/Herring_RoyalSociety_Stier_2026_clean.pptx`
     is canonical; dated checkpoint
     `Herring_RoyalSociety_Stier_2026_claude-code_20260519-093728.pptx`.
     Session-B ran a full PDF visual-QA (LibreOffice→PDF, every changed
@@ -765,3 +765,26 @@ Session-5 thread `19d538e24a40c585`. Shared agenda Doc id
   Session 6 Wilhelm 11:00/Laybourn 11:10/Panel 11:20; v3 OCR/typo regressions
   not adopted; ver1-verified photos retained (identical headshots). Rebuilt,
   QA'd, gitignored. Not talk content — networking prep only.
+- **2026-05-20 (talk day — S1b sense-of-place rebuild):** Replaced the S1b
+  imagery — was the EEMB142C teaching-deck oblique
+  (`deck_build/photos/s_locator_l2.png`, globe inset → North America → HG;
+  kept on disk as backup), now `deck_assets/01b_sense_of_place.png` (baked
+  from `analysis/04_talks/2026-royalsociety/Talk_Materials/s01b_haida_gwaii_place.html`):
+  real **ESRI World Imagery (Maxar / Sentinel-2 mosaic)** of the full
+  archipelago, deck-styled with three annotation labels (Pacific shelf
+  edge, upwelling/productive waters, protected spawning coves) and amber
+  dots for **Skidegate, Cumshewa, Selwyn** (the inlets cited later in
+  S8/S12). Native PPT text overlays removed from the S1b block in
+  `build_pptx_native.js` — everything is baked into the PNG (no
+  font-substitution risk on the venue PC; aligns with the deck design
+  system §0 "no live fonts" rule). Source raster:
+  `deck_assets/_sources/haida_gwaii_satellite_esri.jpg` (2400×2800,
+  bbox −133.4..−131.0 lon, 51.6..54.4 lat). Speaker notes for S1b
+  rewritten to the new content (~25 s beat; names Selwyn = "Million
+  Dollar Bay" to prime S12). Rebuilt clean pptx + PDF visual-QA via
+  LibreOffice. Docs synced: `slide_asset_map.md` (Act I table now has
+  S1b row), `deck_design_system.md` §6 (per-slide figure map), narrative
+  v3.6 entry #2 (spec vs. as-built note added), `SLIDE_REVISION_TODO_
+  2026-05-19.md` (S1b session entry updated). **Attribution required**
+  on the slide and in any derivative: *"Imagery: Esri World Imagery
+  (Maxar / Sentinel-2 mosaic)"* — already baked into the slide footer.

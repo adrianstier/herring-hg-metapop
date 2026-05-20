@@ -1,0 +1,105 @@
+# v3.6 REVISED — Slide-by-slide Asset Manifest (Phase A)
+
+*Generated 2026-05-20 by Phase A asset-prep agent. Source of truth: `/tmp/v36_revised.md` (808 lines, 30 spine + 4 extras X1-X4 + 5 backups B1-B5).*
+
+Talk: Royal Society US-UK Forum, Session 5, Wed 20 May 2026 09:30 London. Adrian Stier.
+
+**Conventions:** Type = image / video / composite / chart / text-only. All paths absolute. "PLACEHOLDER" files live in `deck_assets_v36/` and were generated 2026-05-20 by Phase A.
+
+---
+
+## Spine slides (S1–S30)
+
+| Slide | Type | Primary asset (full path) | Fallback | Notes |
+|-------|------|---------------------------|----------|-------|
+| S1 | image | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/01_title.png | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/01_title.png.preimprove.bak | Title slide; dark HG dawn coast. Bookended with S30. |
+| S2 | image | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/01b_sense_of_place.png | — | Haida Gwaii place-card (as-built infographic w/ ESRI/Maxar imagery + 3 labels + 3 amber dots). |
+| S3 | composite | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets_v36/s03_before_water.png + /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets_v36/s03_after_plume.png | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/poster_frames/v2_01_aerial_whitewater_spawn.jpg | Side-by-side WITHOUT/WITH herring. Frames extracted from `v2_01_aerial_whitewater_spawn.mp4` (0.1s / 5.0s). Both >700KB confirmed. Footage credit: Pacific Wild. |
+| S4 | video | /Users/adrianstier/Desktop/Herring_Talk_Clips/clips/v2_01_aerial_whitewater_spawn.mp4 + /Users/adrianstier/Desktop/Herring_Talk_Clips/herring_schooling.mp4 | /Users/adrianstier/Desktop/Herring_Talk_Clips/clips/v2_02_underwater_school.mp4 | Two-clip motion sequence (~13s total: aerial 5s → underwater 7-8s). Footage credit: Pacific Wild. |
+| S5 | chart | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/08b_subpop_portfolio.png | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/sb1_portfolio_periods.png | 70% width chart + 30% life-history sidebar (build-phase composes sidebar text). |
+| S6 | video | /Users/adrianstier/Desktop/Herring_Talk_Clips/clips/v2_04_bear_and_white_wolf.mp4 + v1_14_eagles_catching_fish.mp4 + v1_02_sealion_underwater.mp4 + v1_15_sea_lion_colony.mp4 | — | 4-clip wildlife sequence ~16s. Cut order per outline. Footage credit: Pacific Wild. |
+| S7 | composite | /Users/adrianstier/Desktop/Herring_Talk_Clips/poster_frames/v1_15_sea_lion_colony.jpg | /Users/adrianstier/Desktop/Herring_Talk_Clips/clips/v1_15_sea_lion_colony.mp4 | "Predators came back" hero image ~60% + 3 data callouts ~40%. **DO NOT REUSE** deck_assets/10_predators.png (retired 239% callout + rendering issues). Footage credit: Pacific Wild. |
+| S8 | image | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/03_people.png | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets_v36/s08_haida_PLACEHOLDER.png | **CONFIRMED HAIDA:** kʼaaw roe-on-branch harvest from skiffs, contemporary; credited "Photo: A. Salomon — used with permission — Council of the Haida Nation". Strip existing overlay text in build phase (image has embedded "The people and the fish" title + kicker — builder may need to use a clean re-crop or place over it). |
+| S9 | image | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/04_baseline.png | — | May already be the McKechnie 2014 PNAS figure — confirm. Permissions: McKechnie 2014 PNAS — flag for permissions check. |
+| S10 | composite | /Users/adrianstier/Desktop/Herring_Talk_Clips/clips/v1_04_aerial_seine_net.mp4 + /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets_v36/s10_seine_PLACEHOLDER.png | /Users/adrianstier/Desktop/Herring_Talk_Clips/poster_frames/v1_04_aerial_seine_net.jpg + v2_07_underwater_seine_net.mp4 | Schematic diagram (placeholder) + motion clip. Build-phase: generate ship→cove1→ship→cove2 schematic. Footage credit: Pacific Wild. |
+| S11 | chart | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/figs/RebuildingPlan2024_Fig32_roe_seine_landed_value_2020dollars.png | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/figs/RebuildingPlan2024_Fig31_roe_gillnet_landed_value_2020dollars.png | Audited Rebuilding Plan figure. Build phase annotates 3-act regimes. |
+| S12 | text-only | — | — | Three-column text-led layout; "Three keystones, one fish" summary. No image asset. |
+| S13 | chart | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/05_two_collapses.png | — | Aggregate biomass time series w/ 2 collapses annotated. May need build-phase touch-up. |
+| S14 | composite | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets_v36/s14_two_coves_PLACEHOLDER.png | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/14_section_contrast.png | **PLACEHOLDER** — build-phase task: HG map w/ 2 circled sections + 2 spawn-index time series side by side. Fallback (14_section_contrast.png) may already serve. |
+| S15 | text-only | — | — | Methods grid; text-led, can be built natively in python-pptx. No image asset needed per task spec. |
+| S16 | image | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets_v36/s16_model_output_PLACEHOLDER.png | — | **PLACEHOLDER** — build-phase task: pull m1_stier_11 posterior summaries (aggregate left, 11-section small-multiples right). |
+| S17 | video | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/sim_anim_v2.mp4 | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/09_synchrony.png | Async→sync animation. Audited callout: φ 0.17→0.28, >60% increase. |
+| S18 | chart | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/08_realized_growth.png | — | Per-section productivity δ²σ collapse (0.08→0.01, 8-fold). |
+| S19 | chart | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/06_climate_pdo.png | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/sb3_climate_blob.png | PDO timeline. SLIDE_REVISION_TODO #9: take-home needs fixing in build phase. |
+| S20 | chart | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/07_two_scales.png | — | Cove vs archipelago harvest. SLIDE_REVISION_TODO #11-13 flagged: rendering fix in build phase. Callouts: 4% / 50-70% / 91%. |
+| S21 | text-only | — | — | Two-card title slide; no image. Predator pit + Lost elders. |
+| S22 | composite | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/clips/v1_15_sea_lion_colony.mp4 OR /Users/adrianstier/Desktop/Herring_Talk_Clips/clips/v1_15_sea_lion_colony.mp4 + /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets_v36/s22_predator_overlay_PLACEHOLDER.png | /Users/adrianstier/Desktop/Herring_Talk_Clips/poster_frames/v1_15_sea_lion_colony.jpg | **PLACEHOLDER for overlay** — build-phase task: predator-recovery curve over declining herring. CLAIM-CONTROL: leading hypothesis, NOT fitted HG coefficient. ⅓ stock = ~29% removal analogue. **DO NOT REUSE** deck_assets/10_predators.png. Footage credit: Pacific Wild. |
+| S23 | composite | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/12_decoupling.png OR text-led | — | Guujaaw quote large + convergence panel (MacCall 2019, Ono 2025, Jesmer 2018). Build-phase mostly text. CLAIM-CONTROL: consistent-with, modest, regional, NOT cause at subpop scale. |
+| S24 | text-only | — | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/13_takeaways.png | Results summary, "Five things" — text-led with optional anchoring image right. |
+| S25 | text-only | — | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/11_triple_bottom_line.png | Two-column solutions; text-led. |
+| S26 | image | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/sb5_cogovernance_timeline.png | — | Co-governance timeline. |
+| S27 | text-only | — | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/13_takeaways.png | Three lessons; spare text-led. |
+| S28 | text-only | — | — | Two-line question slide; text-led. |
+| S29 | image | — | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/02_shore.png | RESERVED breathing-room slot. Optional — drop if pacing tight. Fallback = single quiet shoreline image. |
+| S30 | image | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/01_title.png | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/14_close.png | Bookend — same dark HG dawn coast as S1. |
+
+---
+
+## Extra slides (backup pool — X1–X4)
+
+| Slide | Type | Primary asset (full path) | Fallback | Notes |
+|-------|------|---------------------------|----------|-------|
+| X1 | video | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/sim_anim_v2.mp4 | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/08b_subpop_portfolio.png OR /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets_v36/x1_portfolio_PLACEHOLDER.png | Portfolio theory. Play async half only. Build-phase ideal: render 1950-1967 window from DFO spawn-thickness — PLACEHOLDER provided as fallback. |
+| X2 | video | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/sim_anim_v2.mp4 | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/09_synchrony.png | Portfolio came apart — sync half of animation, OR real HG data showing 1994 shift. |
+| X3 | text-only | — | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/dfo_spawning_biomass.png | Climax slide; giant P(SB<LRP)=0.38 number, optional DFO inset. Text-led. |
+| X4 | text-only | — | — | Access tipping point; six-dimension cascade. Text-led. |
+
+---
+
+## Q&A backup slides (B1–B5)
+
+| Slide | Type | Primary asset (full path) | Fallback | Notes |
+|-------|------|---------------------------|----------|-------|
+| B1 | text-only | — | — | Depensation / predator pit Q. Text-led; source-credit footer. |
+| B2 | text-only | — | /Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets/dfo_spawning_biomass.png | Biomass rebuilding Q. Optional aggregate biomass inset w/ "concentrated, not recovered" annotation. |
+| B3 | text-only | — | — | EWS / CSD operationalisation Q. Text-led. |
+| B4 | text-only | — | — | Culture as slow variable Q. Text-led; optional Guujaaw quote callout. |
+| B5 | text-only | — | — | kʼaaw never went away / Gladstone Q. Text-led; pull asymmetry headline (right persists, access doesn't). |
+
+---
+
+## Phase A Status Summary
+
+### SLIDES_BUILDABLE_NOW (confirmed assets in place)
+**Spine (n=21):** S1, S2, S3, S4, S5, S6, S7, S8, S9, S11, S13, S17, S18, S19, S20, S23, S26, S29, S30 — plus text-only slides (see below) that need no asset.
+**Extras (n=2):** X1, X2 — `sim_anim_v2.mp4` is the primary; placeholders only as fallback.
+
+### SLIDES_NEEDING_PLACEHOLDER (build-phase will replace)
+- **S10** → `/Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets_v36/s10_seine_PLACEHOLDER.png` (build-phase schematic; motion clip available as primary visual)
+- **S14** → `/Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets_v36/s14_two_coves_PLACEHOLDER.png` (build-phase: map + 2 time-series; fallback `14_section_contrast.png` may serve)
+- **S16** → `/Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets_v36/s16_model_output_PLACEHOLDER.png` (build-phase: m1_stier_11 posteriors)
+- **S22** → `/Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets_v36/s22_predator_overlay_PLACEHOLDER.png` (build-phase: predator-recovery overlay; sea lion clip available as primary visual)
+- **X1** → `/Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets_v36/x1_portfolio_PLACEHOLDER.png` (fallback only; `sim_anim_v2.mp4` async half is primary)
+- **S8** → `/Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/deck_assets_v36/s08_haida_PLACEHOLDER.png` retained ONLY as fallback — `deck_assets/03_people.png` is confirmed contemporary Haida kʼaaw and is the primary
+
+### SLIDES_TEXT_ONLY (no image asset required)
+- **Spine:** S12, S15, S21, S24, S25, S27, S28
+- **Extras:** X3, X4
+- **Backups:** B1, B2, B3, B4, B5
+
+### Genuine asset gaps flagged for builder
+1. **S10 seine schematic** — build-phase python-pptx native render OK; clip available
+2. **S14 two-contrasting-coves panel** — build-phase needs to generate from DFO data
+3. **S16 m1_stier_11 model-output panel** — build-phase needs posterior pulls
+4. **S22 predator-recovery overlay** — build-phase composite chart
+5. **S8 overlay-strip** — `03_people.png` has embedded title text "The people and the fish" baked in at the bottom-left; builder may need to mask/replace or accept it (text is congruent with slide intent)
+
+### Permissions / credits builder must add
+- **S3, S4, S6, S7, S10, S22** → "Footage: Pacific Wild" bottom-right
+- **S8** → "Photo: A. Salomon — used with permission — Council of the Haida Nation"
+- **S9** → flag McKechnie 2014 PNAS permissions check
+- **S23** → Guujaaw quote attribution per claim-control sheet
+
+---
+
+*Phase A complete. Build phase (Phase B) will: render placeholders into real charts, compose multi-element slides via python-pptx, and apply footage/photo credits.*

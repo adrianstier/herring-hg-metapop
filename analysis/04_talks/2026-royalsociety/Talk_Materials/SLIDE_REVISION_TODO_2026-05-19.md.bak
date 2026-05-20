@@ -1,0 +1,843 @@
+# Royal Society talk — slide revision to-do (Adrian review, 2026-05-19)
+
+**Talk: Wed 2026-05-20.** Captured verbatim-in-intent from Adrian's slide-by-slide
+review. **23 actionable items** across 11 slides + 1 new slide + 1 cross-cutting
+rendering bug.
+
+Legend — type: 🐞 rendering bug · ✂️ edit/layout · 🎨 redesign · 🖼️ asset hunt ·
+🔬 content/research. Priority: **P1** (breaks readability / on most slides) ·
+**P2** (clear improvement) · **P3** (rethink, may not finish before talk).
+
+| # | Slide | Type | Pri | Issue → action |
+|---|---|---|---|---|
+
+### Cross-cutting
+- **1.** 🐞 **P1 — Image/text STRETCHING (systemic).** Multiple slides (S5, S7, "that image too") look horizontally stretched. Root cause: `preprocess_figures.py` `bake()` does `fig.resize((W, ZONE_H))` — it **stretches every figure to fill width**, distorting aspect. This violates the deck's own rule (`deck_design_system.md §4`: data figures = *contain*, letterbox in the branded zone, never distort). **Action:** change the bake to scale-to-fit preserving aspect (pad with deck-dark, no stretch); re-bake all figure slides; QA on PDF export.
+
+### Slide 3 — People & the fish
+- **2.** 🖼️ **P1** — Replace the photo with **spawn-on-kelp**. There's a photo in the **Haida Gwaii "old" folder** of a person holding up a spawn(-on-kelp); also search the media-library index. 
+- **3.** ✂️ **P2** — Make it a **paired side-by-side**: person holding the spawn + a **macro close-up of spawn on the kelp**.
+
+### NEW slide — after Slide 3
+- **4.** 🖼️🎨 **P2 — Herring as the centre of the food web (wasp-waist).** Add a diagram: herring as the channel for ocean productivity → commercial species, marine mammals, birds, people. Find an existing asset (media-library / lecture decks) to adapt. Must land for non-experts — set this up *explicitly* early; it underpins S10/S14.
+
+### Slide 4 — The baseline, measured
+- **5.** ✂️ **P2** — **Cut 2 of the 4 bullets** (keep e.g. "171 archaeological sites"; drop two of bones/49%/99%/±10%).
+- **6.** 🖼️ **P2** — **Add a map of the archaeological site locations** — if McKechnie et al. 2014 has site coords or an extractable site map (check the PDF in `Literature/`).
+
+### Slide 5 — Two collapses
+- **7.** ✂️ **P2** — Closure labels (the vertical dashed lines are good): **bigger / more highlighted font**; add an asterisk or marker glyph to draw the eye.
+- **8.** 🐞 **P1** — Y-axis ("Estimated biomass") looks **stretched/funky**. Inspect the PDF export to confirm; fix via the cross-cutting stretch fix (#1) and verify.
+
+### Slide 6 — Ocean productivity / PDO  🎨 **P3 (rethink)**
+- **9.** 🎨 **P3** — Wrong take-home. It should say: **ocean productivity matters but is NOT the main driver of failed recovery.** Current slide only shows "PDO matters / warm→hot." Either say that in **words / a simple clean diagram**, OR —
+- **10.** 🎨🖼️ **P3** — Redesign: **link PDO to the time series** — show there were **strings of cool/productive years even after the warm Blob**, where herring *historically* would have recovered (but didn't). Look in the **media library** for existing graphs to modify/optimize for this.
+
+### Slide 7 — Two scales
+- **11.** 🐞 **P1** — Funky **text/image stretching** (see #1).
+- **12.** 🎨 **P2** — **Too many shaded halos** around each series → reduce to **one halo per series** for readability.
+- **13.** ✂️ **P2** — The "**Archipelago-wide**", "**DFO 20% harvest-rate HCR**", "**→10% post-2017**" labels are hard to read as currently listed → **reposition/shift** them.
+
+### Slide 8 — Cove / realized growth
+- **14.** 🐞 **P1** — "**8 of 9 declined**" headline **overlaps the other text** — hard to read. Fix the collision.
+
+### Slide 9 — Synchrony
+- **15.** ✂️ **P2** — The **arrow + "+28%"** treatment is weird → redo.
+- **16.** 🐞 **P2** — Left **bar charts have no y-axis** → add one.
+- **17.** 🎨 **P2** — Redesign: **pairwise synchrony (y) vs moving-window time series (right, real data)**, and **incorporate the async→sync animation** (S9b) to punctuate the take-home (even though the animation is a calibrated cartoon).
+
+### Slide 10 — Predators
+- **18.** 🐞🎨 **P1** — **Massive overlap** between the "≈239%" callout and the time series — hard to read (compare with the cleaner "predator demand by species" view). **Emphasize the increase in predation from the historical/initial collapse → most recent recovery.** Rework.
+
+### Slide 11 — A system in a new state  🔬🎨 **P3**
+- **19.** 🎨 **P3** — Reframe as a genuine **new state**: predators more dominant; less access for people *and* animals; herring economy changed.
+- **20.** 🔬 **P3** — Research: **why did the roe-export price drop so much?** Is herring still an economically viable resource, or is it now most valuable as **forage for commercial species + cultural harvest** rather than direct economic extraction? (Demand from the commercial fishery persists, but the price point changed.) Source this before asserting.
+
+### Slide 12 — Decoupling / four clocks  🎨 **P3 (confusing)**
+- **21.** 🎨 **P3** — Take-home unclear. Check the **transcript**. Intended message: the **system has changed → implications for resilience**; think in terms of **new equilibria**; **recovery is a moving target** because the historical reference point is now **unachievable**; what that means for **harvest, cultural services, ecology, economy** is a different story than historically. Brainstorm a clearer design.
+
+### Slide 13 — Transferable lessons
+- **22.** ✂️ **P2** — Content is potentially useful but the slide needs to be **cleaner / better phrased**.
+
+### Slide 14 — Close
+- **23.** 🎨 **P2** — The lesson is **not about "thresholds."** Reframe: a **century of change** — rapid shifts in the **economy**, in the **purpose/means of extraction**, and a **fundamental shift in the ecosystem** → the need to **recalibrate how we think about herring at the centre of the food web** (ties back to new slide #4).
+
+---
+
+## Triage for tomorrow (suggested order)
+1. **P1 rendering bugs first** (#1 stretch fix, #8, #11, #14, #18, #16) — these break readability across the deck and many share the single root cause (#1).
+2. **P2 quick wins** (#2/#3 photo, #5 cut bullets, #7 closure labels, #12/#13 S7, #15 S9 arrow, #22 S13).
+3. **P3 redesigns/research** (#9/#10 S6, #17 S9, #19/#20 S11, #21 S12, #23 S14, #4 new food-web slide) — judgment calls; may not all land before the talk; prioritize with Adrian.
+
+_File: `talk-usuk-forum-2026/Talk_Materials/SLIDE_REVISION_TODO_2026-05-19.md`_
+
+---
+
+## 🟢 SESSION STATUS — SINGLE SESSION (Session-A CLOSED 2026-05-19 ~09:55)
+
+> **⚠️ THERE IS NOW ONLY ONE SESSION ON THE TALK.** Adrian closed Session-A.
+> **This session owns the ENTIRE talk** — `build_pptx_native.js`,
+> `preprocess_figures.py`, `redesign_figs.py`, assets, narrative, docs, the
+> whole `deck_build/` pipeline and the deck. **All prior lane splits, file
+> locks, and the A↔B handshake below are VOID / historical** — kept only as a
+> record of how the 23-item review pass was done. Do not wait on "Session-A",
+> do not treat any file as locked, do not look for a handshake. Just work the
+> talk end-to-end in this session.
+>
+> _(Everything below this banner is the original two-session coordination
+> record — read for history/context, not for current process.)_
+
+### Lane split (proposed by Session-A, 2026-05-19 ~09:00) — ❌ VOID (single session now)
+
+> **The lane split and the 🔒 file locks below NO LONGER APPLY.** Session-A is
+> closed. `redesign_figs.py` / `preprocess_figures.py` are **NOT locked** —
+> this session may edit them freely (e.g. to fix the SB4 clipped title / SB5
+> label collision flagged in the message log). Historical record:
+
+- **Session-A (figure pipeline / Python).** ~~OWNS~~ (CLOSED) — was editing
+  `deck_build/redesign_figs.py`, `deck_build/preprocess_figures.py`.
+  Scope: #1 stretch fix, S5 (#7/#8), S6 (#9/#10), S7 (#11/#12/#13), S8 (#14),
+  S9 figure (#15/#16/#17-figure), S10 (#18), figure rebuild + figure QA.
+  ~~🔒 Do not edit redesign_figs.py / preprocess_figures.py concurrently~~
+  **LOCK LIFTED** — A's changes to those files are already in the working tree
+  (uncommitted); this session now owns and may commit them.
+- **Session-B (native slides / narrative / assets) → now the SOLE session.**
+  Owned `deck_build/build_pptx_native.js` for S3 (#2/#3), new S3.5 food-web
+  (#4), S4 (#5/#6), S11 (#19/#20 + roe research), S12 (#21), S13 (#22), S14
+  (#23) — all DONE. **Now also owns the figure pipeline + everything else.**
+  No handshake needed (no second session to hand off to).
+
+### 🔑 Adrian's locked decisions (from Session-A's clarifying questions)
+
+1. **Closing thesis (S14 + synthesis S11–S14): REBUILD to new thesis.** A
+   century of system change → predator-dominated state, lost access for
+   people *and* animals, roe economy collapsed → **recovery is a moving
+   target** (old reference point unreachable) → **recalibrate herring at the
+   food-web centre**. Drop "the lesson is about thresholds."
+2. **New food-web slide (#4): REUSE a lecture diagram image** (not a
+   custom build). Best asset found: **`forage_fish_food_web_diagram_oceana.png`**
+   — phyto→zoo→**herring (labelled)**→fisheries/marine-mammals/seabirds; exact
+   wasp-waist. Staged at `deck_build/photos/s03b_foodweb_oceana.png`.
+   **Adrian decision (~09:26): use it; just cite it on-slide — no reuse-
+   rights blocker.** Keep the embedded credit visible + an explicit caption
+   "Diagram: OCEANA / M. Nowlin, The Seattle Times".
+3. **S9 (#17): real-data synchrony line, KEEP the existing S9b animation
+   slide right after** as the punctuating cartoon (do NOT merge into one).
+4. **S3 (#2/#3): PAIRED side-by-side.** Left = Salomon harvester holding
+   spawn-laden branch (used-with-permission, credit Council of the Haida
+   Nation); right = Stier macro roe-on-kelp close-up (rights-safe).
+
+### 📦 Assets Session-A already staged into `deck_build/photos/` (for Session-B)
+
+- `s03_harvest.jpg` — Salomon, harvester w/ spawn-laden branch (S3 left)
+- `s03_roe_closeup.jpg` — Stier, roe-on-kelp macro, rights-safe (S3 right)
+- `s03_roe_macro.png` — alt extreme macro (242 lecture; rights unconfirmed)
+- `s03b_foodweb_oceana.png` — Oceana wasp-waist food-web (new S3.5)
+- `s04_mckechnie_map.png` — McKechnie site-map composite for S4 (#6); map
+  panels on left, can crop the right-hand photo column if desired
+- McKechnie PDF for cross-checking site count: `Literature/McKechnie_et_al_2014_PNAS_Archaeological_Herring.pdf`
+
+### Per-item status
+
+| # | Owner | Status |
+|---|---|---|
+| 1 stretch fix | A | ✅ DONE — bake() now aspect-preserving (no distort) |
+| 7/8 S5 | A | ✅ DONE — ported to native 3840×1500 matplotlib; one halo; big amber closure labels + ★ markers |
+| 9/10 S6 | A | ✅ DONE (rework) — 2-panel PDO↕biomass; cool/Blob marked; "necessary not sufficient / not the barrier" |
+| 11/12/13 S7 | A | ✅ DONE — single 80% halo/series; 2 direct labels; one compact HCR label; short headline |
+| 14 S8 | A | ✅ DONE — all-11 source (decided "9 of 11 declined"); headline parked in clear quadrant |
+| 15/16/17-fig S9 | A | ✅ DONE — real-data 10-yr synchrony line, labelled y-axis, 1994 ★, pre/post means; S9b animation kept (build_pptx_native.js already places it) |
+| 18 S10 | A | ✅ DONE — 239% callout moved to empty upper-left, smaller; early-vs-recent contrast added |
+| — figure QA | A | ✅ DONE — S5–S10 baked, downscaled-QA passed (no squish; overlaps cleared; S10 callout moved to the post-cull dead zone) |
+| 2/3 S3 photo | **B** | 🅱️ B owns — B already implemented paired S3 at 09:17 (good) |
+| 4 new S3.5 food-web | **B** | ✅ B — native S3.5 inserted (square Oceana diagram contained, on-fig + caption credit, explainer + notes). B-QA passed. |
+| 5/6 S4 | **B** | ✅ B — cut to 3 stats (171/49%/<±10%), bigger numerals, swapped bones→map_crop, caption updated. B-QA passed (map legible, takeaway clears). |
+| 19/20 S11 | **B** | ✅ B — 3 cols rewritten to new-state thesis; sourced numbers only ($62.88/lb 1995→$11–14/lb; ≈239%; last roe fishery 2002); kazunoko WHY in notes; takeaway "value moved, didn't vanish". B-QA: no overflow/collision. |
+| 21 S12 | **B** | ✅ B — converted to native two-state slide (OLD ref-point ✕ "unreachable" → NEW equilibrium card → moving-target band). B-QA: cards clean, no overflow. A to eyeball per watch-item. |
+| 22 S13 | **B** | ✅ B — 3 lessons tightened; amber footer re-pointed to spatial-EWS + new-state thesis (no claim change). B-QA: clean. |
+| 23 S14 | **B** | ✅ B — "A century of change — recalibrate what herring is" (thresholds dropped), sub-line ties to S3.5, notes updated. B-QA: forced clean 2-line break (fixed dangling "is."). |
+
+> **🔁 LANE RELEASED to Session-B.** Session-B was already editing
+> `build_pptx_native.js` (S3 paired done at 09:17, ~1 min before A's claim —
+> a race, no fault). **Session-B owns `build_pptx_native.js` and the whole
+> native-slide lane.** Session-A will NOT touch that file. A's contribution
+> to this lane is the HANDOFF spec below (assets staged, S11 researched,
+> drop-in copy for every remaining native slide) so B can move fast.
+>
+> **Session-A remaining role:** figure pipeline is DONE + QA-passed and
+> stable — A will not re-bake unless B requests a figure change here. A is
+> available to (a) answer figure questions, (b) do final PDF visual-QA after
+> B assembles, if B wants. **B runs the final `node build_pptx_native.js`.**
+
+### 🤝 Handshake / build order
+
+`build_pptx_native.js` pulls the **baked** `deck_assets/*.png`. Session-A has
+already run `redesign_figs.py` → `preprocess_figures.py`, so the baked figure
+PNGs are CURRENT. **Session-B can run `node build_pptx_native.js` any time**
+to assemble the deck; if Session-A re-bakes, Session-A will note it here.
+Whoever runs the final assembly: update Talk Build State in
+`docs/HERRING_TALK_ASSETS.md`.
+
+---
+
+## 📋 HANDOFF — native-slide specs (Session-A → Session-B)
+
+All assets staged in `deck_build/photos/`. Figures already baked to
+`deck_assets/`. Insert/replace in `build_pptx_native.js`. Drop-in copy below
+is claim-checked against `docs/talk-model-claim-control-sheet.md` +
+`numbers_provenance.md`.
+
+### S3.5 — NEW slide, insert between the S3 block and the S4 block
+Native dark slide (mirror S11 chrome). Asset: `photos/s03b_foodweb_oceana.png`
+(square, light bg = clean card on dark). Suggested block:
+```js
+/* S3.5 — Herring: the wasp-waist of the system */ {
+  const s=base(true); masthead(s,true);
+  s.addText([{text:'Herring — the ',options:{}},
+    {text:'wasp-waist',options:{italic:true,color:C.rust}},
+    {text:' of the system',options:{}}],
+    {x:0.5,y:0.66,w:12.3,h:0.8,fontFace:HEAD,fontSize:34,bold:true,color:C.ink});
+  { const h=5.35,w=h,x=(W-w)/2;
+    s.addImage({path:path.join(PH,'s03b_foodweb_oceana.png'),x,y:1.5,w,h}); }
+  s.addText('One forage fish is the single channel from ocean productivity up to the fishery, marine mammals, seabirds — and people.',
+    {x:0.6,y:6.86,w:12.1,h:0.32,fontFace:HEAD,fontSize:13,italic:true,color:C.soft,align:'center'});
+  s.addText('Diagram: OCEANA / M. Nowlin, The Seattle Times',
+    {x:0.6,y:7.16,w:12.1,h:0.26,fontFace:MONO,fontSize:9,color:C.soft,align:'center'});
+  s.addNotes('Set up explicitly for non-experts — underpins S10 + the close. Plankton in; herring is the pinch-point; salmon, halibut, humpbacks, sea lions, seabirds, the seine fleet and Haida kʼaaw all hang off that one waist. Change the waist and everything above it changes. Diagram credited on-slide (OCEANA / M. Nowlin, The Seattle Times) — Adrian: cite it, no further rights step.');
+}
+```
+
+### S4 — cut to 3 stats + swap bones chart → site map
+- Replace the 5-row `stats` array with **3**: `['171','archaeological sites — BC coast & Haida Gwaii']`, `['49%','of all fish bones — herring']`, `['<±10%','variance across ~10,700 years']`. Drop the 435,777-bones row and the 99%-ubiquity row. Bump numeral `fontSize` to ~44 and stretch label width (one column, no cramped 2.5in box).
+- Swap the image: `s04_mckechnie_bones.png` → **`s04_mckechnie_map_crop.png`** (2380×2160, the McKechnie Fig-1 dual map panels — Haida Gwaii detail + NE-Pacific context with site triangles & red spawn). Size to clear the takeaway (`y≈6.35`): e.g. `const w=5.07,h=w*(2160/2380); x:7.4,y:1.6` (bottom ≈6.2).
+- Caption → `'Map & data: McKechnie et al. 2014, PNAS — ▲ archaeological sites, red = herring spawn. (Mongabay photo dropped with the bones chart.)'`
+
+### S11 — reframe "a system in a NEW STATE" (ROE-PRICE RESEARCH DONE)
+Keep the 3-column native layout; rewrite the three columns to the new-state
+thesis. **All numbers below are primary-source-grounded** (Rebuilding Plan
+2024 §5.2.3, DFO fish slips — see `S8_landed_value_provenance.md`). Do **not**
+use the unsourced "$40M→$2.78M".
+- **ECOSYSTEM (kelp):** "Predator-dominated. Marine mammals recovered; predator demand ≈239% of HG annual spawn (2015–24). The spatial portfolio eroded — synchrony up since the mid-1990s." chip: `~1993 · the structural shift`
+- **PEOPLE (plum):** "Access lost on both sides. Haida kʼaaw fell below the abundance it needs for the first time in ~10,000 yr; last commercial HG roe fishery 2002 — the commercial sector lost its fishery." chip: `~1990 · the slow erosion`
+- **ECONOMY (rust):** "The roe *market* collapsed, not just the stock. BC roe-herring landed value peaked in the 1980s, stayed high to the mid-1990s, then declined (1995–2005 & post-2008). Spawn-on-kelp price: peak **$62.88/lb (1995)** → **$11–14/lb** recently." chip: `~2005 · the fast crash`
+- **Take-home line / takeaway:** "Herring is now worth more as forage and as kʼaaw than as roe for export — the value moved, it didn't vanish."
+- **Roe-price WHY (speaker notes, sourced):** the BC sac-roe fishery was built almost entirely for the **Japanese *kazunoko* (herring-roe) market**; Japanese demand and prices fell sharply from the early-1990s peak (changing consumption + oversupply), and HG stock decline + the closures removed supply — so price *and* fishery contracted together (DFO/CHN/Parks 2024 *HG Herring Rebuilding Plan* §5.2.3.5.2 narrative; price/value series = Rebuilding Plan Figs 31/32, DFO fish slips). Commercial *demand* still exists but the price point is structurally lower. Keep the kazunoko mechanism in NOTES (well-documented context); on-slide claims = the Rebuilding-Plan price/value trajectory only.
+- Caption stays claim-safe: `~10% of historic / alternative stable state = m1_stier_11 + DFO SR 2025/005`.
+
+### S12 — reframe "recovery is a MOVING TARGET" (replace the confusing 4-clocks)
+Recommend converting S12 from the `12_decoupling.png` fullbleed to a **native
+two-state slide** (mirror S11/S13 chrome). Message: the historical reference
+point (pre-collapse / the 10,000-yr baseline) is **unreachable**; the system
+settled into a **new, lower equilibrium** (~10% of historic; DFO at the LRP,
+0-t catch). So resilience must be judged against the *new* state — and what
+"recovery" means differs for harvest, culture, ecology, economy.
+- Layout idea: left card **"OLD reference point"** (pre-1990 baseline, ~10,000 yr stable) with a faint ✕; arrow to right card **"NEW equilibrium"** (~10% of historic, predator-dominated, synchronised); bottom band: "Recovery is a moving target — define it against the system we have, not the one we lost."
+- If keeping the image is faster: at minimum add a native title + the one-line take-home so the take-home is explicit (current slide has none).
+- Claim guard: "~10% / alternative stable state" must cite m1_stier_11 + DFO SR 2025/005 (same as S11 caption). Co-governance ≠ outcome metric.
+
+### S13 — clean up (keep the 3 lessons)
+Keep the three lessons; tighten wording; **re-point the amber footer thread**
+away from EWS-only toward the new thesis, e.g.: *"One thread we are testing:
+the early-warning signal here may be spatial — and 'recovery' has to be
+redefined against the new state."* Typographic only; no claim change.
+
+### S14 — reframe the CLOSE (drop "thresholds")
+Replace the close line. Keep the photo + scrim treatment. New copy:
+- Big line: `[{text:'A century of change — '},{text:'recalibrate what herring is.',italic,rust}]`
+- Under it (smaller): "The economy, the way we extract, and the ecosystem itself all shifted. Recovery is a moving target — herring is not a stock to maximise but the centre of the food web." (ties back to S3.5)
+- Keep "Thank you. With gratitude to the Haida Nation and collaborators."
+- Update `s.addNotes` to match (was threshold-framed).
+
+### After B finishes
+1. `cd deck_build && node build_pptx_native.js` (figures already baked — no need to re-run python).
+2. Export PDF + visual-QA every changed slide at readable size.
+3. Update **Talk Build State** in `docs/HERRING_TALK_ASSETS.md`, the deck
+   `README.md` slide map (now 15 slides incl. S3.5), and `slide_asset_map.md`.
+4. Ping Session-A here if you want A to do the figure-side of the PDF QA.
+
+### ✅ Session-A QA pass (~09:36) — on the 09:30 assembled deck
+
+A rendered the 09:30 `*_clean.pptx` → PDF (LibreOffice) and inspected every
+changed slide. **Verdict: deck is in great shape.**
+
+- **S3** ✅ paired photos render correctly (harvest | roe macro), credits on-slide.
+- **S3.5** ✅ Oceana wasp-waist diagram contained, cited on-slide — exactly the spec.
+- **S4** ✅ 3 stats + McKechnie dual-panel site map; caption correct.
+- **S5–S10** ✅ ALL figure slides render correctly in the actual pptx — **no
+  squish anywhere**, S5 closure ★+labels read big, S6 PDO↕biomass reframe
+  lands, S7 single-halo readable, S8 "9 of 11" no overlap, S9 clean line,
+  S10 ≈239% in the dead zone (no overlap). Figure lane confirmed good.
+- **S11 / S12 / S13 / S14:** my 09:30 PDF was **STALE** — Session-B kept
+  editing `build_pptx_native.js` to 09:35. Reading current source: **B
+  implemented the full handoff** — S11 reframed (kazunoko research in notes,
+  $62.88→$11–14/lb on-slide), S12 = native "Recovery is a moving target"
+  two-state slide (the confusing four-clocks is dropped from the spine),
+  S13 footer realigned, S14 = "A century of change — recalibrate what
+  herring is" (thresholds gone, notes updated). Source looks correct;
+  **these 4 need a fresh visual QA after B's final assembly** (esp. S12 —
+  new absolute-positioned OLD/NEW cards, check for overflow/overlap).
+
+**Note:** `12_decoupling.png` (four-clocks) is now orphaned (S12 went
+native) — harmless; leave baked as a possible backup. No s12-figure clip fix
+needed (out of the spine).
+
+### ▶️ Next action (whoever gets here first)
+
+1. **Session-B:** when native edits are final, run `node build_pptx_native.js`
+   and note "ASSEMBLED @ <time>" here.
+2. **Session-A** will then re-render that PDF and do the final visual QA of
+   S11–S14 (+ spot-recheck S3.5/S4) and post results here.
+3. Then update Talk Build State (`docs/HERRING_TALK_ASSETS.md`), deck
+   `README.md` slide map (15 spine slides incl. S3.5), `slide_asset_map.md`.
+
+_Session-A last update (~09:36): full figure-side QA done on 09:30 deck — all
+figures + S3/S3.5/S4 verified good. S11–S14 reframed correctly in source;
+awaiting B's final assembly to re-QA them. Standing by._
+
+---
+
+## 💬 Message log (newest at bottom; sign every entry)
+
+- **[Session-B · 09:28]** Resuming. Read board, HERRING_TALK_ASSETS.md,
+  claim-control sheet, numbers_provenance.md, S8_landed_value_provenance.md,
+  and current `build_pptx_native.js` (S3 paired already in, builds OK).
+  **Claiming the full native lane: #4 (new S3.5), #5/#6 (S4), #21 (S12),
+  #22 (S13), #19/#20 (S11), #23 (S14)**, then final assembly + PDF QA + doc
+  updates. I own `build_pptx_native.js` exclusively — A will not touch it.
+  Noted A's update: S3.5 Oceana credit is on-slide-only, **no rights blocker**
+  (won't flag to Adrian, just keep the embedded credit visible). Working in
+  HANDOFF priority order; will rebuild + dated copy + status-table update after
+  each item. Will ping here before final assembly to coordinate the handoff.
+- **[Session-A · 09:37]** Ack — `build_pptx_native.js` is yours exclusively,
+  I will not touch it. **Figure lane is DONE, baked, and QA-verified** in the
+  09:30 assembled deck: S5–S10 all render with **zero squish**, overlaps
+  cleared, S6 reframe lands (full results in the "Session-A QA pass" section
+  above). S3/S3.5/S4 also verified good. I read your current source for
+  S11–S14 — the reframes look correct (kazunoko research landed in S11, S12
+  is the native moving-target two-state slide, S14 thresholds gone). My only
+  watch-item: **S12's new absolute-positioned OLD/NEW cards — eyeball for
+  overflow/overlap** at final QA (I'll check it). `12_decoupling.png` is now
+  orphaned but harmless. **Ask:** post "ASSEMBLED @ <time>" here when your
+  final `node build_pptx_native.js` is done — I'll immediately re-render and
+  do the final visual QA of S11–S14 (+ spot-recheck S3.5/S4) and post results
+  here. Standing by; not re-baking figures unless you request a change.
+- **[Session-B · 09:38] 🟢 ASSEMBLED @ 09:37.** All 6 native-lane items
+  DONE (#4, #5/#6, #21, #22, #19/#20, #23). Final `node build_pptx_native.js`
+  ran clean. Artifacts:
+  - `Herring_RoyalSociety_Stier_2026_clean.pptx` (canonical, 09:37)
+  - dated copy `Herring_RoyalSociety_Stier_2026_claude-code_20260519-093728.pptx`
+  **B-side PDF QA already done** (LibreOffice → PDF, rasterized changed slides
+  at ≥110 dpi, S11 re-checked at 150 dpi):
+  - **S3.5** ✅ Oceana diagram contained/centred, on-fig + caption credit, explainer reads.
+  - **S4** ✅ 3 big stats, McKechnie dual-panel map legible, takeaway clears the map, caption correct.
+  - **S11** ✅ 3 cols fit with NO overflow; $62.88/lb→$11–14/lb bold renders; chips + takeaway + caption clean.
+  - **S12** ✅ OLD (faded ✕ "unreachable") → arrow → NEW card; no overflow/overlap; moving-target band + claim-safe caption read. (This was your watch-item — looked clean on my render; your fresh eyes still welcome.)
+  - **S13** ✅ 3 lessons tightened, amber footer re-pointed; clean.
+  - **S14** ✅ found+fixed a dangling "is." → forced deliberate 2-line break ("A century of change —" / *recalibrate what herring is.*). Re-rendered, confirmed clean.
+  Over to you per the handshake: **please do the independent final visual QA
+  of S11–S14 (+ spot-recheck S3.5/S4) and post results here.** I'll hold on
+  the doc updates (HERRING_TALK_ASSETS.md Talk Build State / README slide map
+  / slide_asset_map.md) until you green-light, then I'll do them and confirm
+  here before the deck goes to scientific.meetings@royalsociety.org.
+- **[Session-B · 09:45] 📝 Doc updates DONE (Adrian directed me to proceed —
+  did not wait for green-light; flagging the change so you're not surprised).**
+  All three records updated to the assembled 15-slide spine:
+  - `docs/HERRING_TALK_ASSETS.md` → new Talk Build State entry (2026-05-19
+    slide-review pass: both lanes, A's figure rework + B's native lane,
+    assembled deck + dated copy, claim-check sources).
+  - `deck_build/README.md` → slide map rewritten (15 spine incl. S3.5 + S9b
+    + backup deck), fixed the stale native-vs-baked lists, added edit-history.
+  - `slide_asset_map.md` → header + S3.5 row added; S3/S4/S11/S12/S13/S14
+    rows updated to built/reframed; open-decision #2 (S12) marked SUPERSEDED.
+  These are factual state records and don't depend on QA outcome — if your
+  independent S11–S14 cross-QA finds anything, flag it here and I'll fix the
+  slide *and* amend the docs. **Deck/handshake otherwise unchanged: canonical
+  = `Herring_RoyalSociety_Stier_2026_clean.pptx` (09:37). Still your move on
+  the independent final visual QA before it ships to the Royal Society.**
+- **[Session-A · 09:48]** ✅ **FINAL INDEPENDENT VISUAL QA DONE — PASS, no
+  defects.** Re-rendered the current `*_clean.pptx` (verified current: pptx
+  09:37:28 ≥ script 09:37:18 ≥ figures 09:15:50) → PDF, inspected the
+  integrated deck. Both lanes correctly in ONE file:
+  • A figures **S5–S10** — zero squish, no overlaps, S6 PDO↕biomass reframe
+    reads, S8 "9 of 11" clear, S10 ≈239% parked in the dead zone. ✓
+  • B natives — S3 paired ✓ · S3.5 Oceana wasp-waist + on-slide cite ✓ · S4
+    3-stats + McKechnie map ✓ · **S11** new-state + roe research
+    ($62.88→$11–14/lb, "value moved not vanished") sourced/claim-safe ✓ ·
+    **S12** native moving-target two-state slide — **cards clean, no
+    overflow/overlap (my watch-item: RESOLVED)** ✓ · **S13** lessons
+    tightened + footer realigned ✓ · **S14** "century of change / recalibrate
+    what herring is", thresholds gone, ties to S3.5 ✓.
+  Your doc updates (HERRING_TALK_ASSETS / README / slide_asset_map) noted —
+  no QA contradictions, nothing to amend. **Deck is integrated, claim-safe,
+  and ship-ready from the QA standpoint.** Integration guarantee = the
+  invariant pptx mtime ≥ script mtime ≥ newest deck_assets png mtime (holds
+  now); if anyone re-edits the script or re-bakes a figure, one `node
+  build_pptx_native.js` + re-QA the changed slide. A signing off the QA;
+  standing by for any figure change requests.
+- **[Session-B · 09:50] 🔎 FULL 25-SLIDE PDF REVIEW (Adrian asked for a
+  whole-deck pass).** Regenerated PDF from the 09:37 `*_clean.pptx` →
+  `Herring_RoyalSociety_Stier_2026_clean.pdf` + dated
+  `..._claude-code_20260519-094707.pdf` (25 pp, 960×540 pt = true 16:9).
+  Rasterized & inspected **all 25 slides**.
+  • **Spine S1–S16 (incl. S3.5, S9b): CLEAN — concur with your 09:48 QA.**
+    No spine fixes needed. (Polish-only, NOT recommending changes given
+    imminent talk: S12 NEW-card line wraps "…THIS / state"; S14 bottom is
+    a touch dense; S9 & S9b deliberately share the title "The portfolio
+    eroded" — by Adrian's locked decision #3, working as intended.)
+  • **⚠️ 2 genuine defects, both in BACKUP baked figures (your
+    `preprocess_figures.py` lane — I did NOT touch it):**
+    1. **SB4 (PDF p.22) — title CLIPPED.** "Independent confirmation —
+       m1_stier_11 vs DFO SR 2025/005" runs off the right edge ("2025/0"
+       then cut). Baked title too long for the title zone. Fix = shorten
+       the SB4 `title_*` in the `JOBS` list (e.g. "Independent confirmation
+       — m1 vs DFO SR 2025/005" or drop "SR 2025/005" to the provenance
+       footer) or reduce baked title size for that job.
+    2. **SB5 (PDF p.23) — label collision.** The grey sub-labels
+       "Federal commitment to Gwaii Haanas reserve" and "First
+       nation-to-nation … board" overlap the year-axis ticks (~1990–2000).
+       Fix = nudge those annotation y-offsets / shorten in the SB5 figure
+       fn in `redesign_figs.py`.
+  Both are **Q&A/backup slides** (shown only if pulled — B5/B20), so not
+  ship-blockers for the main talk, but a clipped title on a Royal Society
+  slide is worth the 2-line fix if you have the cycles. **Your call /
+  your lane** — flagging, not fixing (lane discipline). If you re-bake,
+  ping here and I'll re-run `node build_pptx_native.js` + re-QA those 2.
+- **[Session-B · 09:53] ⬆️ PUSHED (heads-up — shared branch).** Adrian said
+  "push". Branch `chore/overnight-cloud-dryrun-ids-20260511-2254`, commit
+  `71364a9` now on `origin` (local == remote). I staged **only my lane +
+  this board**: `build_pptx_native.js`, `docs/HERRING_TALK_ASSETS.md`,
+  `deck_build/README.md`, `slide_asset_map.md`,
+  `SLIDE_REVISION_TODO_2026-05-19.md`. **Your `preprocess_figures.py` and
+  `redesign_figs.py` were deliberately LEFT UNSTAGED** (your in-flight lane
+  + possible SB4/SB5 re-bake) — they're untouched in the working tree, ready
+  for you to commit when your figure work settles. Generated `.pptx`/`.pdf`
+  are gitignored (not committed). Nothing of yours was clobbered or
+  committed prematurely.
+- **[Session-B · 09:56] 🟢 SINGLE-SESSION NOW — Session-A CLOSED by Adrian.**
+  Two-session coordination is over. **This session owns the entire talk**
+  end-to-end: `build_pptx_native.js`, `preprocess_figures.py`,
+  `redesign_figs.py`, the whole `deck_build/` pipeline, assets, narrative,
+  docs, the deck. All lane splits / 🔒 file locks / the A↔B handshake are
+  **VOID** (banner + lane-split section above updated to say so; kept as
+  history). **Open items now in THIS session's scope** (were flagged to
+  A, who is gone): the 2 backup-figure defects — **SB4 title clipped**
+  (PDF p.22, `preprocess_figures.py` JOBS title too long) and **SB5
+  label collision** (PDF p.23, `redesign_figs.py` SB5 annotation
+  y-offsets). Backup/Q&A-only, not ship-blockers, but fixable here now if
+  Adrian wants. A's `preprocess_figures.py`/`redesign_figs.py` edits are
+  still uncommitted in the working tree — this session now owns/commits
+  them. No more handshake; just work the talk.
+- **[Session-B · 10:10] 🛑→✅ CRITICAL SCIENCE FIX: S5/S6 false-recovery
+  read (Adrian caught it).** S6's biomass line was riding the **all_11**
+  `pdo_climate_yearly` series → 2025 ≈ 82 kt ≈ **87% of the 1950s peak**,
+  visually "RECOVERED" — contradicting the slide's own "no recovery" text,
+  S5, and S11/S12. Root cause: (a) S6 used the steeper all_11 series while
+  S5 used focal_9 (inconsistent on the same axis); (b) the rise is largely
+  a **terminal-year artifact** — focal_9 2025 90% CI = [17 kt, **257 kt**],
+  all_11 90% CI top = **3.3 M t** (state-space end unconstrained, no recent
+  obs). Fix (Adrian chose "full series + CI + LRP ref"): both S5 & S6 now
+  use the **same focal_9 median + 80% CI ribbon**; y-axis capped ~115 kt so
+  the ballooning terminal CI **clips off-chart** (honest signal) with an
+  explicit "recent years weakly constrained" note; added a **units-
+  consistent** dashed reference = m1 1951–65 mean (~66 kt) — NOT the DFO
+  6.45 kt spawning-biomass LRP (different quantity; stays on B-DFO).
+  Post-1994 median now clearly sits **below** the historic line; recent
+  up-tick reads as "a partial uptick, still below historic (recent estimate
+  highly uncertain)". Edited `redesign_figs.py` (s5/s6), `preprocess_
+  figures.py` JOBS 05/06 text, and S5/S6 speaker notes in
+  `build_pptx_native.js` (removed the conflated "~10% of historic" from S5
+  — that's the DFO metric, not m1 total biomass). Full pipeline rebuilt
+  (redesign → preprocess → node), 25 pp, QA'd S5+S6 raw + assembled: fixed.
+  Dated copy `..._claude-code_20260519-101015.pptx`/`.pdf`; canonical
+  `*_clean.pptx`/`.pdf` refreshed. **Claim-control note:** this aligns the
+  figure with the sheet's "biomass partly rebounds but ≠ recovered service"
+  rule. Open question for Adrian if he wants to go further: the deeper
+  "change the claim" option (reframe S5/S6/S11 narration to 'biomass partly
+  came back, the portfolio/service did not') is still available — current
+  fix keeps the existing narration but makes the figure honest.
+- **[Session-B · 10:44] 🖼️ S3 photos re-paired (Adrian's call).** New
+  pairing: LEFT = a hand holding up a clump of herring eggs
+  (`l2_herring_s15_roe_on_branch_harvest_sac_roe_fishery_img02.jpg` →
+  `photos/s03_eggs_held.jpg`); RIGHT = cropped people pulling hemlock
+  boughs from the water — the kʼaaw/SOK practice
+  (`salomon_roe_harvest_closeup_from_boat.JPG` →
+  `photos/s03_hemlock_pull.jpg`, cover-cropped). Reviewed all S3 candidates
+  visually before choosing (underwater-hemlock shots have no people;
+  s29/s05 were a magazine cover / a diagram — rejected). build only
+  (no figure re-bake); QA'd S3 — clean, composition strong. Credit set to
+  "Photos: A. Salomon · used with permission · Council of the Haida Nation"
+  (the RIGHT photo is definitively the Salomon collaborator photo per
+  slide_asset_map; the LEFT eggs-in-hand is from the same Salomon
+  Conservation-Anthropocene set but its filename is generic
+  "sac_roe_fishery"). **⚠️ FLAG for Adrian: confirm the LEFT
+  eggs-in-hand photo's specific attribution/reuse rights before the
+  recorded talk** (same discipline as the Mongabay/Oceana flags).
+  Checkpoint `..._claude-code_20260519-104451.pptx`/`.pdf`; canonical
+  refreshed. Old `s03_harvest.jpg`/`s03_roe_closeup.jpg` left in photos/
+  (unused, harmless).
+- **[Session-B · 10:56] 🎬 NEW S9c whale-feeding video slide (Adrian's
+  call — "set up the predator explosion").** Searched media library /
+  predator repo / Downloads / Drive; no clean humpback-on-herring clip
+  existed. Built one from `~/Downloads/YTDown_YouTube_2024-Herring-Spawn-
+  Summary_…meRY4ERMNJE…mp4`: a 7.3 s muted 1080p cut = aerial herring
+  grounds → bait ball → humpback **lunge-breach** (segments 29.0–32.6 s +
+  106.3–110.0 s, concat). Staged `photos/s09c_whale.mp4` +
+  `s09c_whale_poster.jpg` (the breach). Inserted **S9c between S9b and
+  S10** (visceral cold-open right before the ≈239% predator data; ties
+  back to S3.5 wasp-waist). Mirrors the S2/S9b addMedia pattern; on-slide
+  line "Everything *eats herring.*" + subline; notes say play auto+loop,
+  skip to S10 if venue PC won't play. Deck now **26 slides** (spine + S9b
+  + S9c + backup). QA'd page 12 — poster + chrome read well. Checkpoint
+  `..._claude-code_20260519-105605.pptx`/`.pdf`; canonical refreshed.
+  **⚠️ RIGHTS FLAG (must resolve before the recorded talk):** the clip is
+  cut from a downloaded third-party YouTube video; the forum is recorded
+  and posted publicly. Adrian must obtain reuse permission + correct
+  attribution, or swap for rights-cleared footage. Flagged on-slide and in
+  speaker notes (same discipline as Mongabay/Oceana). **Doc note:** deck
+  README slide map + `slide_asset_map.md` now need a consolidated re-sync
+  (slide count 25→26, +S9c) — deferred until the rapid-iteration pass
+  settles; this board is authoritative meanwhile.
+- **[Session-B · 11:04] 🎬 S9c video SWAPPED to the BBC slide-18 clip
+  (Adrian's call).** Extracted media from
+  `~/Desktop/L2-Pacific_Herring_Case_Study_Anthro_Cons_142c_4_1_2026.pptx`
+  (slide 18 = `media1.mp4`, BBC underwater humpback lunge-feed on a herring
+  ball, 1080p, 25.9 s). Replaced the YouTube-derived S9c clip with it.
+  Compressed 59 MB → **18 MB** (1080p, CRF 23, projection-quality);
+  full-res original archived at `photos/l2_imports/media1.mp4`. New poster
+  = the t=8 s lunge frame. On-slide credit now clean: "Footage: BBC —
+  underwater humpback lunge-feeding on a herring ball" (Adrian is handling
+  BBC rights; the on-screen "BBC ONE" bug is left intact as the credit —
+  not scrubbed). All 66 extracted L2 assets copied to
+  `deck_build/photos/l2_imports/` (incl. a kazunoko-nigiri photo useful
+  for S11's roe-economy beat, a Heiltsuk-DFO-occupation news screenshot,
+  eagle, plus many figures/silhouettes — most superseded). Rebuilt, QA'd
+  page 12 (poster + chrome read well). Checkpoint
+  `..._claude-code_20260519-110426.pptx`/`.pdf`; canonical refreshed.
+  **⚠️ Practical, NOT rights:** deck is now **76 MB** — over typical email
+  limits; the Royal Society submission will likely need a file-transfer
+  link, or further video compression/trim. Flagged for Adrian.
+- **[Session-B · 11:10] 🔀 Whale video REPOSITIONED + reframed (Adrian:
+  "not a cold-open — an intermediate mid-talk wake-up").** Moved the BBC
+  clip out of the S9b→S10 predator slot; reinserted as **S7b, between S7
+  (two-scales hinge) and S8 (cove growth)** — squarely mid-talk (now PDF
+  p.9 of 26), in the densest analytical run where attention sags.
+  Reframed from predator-setup to a stand-alone reset: line "Step back —
+  *this is the system.*" + "Every number in this talk is herring moving
+  through a living ocean. Now — back to how it comes apart." Notes say:
+  play ~10–15 s, almost no words, skip-safe (a breather, not
+  load-bearing). Same BBC clip + on-screen BBC credit. S10 now flows
+  directly from S9b again. Deck still 26 pp / 76 MB. Rebuilt, QA'd p.9.
+  Checkpoint `..._claude-code_20260519-110957.pptx`/`.pdf`; canonical
+  refreshed.
+- **[Session-B · 11:14] 🔀 Whale slide repositioned again (Adrian: "right
+  before the predator time series, preface the predators-increasing
+  pattern").** Moved S7b out of the S7/S8 slot; reinserted as **S9c
+  between S9b and S10** (PDF p.12; S10 = the predator time series at p.13).
+  Reframed to a forward-pointing preface: "The predators *came back.*" /
+  "From near-zero through the cull era to the single biggest draw on
+  herring — the pattern is next." → cuts straight into S10's rising
+  time series + ≈239%. Same BBC clip + on-screen BBC credit; skip-safe
+  (S10 carries the measured result). 26 pp / 76 MB. Rebuilt, QA'd p.12
+  (whale) + p.13 (S10). Checkpoint `..._claude-code_20260519-111333.*`;
+  canonical refreshed. (Supersedes the 11:10 mid-talk-wake-up placement.)
+- **[Session-B · 11:34] 📊 S10 (slide 13) REPLACED with concept D
+  (Adrian's pick).** Goal: show the 1960s collapse rebounded under a
+  whaling-DEPLETED marine-mammal field while today's non-recovery sits
+  under a RECOVERED one. Brainstormed + built 5 candidates
+  (`deck_build/s13_alts.py` → `s13_candidates/`); Adrian chose D
+  ("herring biomass vs the marine-mammal field that eats it") but flagged
+  the standalone layout ran off-screen. Reworked + ported D into the
+  canonical pipeline: rewrote `redesign_figs.py s10_predator_demand()` as
+  an unframed dual-axis content figure — rust HG biomass (m1 focal-9,
+  left) vs blue marine-mammal demand (right), 1950–2025, 1968/1994 amber
+  collapse callouts, pre-whaling (~17 kt) context note; **dropped the
+  in-plot legend** (axes are color-coded — was colliding with the 1994
+  callout) and widened the right margin so the secondary-axis label is
+  on-canvas. Updated `preprocess_figures.py` JOBS (title "Recovery in
+  *two different oceans*"; new takeaway/provenance) + S10 speaker notes
+  in `build_pptx_native.js` (≈239% pressure number moved to SB2 backup).
+  Full pipeline rebuilt; QA'd p.13 top-crop — no clipping/collisions,
+  both axes labelled, message reads. The old stacked-area/239% S10 figure
+  is replaced. Checkpoint `..._claude-code_20260519-113454.*`; canonical
+  refreshed. 26 pp.
+- **[Session-B · 11:40] S10 (D) marine-mammal series SMOOTHED (Adrian).**
+  The blue mammal-demand line was genuine but spiky annual data. Now:
+  interpolate the early 5-yr-spaced rows to annual, plot a **5-yr centered
+  running mean** as the bold line + fill, with the raw kept faint (alpha
+  0.28) behind it — trend reads, nothing hidden. JOBS provenance updated
+  ("5-yr running mean"). Rebuilt + QA'd p.13: clean rising trend, sawtooth
+  gone, rest of D unchanged. Checkpoint `..._claude-code_20260519-114037.*`.
+  NOTE: PowerPoint caches an already-open file — `open` won't reload it;
+  must quit+reopen (or open the dated copy) to see changes.
+- **[Session-B · 11:51] ➕ NEW slide S8b "Local coves, one region"
+  (Adrian: show the portfolio first + say more about the local↔HG-region
+  scale mismatch).** Built `s8b_subpop_portfolio()` in redesign_figs.py:
+  raw per-subpopulation biomass time series from
+  `m1_stier_11_section_biomass_by_year.csv` — 11 sections (9 focal solid
+  Okabe-Ito + 2 sparse dashed), each scaled to its own 1951–90 mean (log
+  y), bold white across-cove median = the regional aggregate, 1968/1994
+  markers. JOBS entry added (title "Local coves, *one region*"; takeaway
+  "Each cove ran its own cycle — that local spread is what kept the HG
+  region steady"). Slide block inserted **between S8 and S9** (now slide
+  10; S9 synchrony → slide 11, S9b → 12, S9c whale → 13, S10 D → 14).
+  Speaker notes spell out the scale mismatch (local volatile + out of
+  phase → regional buffered; ties back to S7's wrong-scale management,
+  forward to S9/S9b synchrony erodes the buffer → local risk becomes
+  regional risk). Full pipeline rebuilt; QA'd p.10 — reads, on-screen.
+  Deck now **27 slides**. Checkpoint `..._claude-code_20260519-115113.*`.
+- **[Session-B · 12:12] 🎬 TALK EXPANSION (10→~20 min) — brainstormed,
+  approved, spec committed; build PARTIALLY done (context-limited handoff).**
+  Full approved design = `docs/superpowers/specs/2026-05-19-herring-talk-
+  expansion-design.md` (committed b06201b) — Approach A: predator-pit
+  deepen + layered concept→fix→general finish + opening locator + early
+  arc + methods/legitimacy + economics↔ecology + Okamoto-2020 solution.
+  Timing: target ~20 min, all 6 additions, fast beats, S6+S9b drop-on-day.
+  **DONE this session:** ✅ S1b "Haida Gwaii" sense-of-place locator slide
+  (full-bleed `photos/s_locator_l2.png`, borrowed from EEMB142C L2 deck
+  slide 10) inserted after S1; QA'd p.2; deck rebuilt clean = **28
+  slides**; checkpoint `..._claude-code_20260519-121233.*`.
+  **UPDATED 2026-05-20 (morning before talk):** S1b imagery **replaced** —
+  was EEMB142C teaching-deck oblique (`photos/s_locator_l2.png`, kept on
+  disk as backup); now `deck_assets/01b_sense_of_place.png` (baked from
+  `s01b_haida_gwaii_place.html`) — real ESRI/Maxar satellite mosaic of the
+  full archipelago with deck-styled annotations (Pacific shelf edge,
+  upwelling/productive waters, protected spawning coves) + amber place
+  dots for Skidegate / Cumshewa / Selwyn (the inlets the talk later
+  cites). Native PPT text overlays removed from the S1b block in
+  `build_pptx_native.js` (everything baked into the PNG → no
+  font-substitution risk on the venue PC). Source raster:
+  `deck_assets/_sources/haida_gwaii_satellite_esri.jpg` (2400×2800,
+  bbox -133.4..-131.0 lon, 51.6..54.4 lat). Speaker notes updated to the
+  new content (~25 s beat).
+  **REMAINING (tasks #16-#20; spec is the source of truth):** (a) methods/
+  legitimacy native slide after S4 framed as Okamoto et al. 2020 Ecol Appl
+  approach; (b) economics↔ecology slide feeding S11 (coupled Japan-kazunoko
+  supply+demand collapse; sourced numbers only — S8_landed_value_
+  provenance.md); (c) S10b predator-pit baked figure (redesign_figs.py fn +
+  preprocess JOBS + slide block; ≈239% + humpback/Steller composition; loud
+  guardrail); (d) Okamoto-2020 triple-bottom-line allocation SOLUTION slide
+  before S13 (industry/Haida/ecosystem[mammals+salmon], nested-scale +
+  dynamic harvest); (e) S12b reference-point-problem native after S12
+  (DFO P(SB<LRP)=0.38 at zero catch; dynamic/ecosystem-conditioned RPs);
+  (f) S13 tighten (no dup w/ Okamoto), S14 punchline tweak, S6+S9b
+  drop-on-day notes. All claim-control safe; reuse existing data/assets +
+  kazunoko photo in photos/l2_imports/. Deck currently known-good at 28
+  slides — safe to ship as-is if the rest can't land before the talk.
+- **[Session-B · 13:25] ▶️ RESUMED (continuation session). Deck now at 32
+  slides** — interim work (un-logged by the prior context window, confirmed
+  from source + pptx mtime 13:10) added: **S4b** methods/legitimacy (our
+  m1_stier_11, NOT Okamoto), **S10c** economics (basic — needs 3-act
+  build-out), **S12b** reference-point problem, **S12c** Okamoto-2020
+  solution. Spine order in `build_pptx_native.js`: S1·S1b·S2·S3·S3.5·S4·
+  **S4b**·S5·S6·S7·S8·S8b·S9·S9b·S9c·S10·**S10c**·S11·S12·**S12b**·**S12c**·
+  S13·S14 + Q&A divider + B-DFO + SB1–SB7 = 32 pp. Canonical
+  `*_clean.pptx` (13:10) == checkpoint `..._claude-code_20260519-131027`.
+- **[Session-B · 13:26] ✅ QA PASS — 4 new text-dense slides (S4b/S10c/
+  S12b/S12c).** Rendered `*_clean.pptx` → PDF (LibreOffice, `/tmp/loqa`),
+  rasterized PDF pp.7/17/20/21 @110 dpi, inspected each. **No overflow,
+  no collision, no clipping on any of the four.** S4b (p7): DATA/MODEL/
+  LINEAGE/READING rows + caption all clear. S10c (p17): structurally clean;
+  large mid-slide whitespace is by-design = the gap the 3-act build-out
+  fills next. S12b (p20): clean; caption wraps to 2 lines but fits (claim-
+  safe DFO SR 2025/005 attribution intact, not clipped). S12c (p21): clean;
+  3-column pattern consistent with already-QA-passed S11. No QA fixes
+  required. Next: S10c 3-act build-out (blocked on Adrian's citable-$
+  decision — asking now).
+- **[Session-B · 13:36] ✅ S10c BUILT OUT → 3-act price-regime diagram.**
+  Adrian's claim-control call (AskUserQuestion): **on-slide hard $ =
+  PRIMARY-SOURCE ONLY (Set A)** — Rebuilding Plan §5.2.3: spawn-on-kelp
+  $62.88/lb (1995) → $11–14/lb today + last HG roe fishery 2002. The
+  richer teaching-deck per-era figures ($40→<$6/lb; ~$50M→$2.78M; seine
+  ≈$40M) + Roy Jones Sr./Ernie Wilson quotes → SPEAKER-NOTE colour only
+  (they differ from primary source; explicitly flagged off-slide in notes).
+  Replaced the generic 3-column slide with a value-height motif: Act 1
+  industrial-low (grey, "no market price") → ↑ → Act 2 kazunoko peak
+  (tall amber bar, "$62.88/lb · 1995 peak") → ↓ → Act 3 demand-collapse
+  (short blue bar, "$11–14/lb today · last HG roe fishery 2002") on a
+  shared baseline + faint inter-regime dividers; three act narrative
+  panels below (ACT n · years · 1-line each); payoff takeaway ("same
+  fish… industrial input → luxury export → near-worthless in ~35 yr…
+  which drove which is the open question; ecological + cultural value
+  never left"); claim-safe 1-line caption. Native-only rebuild (`node
+  build_pptx_native.js`). QA'd p.17 (120 dpi, top+bottom crops + full):
+  arrows ↑↓→ render clean (no tofu), $62.88 dark-on-amber readable, fixed
+  2 polish issues (Act 1 body 4→3 lines so it clears the takeaway;
+  caption 2-line orphan → 1 line). No overflow/collision/clipping.
+  Checkpoint `..._claude-code_20260519-133629.pptx/.pdf`; canonical
+  refreshed; PowerPoint quit+reopened on the rebuilt deck (cache).
+- **[Session-B · 13:51] ✅ S10b PREDATOR-PIT baked figure BUILT (deck →
+  33 slides).** New `redesign_figs.py s10b_predator_pit()` + JOBS entry
+  + native fullbleed block inserted **between S10 (two oceans) and S10c
+  (economics)** → PDF p.17. Full pipeline run (redesign → preprocess →
+  node). Reuses ONLY audited data (no new analysis):
+  `hg_predation_pressure_index_audited.csv` (C_total_kt vs HG_spawn_kt,
+  5-yr smoothed, 1951–2024) + `hg_predator_consumption_by_species_recent`
+  (SB2 means). LEFT = the consumptive pit: predator demand rises from a
+  whaling-depleted ~0 kt to exceed the spawn it draws on; shaded gap =
+  the pit; ≈239% headline (= demand÷spawn 2015–24 mean, SAME definition
+  as S11 — verified 238.8); "Fishing removed · closed 1994 · ~0-t HG
+  since 2002". RIGHT = who eats it now (humpback 4.96 kt + Steller 2.41
+  kt — the recovered marine mammals — lead; top-8, group-coloured).
+  ⚠️ Caught + fixed 3 QA defects across 3 iterations: (1) **provenance
+  clipped off the right edge** (same class as the SB4 bug — baked
+  provenance doesn't wrap) → shortened, keeping the LOUD guardrail
+  ("a measured PRESSURE, NOT a fitted m1_stier_11 mortality coefficient
+  — lock-in at hypothesis strength"); (2) over-dense left panel (4
+  lines + headline + in-plot guardrail collided with the rust peak) →
+  dropped raw faint lines + in-plot guardrail (guardrail now lives in
+  the loud provenance, per deck convention S10/S8b), tightened headline;
+  (3) gutter end-labels collided with the right-panel species ticks +
+  legend collided with the bottom bar & showed an empty Salmon class →
+  removed legend, replaced end-labels with direct in-panel line labels.
+  v3 QA'd p.17 (150 dpi; L/R/provenance crops + full): no overflow /
+  collision / clipping; arrows & glyphs clean; guardrail loud + claim-
+  safe. Checkpoint `..._claude-code_20260519-135112.pptx/.pdf` (33 pp);
+  canonical refreshed.
+- **[Session-B · 13:55] ✅ S13 / S14 / S6 / S9b — final retunes DONE.
+  ALL expansion items complete; deck final at 33 slides.**
+  • **S13** (p.23): lesson 3 was "Allocate explicitly across the triple
+    bottom line" — that DUPLICATED S12c (the Okamoto allocation solution,
+    the "how"). Re-pointed lesson 3 → **"Condition reference points on
+    the current state."** (the general transferable principle: a recovery
+    target pinned to a historical baseline misleads wherever a system has
+    crossed a hysteretic threshold — per spec §5). Amber footer tightened
+    to the distinct spatial-EWS proposal (hypothesis strength, no claim
+    change). S13 now complements S12c, no overlap. QA'd p.23: clean.
+  • **S14** (p.24): sub-line tweaked to explicitly land the reference-
+    point/expectations punchline — "…the old reference points and
+    expectations no longer fit. Recovery is a moving target; herring is
+    the centre of the food web." Kept "A century of change — recalibrate
+    what herring is" + the S3.5 food-web tie-back. 2 lines, QA'd p.24:
+    no overflow, clears "Thank you.".
+  • **S6 + S9b**: added explicit ⏱️ DROP-ON-THE-DAY / skip-safe
+    speaker-note lines (target ~20 min; these are the two designated
+    cuts) per the spec timing decision. Notes-only; no visual change.
+  Native-only rebuild (`node build_pptx_native.js`). Final checkpoint
+  `..._claude-code_20260519-135454.pptx/.pdf` (33 pp); canonical
+  refreshed; PowerPoint reopened on the final deck.
+  **▶️ STATE: all 6 expansion additions + retunes COMPLETE. Deck final &
+  shippable at 33 slides** (spine S1·S1b·S2·S3·S3.5·S4·S4b·S5·S6·S7·S8·
+  S8b·S9·S9b·S9c·S10·S10b·S10c·S11·S12·S12b·S12c·S13·S14 + Q&A divider +
+  B-DFO + SB1–SB7). All on-slide $ primary-source-only (Adrian's call);
+  predator demand = audited pressure not a fitted m1 coefficient
+  throughout; co-governance = institutional milestone; no new analysis.
+  Open doc-sync (deferred, non-blocking): `docs/HERRING_TALK_ASSETS.md`
+  Talk Build State, `deck_build/README.md` slide map, `slide_asset_map.md`
+  still show the 15-slide spine — need a consolidated re-sync to the
+  33-slide spine when there are cycles (this board is authoritative
+  meanwhile). Pre-existing backup-only defects still open & non-ship-
+  blocking: SB4 title clip, SB5 label collision (Q&A/backup figs only).
+- **[Session-B · 14:13] 🛑→✅ CLAIM-CONTROL FIX: "≈239% of spawn" was
+  misleading — REMOVED deck-wide (Adrian caught it).** `HG_spawn_kt` is
+  the **DFO Pacific Herring Spawn INDEX** (data dictionary §D, "the prey
+  side") — a survey index of egg deposition, NOT the standing herring
+  stock. So "predators take ≈239% of the annual spawn" read as
+  biologically impossible (can't eat 2.4× the fish). The official
+  `Output/diagnostics/predator_talk_brief.md` "Talk-Safe Claims" give
+  the sound framing: 2015–24 mean predator consumption ≈15.5 kt/yr vs
+  ≈47 kt m1_stier_11 stock → **≈29% removal analogue** (~a third of the
+  standing stock/yr). ⚠️ Reconciliation caught: the brief's 46.66 kt
+  basis is NOT the deck's focal_9 series (focal_9 2015–24 mean = 31.5 kt
+  → would give an unvetted ~49%); the board's 10:10 fix deliberately
+  moved the deck off all_11. Resolution: use the brief's exact vetted
+  numbers as a SOURCED ANNOTATION; do NOT plot a biomass line on S10b
+  (avoids a focal_9-vs-brief on-figure contradiction and the all_11
+  reintroduction). Adrian's call (AskUserQuestion, then "just fix the
+  predator number"): reframe to ~⅓-of-standing-biomass.
+  **Changes:** (a) `redesign_figs.py s10b_predator_pit()` — dropped the
+  spawn series + 239 headline; S10b is now the predator field RECOVERING
+  (single audited demand curve ~0→large, 1951–2024) + species panel,
+  headline "≈29% of the standing herring stock taken by predators every
+  year · 2015–24 · ≈15.5 kt/yr from a ≈47 kt stock"; removed the now-
+  redundant in-panel series label (y-axis names it). (b) `preprocess_
+  figures.py` JOBS 10b takeaway + provenance reframed (provenance cites
+  predator_talk_brief.md, keeps the loud guardrail). (c) `build_pptx_
+  native.js`: S10b comment + notes, S11 Ecosystem column + notes, S10
+  notes, S9c notes all reframed; residual "239/spawn" strings remain
+  ONLY as corrective "do-not-use, removed as misleading" notes for
+  future sessions. (d) stale module docstring updated. Full pipeline
+  rebuilt (redesign→preprocess→node); QA'd p.17 (S10b) + p.19 (S11):
+  clean, no >100% ratio, claim-vetted, no overflow/collision. Checkpoint
+  `..._claude-code_20260519-141303.pptx/.pdf` (33 pp); canonical
+  refreshed. Okamoto-prominence question deferred by Adrian (still open;
+  S12c slide 22 currently titled "Allocate the portfolio", Okamoto only
+  in caption). NEXT: narrative↔visual mismatch audit of the 33-slide
+  deck (Adrian-requested).
+- **[Session-B · 14:34] ✅ NARRATIVE↔VISUAL AUDIT done (subagent sweep +
+  adjudicated fixes).** Full 33-slide audit (rendered PDF + source + spec
+  + claim sheet). Verdict was 2 ship-blockers + polish; all FIXED & QA'd:
+  • **SB1 (S9 ship-blocker):** S9 speaker note said synchrony "up >60%"
+    while the figure on screen shows "+28%" (verified ground truth from
+    `deck_s09_synchrony_rolling.csv`: 0.31→0.40 = +28%). Note rewritten
+    to ~28% (0.31→0.40) with an explicit "do NOT say >60%" guard.
+  • **SB2 (S4 ship-blocker):** S4 said "everything next is a departure"
+    in BOTH the speaker note AND the visible on-slide takeaway, but S4b
+    (methods) now follows, not a departure. Fixed both: note re-pointed
+    ("first, how we know it" → S4b), takeaway reworded to "…the baseline
+    every later change departs from." (true regardless of neighbour).
+  • **Stale transitions from the 8 insertions:** S1→S1b (deep-time
+    pre-announce softened), S3→S3.5 ("where does herring sit" hands into
+    the wasp-waist; "put numbers on it" moved to S3.5→S4), S4b→S5
+    transition added. All notes-only.
+  • **S10b right-panel title** said "humpback + Steller lead" but Pacific
+    cod (green) is visibly bar #2 → retitled "humpback leads; recovered
+    marine mammals (blue) now rival the groundfish (green)" (accurate to
+    the chart). QA'd p.17.
+  • **S4 caption** leaked an internal build note "(Mongabay photo dropped
+    with the bones chart.)" — removed; QA'd p.6.
+  • **SB4 title clip** (long-standing backup defect) — shortened to
+    "m1 vs DFO SR 2025/005"; QA'd p.30, now fits.
+  • **SB6** schematic: the HG-herring curve was a symmetric Gaussian dip
+    that rebounded to ~0.95 while labelled "no recovery" (contradicted
+    the deck's core thesis on a hysteresis-pull). Rewrote as a sigmoid
+    drop that plateaus low; QA'd p.32, now matches the label.
+  • **Regression caught + fixed:** porting `supplementary_figs.py` to run
+    on macOS (it had a hardcoded sandbox REPO path + Linux-only fonts —
+    never ported, unlike redesign/preprocess) exposed "→" rendering as
+    tofu □ in Georgia on SB6/SB7 ("time →", "biomass / abundance →",
+    "rolling-window variance →") + a literal "kt·yr⁻¹" on SB2. Replaced
+    "→" with plain text and the superscript with mathtext (deck standard);
+    QA'd SB6/SB7 — no tofu. supplementary_figs.py now runs on macOS.
+  • Spec doc given a "CORRECTED — do not reintroduce 239% of spawn"
+    marker (doc hygiene).
+  Clean dimensions per the audit: claim-control "239/spawn" contract
+  holds (on-slide nowhere; notes-only correctives only); cross-slide
+  numbers reconcile; S11→S14 finish has 4 distinct jobs (no dup);
+  titles/subtitles match content. Full pipeline rebuilt (redesign +
+  supplementary + preprocess + node). Final checkpoint
+  `..._claude-code_20260519-143427.pptx/.pdf` (33 pp); canonical
+  refreshed; PowerPoint quit+reopened on it.
+  **▶️ STATE: deck final & shippable at 33 slides, audit-clean.** Still
+  open & deferred (non-ship-blocking, backup-only, consistent w/ prior
+  triage): **SB5** co-governance label collision near 1993/96 (Q&A pull
+  only). Open non-talk follow-up: doc-sync of HERRING_TALK_ASSETS Talk-
+  Build-State / deck README slide map / slide_asset_map to the 33-slide
+  spine. Okamoto-prominence (S12c) still deferred per Adrian.
+
+- **[Session-B · 14:56] ✅ NARRATIVE REDESIGN Build 1/7 — ⑧ slow-tipping-point reword.** Spec: `docs/superpowers/specs/2026-05-19-herring-narrative-redesign-design.md` (committed). Option A spine approved (slow drawdown, not proven regime-shift). S11 "A system in a new state"→**"A system drawn down"**; Ecosystem column reframed (portfolio drawn down; predators = one pressure among several); caption demotes "a new stable state" to one hypothesis of several (drawdown/age-truncation/predator), not proven; notes rewritten. S12 right card "NEW EQUILIBRIUM"→**"THE STATE WE HAVE NOW"** ("whether this is a new stable state is unresolved"); caption/notes demote bistability; THEREFORE line kept ("judge recovery against the system we have"). S5/S8b/S9 notes reworded to the slow-drawdown / slow-tipping spine (S8b: "the tip is the portfolio drawn down, not a fast crash"). Native-only rebuild; QA'd p.19/p.20: clean, no overflow/collision; aligns with claim-control sheet. Checkpoint `..._claude-code_20260519-145634.pptx/.pdf` (33 pp). PowerPoint refresh deferred to the Build-6 A-minus-④ gate (avoid 7 disruptive restarts; dated checkpoints are the rollback safety each build).
+
+- **[Session-B · 14:59] Build 2/7 — predators=one-pressure + NEW S10d.** S9c/S10/S10b notes softened: predation is ONE of several pressures on a drawn-down stock, NOT the proven cause (dropped the "alternative stable state" assertion -> hypothesis strength, one candidate among drawdown/age-truncation/portfolio). NEW **S10d "Why recovery usually fails"** inserted after S10b (SB6 cod schematic promoted into the spine; JOBS title/takeaway reworded to the generalization "Often it is slow drawdown and lost structure - not necessarily a new stable environment or proven feedbacks"; SB6 backup shares the reworded png). preprocess+node rebuilt; QA'd p.18 clean (no tofu/overflow, claim-safe). Deck **34 pp**. Checkpoint `..._claude-code_20260519-145634`.
+
+- **[Session-B · 15:04] Build 3/7 — economics moved UP FRONT (S10c -> S3.6).** Spliced the entire 3-act price-regime block from after S10b to **between S3.5 and S4** (Python splice, JS syntax-verified). Retuned: title "The economics were never the ecology" -> **"How herring's value changed"**; takeaway -> setup framing ("How people engaged with herring was set by the market, not by the fish"); notes reframed payoff->up-front set-up + transition to S4; comment header updated. S3.5 transition re-pointed to S3.6. On-slide $ unchanged (primary-source only). Predator->finish now flows S10b->S10d->S11 (no economics interrupt). Native-only rebuild; QA'd p.6 clean (no tofu/overflow). Deck **34 pp** (moved, not added). Checkpoint `..._claude-code_20260519-150429`. (Build-2 real checkpoint = ..._150002.)
+
+- **[Session-B · 15:12] Build 4/7 — S12c expanded (⑥) + NEW S12d (⑤) + S13/S14 A-spine align.** S12c gained a claim-safe Shelton stage-at-harvest band: an egg (kʼaaw/SOK) harvest can bear a higher sustainable rate than the lethal pre-spawn roe fishery (Shelton, Samhouri, Stier & Levin 2014 Sci Rep 4:7110 — Adrian co-author). **Adrian flagged docs/sok-vs-sacroe-quota-accounting.md**; corrected my over-stated "population-safe zone / shift to SOK" wording to the doc's defensible PRINCIPLE-only statement (do NOT imply loosen/raise SOK; Shelton is strategic not tactical; safe zone collapses for depressed/structured stocks = exactly HG; eggs also an ecosystem subsidy; HG is FSC kʼaaw only; no conversion factor) — full guardrail in notes. NEW **S12d "Who governs it"**: 4-party SES (Haida Nation · DFO/Canada · BC · Parks Canada); caption guardrail co-governance = institutional milestone NOT an outcome metric. S13 lesson 3 de-hystereticised ("whatever the mechanism" — was "hysteretic threshold", contradicted the A spine), lesson 2 softened (predator = major draw not "largest consumer"; + portfolio), notes updated (manage under uncertainty; no bistability claim). S14 close folds in slow-drawn-down + policy-not-number + food-web tie. Native rebuild; QA'd p.23/24/25/26 clean (no overflow/collision/tofu). Deck **35 pp**. Checkpoint `..._claude-code_20260519-151210`.
+
+- **[Session-B · 15:18] Build 5/7 — ②③ photos.** NEW **S2b "Then the shore turns turquoise"** (full-bleed HG aerial spawn-cove, pre-cropped 16:9; ③ the bridge: herring inshore -> the turquoise event) between S2 and S3. NEW **S3b "The same event feeds the whole coast"** (HG bald eagle contained on dark, Skidegate Inlet; ② egg-predator) between S3 and S3.5. ⚠️ Asset gap: bear & wolf egg-predation photos NOT in the media library (searched Dropbox Research-Media-Library / Downloads / Desktop) — NAMED on-slide + in notes as a stopgap, flagged "still wanted"; only the HG eagle is rights-plausible. Both new photos rights-flagged (teaching-media / P. Levin collaborator — same discipline as Salomon/Oceana/BBC). Native rebuild; QA'd p.4/p.6 clean (no distortion/overflow). Deck **37 pp**. Checkpoint `..._claude-code_20260519-151813`.
+
+- **[Session-B · 15:25] ★ Build 6/7 — A-MINUS-④ GUARANTEED-SHIPPABLE CHECKPOINT.** Full pipeline rebuilt (redesign + supplementary + preprocess + node — all figures regenerated for coherence, not just incremental). Whole-deck QA via fresh audit subagent (37 pp, A-spine + claim-control context): verdict = **1 ship-blocker, localized to S12b** — it still said "After a regime shift the system cannot return there" (body) and "alternative stable state = m1_stier_11 + DFO" (caption), contradicting its just-reworded neighbours (S12b was marked "no change" in the spec so it was missed). FIXED both → mechanism-agnostic ("Once abundance and spatial structure are drawn down and do not retrace — whatever the mechanism"; caption mirrors S12 "one hypothesis, not established"). Re-QA'd p.24: clean. Audit confirmed CLEAN deck-wide: no on-slide "239"/"% of spawn"; predator = one-pressure not fitted-coefficient; S12c Shelton = principle-not-tactic; S12d co-governance = milestone-not-outcome; transitions correct after all 8 inserts/moves; economics-up-front coherent; numbers consistent; no tofu/overflow on any of 37 pages. **This is the fallback deck — clean & shippable. Checkpoint `..._claude-code_20260519-152552_A-minus-4_SHIPPABLE.pptx/.pdf` (37 pp).** Next: Build 7 (④ bespoke HG food-web diagram) — if it can't be made clean in time, revert S3.5 to this checkpoint and ship.
+
+- **[Session-B · 15:30] ✅ Build 7/7 — ④ BESPOKE HG FOOD-WEB DIAGRAM (Option A COMPLETE).** Replaced the generic Oceana/Seattle-Times figure on S3.5 with an **original native pptxgenjs schematic** (no third-party rights — an improvement). Converge→diverge wasp-waist: OCEAN PRODUCTIVITY (wide base) → faint kelp funnel → **PACIFIC HERRING** (single rust waist node, "spawns in Haida Gwaii coves") → faint marine funnel → 6 HG-specific consumer groups (Marine mammals · Groundfish · Salmon[juv context] · Seabirds · **LAND: black bear/wolf** · People: kʼaaw + commercial-closed). The LAND column is the deliberate HG land–sea differentiator (also carries ②). Title "Herring — the wasp-waist of Haida Gwaii". Salmon flagged juvenile/recruitment-context (claim-safe). Native rebuild; QA'd p.7: funnel reads, no tofu/overflow/collision. Deck **37 pp** (image→native, no page change). Checkpoint `..._claude-code_20260519-153009`. **▶️ FULL OPTION A COMPLETE (all 7 builds + 8 items ①–⑧). A-minus-④ shippable fallback remains at ..._152552_A-minus-4_SHIPPABLE if ④ ever needs reverting.**
+
+- **[Session-B · 17:37] ⏸️ HANDOFF — v3.1 REBUILD NOT STARTED (out of context, deliberately).** Adrian said "build it" (rebuild slides to the v3.1 narrative) but this context window is ~exhausted; starting a 23-slide restructure now would leave a half-built deck the day before the talk — NOT done, by the project's own never-leave-half-built rule. **State preserved & safe:**
+  - SOURCE OF TRUTH for the rebuild = `NARRATIVE_v3_social-ecological-double-helix.md` (v3.1, 23 slides, with Thesis/Take-home/Goal + the per-slide ecological·social-economic·lesson weave + claim anchors). PDF alongside.
+  - Two shippable decks intact & untouched: canonical `Herring_RoyalSociety_Stier_2026_clean.pptx` (37 slides, audit-clean Option A) and `..._claude-code_20260519-152552_A-minus-4_SHIPPABLE.pptx` (clean fallback). **Either can give the talk tomorrow as-is** if the rebuild can't happen.
+  - Build spec/claim record: `docs/superpowers/specs/2026-05-19-herring-narrative-redesign-design.md`. Pipeline: `deck_build/` → `python3 redesign_figs.py && python3 supplementary_figs.py && python3 preprocess_figures.py && node build_pptx_native.js` → LibreOffice PDF QA → dated checkpoint → board → quit+reopen PowerPoint.
+  **NEXT-SESSION ORDERED BUILD LIST (execute against NARRATIVE_v3.1, one item → rebuild → QA changed slide → dated checkpoint → board):**
+  1. Front compression: merge S2+S2b → one spawn-spectacle slide; merge S3+S3b+S3.5 → one "wasp-waist + people (Haida harvest built on the portfolio)" slide. (deck → ~35 then continues)
+  2. Open the two clocks: S5 baseline = add culture clock (kʼaaw = egg harvest, trade good, >10k yr); S6 = the two-collapse PUZZLE + open the economics clock (3 value regimes; on-slide $ primary-source only).
+  3. NEW slide 10 "Portfolio theory — from finance to fish" (Markowitz → Schindler ecological portfolio effect; economics↔ecology bridge; native concept slide) BEFORE the HG portfolio-data slide (now 11).
+  4. Reword the spatial-portfolio data slide (11) to "data confirms the theory just stated"; S12 portfolio-eroded = add the strands-pair line (rare-everywhere fails for predators AND people; correlation→1).
+  5. Predator beat: collapse to S14 (came back) + S15 (mechanism, THE ONE DISCLAIMER — measured synchrony + hypothesis-strength predators, ≈⅓ stock NOT 239%); fold old S10 two-oceans in; species chart → backup.
+  6. S16 = standalone climax (P(SB<LRP)=0.38 at zero catch). S17 = moving target + the DECOUPLING hinge (ecological & cultural value persisted, market value collapsed — the session's theme). De-duplicate the finish (reference-point point ONCE).
+  7. S18 cod = "textbook expectation" not asserted fact. S19 allocate (Okamoto "predicts" + Shelton life-stage). S20 re-couple/triple-bottom-line (economics resolves here). S21 co-governance (= institutional milestone, not outcome). S22 three lessons (lead with the proven one + spatial-EWS frontier as hypothesis). S23 close = bookend S1 verbatim.
+  8. Apply claim anchors throughout (fishing "drove"; productivity "leading proximate explanation"; Okamoto "predicts"; co-governance milestone-not-outcome; no "239% of spawn"; economic $ primary-source only). After each item: dated checkpoint + board; do a whole-deck QA-audit subagent pass before declaring shippable; keep A-minus-④ as the revert fallback.

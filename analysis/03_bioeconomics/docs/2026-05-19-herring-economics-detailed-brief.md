@@ -6,7 +6,7 @@
 - **Companion artifacts (this repo, `docs/`):**
   - `2026-05-19-kazunoko-demand-context-brief.md` — forward-looking demand context (the "why the market won't return" piece)
   - `herring-economics-three-acts.html` — visual narrative of the documented historical price arc
-  - The `talk-usuk-forum-2026/Talk_Materials/s8_value_lag_infographic.html` candidate slide (sibling repo) — talk-format version of the same story under the deck's stricter claim-control
+  - The `analysis/04_talks/2026-royalsociety/Talk_Materials/s8_value_lag_infographic.html` candidate slide (sibling repo) — talk-format version of the same story under the deck's stricter claim-control
 - **One-line thesis:** The Pacific-herring fishery at Haida Gwaii has lived three economic lives — bulk industrial input, luxury kazunoko commodity, and post-closure absence — and the demand engine that made the second life valuable has **structurally faded on both blades** (Japanese hatchery recovery + demographic demand decline), so the **economic non-recovery is likely more permanent than the ecological one.**
 
 ---
@@ -165,7 +165,7 @@ The `herring-bioeconomics` repo (sibling to `stier-2027-herring-metapopulation`)
 - **[12]** Melnychuk et al. 2021, Sea Around Us / Tai et al. 2017 — Global ex-vessel price database. Purpose-built reconstruction; BC Pacific herring back to ≈1950. **Already in this lab's NotebookLM library** (notebook "Melynchuck et al 2021").
 - **[13]** Jones 2000, *The herring fishery of Haida Gwaii: An ethical analysis*, in Coward, Ommer & Pitcher (eds.) *Just Fish*. Source for the early-1970s roe-fishery birth narrative; derby openings 15 min – 2 hr; chaotic / dangerous operating conditions; Vancouver middleman markups ("change the address and ship it to Japan").
 - **[14]** Jones 2007, *Application of Haida oral history to Pacific herring management*, in *Fisher's Knowledge in Fisheries Science and Management* (UNESCO).
-- **[15]** Council of the Haida Nation / DFO / Parks Canada 2024, **Haida Gwaii ʹíináang | iinang Pacific Herring Rebuilding Plan**. On disk at `talk-usuk-forum-2026/Reference_Papers/HG_Herring_Rebuilding_Plan_2024_CHN_DFO_ParksCanada.pdf`. The authoritative current-source. SOK real price (2020$): $16–31/lb (1970s), $62.88/lb (1995 peak), $11–14/lb (recent). Roe value peaked 1980s, high to mid-1990s, declined 1995–2005 and 2008–present, modest 2016–18 uptick (~$16M landed + >$29M processing). SOK average $3.6M/yr 1982–2008. Last HG roe fishery 2002.
+- **[15]** Council of the Haida Nation / DFO / Parks Canada 2024, **Haida Gwaii ʹíináang | iinang Pacific Herring Rebuilding Plan**. On disk at `analysis/04_talks/2026-royalsociety/Reference_Papers/HG_Herring_Rebuilding_Plan_2024_CHN_DFO_ParksCanada.pdf`. The authoritative current-source. SOK real price (2020$): $16–31/lb (1970s), $62.88/lb (1995 peak), $11–14/lb (recent). Roe value peaked 1980s, high to mid-1990s, declined 1995–2005 and 2008–present, modest 2016–18 uptick (~$16M landed + >$29M processing). SOK average $3.6M/yr 1982–2008. Last HG roe fishery 2002.
 - **[16]** DFO Pacific Region, *Pacific Herring Integrated Fisheries Management Plan* (multiple years). Source for the IFMP 1998 IVQ pool regime; 1993–2002 coastwide roe ≈32,000 t/yr ≈$50M/yr; Figure 9 chart-read series 1992–2004; 2006 expected-use table (Commercial Roe $2.78M; Commercial SOK $2.7M; Food & Bait $0.15/lb; Special Use $0.62/lb); 1,520 roe licences and 21 SOK licences (2006); "poor economic conditions in Japan have resulted in a reduction in the price paid for herring roe."
 - **[17]** Cleary et al. 2015/2024 (DFO Pacific Herring science). Coastwide landings by SAR 2015–2022 (HG 0 t every year); HG LRP 6,452 t; ~440 BC herring vessels; standard SOK pond ≈100 t of mature herring (Shields & Kingston 1982 lineage); 2013 DFO Daniel TAC menu (2,000–9,000 t).
 - **[18]** Stier, Shelton, Samhouri, Feist & Levin 2020, *Fishing, environment, and the erosion of a population portfolio*, *Ecosphere* 11(11): e03283. Source for 15–20% aggregate vs 65% local exploitation; portfolio erosion; place-based scale-matched governance recommendation.
@@ -191,12 +191,12 @@ The `herring-bioeconomics` repo (sibling to `stier-2027-herring-metapopulation`)
 ### Internal artifacts (this repo)
 
 - **[I-1]** Herring Haida Gwaii NotebookLM library (151 sources); curated reference set governing all citations above.
-- **[I-2]** `talk-usuk-forum-2026/Talk_Materials/S8_landed_value_provenance.md` (sibling repo) — claim-control / S8 provenance doc; defines the talk's "value lagged the ecology" framing and excludes "1993/$40M" as unsourced teaching shorthand for talk use.
+- **[I-2]** `analysis/04_talks/2026-royalsociety/Talk_Materials/S8_landed_value_provenance.md` (sibling repo) — claim-control / S8 provenance doc; defines the talk's "value lagged the ecology" framing and excludes "1993/$40M" as unsourced teaching shorthand for talk use.
 - **[I-3]** `docs/superpowers/specs/2026-05-19-herring-bioeconomic-analysis-design.md` — approved design spec for the four-lens analysis.
 - **[I-4]** `docs/superpowers/plans/2026-05-19-herring-bioeconomic-backbone.md` — Phase-0 implementation plan; 9 of 12 tasks complete.
 - **[I-5]** `docs/herring-economics-three-acts.html` — visual narrative of the price arc, real 2020 CAD/t (log-scale schematic).
 - **[I-6]** `docs/2026-05-19-kazunoko-demand-context-brief.md` — forward-looking demand brief.
-- **[I-7]** `talk-usuk-forum-2026/Talk_Materials/s8_value_lag_infographic.html` — candidate Royal Society talk slide (under stricter claim-control).
+- **[I-7]** `analysis/04_talks/2026-royalsociety/Talk_Materials/s8_value_lag_infographic.html` — candidate Royal Society talk slide (under stricter claim-control).
 
 ## 12. Rigor caveats
 

@@ -19,11 +19,11 @@ stier-2027-herring-metapopulation/
 │   ├── 01_data_cleaning.R … 12_reversibility_figs.R
 │   └── (cloud_fit_control.R, process_oisst_monthly.R)
 │
-├── Code/                      🔧 CORE DATA PIPELINE + DOSSIERS
+├── Code/                      🔧 CORE DATA PIPELINE
 │   ├── 00_data_audit.R … 06_*.R       data prep + model fitting pipeline
 │   ├── 03_fit_m{1..5}_*.R              individual M1–M5 fit variants
-│   ├── 07_*.R                          (~30 dossier/probe scripts — to be triaged
-│   │                                    into analysis/probes/ post-talk)
+│   ├── probes/                         71 post-fit dossier scripts (07_*.R)
+│   │                                   each writes one diagnostic to Output/diagnostics/
 │   └── archive/                        Stier 2020 Ecosphere read-only provenance
 │
 ├── inst/stan/                 Stan model source (.stan compiled to .hpp)
@@ -54,8 +54,6 @@ stier-2027-herring-metapopulation/
 ├── tests/testthat/            unit + integration tests
 │
 ├── analysis/                  🧪 DERIVATIVE WORKSTREAMS (see below)
-│
-├── talk-usuk-forum-2026/      🎤 Royal Society talk workspace (FIREWALLED)
 │
 ├── logs/                      build/job logs (gitignored)
 │
@@ -91,18 +89,16 @@ analysis/
 │   ├── renv/                  isolated package environment
 │   └── tests/testthat/
 │
-├── 04_talks/                  POST-TALK: talk-usuk-forum-2026/ will move here
-│   └── 2026-royalsociety/     (currently still at top level)
-│
-└── probes/                    POST-TALK: triage destination for Code/07_*.R
+└── 04_talks/                  🎤 talk workspaces (firewalled — see below)
+    └── 2026-royalsociety/     Royal Society USUK Forum 2026
 ```
 
-## `talk-usuk-forum-2026/` — talk workspace
+## `analysis/04_talks/2026-royalsociety/` — talk workspace
 
-**FIREWALL RULE (from `CLAUDE.md`):** never import anything from the talk dir back into the modeling pipeline (`R/`, `Code/`, `Data/`, `Output/`). Talk numbers are pulled *from* core analysis, never the reverse. This rule continues after the talk dir moves to `analysis/04_talks/2026-royalsociety/`.
+**FIREWALL RULE (from `CLAUDE.md`):** never import anything from the talk dir back into the modeling pipeline (`R/`, `Code/`, `Data/`, `Output/`, `inst/stan/`, `_targets.R`). Talk numbers are pulled *from* core analysis, never the reverse.
 
 ```
-talk-usuk-forum-2026/
+analysis/04_talks/2026-royalsociety/
 ├── README.md                          firewall + provenance
 ├── Reference_Papers/                  ~100 source PDFs (10 .pdf.bak kept for OCR tooling)
 ├── Talk_Materials/
@@ -123,7 +119,7 @@ talk-usuk-forum-2026/
 
 | Looking for | Path |
 |---|---|
-| **Talk live deck** | `talk-usuk-forum-2026/Talk_Materials/Herring_RoyalSociety_Stier_2026_v3.6_REVISED_slide14updated.pptx` |
+| **Talk live deck** | `analysis/04_talks/2026-royalsociety/Talk_Materials/Herring_RoyalSociety_Stier_2026_v3.6_REVISED_slide14updated.pptx` |
 | **Active model status** | `Output/diagnostics/model_decision_ledger.md`, `model_branch_status_table.md` |
 | **Talk language contract** | `docs/talk-model-claim-control-sheet.md` |
 | **Talk asset index** | `docs/HERRING_TALK_ASSETS.md` |
@@ -142,7 +138,7 @@ talk-usuk-forum-2026/
 
 - All R scripts use `here::here()` for paths. Project root is detected via `_targets.R` or `.here` marker.
 - Shell scripts assume `pwd == <repo root>`.
-- Python scripts in `talk-usuk-forum-2026/Talk_Materials/deck_build/` reference `Data/`, `Output/` as relative paths — they must be run from the repo root.
+- Python scripts in `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_build/` reference `Data/`, `Output/` as relative paths — they must be run from the repo root.
 - `_targets.R` is the canonical pipeline driver. `tar_visnetwork()` shows the live DAG.
 
 ## Sibling repo

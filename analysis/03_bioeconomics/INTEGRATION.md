@@ -5,7 +5,7 @@ through 2026-05-19, when it was integrated as a nested project inside
 `stier-2027-herring-metapopulation/` at the user's direction (consolidation
 over the sibling-repo design).
 
-## Separation rule (mirrors `talk-usuk-forum-2026/README.md`)
+## Separation rule (mirrors `analysis/04_talks/2026-royalsociety/README.md`)
 
 The modelling pipeline (`R/`, `Code/`, `inst/stan/`, `Data/`, `Output/`,
 `_targets.R` at the **repo root**) stays the canonical metapopulation analysis
@@ -29,5 +29,5 @@ state: FAIL 0 / SKIP 2 (Comtrade key, FRED key) / PASS 55.
 - `bioeconomics/docs/herring-economics-three-acts.html`
 
 These were briefly mirrored into the repo-root `docs/` and
-`talk-usuk-forum-2026/Talk_Materials/` during the standalone-repo phase;
+`analysis/04_talks/2026-royalsociety/Talk_Materials/` during the standalone-repo phase;
 those mirrors are removed by the integration commit.

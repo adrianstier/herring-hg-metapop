@@ -9,7 +9,7 @@
 # ALL numbers in both files are pulled from CSVs via helper functions that
 # error loudly if the lookup row is not found. No hardcoded floats.
 #
-# Firewall: no reads/writes to talk-usuk-forum-2026/
+# Firewall: no reads/writes to analysis/04_talks/2026-royalsociety/
 # ============================================================================
 
 suppressPackageStartupMessages({

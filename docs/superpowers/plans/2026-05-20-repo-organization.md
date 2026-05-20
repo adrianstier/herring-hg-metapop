@@ -34,7 +34,7 @@ herring-metapopulation/
     ├── 03_bioeconomics/     existing sub-package, moved wholesale
     │   └── (its own _targets.R, R/, Output/, renv/, tests/)
     ├── 04_talks/
-    │   └── 2026-royalsociety/   POST-TALK move of talk-usuk-forum-2026/
+    │   └── 2026-royalsociety/   POST-TALK move of analysis/04_talks/2026-royalsociety/
     └── probes/              triage destination for Code/07_*.R dossier scripts (POST-TALK)
 ```
 
@@ -53,7 +53,7 @@ The compendium model in the user's first answer showed `00_core_model/` for "M1�
 | `Code/12_reversibility_figs_render.R` | `here::here()` throughout | ✅ yes |
 | `R/12_reversibility_figs.R` | `here::here("Output", ...)` | ✅ yes, doesn't move anyway |
 | `bioeconomics/` | self-contained sub-package | ✅ yes (move whole tree) |
-| `talk-usuk-forum-2026/Talk_Materials/deck_build/*.py,*.js` | references `Data/processed/`, `Output/diagnostics/` (relative from repo root) | ⚠️ post-talk — paths assume repo root cwd |
+| `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_build/*.py,*.js` | references `Data/processed/`, `Output/diagnostics/` (relative from repo root) | ⚠️ post-talk — paths assume repo root cwd |
 
 ## Migration phases
 
@@ -65,7 +65,7 @@ The compendium model in the user's first answer showed `00_core_model/` for "M1�
 Add to `.gitignore`:
 ```
 # Stale snapshots awaiting confirmed deletion
-talk-usuk-forum-2026/Talk_Materials/_stale/
+analysis/04_talks/2026-royalsociety/Talk_Materials/_stale/
 
 # Per-workstream analysis outputs (regenerable)
 analysis/*/output/
@@ -124,15 +124,15 @@ Update any cross-references in:
 
 The sub-package's internal `_targets.R` and `renv/` should be unaffected (self-contained).
 
-### Phase F — POST-TALK — Move talk-usuk-forum-2026 (HIGH risk pre-talk; safe after)
+### Phase F — POST-TALK — Move analysis/04_talks/2026-royalsociety (HIGH risk pre-talk; safe after)
 ```bash
-git mv talk-usuk-forum-2026/ analysis/04_talks/2026-royalsociety/
+git mv analysis/04_talks/2026-royalsociety/ analysis/04_talks/2026-royalsociety/
 ```
 Update:
-- `.gitignore` lines 70–86, 96–98 (replace `talk-usuk-forum-2026/` → `analysis/04_talks/2026-royalsociety/`)
+- `.gitignore` lines 70–86, 96–98 (replace `analysis/04_talks/2026-royalsociety/` → `analysis/04_talks/2026-royalsociety/`)
 - `CLAUDE.md` references (talk firewall rule still applies but with new path)
 - `docs/HERRING_TALK_ASSETS.md` paths
-- All deck_build Python/JS scripts that reference `talk-usuk-forum-2026/Talk_Materials/...` from outside
+- All deck_build Python/JS scripts that reference `analysis/04_talks/2026-royalsociety/Talk_Materials/...` from outside
 
 **Do not execute until talk delivered.**
 

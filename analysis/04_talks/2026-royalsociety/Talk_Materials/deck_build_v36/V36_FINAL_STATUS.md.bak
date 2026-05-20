@@ -1,0 +1,40 @@
+# v3.6 REVISED — FINAL STATUS
+
+Phase E close-out: 2026-05-20
+
+## Files
+- PPTX: `/Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/Herring_RoyalSociety_Stier_2026_v3.6_REVISED.pptx` (87.3 MB / 91,509,194 bytes)
+- PDF:  `/Users/adrianstier/stier-2027-herring-metapopulation/talk-usuk-forum-2026/Talk_Materials/Herring_RoyalSociety_Stier_2026_v3.6_REVISED.pdf` (56.1 MB / 58,867,894 bytes, 39 pages)
+
+## Spine
+30 spine (S1–S30) + 4 extras (X1–X4) + 5 Q&A backups (B1–B5) = 39 slides.
+
+## Hard-rule compliance (post-patch)
+- [x] Universal fonts only (Calibri / Georgia / Consolas)
+- [x] All media embedded (0 external refs)
+- [x] Synchrony 0.17 → 0.28 (NOT 0.31 → 0.40)
+- [x] Predator demand ≈⅓ stock / ~29% removal analogue (NOT 239%)
+- [x] SOK $62.88/lb → $11–14/lb · last roe 2002 · SOK closed 2004 · 0 t 2025
+- [x] P(SB < LRP) = 0.38 (X3, zero catch)
+- [x] "Recovery is a moving target." — S1 + S30 only (spine)
+- [x] "Tipping point" — S1 kicker + S28 reframe only on spine (X4/B3/B5 outline-sanctioned)
+- [x] Pacific Wild credit on every Pacific-Wild footage slide (S3, S4, S6, S7, S10, S22, S29 buffer); NOT on synthetic-animation slides (S17, X1, X2) per outline
+- [x] kʼaaw: "the right and the ritual persisted; access did not"
+- [x] Haida: present-tense sovereign nation; CHN as government
+- [x] No "wolves" attributed to HG empirical/model corpus (only S6 cinematic, S12 channel list, S7 prior-cinematic recap in notes)
+
+## Patches applied (Phase E)
+- **[P0] S16:** Rewrote as a clean text-only "model output preview" card — two-column layout (ARCHIPELAGO AGGREGATE / 11 SUBPOPULATIONS) with light frame rectangles, mono headers + Georgia leads + italic gloss describing posterior median + 95% CI 1950–2024 and per-section trajectories with uncertainty bands, majority declining. **NO "ASSET NEEDED" text anywhere.** Caption + source footer + speaker notes preserved.
+- **[P0] S27:** Shortened lesson 3 lead from "In coupled systems, manage the ecological AND cultural AND economic resource together." → "Manage ecological, cultural, and economic resources together." Now fits one line at 22pt bold across the 10.3-in row; gloss stays at 16pt italic below with no collision. Lessons 1 and 2 untouched.
+- **[P1] S23:** Bumped claim-control disclaimer ("Consistent-with, modest, regional, descriptive — not demonstrated as cause at subpopulation scale (per claim-control sheet).") from 10pt → 12pt italic. Readable at projector resolution from the back of the room.
+- **[P1] S19:** Trimmed citation footer from "Analysis: Stier et al. 2020 / 2027 in prep" → "Analysis: Stier et al. 2020 · PDO data: NOAA". Forward-citation drift removed.
+
+## Smoke tests (post-patch)
+- External refs (`TargetMode="External"` in slide rels): **0** — PASS
+- `unzip -tq` integrity: **clean** — PASS
+- LibreOffice headless reopen → PDF: **PASS** (39-page PDF, 56.1 MB)
+- PDF page count: **39** — matches expected (S1–S30 + X1–X4 + B1–B5)
+- Spot-check renders of S16, S19, S23, S27 inspected: all four patches visually confirmed clean (no placeholder text, no overflow, no collision, disclaimer readable, footer trimmed)
+
+## Recommendation
+**SHIP.** All P0 and P1 issues from the three QA reports are addressed. The deck is portable, claim-control-compliant, narrative-intact, and visually clean at projector resolution.

@@ -34,6 +34,12 @@ spawn video, S3.5 keeps the wasp-waist diagram. Deep-time (10,000-yr) framing
 stays at S4 (baseline measured).
 
 ### 3. NEW S10b — "The predator pit" (baked figure, after S10 two-oceans)
+> ⚠️ **CORRECTED 2026-05-19 (Adrian caught it):** the "≈239% of spawn"
+> framing below is **RETIRED — do NOT reintroduce it.** `HG_spawn_kt` is the
+> DFO spawn *index* (a survey index, not the standing stock), so "239% of
+> spawn" reads as biologically impossible. S10b ships with the talk-safe
+> `predator_talk_brief.md` framing instead: predators take ≈15.5 kt/yr ≈ a
+> third of the ≈47 kt m1_stier_11 stock (≈29% removal analogue). Built.
 - Reuse SB2 species data + pressure index: predator demand ≈239% of HG annual
   spawn (2015–24); humpback ~5.0 kt + Steller sea lion ~2.4 kt dominate.
 - Argument: a *different process now sets the ceiling* — closure removed
@@ -195,18 +201,41 @@ are strong colour for speaker notes.
 
 ## ▶️ RESUME HERE (continuation checklist)
 
-**State:** deck known-good at **28 slides** (`Herring_RoyalSociety_Stier_2026_clean.pptx`),
+> **✅ COMPLETE — 2026-05-19 ~13:55 (Session-B continuation).** ALL 6
+> expansion additions + retunes are built and QA-passed. Deck final &
+> shippable at **33 slides** (`Herring_RoyalSociety_Stier_2026_clean.pptx`,
+> final checkpoint `..._claude-code_20260519-135454.*`). Spine: S1·S1b·S2·
+> S3·S3.5·S4·**S4b**·S5·S6·S7·S8·S8b·S9·S9b·S9c·S10·**S10b**·**S10c**·S11·
+> S12·**S12b**·**S12c**·S13·S14 + Q&A divider + B-DFO + SB1–SB7. The build
+> order below is DONE: S4b methods (our m1_stier_11, not Okamoto); S10c
+> economics rebuilt as the **3-act price-regime diagram** (on-slide $ =
+> primary-source only per Adrian's 2026-05-19 AskUserQuestion call —
+> Rebuilding Plan §5.2.3; richer per-era $ + Roy Jones Sr./Ernie Wilson
+> quotes in speaker notes only); S10b predator-pit baked figure (audited
+> pressure, loud guardrail in provenance — NOT a fitted m1 coefficient);
+> S12b reference-point problem; S12c Okamoto-2020 solution; S13 lesson 3
+> re-pointed to the reference-point/hysteresis generalization (no longer
+> duplicating S12c) + footer tightened; S14 sub-line lands the reference-
+> point/expectations punchline; S6 + S9b drop-on-the-day notes added.
+> Running log: `analysis/04_talks/2026-royalsociety/Talk_Materials/SLIDE_REVISION_TODO_
+> 2026-05-19.md` (newest at bottom). Only non-blocking follow-ups left:
+> doc-sync of HERRING_TALK_ASSETS Talk-Build-State / deck README slide
+> map / slide_asset_map (still 15-slide spine), and the backup-only SB4
+> title-clip / SB5 label-collision (Q&A figs, not ship-blockers). The
+> original checklist below is kept for provenance.
+
+**State (historical):** deck known-good at **28 slides** (`Herring_RoyalSociety_Stier_2026_clean.pptx`),
 builds clean. DONE: S1b "Haida Gwaii" locator (slide 2); S8b annotation
 collision fixed. Talk Wed 2026-05-20.
 
-**Pipeline (run from `talk-usuk-forum-2026/Talk_Materials/deck_build/`):**
+**Pipeline (run from `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_build/`):**
 `python3 redesign_figs.py && python3 preprocess_figures.py && node build_pptx_native.js`
 → output `../Herring_RoyalSociety_Stier_2026_clean.pptx`. QA via LibreOffice
 → PDF (`soffice --headless --convert-to pdf -env:UserInstallation=file:///tmp/loX`).
 **PowerPoint caches an open file** — must `osascript quit` + `pkill` + reopen
 to see changes. After each item: dated checkpoint
 `Herring_RoyalSociety_Stier_2026_claude-code_YYYYMMDD-HHMMSS.pptx/.pdf`,
-log in `talk-usuk-forum-2026/Talk_Materials/SLIDE_REVISION_TODO_2026-05-19.md`.
+log in `analysis/04_talks/2026-royalsociety/Talk_Materials/SLIDE_REVISION_TODO_2026-05-19.md`.
 
 **Build order (each = 1 native block in `build_pptx_native.js` unless noted):**
 1. **Methods/legitimacy** native slide after S4 — m1_stier_11 itself (NOT

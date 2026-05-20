@@ -8,7 +8,7 @@
 #   latent_all11    — per-draw posterior biomass (natural scale), 11 sections
 #   latent_core9    — same, minus the 2 sparse sections
 #
-# Firewall: reads NOTHING from talk-usuk-forum-2026/.
+# Firewall: reads NOTHING from analysis/04_talks/2026-royalsociety/.
 #
 # STEP-0 findings (do NOT modify without re-running inspection):
 #   fit class     : stanfit (rstan), NOT CmdStanMCMC

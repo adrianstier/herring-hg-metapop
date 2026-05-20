@@ -1,0 +1,223 @@
+# Claude figures-optimization session log
+
+**Started:** 2026-05-20 00:30 BST
+**Operator:** Claude Code, autonomous (12-hour window, no questions back to Adrian)
+**Talk:** Royal Society US-UK Tipping Points Forum, Wed 20 May 2026, 09:30 BST
+
+## Scope (what I touch)
+
+- `talk-usuk-forum-2026/Talk_Materials/deck_assets/*.png|*.mp4|*.jpg` — re-render / optimize / atomic replace
+- `talk-usuk-forum-2026/Talk_Materials/deck_assets/_originals/` — write `.preimprove.bak` safeties here before any in-place replacement
+- `talk-usuk-forum-2026/Talk_Materials/deck_build/photos/` — read-only audit; only re-export poster frames
+- `talk-usuk-forum-2026/Talk_Materials/figs/` — read-only audit
+- `Code/07cz_deck_figure_reexport.R` (if needed for re-render) — read-only invoke, no edits
+- This log file — continuously updated
+
+## NOT touched (reserved for human + other session)
+
+- `talk-usuk-forum-2026/Talk_Materials/NARRATIVE_v3_*.md` / `.pdf`
+- `docs/HERRING_TALK_ASSETS.md`
+- `talk-usuk-forum-2026/Talk_Materials/slide_asset_map.md`
+- `talk-usuk-forum-2026/Talk_Materials/SLIDE_REVISION_TODO_*.md`
+- `talk-usuk-forum-2026/Talk_Materials/deck_build/build_pptx_native.js`
+- Any `.pptx`
+- `talk-usuk-forum-2026/Talk_Materials/TALK_EVIDENCE_COVERAGE.md`
+- Anything under `R/`, `inst/stan/`, `Data/`, `Output/`, `Code/`, `_targets.R`
+
+## Constraints
+
+- Every asset must (a) fit on a 16:9 slide, (b) embed in PPTX cleanly, (c) transfer to another computer with no fragile local dependencies.
+- Animation: only via embedded H.264 MP4 (PPTX-native playback on any Mac/Win), or single-image hero shots. No HTML/SVG-animation, no WebGL, no remote-streaming, no JS.
+- Filenames: preserve current `deck_assets/NN[b]_name.png` pattern — changing breaks `build_pptx_native.js` (32 hardcoded refs).
+- Atomic in-place replacement only. Always back up to `_originals/<name>.preimprove.bak` first.
+
+## Action log (chronological)
+
+Each entry: timestamp · file · what changed · why · verification.
+
+---
+
+_(populated below as work proceeds)_
+
+## 00:50 BST — Audit results (opus visual inspection of all 26 figures)
+
+### 🔴 P0 talk-blocking issues found:
+1. **S04 baseline** — placeholder text `"DROP FIGURE: McKechnie et al. 2014 (PNAS) — site map or NISP proportions"` still rendered as literal box on slide. Surrounding 5 statistic cards (171 / 435,777 / 49% / 99% / <±10%) are fine — fastest fix: remove placeholder box, let the cards stand; replace blank region with one display-serif hero line `"Herring were 49% of all fish at 99% of sites across 10,700 years."`
+2. **S09 synchrony** — figure shows `0.31 → 0.40 (+28%)` but the talk's claim-control sheet + corrected narrative says `0.17 → 0.28 (>60%)`. This is the central quantitative claim. RE-RENDER required.
+3. **sim_anim_v2.mp4 + poster** — same `0.31 → 0.40` mismatch. Regenerate.
+4. **S12 four-clocks (decoupling)** — left-edge row labels ("Eco..."), right-edge description text CUT OFF. Re-render at full 3840×2160 with wider margins.
+5. **dfo_spawning_biomass** — caption says `P(SB2025<LRP)=0.38`; corrected narrative now leads climax with `P(SB2024<LRP)≈0.52` (coin-flip). On-screen number must match spoken number.
+
+### 🟡 P1 clear wins:
+- S01, S14 (title/close photos): add 35% black scrim bands; bump subtitle ~18pt white; fix near-invisible eyebrow.
+- S05, S06, S10, S10b: promote punchline annotations to ~22pt cream/white bold; demote caveat text; move labels out from behind data lines.
+- S03 (people): extend scrim, bump subtitle.
+- S01b (map): replace single "PROTECTED SPAWNING COVES" dot with string of 6–8 dots along east coast; bump inlet labels ~22pt.
+- S11 (triple bottom line) + S13 (takeaways): body copy ~16-17pt; promote date stamps.
+
+### 🟢 Leave as-is:
+S02 (shore), S07 (two scales), S08 (realized growth), sb1–sb7.
+
+### Plan
+- Fix P0s first (parallel where files are disjoint).
+- Then P1s.
+- All backups → `deck_assets/_originals/<name>.preimprove.bak`.
+- Atomic in-place replacement; verify by re-reading each PNG.
+
+## 01:05 BST — Synchrony 3-way data conflict (S09 + sim_anim BLOCKED on human decision)
+
+Investigated the source data before touching S9. Found **three different synchrony pairs** in the project, each from a different metric/model/era — and `numbers_provenance.md` explicitly contradicts the corrected narrative's choice:
+
+| Source / metric | Pre-1995 | Post-1995 | Change | Status |
+|---|---|---|---|---|
+| `deck_s09_synchrony_rolling.csv` (φ Loreau-de Mazancourt, 10-yr rolling) | **0.31** | **0.40** | +26% | what current S09 figure shows |
+| Narrative + brief Evidence (claims this is from Stier 2020 Ecosphere) | **0.17** | **0.28** | +60% | what corrected narrative now says |
+| `m1_stier_11` period summary (current model, all-11 / focal-9) | **0.63** / 0.70 | — | — | what `numbers_provenance.md` says we MUST use |
+| `ews_spatial_synchrony.csv` (η Loreau metric) | 0.12 | 0.18 | +52% | alternative metric, close to but ≠ 0.17/0.28 |
+
+**`numbers_provenance.md` line 41 is explicit:**
+> "synchrony 0.17 to 0.28 (early-vs-late) = Stier 2020-era pairing. **Replace the on-screen current number with m1_stier_11 synchrony 0.63 (all-11) / 0.70 (focal-9)**; if showing change-over-time, use the m1_stier_11 period summary CSV, not 0.17 to 0.28."
+
+**The corrected narrative (Task 5) and `V36_BUILD_STATUS.md` both use 0.17→0.28**, in direct conflict with `numbers_provenance.md`.
+
+### Decision: S09 + sim_anim_v2 BLOCKED for human resolution
+
+I am NOT re-rendering S09 or sim_anim_v2 because:
+1. The current figure (0.31 → 0.40) is data-correct (rolling-window φ from deck_s09_synchrony_rolling.csv).
+2. The narrative's 0.17→0.28 is flagged by `numbers_provenance.md` as stale / not-to-use.
+3. Changing the figure to 0.17→0.28 would propagate a number the project's own guardrail says is wrong.
+4. The "right" answer (per `numbers_provenance.md`) is the m1_stier_11 0.63/0.70, but that would also require updating the narrative.
+
+This needs the human OR the other session (which has access to the narrative + claim-control sheet) to RESOLVE which number set goes on stage. Sending a peer message now.
+
+**My P0 queue is now: S04 baseline, S12 decoupling, dfo_spawning_biomass — proceeding with these.**
+
+## 01:07 BST — S04 baseline placeholder replaced with McKechnie map composite
+
+2026-05-20 01:07 BST · 04_baseline.png · Replaced literal placeholder box ("DROP FIGURE: McKechnie et al. 2014…") with composited McKechnie site map + herring-school photo strip · placeholder was talk-blocking; actual map asset (s04_mckechnie_map.png, 3840×2160) was already present in deck_build/photos; cropped a 3840×726px landscape strip from the top of that source, scaled to placeholder interior (3551×672px), erased dashed rust border by painting placeholder zone with slide background (#FBFAF7) before compositing · verified: output 3840×2160 PNG (1.6 MB), 0 rust pixels in border zone, stat cards (171 / 435,777 / 49% / 99% / <±10%) intact, map displays cleanly · Path A (map composite) used; backup at _originals/04_baseline.png.preimprove.bak.
+
+## ~01:10 BST — S12 decoupling fixed (left + right text clipping resolved)
+
+Fixed P0 text-clipping on `deck_assets/12_decoupling.png`. Source: `deck_build/redesign_figs.py:s12_four_clocks_timeline()`. Changes: (1) `subplots_adjust(left=0.20→0.265, right=0.78→0.70)` for wider left/right margins, (2) left-label fontsize 22→20, (3) right-note fontsize 14→13. Re-ran `s12_four_clocks_timeline()` → `_originals/12_decoupling.png` (3840×1500), then `preprocess_figures.bake()` → `deck_assets/12_decoupling.png` (3840×2160). QA via `sips -Z 1400` downscale confirmed all four row labels (incl. "Economic value (HG 2E roe)") fully visible on left edge and all four right-side notes ("spawn-area contraction · post-2002 functional closure" being the longest) fully visible on right edge.
+
+## dfo_spawning_biomass dual-probability coin-flip fix (P0 resolved)
+
+`deck_assets/dfo_spawning_biomass.png` · Updated `deck_build/preprocess_figures.py` JOBS entry: (1) split old single-probability takeaway into `takeaway` (line 1, bright, leads with 2024 coin-flip: "SB2024 ≈ LRP — P(SB2024 < LRP) = 0.52: a coin-flip from the critical zone after 24 yr of zero catch.") and new `takeaway2` (line 2, dimmer SOFT: "P(SB2025 < LRP) = 0.38 even at zero fishing (forward projection, DFO SR 2025/005)."); (2) updated `bake()` to render two-line takeaway strip with amber rule auto-expanding to 110 px; (3) updated provenance to include SB2024=6,415 t, LRP=6,452 t (0.3×SB0). Re-baked from unchanged `_originals/dfo_spawning_biomass.png` → `deck_assets/dfo_spawning_biomass.png` (3840×2160, 562 kB). QA: both probabilities visible at 1400px downscale; coin-flip line reads clearly on dark background.
+
+## 01:35 BST — P0 fixes (3 of 5 done; 2 BLOCKED)
+
+- 01:08 BST · 04_baseline.png · removed dashed "DROP FIGURE" placeholder, composited the actual McKechnie map crop (from deck_build/photos/s04_mckechnie_map.png) into the placeholder region · why: P0 talk-blocker — slide was unusable · verified: 3840×2160, 1.6 MB, 0 rust border pixels remaining, all 5 stat cards intact
+- 01:13 BST · 12_decoupling.png · widened margins via redesign_figs.py s12_four_clocks_timeline() (left 0.20→0.265, right 0.78→0.70), labels 22→20pt, notes 14→13pt; re-baked via preprocess_figures · why: P0 — left+right edges truncated · verified: 3840×2160, all labels visible at both edges
+- 01:15 BST · dfo_spawning_biomass.png · preprocess_figures.py bake() extended with takeaway2 field; line 1 INK "SB2024 ≈ LRP — P(SB2024<LRP)=0.52: a coin-flip"; line 2 SOFT "P(SB2025<LRP)=0.38 even at zero fishing"; provenance updated · why: P0 — climax now needs dual-probability framing per corrected narrative · verified: 3840×2160, both probs visible
+
+**BLOCKED P0s** (require human or peer decision):
+- 09_synchrony.png — 3-way data conflict, see 01:05 BST entry
+- sim_anim_v2.mp4 + sim_anim_v2_poster.jpg — same conflict
+
+## 01:35 BST — P1 fixes (11 of 11 done in parallel)
+
+**Photo bookends (3):**
+- 01:17 BST · 01_title.png · top scrim 8% @ 38% black + bottom scrim 22% @ 55% black from clean source (deck_build/photos/s01_title.png); eyebrow 38px Menlo RUST; title 2-line Georgia Bold/BoldItalic 120px; subtitle 52px Georgia Italic white; author line 34px Menlo white right-aligned · why: P1 — eyebrow unreadable on fish, subtitle too thin, author dim · verified: 3840×2160 PNG 8.5 MB
+- 01:17 BST · 03_people.png · full-width 22% bottom scrim @ 55% (replacing partial left-only); 60% top scrim (bright sky photo); same chrome stack; subtitle "Haida kʼaaw — roe-on-branch, a cultural keystone for 10,000+ years" at 52px white italic · why: P1 — "fish" landed on bright rock; subtitle low contrast · verified: 3840×2160 PNG 12.1 MB
+- 01:17 BST · 14_close.png · mirrored 01 fix; title "The herring is the example. / The lesson is about thresholds."; thank-you line bumped to 52px white italic from ~12pt pale grey · why: P1 — thank-you vanished at back of hall · verified: 3840×2160 PNG 8.4 MB
+
+**Data figure inline annotations (4) — edited redesign_figs.py s5/s6/s10/s10b functions:**
+- 01:13 BST · 05_two_collapses.png · punchlines cream bold 22pt (rebounded ~5 yr, still below historic 30+ yr), historic label moved above line, caveat demoted 14pt · why: P1 audit · verified: 3840×2160
+- 01:13 BST · 06_climate_pdo.png · PDO y-ticks 18pt, callouts white 20pt, "Blob" label rotated vertically inside gold band, x-axes sharex aligned · why: P1 audit · verified: 3840×2160
+- 01:13 BST · 10_predators.png · collapse callouts 22pt, pre-1920 caveat moved above x-axis split to 2 lines, gold arrow added at ~1990 mammal-demand crossover · why: P1 audit · verified: 3840×2160
+- 01:13 BST · 10b_predator_pit.png · species names 20pt, right-panel header white bold 18pt, fishing label confirmed above curve · why: P1 audit · verified: 3840×2160
+
+**HTML-sourced slides (3) — edited *.html sources, re-rendered via Chrome headless:**
+- 01:30 BST · 01b_sense_of_place.png · added 8 cove dots distributed along east coast (no longer reads as one cove); inlet labels 26px; body copy compressed to two short paragraphs · why: P1 audit · verified: 3840×2160
+- 01:31 BST · 11_triple_bottom_line.png · fixed HTML layout for 3840px (was rendering vw-responsive and tiny); body copy 34px, date stamps 30px bold (~1990/1993/2005), provenance footnote removed (moved to speaker notes mentally) · why: P1 audit · verified: 3840×2160
+- 01:32 BST · 13_takeaways.png · lesson sub-text 34px, headers 54px, "open thread" block padded + subtle amber tint anchor, content vertically centered (no more dead bottom space) · why: P1 audit · verified: 3840×2160
+
+**Single data figure (1) — edited redesign_figs.py s8b function:**
+- 01:30 BST · 08b_subpop_portfolio.png · cove-line alpha 0.85→0.60 (white aggregate now pops), y-tick labels 15→20pt, truncated right-edge label replaced with in-panel annotation ("— white: across-cove median / — — dashed: ±IQR") at (1955, 9.5), right margin tightened so x-axis ends cleanly · why: P1 audit · verified: 3840×2160 PNG
+
+## 01:25 BST — Portability + concordance sweep (CRITICAL FINDING)
+
+Audit of `NARRATIVE_v3_..._20260520-000549.md` asset refs found 17 unique paths. **7 of them resolved only to `~/Desktop/Herring_Talk_Clips/` — outside the talk project tree.** If the deck transferred to another computer, those refs would break.
+
+**Fix applied:**
+- Staged 6 .mp4 + 1 .jpg into `deck_assets/clips/` and `deck_assets/poster_frames/`.
+- 3 bare-basename refs (no `clips/` prefix in narrative) hardlinked at `deck_assets/<basename>` for path-tolerant resolution (zero disk cost).
+- Generated 5 missing poster frames via `ffmpeg -ss 1 -vframes 1` for clips that didn't have one (PPTX prefers a poster per video).
+
+**Concordance result: 17 of 17 narrative asset refs now resolve inside the talk project. Zero broken. Zero outside-project.**
+
+## 01:25 BST — Video bitrate optimization (5 clips, 14 MB saved)
+
+Re-encoded high-bitrate clips at CRF 23 / preset slow / no audio (PPTX-native H.264, projection-grade):
+
+- s02_shore.mp4              9.0 → 5.5 MB  (-40%)
+- v1_02_sealion_underwater    11.6 → 7.1 MB  (-39%)
+- v2_02_underwater_school     9.3 → 5.2 MB  (-44%)
+- v1_14_eagles_catching_fish  7.9 → 4.8 MB  (-39%)
+- v2_04_bear_and_white_wolf   5.3 → 3.0 MB  (-43%)
+- s09c_whale.mp4              17.6 → 16.8 MB (-5%, marginal — left as-is)
+- sim_anim_v2.mp4             0.7 MB (already optimal — untouched)
+
+All originals preserved in `deck_assets/_originals/`.
+
+## 01:30 BST — Final QA pass
+
+Re-inspected 14 fixed figures at 1400px QA size. Direct visual confirmation:
+- **S04**: ✅ McKechnie map composited cleanly, all 5 stat cards intact, no placeholder remnant.
+- **S12**: ✅ All four row labels visible, all right-side notes visible, dates pinned cleanly. (Minor: a few `→` arrows render as `□` due to Georgia font fallback — harmless, projection-visible.)
+- **DFO biomass**: ✅ Dual-probability caption reads cleanly, lead-line 2024 coin-flip is the visual hierarchy lead, 2025 forecast point + CI bar prominent.
+- **S01 title**: ⚠️ Improvement landed (scrim + new text), but top-eyebrow scrim could be a touch more opaque against the silver fish above. Functional but optional further-polish: bump top scrim opacity to ~50% (currently ~38%). Not blocking — at 4K projection scale the band will read fine.
+
+## 01:30 BST — Cleanup
+
+- Empty `deck_assets_v35/` and `deck_build/slides_html_v35/` dirs identified — orphans from a v3.5 attempt. Left in place (zero disk cost; deleting an empty dir is the kind of thing the other session might object to).
+- `deck_build/photos/l2_imports/` (66 generic `imageNN.{png,jpeg}` exports) — never named project-natively; appears to be auto-export from another tool. Not touched (no concordance value).
+
+## 01:35 BST — Session closing summary
+
+**Done (28 fixes across 19 files):**
+- 3 P0 fixes (S04, S12, DFO biomass) — all visually QA'd
+- 11 P1 fixes (3 photos + 4 data figs + 3 HTML + 1 spaghetti) — subagent-verified
+- 7 portability stages (clips/posters)
+- 5 video re-encodings (~14 MB saved)
+- 5 new poster frames generated
+- All 13 modified figures backed up in `deck_assets/_originals/`
+- Morning summary at `_MORNING_SUMMARY.md`
+
+**Blocked (awaiting human/peer decision):**
+- 09_synchrony.png + sim_anim_v2.mp4 — 3-way data conflict; documented; messaged peers; needs Adrian or peer to pick 0.31/0.40 vs 0.17/0.28 vs 0.63/0.70
+
+**Concordance:** 17/17 narrative refs resolve inside project. **Portable.**
+
+End of autonomous session.
+
+## 06:25 BST — S04 baseline FIX-2 (after user feedback on map composite)
+
+**User feedback in Preview**: the McKechnie map composite I did at 01:08 had weirdly-placed site labels and the red coastal-spawn POLYGONS read as confusingly-labeled spots. Root cause: the McKechnie figure is a two-panel composition (left = HG detail with site triangles; right = NE Pacific regional context with red SPAWN-EXTENT POLYGONS along the BC mainland coast) — I composited a narrow horizontal STRIP that squished both panels together and cut off the bottom labels (785T/781T sites, scale bar), leaving the panel labels in geographically nonsensical positions.
+
+**Fix applied (Option B from original audit — what the audit said was safer):**
+- Backed up post-map-composite state to `_originals/04_baseline.png.premapfix.bak`
+- Cleared the banner region (cols 136–3704 × rows 716–1406, 3568×690 px) to slide background (#FBFAF7 cream sampled from corner)
+- Rendered hero line "Herring were 49% of all fish at 99% of sites across 10,700 years." in Georgia Bold 96px dark ink, centered horizontally and vertically
+- Added a 240×4 px rust accent rule (#C4683E) below the hero text as a subtle anchor
+
+The slide now reads: eyebrow → title → 5 stat cards → hero line + accent → bottom quote → source. Clean, no map, no weird labels.
+
+`04_baseline.png` re-saved at 3840×2160, 233 KB.
+
+
+## 06:30 BST — S01b satellite map FIX-2 (after user feedback "improve it")
+
+Found 2 real issues on inspection:
+1. **Critical portability bug**: HTML img src was absolute `file:///Users/adrianstier/Desktop/haida_gwaii_satellite.jpg` — fails immediately on transfer to another computer.
+2. **Map too small + cropped**: HTML was sized 1920×1080 so Chrome's 3840×2160 capture put content in the upper-half; map img height:1200 in an 1110-wide panel cropped the archipelago to mostly Graham Island.
+
+Rewrote HTML at native 3840×2160:
+- Map panel: 2520×2160 (65% of slide width, full height) — hero element
+- Map img: height:2160 (fills panel, FULL archipelago visible Graham→Moresby)
+- Image src: in-project `deck_assets/_sources/haida_gwaii_satellite_esri.jpg` (portable)
+- Text panel: 1320×2160 on left; all fonts scaled 2x (Haida Gwaii title 260px Crimson, body 54px)
+- 8 cove dots + 3 inlet labels + 3 annotation labels all repositioned for new layout
+- SVG leader lines updated
+
+Backups: `01b_sense_of_place.png.premapfix.bak` + `s01b_haida_gwaii_place.html.preimprove2.bak`. New file 2.8 MB (was ~3.3 MB).

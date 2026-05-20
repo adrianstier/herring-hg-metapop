@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Talk Architecture 3/3 — Figures &amp; Layout</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fbfaf7;--card:#fff;--text:#1f1b17;--muted:#6f6860;--faint:#9b938a;
+    --rust:#b3502d;--line:#e6e1d8;--line2:#d4cdc0;--shade:#f3f0ea;
+    --teal:#2f6b6e;--amber:#a8791f;--slate:#4a5d72;
+    --photo-z:#e7eaee;--fig-z:#e7f0ef;--build-z:#f6e6dd;--title-z:#dcd6c9;--strip-z:#f0ece4;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#1a1815;--card:#221f1b;--text:#ece8e1;--muted:#a59d92;--faint:#7d756a;
+    --rust:#e08a5f;--line:#332f29;--line2:#423d35;--shade:#26231f;
+    --teal:#6fb3b3;--amber:#d4a849;--slate:#8aa0b8;
+    --photo-z:#2a2d33;--fig-z:#1f2a29;--build-z:#2f2219;--title-z:#3a352d;--strip-z:#262320;
+  }}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;
+    line-height:1.6;padding:48px 24px 96px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto}
+  .setmark{font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--rust);
+    font-weight:600;margin-bottom:16px}
+  .setmark span{color:var(--faint)}
+  h1{font-family:'Crimson Pro',serif;font-weight:600;font-size:38px;line-height:1.12;
+    letter-spacing:-.015em;margin-bottom:14px}
+  .meta{font-size:13px;color:var(--muted);line-height:1.7;padding-top:15px;
+    border-top:1px solid var(--line)}
+  .meta strong{color:var(--text);font-weight:600}
+  .sub{font-size:13px;color:var(--muted);line-height:1.6;margin-top:14px}
+  /* manifest */
+  .manifest{margin-top:24px;background:var(--card);border:1px solid var(--line);
+    border-radius:11px;padding:18px 20px}
+  .manifest h2{font-family:'Crimson Pro',serif;font-size:19px;font-weight:600;margin-bottom:3px}
+  .manifest .mh{font-size:12px;color:var(--faint);margin-bottom:13px}
+  .mgroup{padding:10px 0;border-top:1px solid var(--line)}
+  .mgroup:first-of-type{border-top:none;padding-top:2px}
+  .mgroup .gh{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+  .badge{font-size:10px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;
+    padding:2px 8px;border-radius:20px;white-space:nowrap}
+  .b-have{background:var(--fig-z);color:var(--teal);border:1px solid var(--teal)}
+  .b-built{background:var(--teal);color:#fff;border:1px solid var(--teal)}
+  .b-pull{background:transparent;color:var(--amber);border:1px solid var(--amber)}
+  .b-build{background:var(--build-z);color:var(--rust);border:1px solid var(--rust)}
+  .b-photo{background:transparent;color:var(--slate);border:1px solid var(--slate)}
+  .b-text{background:var(--shade);color:var(--muted);border:1px solid var(--line2)}
+  .mgroup .gx{font-size:12px;color:var(--faint)}
+  .mgroup ul{list-style:none;margin:0;padding:0}
+  .mgroup li{font-size:13px;line-height:1.5;padding-left:14px;position:relative;color:var(--text)}
+  .mgroup li::before{content:"";position:absolute;left:0;top:9px;width:4px;height:4px;
+    border-radius:50%;background:var(--faint)}
+  .mgroup li b{font-weight:600}
+  .mgroup li span{color:var(--muted)}
+  /* slide card */
+  .sec-title{margin:36px 0 4px;font-family:'Crimson Pro',serif;font-size:15px;font-weight:700;
+    letter-spacing:.06em;text-transform:uppercase;color:var(--rust);
+    border-bottom:2px solid var(--text);padding-bottom:7px}
+  .slide{background:var(--card);border:1px solid var(--line);border-radius:11px;
+    padding:17px 19px;margin-top:13px;display:flex;gap:18px}
+  .slide .left{flex:none;width:212px}
+  .slide .right{flex:1;min-width:0}
+  .snum{display:flex;align-items:baseline;gap:9px;margin-bottom:8px}
+  .snum .n{font-family:'Crimson Pro',serif;font-size:26px;font-weight:700;color:var(--rust);line-height:.85}
+  .snum .t{font-family:'Crimson Pro',serif;font-size:17px;font-weight:600;line-height:1.15}
+  .row{font-size:12.5px;line-height:1.5;margin-bottom:5px}
+  .row .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;
+    color:var(--faint);display:block;margin-bottom:1px}
+  .row .v{color:var(--text)}
+  .row .v.src{color:var(--muted)}
+  .os{margin-top:8px;background:var(--shade);border-radius:7px;padding:8px 11px}
+  .os .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;
+    color:var(--rust);display:block;margin-bottom:4px}
+  .os ul{list-style:none;margin:0;padding:0}
+  .os li{font-size:12px;line-height:1.5;padding-left:12px;position:relative;color:var(--text)}
+  .os li::before{content:"";position:absolute;left:0;top:8px;width:4px;height:4px;
+    border-radius:1px;background:var(--rust)}
+  .note{margin-top:7px;font-size:11.5px;color:var(--muted);font-style:italic;line-height:1.45}
+  .flag{margin-top:7px;font-size:11.5px;line-height:1.45;color:var(--text);
+    background:var(--shade);border-left:2px solid var(--rust);padding:6px 10px;border-radius:0 4px 4px 0}
+  /* wireframe */
+  .wf{width:100%;aspect-ratio:16/9;border:1px solid var(--line2);border-radius:5px;
+    overflow:hidden;display:flex;flex-direction:column;background:var(--bg)}
+  .wf-row{flex:1;display:flex;gap:4px;padding:4px;min-height:0}
+  .wf-title{background:var(--title-z);flex:none;height:22%;display:flex;align-items:center;
+    justify-content:center}
+  .wf-title.bandbot{order:9}
+  .wf-strip{background:var(--strip-z);flex:none;height:17%;display:flex;align-items:center;
+    justify-content:center}
+  .wf-zone{flex:1;display:flex;align-items:center;justify-content:center;border-radius:3px;
+    min-width:0}
+  .wf-photo{background:var(--photo-z);border:1.4px dashed var(--slate)}
+  .wf-fig{background:var(--fig-z);border:1.4px dashed var(--teal)}
+  .wf-build{background:var(--build-z);border:1.4px dashed var(--rust)}
+  .wf-built{background:var(--fig-z);border:1.4px solid var(--teal)}
+  .wf-text{background:var(--strip-z);border-radius:3px;flex:1}
+  .wf-lab{font-size:8px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+  .wf-photo .wf-lab{color:var(--slate)}
+  .wf-fig .wf-lab,.wf-built .wf-lab{color:var(--teal)}
+  .wf-build .wf-lab{color:var(--rust)}
+  .wf-title .wf-lab,.wf-strip .wf-lab{color:var(--faint)}
+  .wf-abs{position:relative}
+  .wf-abs .wf-photo{position:absolute;inset:4px}
+  .wf-abs .wf-inset{position:absolute;right:7px;bottom:7px;width:44%;height:48%;border-radius:3px}
+  .wf-abs .wf-band{position:absolute;left:4px;right:4px;bottom:4px;height:26%;
+    background:var(--title-z);border-radius:3px;display:flex;align-items:center;justify-content:center}
+  .wfcap{font-size:10.5px;color:var(--faint);margin-top:6px;text-align:center}
+  .end{margin-top:36px;text-align:center;font-size:12px;color:var(--faint);line-height:1.7}
+  @media (max-width:620px){
+    body{padding:34px 14px 72px}h1{font-size:29px}
+    .slide{flex-direction:column;gap:12px}.slide .left{width:100%;max-width:280px}
+  }
+  @media print{body{padding:0;background:#fff}.slide,.manifest{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="setmark">Talk Architecture <span>· 3 of 3 ·</span> Figures &amp; Layout</div>
+  <h1>Figures &amp; Layout — the production spec</h1>
+  <div class="meta">
+    <strong>Adrian Stier</strong> · UC Santa Barbara · US–UK Scientific Forum · Session 5 · Royal Society, London · 20 May 2026
+  </div>
+  <p class="sub">A wireframe and an asset spec for each of the 14 slides. Every figure and photo is a labelled slot — nothing is placed. Build the deck by filling the slots; the manifest below tracks what each slot needs.</p>
+
+  <div class="manifest">
+    <h2>Asset manifest</h2>
+    <div class="mh">Two figures drop straight in; one crops from an in-repo PDF; one adapts a 142C teaching figure; two need building (incl. the S12 decoupling figure — its named file does not exist); two are text-led; photos pull from DRV-ASSETS — except the S10 humpback photo, missing everywhere. No new model analysis needed.</div>
+
+    <div class="mgroup">
+      <div class="gh"><span class="badge b-have">Drop straight in</span><span class="gx">in this repo</span></div>
+      <ul>
+        <li><b>Per-cove growth rate</b> <span>— Output/figures/stier2020_updated/fig5_realized_growth_updated.pdf — slide 8</span></li>
+        <li><b>Subpopulation synchrony</b> <span>— Output/figures/synchrony.pdf (current 0.63/0.70) — slide 9</span></li>
+      </ul>
+    </div>
+    <div class="mgroup">
+      <div class="gh"><span class="badge b-pull">Crop / adapt — source exists</span><span class="gx">no new analysis</span></div>
+      <ul>
+        <li><b>Baseline figure</b> <span>— Literature/McKechnie_et_al_2014_PNAS…pdf (in repo) — slide 4</span></li>
+        <li><b>Two-scale 4%/65%</b> <span>— DRV-ASSETS 05-data-graphs/slide_herring_fishing_rate_subpop_vs_archipelago.png — slide 7</span></li>
+        <li><b>Climate / PDO driver</b> <span>— Output/figures/stier2020_updated/fig3_growth_pdo_updated.pdf — slide 6</span></li>
+        <li><b>Marine-mammal recovery</b> <span>— predator repo century_scale_predator_field.pdf — slide 10</span></li>
+      </ul>
+    </div>
+    <div class="mgroup">
+      <div class="gh"><span class="badge b-build">Build — Claude</span><span class="gx">no model runs</span></div>
+      <ul>
+        <li><b>Four-layer decoupling figure</b> <span>— extend build1_spine.html (named file does NOT exist) — slide 12 — the payoff</span></li>
+        <li><b>Annotated two-collapse timeline</b> <span>— no clean version exists — slide 5</span></li>
+      </ul>
+    </div>
+    <div class="mgroup">
+      <div class="gh"><span class="badge b-text">Text-led</span><span class="gx">lay out</span></div>
+      <ul>
+        <li><b>Triple bottom line</b> <span>— 3 columns; value crops figs/RebuildingPlan2024_Fig31/32 — slide 11</span></li>
+        <li><b>Three take-homes</b> <span>— content in S20_solution_payload.md — slide 13</span></li>
+      </ul>
+    </div>
+    <div class="mgroup">
+      <div class="gh"><span class="badge b-photo">Photo — from DRV-ASSETS</span><span class="gx">Adrian picks</span></div>
+      <ul>
+        <li><b>Herring school</b> <span>— DRV-ASSETS 01-biology/ — slides 1, 2, 14 (reprise)</span></li>
+        <li><b>Haida k'aaw</b> <span>— 09-collaborator-photos/salomon… or 08-field-photos/stier… — slide 3</span></li>
+        <li><b>Humpback feeding</b> <span>— ⚠ NOT in any 142C/242 library; Adrian must source — slide 10</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sec-title">Per-slide layout</div>
+  <div id="slides"></div>
+
+  <div class="end">
+    Talk Architecture 3 of 3 · companion to 1 (Outline) and 2 (Speaker Notes)<br>
+    Wireframes are schematic — proportions, not final crops.
+  </div>
+
+</div>
+<script>
+const WF={
+  fullbleed:`<div class="wf wf-abs"><div class="wf-zone wf-photo"><span class="wf-lab">Photo</span></div>`+
+    `<div class="wf-band"><span class="wf-lab">Title block</span></div></div>`,
+  fullbleedplain:`<div class="wf wf-abs"><div class="wf-zone wf-photo"><span class="wf-lab">Photo \u2014 full bleed</span></div></div>`,
+  figure:`<div class="wf"><div class="wf-title"><span class="wf-lab">Title</span></div>`+
+    `<div class="wf-row"><div class="wf-zone wf-fig"><span class="wf-lab">Figure</span></div></div>`+
+    `<div class="wf-strip"><span class="wf-lab">Caption / takeaway</span></div></div>`,
+  figurebuild:`<div class="wf"><div class="wf-title"><span class="wf-lab">Title</span></div>`+
+    `<div class="wf-row"><div class="wf-zone wf-build"><span class="wf-lab">Figure \u2014 to build</span></div></div>`+
+    `<div class="wf-strip"><span class="wf-lab">Takeaway strip</span></div></div>`,
+  figurebuilt:`<div class="wf"><div class="wf-title"><span class="wf-lab">Title (optional)</span></div>`+
+    `<div class="wf-row"><div class="wf-zone wf-built"><span class="wf-lab">Figure \u2014 built</span></div></div></div>`,
+  twopanel:`<div class="wf"><div class="wf-title"><span class="wf-lab">Title</span></div>`+
+    `<div class="wf-row"><div class="wf-zone wf-build"><span class="wf-lab">Archipelago</span></div>`+
+    `<div class="wf-zone wf-build"><span class="wf-lab">Cove</span></div></div>`+
+    `<div class="wf-strip"><span class="wf-lab">Takeaway strip</span></div></div>`,
+  photoinset:`<div class="wf wf-abs"><div class="wf-zone wf-photo"><span class="wf-lab">Photo</span></div>`+
+    `<div class="wf-zone wf-fig wf-inset"><span class="wf-lab">Figure</span></div>`+
+    `<div class="wf-band"><span class="wf-lab">Title</span></div></div>`,
+  textled:`<div class="wf"><div class="wf-title"><span class="wf-lab">Title</span></div>`+
+    `<div class="wf-row" style="flex-direction:column"><div class="wf-text"></div>`+
+    `<div class="wf-text"></div><div class="wf-text"></div></div></div>`,
+  threepanel:`<div class="wf"><div class="wf-title"><span class="wf-lab">Title</span></div>`+
+    `<div class="wf-row"><div class="wf-zone wf-text"></div><div class="wf-zone wf-text"></div>`+
+    `<div class="wf-zone wf-text"></div></div><div class="wf-strip"><span class="wf-lab">Footer</span></div></div>`
+};
+const S=[
+{n:1,ttl:"Title",wf:"fullbleed",cap:"Full-bleed photo, title block lower",
+ status:"photo",statusLab:"Photo \u2014 from DRV-ASSETS",
+ asset:"Herring school photo",source:"DRV-ASSETS 01-biology/herring_bait_ball_underwater_spiral.jpg (alt: herring_school_underwater_natgeo.jpeg)",
+ os:["Talk title","Adrian Stier \u00B7 UC Santa Barbara","US\u2013UK Scientific Forum \u00B7 Session 5","Subtitle \u2014 the conceptual claim as the hook: \u201CEcological tipping points and ecosystem-service tipping points are not the same event \u2014 the gap is where management acts\u201D"],
+ note:"Dark scrim under the title block for legibility. The claim is delivered verbally and carried as one subtitle line \u2014 keep it to a single sentence; this is a title slide, not an agenda slide."},
+{n:2,ttl:"The shore comes alive",wf:"fullbleedplain",cap:"Image-dominant, full bleed",
+ status:"photo",statusLab:"Photo \u2014 from DRV-ASSETS",
+ asset:"Herring / spawn imagery",source:"DRV-ASSETS 01-biology/aerial_herring_spawn_turquoise_water.jpeg (alt: herring_bait_ball_dramatic_underwater.jpeg)",
+ os:["Optional kicker: \u201C~10,000 years ago\u201D","Otherwise let the image carry it"],
+ note:"No title bar needed \u2014 this is a breathing-room visual beat."},
+{n:3,ttl:"The people and the fish",wf:"fullbleedplain",cap:"Full bleed, credit lower corner",
+ status:"photo",statusLab:"Photo \u2014 DRV-ASSETS + credit",
+ asset:"Haida k'aaw photo",source:"DRV-ASSETS 09-collaborator-photos/salomon_roe_on_branch_harvest_from_boat.JPG (Salomon-credited); rights-safe fallback 08-field-photos/stier_herring_roe_on_kelp_closeup.jpeg",
+ os:["Photo credit: photographer + Nation","Optional kicker"],
+ note:"If permission is uncertain, substitute a roe-on-kelp or spawn image \u2014 carries the point without the consent question."},
+{n:4,ttl:"The baseline, measured",wf:"figure",cap:"Title \u00B7 figure \u00B7 caption",
+ status:"pull",statusLab:"Crop \u2014 PDF in repo",
+ asset:"Baseline figure \u2014 site map or NISP proportions",source:"Literature/McKechnie_et_al_2014_PNAS_Archaeological_Herring.pdf (in repo). Accessible-image candidate: Mongabay 2014 'By the bones' (news.mongabay.com/2014/06/by-the-bones-herring-populations-were-superabundant-before-commercial-fisheries/) \u2014 only with explicit photo credit",
+ os:["Title: \u201CTen millennia of stability\u201D","Callouts: 171 sites \u00B7 435,777 bones \u00B7 herring 49% \u00B7 99% ubiquity \u00B7 <\u00B110% variance","Credit: McKechnie et al. 2014"],
+ note:"Numbers as callouts around or beside the figure \u2014 they are the slide as much as the image is. Verify 171 / 435,777 / 49% / 99% / <\u00b110% against the McKechnie PDF text; Mongabay photo only with on-slide credit."},
+{n:5,ttl:"Two collapses, two outcomes",wf:"figure",cap:"Title \u00B7 annotated timeline \u00B7 caption",
+ status:"build",statusLab:"Build \u2014 no clean version exists",
+ asset:"Herring catch / biomass timeline, ~1900\u2013present",source:"Build from Output/figures/m1_total_biomass_trajectory.pdf + DRV-ASSETS 05-data-graphs/dfo_biomass_timeseries_with_threshold.png",
+ os:["Title: \u201CTwo collapses, two outcomes\u201D","On-figure: \u201C1960s collapse \u2192 recovered ~5 yr\u201D","On-figure: \u201C1990s collapse \u2192 25 yr, no recovery\u201D","Note: commercial = adults for roe \u00B7 Haida = eggs after spawning"],
+ note:"The two on-figure annotations are the slide's argument \u2014 make them prominent, not footnotes."},
+{n:6,ttl:"The investigation",wf:"figure",cap:"Title \u00B7 figure \u00B7 caption",
+ status:"pull",statusLab:"In repo \u2014 climate framing",
+ asset:"Climate / PDO driver figure",source:"Output/figures/stier2020_updated/fig3_growth_pdo_updated.pdf (alt: companions/companion_07_driver_dashboard.pdf)",
+ os:["Title: \u201CWhat drives this fish\u201D","Caption: ocean productivity \u2014 a first-order driver"],
+ note:"⚠ Claim guardrail: frame as 'climate necessary, not sufficient'; the chosen panel must NOT show a promoted predator coefficient (claim-control sheet)."},
+{n:7,ttl:"The two scales",wf:"twopanel",cap:"Title \u00B7 two panels \u00B7 takeaway",
+ status:"pull",statusLab:"Adapt \u2014 142C teaching fig exists",
+ asset:"Two-panel figure \u2014 archipelago vs cove",source:"DRV-ASSETS 05-data-graphs/slide_herring_fishing_rate_subpop_vs_archipelago.png (alt: 10-research-figures/proportion_sites_fished_biomass_caught.png)",
+ os:["Title: \u201CThe two scales\u201D","Left panel: \u201Cmanagement scale \u00B7 archipelago\u201D \u2014 ~4% callout","Right panel: \u201Cbiological scale \u00B7 cove\u201D \u2014 up-to-65% callout","Takeaway: \u201CMatch management scale to biology, extraction, and predation.\u201D"],
+ note:"The conceptual hinge. NOT a from-scratch build — adapt the 142C teaching figure. Label '4% / 65%' as Stier et al. 2020 (not m1_stier_11)."},
+{n:8,ttl:"Population growth collapsed, cove by cove",wf:"figure",cap:"Title \u00B7 figure \u00B7 takeaway",
+ status:"have",statusLab:"Drop in — in repo",
+ asset:"Per-cove population growth rate",source:"Output/figures/stier2020_updated/fig5_realized_growth_updated.pdf (current refit)",
+ os:["Title: \u201CGrowth collapsed, cove by cove\u201D","Takeaway: \u201CStructural, system-wide \u2014 invisible at the management scale.\u201D"],
+ note:"Figure dominant, one takeaway strip. A short, sharp results slide."},
+{n:9,ttl:"The portfolio eroded",wf:"figure",cap:"Title \u00B7 figure \u00B7 takeaway",
+ status:"have",statusLab:"Drop in — in repo",
+ asset:"Subpopulation synchrony figure",source:"Output/figures/synchrony.pdf; current numbers Output/figures/portfolio_metrics_combined.pdf",
+ os:["Title: \u201CThe portfolio eroded\u201D","Callout: \u201C>60% rise in synchrony since the mid-1990s\u201D \u2014 the measured result","If the early-warning-signal idea is shown, mark it as a proposal (e.g. \u201Cproposed: a spatial early-warning signal\u201D)","Takeaway: \u201CThe portfolio is what to protect.\u201D"],
+ note:"Current synchrony = 0.63 all-11 / 0.70 focal-9 (m1_stier_11). The '>60% rise' is Stier 2020 — label it. The EWS framing is still to be earned.",
+ flag:"\u26A1 NEEDS ANALYSIS \u2014 the >60% synchrony rise is measured (Stier 2020), but framing it as an early-warning signal is a proposal, not a result. The leading-indicator analysis is not done. Keep any on-slide EWS label at hypothesis strength."},
+{n:10,ttl:"The predators came back",wf:"photoinset",cap:"Full-bleed photo + figure inset",
+ status:"pull",statusLab:"Figure in predator repo \u00B7 photo MISSING",
+ asset:"Humpback feeding photo + marine mammal recovery figure",source:"Figure: /Users/adrianstier/pacific-herring-predators/Output/figures/century_scale_predator_field.pdf (alt: HG_humpback_trajectory_1910-2022.pdf). Photo: NOT in any 142C/242 library \u2014 Adrian must source",
+ os:["Title: \u201CThe predators came back\u201D","Recovery-figure caption (multi-species)","Link line: one mechanism behind both earlier results \u2014 the growth collapse and the synchrony","Takeaway: \u201CA conservation win became a driver.\u201D"],
+ note:"⚠ Predators = large ecological pressure, NOT a promoted HG causal coefficient (claim-control sheet). Recovery figure on a clean inset card; pull from the sibling predator repo by reference (firewall-safe)."},
+{n:11,ttl:"A system in a new state",wf:"threepanel",cap:"Title \u00B7 three columns \u00B7 footer",
+ status:"text",statusLab:"Text-led \u00b7 value crops exist",
+ asset:"Triple-bottom-line 3 columns",source:"figs/RebuildingPlan2024_Fig31_*.png + Fig32 (value layer)",
+ os:["Title: \u201CA system in a new state\u201D","Column 1 \u2014 Ecosystem: predators; halibut &amp; salmon","Column 2 \u2014 People: Haida roe-on-kelp sites \u2014 where grandparents passed oral history to grandchildren; commercial sector lost its fishery","Column 3 \u2014 Economy: BC roe value peaked 1980s, high to mid-90s, then declined (Rebuilding Plan Figs 31/32) \u2014 NOT $40M to $2.78M (unsourced)","Footer: \u201Can alternative stable state \u2014 ~10% of historic abundance\u201D"],
+ note:"Three columns, label + one line each. ⚠ Do NOT assert $40M to $2.78M — unsourced; use the sourced wording (S8_landed_value_provenance.md)."},
+{n:12,ttl:"The decoupling \u2014 and the management window",wf:"figurebuilt",cap:"Built figure, full",
+ status:"built",statusLab:"Built \u2014 export/theme QA",
+ asset:"Four-layer decoupling figure",source:"analysis/04_talks/2026-royalsociety/Talk_Materials/herring_decoupling_figure.html (built 2026-05-18; static, 4 layers/clocks)",
+ os:["4 layers, 4 clocks: service ~1990 \u00b7 ecological 1993 \u00b7 economic 2005 \u00b7 governance later","The horizontal gap = the management window"],
+ note:"Built in the build1_spine visual language; rendered + decluttered. Governance track schematic (not an outcome metric; HG still below LRP). Remaining: export to slide image, pick light/dark to match deck."},
+{n:13,ttl:"What this case teaches",wf:"textled",cap:"Title \u00B7 three take-homes",
+ status:"text",statusLab:"Typographic \u2014 lay out",
+ asset:"The three take-homes",source:"Content in S20_solution_payload.md (measure structure / manage exposure / build data spine)",
+ os:["Title: \u201CWhat this case teaches\u201D","1 \u2014 Match scale to biology \u2014 finer-scale management, though costly, preserves the portfolio","2 \u2014 Manage the ecosystem, not the stock \u2014 integrate species interactions","3 \u2014 Allocate across the triple bottom line \u2014 via co-governance (AMB, Gwaii Haanas reserve &amp; WHS, 2024 plan)","Thread line (proposal, pending analysis): \u201Crising synchrony as a spatial early-warning signal \u2014 if it holds, observation scale decides what you can see\u201D"],
+ note:"Strong typography, three numbered take-homes. Optional faint reprise of the decoupling figure behind the text."},
+{n:14,ttl:"Close",wf:"fullbleed",cap:"Full-bleed photo, closing band",
+ status:"photo",statusLab:"Photo \u2014 reprise S1/S2",
+ asset:"Herring / Haida reprise photo",source:"Reuse slide 1/2 DRV-ASSETS 01-biology image",
+ os:["Closing line: \u201CThe herring is the example. The lesson is about thresholds.\u201D","\u201CThank you\u201D","Acknowledgments"],
+ note:"A reprise of the slide 1 / slide 2 imagery closes the loop. Keep the closing line large and alone."}
+];
+const badgeClass={have:"b-have",built:"b-built",pull:"b-pull",build:"b-build",photo:"b-photo",text:"b-text"};
+const c=document.getElementById("slides");
+S.forEach(s=>{
+  const d=document.createElement("div");d.className="slide";
+  d.innerHTML=
+    `<div class="left">${WF[s.wf]}<div class="wfcap">${s.cap}</div></div>`+
+    `<div class="right">`+
+      `<div class="snum"><span class="n">${s.n}</span><span class="t">${s.ttl}</span></div>`+
+      `<div class="row"><span class="k">Status</span>`+
+        `<span class="badge ${badgeClass[s.status]}">${s.statusLab}</span></div>`+
+      `<div class="row"><span class="k">Visual asset</span><span class="v">${s.asset}</span></div>`+
+      `<div class="row"><span class="k">Source</span><span class="v src">${s.source}</span></div>`+
+      `<div class="os"><span class="k">On-screen text</span>`+
+        `<ul>${s.os.map(o=>`<li>${o}</li>`).join("")}</ul></div>`+
+      `<div class="note">${s.note}</div>`+
+      (s.flag?`<div class="flag">${s.flag}</div>`:"")+
+    `</div>`;
+  c.appendChild(d);
+});
+</script>
+</body>
+</html>

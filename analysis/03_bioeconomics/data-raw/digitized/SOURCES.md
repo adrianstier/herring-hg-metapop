@@ -7,7 +7,7 @@ Anchor points encoded in `L3_digitized_value.csv`. Three provenance tiers:
 - **derived** — value÷tonnage or per-period averages (labelled in the CSV).
 
 Authoritative sources on disk:
-- `talk-usuk-forum-2026/Reference_Papers/HG_Herring_Rebuilding_Plan_2024_CHN_DFO_ParksCanada.pdf` (Figs 25/26 SOK; 27 SOK value; 31/32 roe value; §5.2.3.4.3, §5.2.3.5.2)
+- `analysis/04_talks/2026-royalsociety/Reference_Papers/HG_Herring_Rebuilding_Plan_2024_CHN_DFO_ParksCanada.pdf` (Figs 25/26 SOK; 27 SOK value; 31/32 roe value; §5.2.3.4.3, §5.2.3.5.2)
 - Powell-Harris 2012, *Divided Waters*, Western Historical Quarterly (via NotebookLM)
 - DFO Pacific Herring IFMP (multiple years; Fig. 9 + 2006 Table 9)
 - Haida Marine Traditional Knowledge Study Vol. 3 (Jones Sr., Wilson, Williams)

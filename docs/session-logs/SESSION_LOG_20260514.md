@@ -251,7 +251,7 @@
 
 ## Royal Society talk 20-slide expansion
 
-- Expanded `talk-usuk-forum-2026/Talk_Materials/talk_production_plan.md` from
+- Expanded `analysis/04_talks/2026-royalsociety/Talk_Materials/talk_production_plan.md` from
   the 15-slide production concept into a 20-slide working deck outline.
 - Added per-slide asset targets for all 20 slides, keeping the promoted
   `m1_stier_11` model contract and the predator/Doherty claim boundaries from
@@ -262,8 +262,8 @@
   action under uncertainty.
 - Closed the talk's Gap A for sourcing: the value-layer asset is the 2024
   Haida Gwaii Herring Rebuilding Plan Figures 31/32, documented in
-  `talk-usuk-forum-2026/Talk_Materials/S8_landed_value_provenance.md`, with
-  rendered figure crops/provenance in `talk-usuk-forum-2026/Talk_Materials/figs/`.
+  `analysis/04_talks/2026-royalsociety/Talk_Materials/S8_landed_value_provenance.md`, with
+  rendered figure crops/provenance in `analysis/04_talks/2026-royalsociety/Talk_Materials/figs/`.
 - Corrected the old unsupported landed-value wording in the production plan
   and timeline events: do not use "1993 / ~$40M / 93%" unless raw DFO
   fish-slip data are pulled and checked.
@@ -278,10 +278,10 @@
   now "Coupled Tipping Points in Pacific Herring & Haida Gwaii" unless Adrian
   supplies a shorter title.
 - Resolved the deck-production approach in
-  `talk-usuk-forum-2026/Talk_Materials/deck_build_decision.md`: build a fresh
+  `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_build_decision.md`: build a fresh
   20-slide expert deck using the timeline visual language and `DRV-ASSETS`,
   rather than cutting the 35-slide EEMB142C teaching deck.
-- Added `talk-usuk-forum-2026/Talk_Materials/numbers_provenance.md` and wired
+- Added `analysis/04_talks/2026-royalsociety/Talk_Materials/numbers_provenance.md` and wired
   it into the production plan / asset index:
   - current deck numbers are `m1_stier_11` synchrony 0.63 all-11 / 0.70
     focal-9, Simpson effective sections 3.26 / 3.31, and recent-period top-3
@@ -289,7 +289,7 @@
   - Stier 2020 "2.1x" and "65% vs 4%" annotations are kept only as published
     motivation, not current-refit outputs.
 - Rendered Stier 2016 *Conservation Letters* cognitive-map figure crops into
-  `talk-usuk-forum-2026/Talk_Materials/figs/cognitive_maps/` and documented
+  `analysis/04_talks/2026-royalsociety/Talk_Materials/figs/cognitive_maps/` and documented
   the preferred S15 proof object in `S15_cognitive_map_provenance.md`.
 - Source-bounded the S19 co-governance image gap in
   `S19_cogovernance_imagery_provenance.md`:
@@ -302,7 +302,7 @@
 - Authored the S20 solutions payload in `S20_solution_payload.md`: measure
   structure, manage exposure under uncertainty, and build the missing data
   spine.
-- Added `talk-usuk-forum-2026/Talk_Materials/blocker_resolution_2026-05-17.md`
+- Added `analysis/04_talks/2026-royalsociety/Talk_Materials/blocker_resolution_2026-05-17.md`
   as the compact handoff. Remaining work is production: render/QA
   `build1_spine.html`, build S7/S10/S14 proof objects, assemble the `.pptx`,
   and send it to `scientific.meetings@royalsociety.org`.

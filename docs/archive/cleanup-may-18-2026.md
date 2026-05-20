@@ -6,7 +6,7 @@
 > read-only domain agents. No files were moved, deleted, or modified to create it.
 > ⚠️ Live constraints: Royal Society talk **Wed 20 May 2026** (2 days out); the
 > Bayesian modeling pipeline is active; the talk-workspace firewall rule applies
-> (`talk-usuk-forum-2026/` never feeds the core pipeline). Nothing tagged
+> (`analysis/04_talks/2026-royalsociety/` never feeds the core pipeline). Nothing tagged
 > **Risk: H** or **talk/pipeline-live** should be actioned without explicit sign-off.
 
 ## How to read this
@@ -35,7 +35,7 @@ _Audit date: 2026-05-18. Repo: `/Users/adrianstier/stier-2027-herring-metapopula
 | Root `.log`/`*_output.txt` git-tracked? | **0 tracked** — all untracked local junk, **never entered git history** (verified `git log --all` on samples = empty) |
 | Root `.md` git-tracked? | **9 tracked & committed clean** (7 SESSION_LOG + MORNING_REPORT + REVIEW_NOTES); last commit `d2c6d3d` 2026-05-17 |
 | `git ls-files` total | 426 |
-| `git status --porcelain` | 22 (none are root logs/txt — all in Code/, docs/, talk-usuk-forum-2026/) |
+| `git status --porcelain` | 22 (none are root logs/txt — all in Code/, docs/, analysis/04_talks/2026-royalsociety/) |
 | `.git` dir size | 182 MB (NOT a 41 GB contributor) |
 | 41 GB location | `Data/` 15 GB, `Output/` 13 GB, `cloud/` 12 GB — **all outside this agent's domain**; root contributes ~0 |
 
@@ -440,11 +440,11 @@ Breakdown of the 25 GB:
 
 ---
 
-## 6. talk-usuk-forum-2026/ talk workspace
+## 6. analysis/04_talks/2026-royalsociety/ talk workspace
 
 ### Inventory snapshot
 
-Workspace root `talk-usuk-forum-2026/` = 390M total. Audit domain `Talk_Materials/` = 293M (the bulk). Royal Society talk is Wed 20 May 2026 — this workspace builds the in-flight deck. Audited READ-ONLY.
+Workspace root `analysis/04_talks/2026-royalsociety/` = 390M total. Audit domain `Talk_Materials/` = 293M (the bulk). Royal Society talk is Wed 20 May 2026 — this workspace builds the in-flight deck. Audited READ-ONLY.
 
 Top-level `Talk_Materials/` (38 entries):
 - **Deliverables (large, current):** `Herring_RoyalSociety_Stier_2026_clean.pptx` (56.9M, 05-18 16:28 — newest), `Herring_RoyalSociety_Stier_2026.pptx` (55.8M, 05-18 16:20 — older sibling), `Herring_RoyalSociety_Stier_2026_clean.pdf` (16.7M, 05-18 16:29 — newest export). Two single-slide test exports: `S5_only.pptx` (339K), `DFO_SpawningBiomass_only.pptx` (351K).
@@ -492,10 +492,10 @@ Builder situation: `deck_build/build_pptx_native.js` (18K, 05-18 16:28 — newes
 
 Explicitly hands-off for the next 2 days (talk is Wed 20 May):
 
-- `talk-usuk-forum-2026/Talk_Materials/deck_build/build_pptx_native.js` — current/authoritative builder. Do not change, move, or "clean."
-- `talk-usuk-forum-2026/Talk_Materials/deck_build/build_pptx.js` — legacy, but the documented fallback render path; leave in place.
-- `talk-usuk-forum-2026/Talk_Materials/deck_assets/` (all 15 PNGs **and** `_originals/`) — live deck inputs + rollback backup.
-- `talk-usuk-forum-2026/Talk_Materials/Herring_RoyalSociety_Stier_2026_clean.pptx` (56.9M), `Herring_RoyalSociety_Stier_2026_clean.pdf` (16.7M), and `Herring_RoyalSociety_Stier_2026.pptx` (55.8M) — final + sibling deliverables; do not delete/dedupe until Adrian confirms the submission file.
+- `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_build/build_pptx_native.js` — current/authoritative builder. Do not change, move, or "clean."
+- `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_build/build_pptx.js` — legacy, but the documented fallback render path; leave in place.
+- `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_assets/` (all 15 PNGs **and** `_originals/`) — live deck inputs + rollback backup.
+- `analysis/04_talks/2026-royalsociety/Talk_Materials/Herring_RoyalSociety_Stier_2026_clean.pptx` (56.9M), `Herring_RoyalSociety_Stier_2026_clean.pdf` (16.7M), and `Herring_RoyalSociety_Stier_2026.pptx` (55.8M) — final + sibling deliverables; do not delete/dedupe until Adrian confirms the submission file.
 - Sync docs: `slide_asset_map.md`, `deck_design_system.md`, repo-root `docs/HERRING_TALK_ASSETS.md` — do not edit mid-talk (inconsistencies noted only).
 - `render_deck.sh` and all HTML schematic sources it consumes (`s5_two_collapses.html`, `s7_two_scales.html`, `s11_triple_bottom_line.html`, `s13_takeaways.html`, `herring_decoupling_figure.html`, `slides_html/*.html`, `slides_html/photos/`, `deck_build/photos/`) — the deck currently builds against this exact chain.
 - Do NOT run any deck build.
@@ -508,17 +508,17 @@ Explicitly hands-off for the next 2 days (talk is Wed 20 May):
 
 | Priority | Window | Action | Exact path(s) | Risk (L/M/H) | Reversible? | Rationale |
 |---|---|---|---|---|---|---|
-| P3 | Safe now (pre-talk) — optional, low value | Visually confirm these are unreferenced QA scratch JPGs; recommend STILL deferring removal | `talk-usuk-forum-2026/Talk_Materials/deck_build/qa-01.jpg`…`qa-15.jpg`, `q-04.jpg`, `q-05.jpg`, `qx-04.jpg` (18 files, ~1.1M) | L | Yes (would be in trash; regenerable by re-screenshotting) | Not referenced by any builder/`render_deck.sh`; pure scratch. But 2 days out, no disk pressure → no reason to act now. |
-| P2 | Defer until after 20 May | Delete stale intermediate PDF render inside build dir | `talk-usuk-forum-2026/Talk_Materials/deck_build/Herring_RoyalSociety_Stier_2026.pdf` (6.1M, 05-18 13:57) | L | Yes (regenerable from builder) | Superseded by root `_clean.pdf` (05-18 16:29); 6.1M dead weight. Defer — confirm it is not the file someone hands off. |
+| P3 | Safe now (pre-talk) — optional, low value | Visually confirm these are unreferenced QA scratch JPGs; recommend STILL deferring removal | `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_build/qa-01.jpg`…`qa-15.jpg`, `q-04.jpg`, `q-05.jpg`, `qx-04.jpg` (18 files, ~1.1M) | L | Yes (would be in trash; regenerable by re-screenshotting) | Not referenced by any builder/`render_deck.sh`; pure scratch. But 2 days out, no disk pressure → no reason to act now. |
+| P2 | Defer until after 20 May | Delete stale intermediate PDF render inside build dir | `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_build/Herring_RoyalSociety_Stier_2026.pdf` (6.1M, 05-18 13:57) | L | Yes (regenerable from builder) | Superseded by root `_clean.pdf` (05-18 16:29); 6.1M dead weight. Defer — confirm it is not the file someone hands off. |
 | P1 | Defer until after 20 May | Confirm which big deck is the submission file, then archive/remove the other | `Herring_RoyalSociety_Stier_2026.pptx` (55.8M) vs `_clean.pptx` (56.9M) + `S5_only.pptx`, `DFO_SpawningBiomass_only.pptx` | M | Yes if archived not deleted | ~112M of near-duplicate decks + 2 test exports. Identifying canonical is an Adrian decision; never dedupe deliverables mid-talk. |
-| P2 | Defer until after 20 May | Decide fate of legacy builder (delete, or move to `legacy/` with a header note) | `talk-usuk-forum-2026/Talk_Materials/deck_build/build_pptx.js` | M | Yes | Divergence risk vs `build_pptx_native.js`. Currently the documented fallback per `deck_build_decision.md` — needs Adrian's call, not a unilateral cleanup. |
-| P2 | Defer until after 20 May | Resolve superseded HTML schematics + fix `render_deck.sh` regenerating S5/S7 over R figures | `talk-usuk-forum-2026/Talk_Materials/s5_two_collapses.html`, `s7_two_scales.html`, `render_deck.sh` `schem` lines for 05/07 | M | Yes | `slide_asset_map.md` says S7 R figure "replaces old schematic" but `render_deck.sh` still overwrites it from HTML. Real inconsistency — fix only when deck is no longer in flight. |
-| P3 | Defer until after 20 May | Dedupe duplicated large photos between the two photo dirs | `talk-usuk-forum-2026/Talk_Materials/deck_build/photos/` vs `deck_build/slides_html/photos/` (~105M combined, overlapping s01/s02/s14) | M | Yes | ~50M recoverable, but both are consumed by `render_deck.sh`; consolidating requires editing the render script → post-talk only. |
-| P3 | Defer until after 20 May | Remove empty leftover dirs | `talk-usuk-forum-2026/Talk_Materials/deck_source/`, `talk-usuk-forum-2026/Talk_Materials/blocker_resolution/` | L | Yes | Empty; `blocker_resolution/` collides with `blocker_resolution_2026-05-17.md`. Trivial, but no reason to touch the workspace before the talk. |
+| P2 | Defer until after 20 May | Decide fate of legacy builder (delete, or move to `legacy/` with a header note) | `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_build/build_pptx.js` | M | Yes | Divergence risk vs `build_pptx_native.js`. Currently the documented fallback per `deck_build_decision.md` — needs Adrian's call, not a unilateral cleanup. |
+| P2 | Defer until after 20 May | Resolve superseded HTML schematics + fix `render_deck.sh` regenerating S5/S7 over R figures | `analysis/04_talks/2026-royalsociety/Talk_Materials/s5_two_collapses.html`, `s7_two_scales.html`, `render_deck.sh` `schem` lines for 05/07 | M | Yes | `slide_asset_map.md` says S7 R figure "replaces old schematic" but `render_deck.sh` still overwrites it from HTML. Real inconsistency — fix only when deck is no longer in flight. |
+| P3 | Defer until after 20 May | Dedupe duplicated large photos between the two photo dirs | `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_build/photos/` vs `deck_build/slides_html/photos/` (~105M combined, overlapping s01/s02/s14) | M | Yes | ~50M recoverable, but both are consumed by `render_deck.sh`; consolidating requires editing the render script → post-talk only. |
+| P3 | Defer until after 20 May | Remove empty leftover dirs | `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_source/`, `analysis/04_talks/2026-royalsociety/Talk_Materials/blocker_resolution/` | L | Yes | Empty; `blocker_resolution/` collides with `blocker_resolution_2026-05-17.md`. Trivial, but no reason to touch the workspace before the talk. |
 | P1 | Defer until after 20 May | Reconcile canonical-plan conflict (14- vs 20-slide) across sync docs | `slide_asset_map.md`, repo-root `docs/HERRING_TALK_ASSETS.md`, `talk_production_plan.md`, `deck_build_decision.md` | M | Yes (docs) | Three docs disagree on slide count/canonical. Already self-flagged in `slide_asset_map.md` "Open decisions #1". Editing mid-talk would confuse the build — explicitly post-talk. |
 | P3 | Defer until after 20 May | Consolidate / version outline triplet | `talk_outline_v1.md`, `talk_outline_v2.md`, `talk_production_plan.md` | L | Yes | Heavy overlap, no clear canonical marker; `talk_architecture_*.html` appear operative. Reorganize post-talk with Adrian. |
-| P3 | Defer until after 20 May | Decide if `deck_build/dfo_src/` digitization sandbox can be archived | `talk-usuk-forum-2026/Talk_Materials/deck_build/dfo_src/` (1.2M) | L | Yes | One-time Fig8d digitization working set; CSV may be cited by provenance. Verify before archiving — post-talk. |
-| P3 | Defer until after 20 May | Remove pre-restage backup once final deck confirmed | `talk-usuk-forum-2026/Talk_Materials/deck_assets/_originals/` (4 PNGs, ~1.3M) | L | Yes | Manual rollback safety net made 05-18 16:23. Keep through the talk; clear only after the deck is delivered. |
+| P3 | Defer until after 20 May | Decide if `deck_build/dfo_src/` digitization sandbox can be archived | `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_build/dfo_src/` (1.2M) | L | Yes | One-time Fig8d digitization working set; CSV may be cited by provenance. Verify before archiving — post-talk. |
+| P3 | Defer until after 20 May | Remove pre-restage backup once final deck confirmed | `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_assets/_originals/` (4 PNGs, ~1.3M) | L | Yes | Manual rollback safety net made 05-18 16:23. Keep through the talk; clear only after the deck is delivered. |
 
 ### Open questions for Adrian
 
@@ -568,7 +568,7 @@ There is no conflict between the three sections; the unified action is "leave th
 
 **B5 — Stale-model lineage spans sections 1, 2, 3, 5 (no conflict, shared dependency).** The `_vN` → `_stier_*` model rename shows up as: root `_vN` console logs (§1), `inst/stan/*_v2..v5.stan` (§2), `Code/03_fit_m*_v*.R` + audit-ledger rows (§3), and `Output/posteriors/fit_m*_v*.rds` + `Output/figures/v2/` (§5). All four agree these are *superseded but not deletable while the talk/paper review is live*, and all defer. The only dependency to honor: archiving `Code/03_fit_m*_v*.R` (§3 P1) interacts with the audit tribbles in `03c/03d/04_compare_models_v3.R` that still enumerate the stale rows — §3 confirms archiving the scripts without editing the audit is **safe** (audit already filters stale; it just won't find the `.rds`). Decide tribble pruning separately (E-list), don't block the archive on it.
 
-**B6 — Empty/dead stub directories (sections 5 & 6).** `Output/tables/`, `Output/presentations/` (§5, 0 B) and `talk-usuk-forum-2026/Talk_Materials/deck_source/`, `blocker_resolution/` (§6, empty, name-collides with `blocker_resolution_2026-05-17.md`). Trivial, reversible, but the talk-workspace pair sits inside the firewalled in-flight build — **all four deferred to Phase 2** to keep one clean rule ("no structural touches to talk-adjacent trees pre-talk"). The `Output/` pair is technically safe-now but has zero payoff and is bundled with Phase 2 for consistency.
+**B6 — Empty/dead stub directories (sections 5 & 6).** `Output/tables/`, `Output/presentations/` (§5, 0 B) and `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_source/`, `blocker_resolution/` (§6, empty, name-collides with `blocker_resolution_2026-05-17.md`). Trivial, reversible, but the talk-workspace pair sits inside the firewalled in-flight build — **all four deferred to Phase 2** to keep one clean rule ("no structural touches to talk-adjacent trees pre-talk"). The `Output/` pair is technically safe-now but has zero payoff and is bundled with Phase 2 for consistency.
 
 **No contradictory recommendations survive reconciliation.** Where sections differed in tone (e.g. §5 P2 offering a/b on Literature; §6 flagging the legacy builder as both foot-gun and documented fallback), the safer option is taken: preserve-and-formalize over delete, defer over act, decision-surface over auto-edit.
 
@@ -614,14 +614,14 @@ Aggregated from every section's risk list. Hands-off through **Wed 20 May 2026**
 
 **Talk-critical code & build chain (§3, §6):**
 - `Code/07cz_deck_figure_reexport.R` (deck builder, uncommitted `M`) and its upstream CSV producers: `Code/06g_reproduce_stier2020_figures_updated.R`, `Code/06h_companion_and_supplement_figures_updated.R`, `Code/06_refresh_stier2020_updated_figure_suite.sh`, `Code/02c_integrate_hg_predator_repo_products.R`, `Code/02f_extract_newer_dfo_public_pdfs.R`, `Code/03_fit_m1_stier_11.R`, `Code/03_fit_m1_stier_obs_hier.R`, `Code/07_m1_stier_11_population_driver_analysis.R`, `Code/07i_m1_stier_11_cryptic_collapse_screen.R`, `Code/07l_m1_stier_11_postclosure_recovery.R`.
-- `talk-usuk-forum-2026/Talk_Materials/deck_build/build_pptx_native.js` (current builder) **and** `build_pptx.js` (documented fallback).
-- `talk-usuk-forum-2026/Talk_Materials/deck_assets/` — all 15 staged PNGs **and** `_originals/` rollback backup.
+- `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_build/build_pptx_native.js` (current builder) **and** `build_pptx.js` (documented fallback).
+- `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_assets/` — all 15 staged PNGs **and** `_originals/` rollback backup.
 - `Herring_RoyalSociety_Stier_2026_clean.pptx` (56.9 MB), `_clean.pdf` (16.7 MB), `Herring_RoyalSociety_Stier_2026.pptx` (55.8 MB), `S5_only.pptx`, `DFO_SpawningBiomass_only.pptx`.
 - `render_deck.sh` and every HTML schematic it consumes (`s5_two_collapses.html`, `s7_two_scales.html`, `s11_triple_bottom_line.html`, `s13_takeaways.html`, `herring_decoupling_figure.html`, `slides_html/*.html`, `slides_html/photos/`, `deck_build/photos/`). **Do NOT run any deck build.**
 
 **Sync/SSOT docs (§4, §6) — note only, no edits mid-talk:**
 - `docs/HERRING_TALK_ASSETS.md`, `docs/talk-model-claim-control-sheet.md`, `docs/saturday-talk-readiness-2026-05-16.md`, `docs/monday-talk-sprint-plan.md`, `docs/may-9-analysis-decision-summary.md`, `docs/may-9-analysis-output-index.md`, `docs/herring-non-recovery-hypotheses.md`, `docs/predator-repo-integration-guide.md`, plus README-cited live reading-path docs (`theory-data-model-integration.md`, `data-dictionary.md`, `stan-model-map.md`, `collaborator-reading-guide.md`, `current-population-driver-findings.md`, `literature-parameter-roadmap.md`).
-- `talk-usuk-forum-2026/Talk_Materials/slide_asset_map.md`, `deck_design_system.md` (the 14-vs-20 conflict stays unresolved until after the talk).
+- `analysis/04_talks/2026-royalsociety/Talk_Materials/slide_asset_map.md`, `deck_design_system.md` (the 14-vs-20 conflict stays unresolved until after the talk).
 - Repo `CLAUDE.md` (live control file — broken-ref fix surfaced as a decision, not an edit).
 
 **Pipeline-live model assets (§1, §2, §3, §5):**

@@ -32,7 +32,7 @@ Before writing talk claims from the model farm, read
 and Doherty-style HG material is a source-traceable bridge/gap table rather
 than a completed catch-at-age predation-mortality replication.
 
-**Talk work is firewalled in `talk-usuk-forum-2026/`** (a TALK-ONLY workspace,
+**Talk work is firewalled in `analysis/04_talks/2026-royalsociety/`** (a TALK-ONLY workspace,
 moved in from the Desktop 2026-05-16; see its `README.md`). It is **not** part
 of the modeling pipeline: never import its contents into `R/`, `inst/stan/`,
 `Data/`, `Output/`, `Code/`, or `_targets.R`, and never let talk prep alter

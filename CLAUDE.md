@@ -21,11 +21,11 @@ Before turning a model result into slide language, read
 `docs/talk-model-claim-control-sheet.md`. It is the safe-language contract for
 baseline, held branches, predators, DFO summaries, and the Doherty-style bridge.
 
-**Talk work lives in `talk-usuk-forum-2026/`** — a TALK-ONLY workspace
+**Talk work lives in `analysis/04_talks/2026-royalsociety/`** — a TALK-ONLY workspace
 firewalled from the core metapopulation analysis. Never import anything from
 it into the modeling pipeline (`R/`, `inst/stan/`, `Data/`, `Output/`,
 `Code/`, `_targets.R`); talk numbers are pulled *from* the core analysis,
-never the reverse. See `talk-usuk-forum-2026/README.md`. Current direction:
+never the reverse. See `analysis/04_talks/2026-royalsociety/README.md`. Current direction:
 Spine B (coupled social–ecological tipping points, hysteresis-led, NOT
 portfolio-as-early-warning, solutions-forward).
 
