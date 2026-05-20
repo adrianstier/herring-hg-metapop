@@ -176,3 +176,28 @@ Every `git mv` is reversible. Each phase commits independently; revert by `git r
 Execute Phase A (done), Phase B (gitignore), Phase C (EWS scripts), Phase D (resilience scripts), Phase E (bioeconomics) **today** — all are safe and don't touch the talk dir or live build path.
 
 Hold Phases F–I **until after the talk delivers**.
+
+---
+
+## Execution log (2026-05-20)
+
+All phases executed and pushed to `feat/ews-analysis-20260519`.
+
+| Phase | Status | Commit | Notes |
+|---|---|---|---|
+| A — Scaffold `analysis/` subdirs | ✅ DONE | — | empty dir tree created |
+| B — `.gitignore` updates | ✅ DONE | `ce78a04` | `_stale/`, `analysis/*/output/`, bioeconomics renv patterns added |
+| C — Move 11 EWS scripts | ✅ DONE | `ce78a04` | `Code/11_ews_*.R` → `analysis/01_ews/scripts/` |
+| D — Move 10 resilience scripts + path conversion | ✅ DONE | `ce78a04` | `Code/12_reversibility_*.R` + phase0 → `analysis/02_resilience/scripts/`; bare `source("R/…")` → `source(here::here("R", …))` |
+| E — Move bioeconomics sub-package | ✅ DONE | `ce78a04` | `bioeconomics/` → `analysis/03_bioeconomics/` |
+| Archive batch — 12 stale docs + 2 root + 31 .bak + 6 stale pptx | ✅ DONE | `2ad7c8e` | `_archive/2026-05-20/` created with category subdirs and READMEs |
+| `REPO_STRUCTURE.md` directory map | ✅ DONE | `2ad7c8e` | top-level navigation aid |
+| F — Move talk dir | ✅ DONE | `2afef33` | `talk-usuk-forum-2026/` → `analysis/04_talks/2026-royalsociety/`; `.gitignore` patterns updated to new path |
+| G — Triage 71 dossier scripts | ✅ DONE | `2afef33` | `Code/07_*.R` → `Code/probes/` (stayed in `Code/` since they consume core-model outputs) |
+| H — Cold-storage 3 GB pptx history | ✅ DONE | `2afef33` | 57-file `archive/presentation-versions/` → `_archive/2026-05-20/talk-pptx-version-history/` |
+| I — Update CLAUDE.md + top-level docs | ✅ DONE | `2afef33` | path references in CLAUDE.md, REPO_STRUCTURE.md, AGENTS.md, and ~20 docs/specs/plans/session-logs |
+| Final cleanup — sed `.bak` removal + scaffold READMEs | ✅ DONE | (this commit) | Per-workstream README.md files in `analysis/*/`; final sed artifact cleanup |
+
+## Result
+
+Repo went from 44 GB → 41 GB working size; 3 GB shifted from active tree into `_archive/`. Talk dir from 4.1 GB → 712 MB. Derivative workstreams now self-contained under `analysis/`.
