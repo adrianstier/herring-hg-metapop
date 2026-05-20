@@ -30,3 +30,4 @@ _archive/
 | Batch | Description | Notes |
 |---|---|---|
 | `2026-05-20/` | Reorganization sweep: stale planning docs from the May 8–12 sprint, top-level morning reports, talk image `.bak` files, and stale top-level pptx | Companion to `docs/superpowers/plans/2026-05-20-repo-organization.md` |
+| `2026-05-21/` | Final cleanup: 10 Reference_Papers PDF `.bak` files, prior `deck_assets_v36/` snapshot, repo-wide `.DS_Store` purge, scaffold `.gitkeep` files | Closes the 2026-05-20 reorganization plan |

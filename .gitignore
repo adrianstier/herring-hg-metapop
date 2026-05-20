@@ -119,10 +119,9 @@ _archive/**/*.zip
 # Stale snapshots awaiting confirmed deletion
 analysis/04_talks/**/Talk_Materials/_stale/
 
-# Per-workstream analysis outputs (regenerable)
-analysis/*/output/
-analysis/01_ews/output/
-analysis/02_resilience/output/
+# Per-workstream analysis outputs (regenerable) — but keep the .gitkeep so the dir tracks
+analysis/*/output/*
+!analysis/*/output/.gitkeep
 
 # Bioeconomics sub-package internals (after Phase E move)
 analysis/03_bioeconomics/Output/

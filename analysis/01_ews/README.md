@@ -45,4 +45,4 @@ All scripts use `here::here()` for paths. Run order is sequential; later scripts
 
 ## Talk firewall
 
-Comments in the scripts that say "Firewall: no reads/writes to talk-usuk-forum-2026/" predate the 2026-05-20 reorganization. The talk now lives at `analysis/04_talks/2026-royalsociety/`. The firewall rule is unchanged: EWS scripts must not import from the talk workspace; talk numbers are pulled from EWS outputs, never the reverse.
+EWS scripts must not import from the talk workspace at `analysis/04_talks/2026-royalsociety/`. Talk numbers are pulled *from* EWS outputs (`Output/diagnostics/ews_*.{csv,md}`), never the reverse. See `CLAUDE.md`.
