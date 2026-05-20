@@ -397,3 +397,19 @@ test_that("sensitivity grid output: schema, robust flag, leave-out coverage", {
   expect_true(all(fin$tau >= -1 - 1e-9 & fin$tau <= 1 + 1e-9))
   expect_true(all(fin$p_value >= 0 - 1e-9 & fin$p_value <= 1 + 1e-9))
 })
+
+test_that("artifact audit: disqualified CSV + md present, schema sane", {
+  fc <- here::here("Output","diagnostics","ews_survey_artifact_disqualified.csv")
+  fm <- here::here("Output","diagnostics","ews_survey_artifact_audit.md")
+  skip_if_not(file.exists(fc), "ews_survey_artifact_disqualified.csv absent — run Code/11_ews_07_survey_artifact_audit.R first")
+  skip_if_not(file.exists(fm))
+  d <- readr::read_csv(fc, show_col_types = FALSE)
+  expect_true(all(c("indicator","artifact_tau_median","artifact_pos_sig_frac",
+                    "disqualified","n_rep") %in% names(d)))
+  expect_true(is.logical(d$disqualified))
+  expect_true(all(d$artifact_pos_sig_frac >= 0 & d$artifact_pos_sig_frac <= 1, na.rm = TRUE))
+  expect_true(nrow(d) >= 6)  # at least 6 indicators (phi/eta/ar1/eig_share/mar1_eigen/spatial_var minimum)
+  md <- readLines(fm)
+  expect_true(any(grepl("Honest-failure verdict", md)))
+  expect_true(any(grepl("Comparison vs observed", md)))
+})
