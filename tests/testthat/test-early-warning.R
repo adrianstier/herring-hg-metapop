@@ -429,3 +429,28 @@ test_that("power/control output: CSV + md present, both scenarios, gate verdicts
   expect_true(any(grepl("Important caveat", md)))
   expect_true(any(grepl("coupling-driven|confound", md)))
 })
+
+test_that("lead-time matrix: schema, confidence ladder, consistency invariant, talk-grade rows", {
+  fc <- here::here("Output","diagnostics","ews_lead_time_matrix.csv")
+  fm <- here::here("Output","diagnostics","ews_lead_time_matrix.md")
+  skip_if_not(file.exists(fc), "ews_lead_time_matrix.csv absent — run Code/11_ews_09_lead_time_matrix.R first")
+  skip_if_not(file.exists(fm))
+  d <- readr::read_csv(fc, show_col_types = FALSE)
+  expect_true(all(c("transition_target","transition_year","transition_method",
+                    "indicator","window_def","layer","unit","tier",
+                    "tau","p_value","lead_years","robust","disqualified",
+                    "fold_power","confidence") %in% names(d)))
+  expect_true(all(d$confidence %in% c("strong","supportive","marginal","null",
+                                       "weak_power","disqualified",
+                                       "mar1_numerical","unsupported_stars")))
+  # consistency invariant — no row both strong AND disqualified
+  expect_false(any(d$confidence == "strong" & d$disqualified, na.rm = TRUE))
+  expect_false(any(d$confidence == "supportive" & d$disqualified, na.rm = TRUE))
+  expect_true(nrow(d) >= 10)
+  # md sections
+  md <- readLines(fm)
+  for (s in c("Transition anchors used","Lead-time matrix","Talk-grade rows",
+              "Indicators dropped or hedged","Convention used")) {
+    expect_true(any(grepl(s, md)), info = paste("missing md section:", s))
+  }
+})
