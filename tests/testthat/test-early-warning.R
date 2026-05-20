@@ -340,3 +340,25 @@ test_that("covariance eigen + MAR(1) EWS output: schema, ranges, latent CI", {
   expect_true(all(obs$lambda_max_lo == obs$lambda_max | is.na(obs$lambda_max),
                   na.rm = TRUE))
 })
+
+test_that("candidate transitions output: schema, documented eras present, convention", {
+  skip_if_not(file.exists(here::here("Output","diagnostics","ews_input_layers.rds")))
+  skip_if_not(file.exists(here::here("Output","diagnostics","ews_spatial_synchrony.csv")))
+  system2("Rscript",
+    here::here("Code","11_ews_04_candidate_transitions.R"),
+    stdout = TRUE, stderr = TRUE)
+  f <- here::here("Output","diagnostics","ews_candidate_transitions.csv")
+  expect_true(file.exists(f))
+  d <- readr::read_csv(f, show_col_types = FALSE)
+  expect_true(all(c("target","year","method","label","year_convention") %in% names(d)))
+  expect_setequal(unique(d$target), c("biomass","synchrony","occupancy"))
+  expect_true(all(unique(d$method) %in% c("stars","breakpoint","documented")))
+  # documented era anchors must be present
+  doc <- dplyr::filter(d, method == "documented")
+  expect_true(any(doc$year == 1966) && any(doc$year == 2005))
+  # year_convention is the constant string everywhere
+  expect_true(all(d$year_convention == "first_year_of_new_regime"))
+  # years are reasonable integers within data range
+  expect_true(all(d$year >= 1951 & d$year <= 2026))
+  expect_true(is.integer(d$year) || all(d$year == as.integer(d$year)))
+})
