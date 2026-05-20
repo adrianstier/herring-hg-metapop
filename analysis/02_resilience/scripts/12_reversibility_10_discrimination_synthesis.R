@@ -30,7 +30,7 @@
 #
 # Spec: docs/superpowers/specs/2026-05-19-herring-reversibility-hysteresis-analysis-design.md
 
-source("R/12_reversibility.R")
+source(here::here("R", "12_reversibility.R"))
 PIVOT <- 2005L
 
 ## ============================================================

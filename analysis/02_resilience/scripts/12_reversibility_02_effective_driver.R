@@ -8,7 +8,7 @@
 #   Output/diagnostics/reversibility_effective_driver_provenance.md
 # Spec: docs/superpowers/specs/2026-05-19-herring-reversibility-hysteresis-analysis-design.md
 
-source("R/12_reversibility.R")
+source(here::here("R", "12_reversibility.R"))
 
 ## --- inputs -----------------------------------------------------------------
 d <- read.csv("Output/diagnostics/reversibility_driver_axis.csv")

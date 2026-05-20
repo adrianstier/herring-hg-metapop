@@ -10,7 +10,7 @@
 
 suppressWarnings(suppressMessages({
   library(ggplot2)
-  ok <- try(source("R/00_setup.R"), silent = TRUE)   # gives theme_pub if present
+  ok <- try(source(here::here("R", "00_setup.R")), silent = TRUE)   # gives theme_pub if present
 }))
 okabe <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442",
            "#0072B2", "#D55E00", "#CC79A7", "#000000")

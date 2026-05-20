@@ -5,7 +5,7 @@
 # Outputs: Output/diagnostics/reversibility_driver_axis.csv
 # Spec: docs/superpowers/specs/2026-05-19-herring-reversibility-hysteresis-analysis-design.md
 
-source("R/12_reversibility.R")
+source(here::here("R", "12_reversibility.R"))
 
 ## --- inputs -----------------------------------------------------------------
 catch <- read.csv("Data/processed/herring_catch_local_1950_2024.csv")

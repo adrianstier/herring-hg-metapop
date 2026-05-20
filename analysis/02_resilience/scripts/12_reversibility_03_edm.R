@@ -9,7 +9,7 @@
 #   Output/diagnostics/reversibility_edm_jacobian_eigen.csv
 # Spec: docs/superpowers/specs/2026-05-19-herring-reversibility-hysteresis-analysis-design.md
 
-source("R/12_reversibility.R")
+source(here::here("R", "12_reversibility.R"))
 seed <- 20260519L
 
 ## --- inputs -----------------------------------------------------------------

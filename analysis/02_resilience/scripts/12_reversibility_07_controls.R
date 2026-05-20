@@ -14,7 +14,7 @@
 #   Output/diagnostics/reversibility_controls.md
 # Spec: docs/superpowers/specs/2026-05-19-herring-reversibility-hysteresis-analysis-design.md
 
-source("R/12_reversibility.R")
+source(here::here("R", "12_reversibility.R"))
 
 CANONICAL_SEED <- 20260519L
 
