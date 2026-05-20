@@ -20,14 +20,34 @@
 #   breakpoint or documented transition are skipped (Task 1.7 caveat).
 #
 # Confidence ladder (applied in priority order):
-#   "disqualified"    — disqualified == TRUE
-#   "weak_power"      — fold_power < 0.3  (overrides null/marginal)
-#   "mar1_numerical"  — indicator == "mar1_eigen" && |tau| > 0.7
+#   "disqualified"      — disqualified_applies (observed-layer + in artifact list)
+#   "wrong_direction"   — p < 0.05 && tau < 0 (declining sig.) for sign=+1 indicator
+#   "weak_power"        — fold_power < 0.3  (overrides null/marginal)
+#   "mar1_numerical"    — indicator == "mar1_eigen" && |tau| > 0.7
 #   "unsupported_stars" — STARS-only row that slipped through (sanity flag)
-#   "strong"          — p < 0.05 && robust == TRUE && fold_power >= 0.6 && !disqualified
-#   "supportive"      — p < 0.05 && (robust==TRUE || fold_power>=0.6) && !disqualified
-#   "marginal"        — 0.05 <= p < 0.25 && fold_power >= 0.3 && !disqualified
-#   "null"            — p >= 0.25 && !disqualified
+#   "strong"            — p<0.05 && tau>0 && robust==TRUE && fold_power>=0.6 && !disqualified_applies
+#   "supportive"        — p<0.05 && tau>0 && (robust==TRUE || fold_power>=0.6) && !disqualified_applies
+#   "marginal"          — 0.05<=p<0.25 && tau>0 && fold_power>=0.3 && !disqualified_applies
+#   "null"              — p >= 0.25 && !disqualified_applies
+#
+# EWS-warning direction (sign convention):
+#   All canonical CSD indicators have sign = +1 (RISING tau = the warning signal).
+#   Sign=+1 indicators: variance, sd, ar1, phi, eta, eig_share, lambda_max,
+#     mar1_eigen, morans_i, spatial_var, cv, cv_ratio, returnrate, kurtosis,
+#     densratio, spatial_skew, skew.
+#   A significant negative tau for these indicators is NOT an EWS hit — it
+#   reclassifies to "wrong_direction." For variance/sd specifically, the
+#   negative tau on the latent core9 series is the mean-collapse confounder
+#   documented elsewhere (declining biomass → declining absolute variance).
+#
+# Disqualification layer-scoping (DEFECT-2 fix):
+#   The artifact audit (Task 4.3) simulates OBSERVATION artifacts (catchability,
+#   zero injection, coverage changes). m1_stier_11 explicitly separates obs from
+#   process error, so the latent state largely absorbs these artifacts.
+#   Therefore: disqualified_applies = disqualified & (layer == "observed").
+#   For latent rows whose indicator IS in the disqualified list, we attach a
+#   per-row `latent_artifact_note` (character) flagging residual concern via
+#   obs-model misspecification — but we do NOT short-circuit the confidence.
 #
 # fold_power is the detect_rate from the "approaching_fold" scenario in
 #   ews_controls_power.csv — it captures how often an indicator detects genuine
@@ -37,8 +57,10 @@
 #   Output/diagnostics/ews_lead_time_matrix.csv
 #   Output/diagnostics/ews_lead_time_matrix.md
 #
-# Consistency invariant (checked via stopifnot):
-#   No row can have confidence == "strong" or "supportive" AND disqualified == TRUE.
+# Consistency invariants (checked via stopifnot):
+#   - No row can have confidence == "strong"/"supportive" AND disqualified_applies.
+#   - No row can have confidence == "supportive" AND tau < 0 (sign-aware ladder).
+#   - No row can have confidence == "disqualified" AND layer == "latent".
 # ============================================================================
 
 suppressPackageStartupMessages({
@@ -204,9 +226,19 @@ sig_rows <- sig_rows %>%
   ) %>%
   rename(robust = robust_vote)
 
-# ── 6. Artifact disqualification lookup (by indicator only) ──────────────────
+# ── 6. Artifact disqualification lookup ──────────────────────────────────────
+# The artifact audit (Task 4.3) names indicators differently depending on tier:
+#   Tier-1 generic CSD indicators: bare name (e.g., "ar1", "sd", "variance", "cv",
+#     "kurtosis", "skew", "returnrate", "densratio")
+#   Tier-2/3 spatial/eigen indicators: name suffixed with window
+#     (e.g., "eta_w10", "spatial_var_w15", "phi_w20", "morans_i_w15",
+#      "eig_share_w20", "mar1_eigen_w15")
+# Our lead-time matrix carries indicator + window_def separately. To join
+# correctly, build an audit_key per row: bare name if window_def is "first-diff|*"/
+# "gaussian|*"/"none|*" (tier-1), else "indicator_window_def" for spatial.
 disq_lookup <- artifact_disq %>%
-  select(indicator, disqualified) %>%
+  filter(!is.na(disqualified)) %>%
+  select(audit_key = indicator, disqualified) %>%
   distinct()
 
 # ── 7. Controls power: fold_power = detect_rate from approaching_fold scenario ─
@@ -294,21 +326,56 @@ all_lt_rows <- all_lt_rows %>%
   select(-method_rank)
 
 # ── 9. Attach disqualification and fold_power ─────────────────────────────────
+# DEFECT-2: scope disqualification to layer=="observed" only.
+#   - `disqualified` (logical) remains as the raw artifact-audit flag (per indicator).
+#   - `disqualified_applies` is the operative flag for the confidence ladder:
+#       TRUE only when layer == "observed" AND indicator is in artifact list.
+#   - `latent_artifact_note` carries a documentation string for latent rows whose
+#     indicator IS in the artifact list (residual concern via obs-model misspec).
+#
+# Build audit_key matching the artifact audit's naming convention:
+#   tier-1 rows (window_def matches "first-diff|*", "gaussian|*", "none|*"): bare indicator
+#   tier-2/3 spatial/eigen rows (window_def matches "w[0-9]+"): "indicator_window_def"
 all_lt_rows <- all_lt_rows %>%
-  left_join(disq_lookup, by = "indicator") %>%
+  mutate(
+    audit_key = if_else(
+      grepl("^w[0-9]+$", window_def),
+      paste0(indicator, "_", window_def),
+      indicator
+    )
+  ) %>%
+  left_join(disq_lookup, by = "audit_key") %>%
   mutate(disqualified = if_else(is.na(disqualified), FALSE, disqualified)) %>%
-  left_join(fold_power_lookup, by = "indicator")
+  left_join(fold_power_lookup, by = "indicator") %>%
+  mutate(
+    disqualified_applies = disqualified & (layer == "observed"),
+    latent_artifact_note = if_else(
+      disqualified & (layer == "latent"),
+      "observed-layer indicator is artifact-disqualified; latent state may inherit residual artifact via obs model misspec — interpret with care",
+      NA_character_
+    )
+  ) %>%
+  select(-audit_key)
 
-# ── 10. Confidence ladder ─────────────────────────────────────────────────────
-assign_confidence <- function(indicator, tau, p_value, robust, disqualified,
-                              fold_power, method) {
+# ── 10. Confidence ladder (sign-aware, layer-scoped disqualification) ────────
+# EWS-warning direction per indicator: +1 = rising tau is the warning (canonical).
+ews_warning_sign <- c(
+  variance     = +1, sd           = +1, ar1        = +1, phi        = +1,
+  eta          = +1, eig_share    = +1, lambda_max = +1, mar1_eigen = +1,
+  morans_i     = +1, spatial_var  = +1, cv         = +1, cv_ratio   = +1,
+  returnrate   = +1, kurtosis     = +1, densratio  = +1, spatial_skew = +1,
+  skew         = +1
+)
+
+assign_confidence <- function(indicator, tau, p_value, robust,
+                              disqualified_applies, fold_power, method) {
   # Guard: unsupported STARS (should have been filtered; sanity check)
   if (!is.na(method) && method == "stars" && !method %in% c("stars_colocated")) {
     return("unsupported_stars")
   }
 
-  # Priority 1: disqualified (artifact contamination)
-  if (!is.na(disqualified) && disqualified) return("disqualified")
+  # Priority 1: disqualified_applies (artifact contamination, observed layer only)
+  if (!is.na(disqualified_applies) && disqualified_applies) return("disqualified")
 
   # Priority 2: MAR1 numerical artifact caveat (|tau| > 0.7 for mar1_eigen)
   if (!is.na(indicator) && indicator == "mar1_eigen" &&
@@ -317,15 +384,32 @@ assign_confidence <- function(indicator, tau, p_value, robust, disqualified,
   fp <- if (is.na(fold_power)) NA_real_ else fold_power
   pv <- if (is.na(p_value)) 1.0 else p_value
   rb <- if (is.na(robust)) FALSE else robust
+  tv <- if (is.na(tau)) 0 else tau
 
-  # Priority 3: weak power (overrides null/marginal)
+  # Lookup warning sign (default +1 if indicator not in table)
+  sign_expected <- if (!is.na(indicator) && indicator %in% names(ews_warning_sign)) {
+    ews_warning_sign[[indicator]]
+  } else {
+    +1
+  }
+
+  # Priority 3: wrong direction — significant but in opposite of expected EWS sign
+  # For sign=+1 indicators: p<0.05 AND tau<0 = "wrong_direction"
+  if (pv < 0.05 && sign_expected == +1 && tv < 0) return("wrong_direction")
+  if (pv < 0.05 && sign_expected == -1 && tv > 0) return("wrong_direction")
+
+  # Priority 4: weak power (overrides null/marginal)
   if (!is.na(fp) && fp < 0.3) return("weak_power")
 
-  # Confidence based on p_value + robust + fold_power
-  if (pv < 0.05 && rb && !is.na(fp) && fp >= 0.6) return("strong")
-  if (pv < 0.05 && (rb || (!is.na(fp) && fp >= 0.6))) return("supportive")
-  if (pv < 0.05) return("supportive")  # sig but neither robust nor high power — still supportive
-  if (pv < 0.25 && (is.na(fp) || fp >= 0.3)) return("marginal")
+  # Direction check for strong/supportive/marginal:
+  # require tau to match expected sign direction
+  correct_sign <- (sign_expected == +1 && tv > 0) ||
+                  (sign_expected == -1 && tv < 0)
+
+  if (pv < 0.05 && correct_sign && rb && !is.na(fp) && fp >= 0.6) return("strong")
+  if (pv < 0.05 && correct_sign && (rb || (!is.na(fp) && fp >= 0.6))) return("supportive")
+  if (pv < 0.05 && correct_sign) return("supportive")  # sig + correct sign, but neither robust nor high power
+  if (pv < 0.25 && correct_sign && (is.na(fp) || fp >= 0.3)) return("marginal")
   return("null")
 }
 
@@ -333,18 +417,24 @@ all_lt_rows <- all_lt_rows %>%
   rowwise() %>%
   mutate(
     confidence = assign_confidence(
-      indicator, tau, p_value, robust, disqualified,
+      indicator, tau, p_value, robust, disqualified_applies,
       fold_power, transition_method
     )
   ) %>%
   ungroup()
 
-# ── 11. Consistency invariant check ──────────────────────────────────────────
+# ── 11. Consistency invariants ──────────────────────────────────────────────
 stopifnot(
-  "INVARIANT VIOLATED: row has confidence='strong' AND disqualified=TRUE" =
-    !any(all_lt_rows$confidence == "strong" & all_lt_rows$disqualified, na.rm = TRUE),
-  "INVARIANT VIOLATED: row has confidence='supportive' AND disqualified=TRUE" =
-    !any(all_lt_rows$confidence == "supportive" & all_lt_rows$disqualified, na.rm = TRUE)
+  "INVARIANT VIOLATED: confidence='strong' AND disqualified_applies=TRUE" =
+    !any(all_lt_rows$confidence == "strong" & all_lt_rows$disqualified_applies, na.rm = TRUE),
+  "INVARIANT VIOLATED: confidence='supportive' AND disqualified_applies=TRUE" =
+    !any(all_lt_rows$confidence == "supportive" & all_lt_rows$disqualified_applies, na.rm = TRUE),
+  "INVARIANT VIOLATED: confidence='supportive' AND tau < 0" =
+    !any(all_lt_rows$confidence == "supportive" & all_lt_rows$tau < 0, na.rm = TRUE),
+  "INVARIANT VIOLATED: confidence='strong' AND tau < 0" =
+    !any(all_lt_rows$confidence == "strong" & all_lt_rows$tau < 0, na.rm = TRUE),
+  "INVARIANT VIOLATED: confidence='disqualified' AND layer=='latent'" =
+    !any(all_lt_rows$confidence == "disqualified" & all_lt_rows$layer == "latent", na.rm = TRUE)
 )
 
 # ── 12. Final column selection and ordering ───────────────────────────────────
@@ -364,12 +454,13 @@ lead_time_matrix <- all_lt_rows %>%
     robust,
     disqualified,
     fold_power,
-    confidence
+    confidence,
+    latent_artifact_note
   ) %>%
   arrange(
     transition_year,
     factor(confidence, levels = c("strong","supportive","marginal","null",
-                                   "weak_power","disqualified",
+                                   "weak_power","wrong_direction","disqualified",
                                    "mar1_numerical","unsupported_stars")),
     transition_target,
     indicator
@@ -432,23 +523,32 @@ anchor_lines <- purrr::pmap_chr(
 
 # Full matrix table (sorted by transition_year then confidence)
 conf_order <- c("strong","supportive","marginal","null",
-                "weak_power","disqualified","mar1_numerical","unsupported_stars")
+                "weak_power","wrong_direction","disqualified",
+                "mar1_numerical","unsupported_stars")
 matrix_sorted <- lead_time_matrix %>%
   mutate(conf_rank = match(confidence, conf_order)) %>%
   arrange(transition_year, conf_rank, transition_target, indicator) %>%
   select(-conf_rank)
 
-# Talk-grade table
+# Talk-grade table (strong/supportive only, sign-aware so tau>0 guaranteed)
 talk_grade_sorted <- talk_grade %>%
   arrange(transition_year, indicator, layer, unit) %>%
   select(transition_year, transition_target, indicator, window_def, layer, unit,
          tau, p_value, lead_years, fold_power, confidence)
 
-# Dropped/hedged rows
+# Dropped/hedged rows (now includes wrong_direction)
 dropped <- lead_time_matrix %>%
-  filter(confidence %in% c("disqualified","weak_power","mar1_numerical","unsupported_stars")) %>%
-  arrange(confidence, indicator) %>%
+  filter(confidence %in% c("disqualified","weak_power","mar1_numerical",
+                           "unsupported_stars","wrong_direction")) %>%
+  arrange(confidence, indicator, layer, unit) %>%
   select(indicator, layer, unit, window_def, confidence, tau, p_value, fold_power)
+
+# Latent rows with observed-artifact concern (not dropped, but flagged)
+latent_artifact_rows <- lead_time_matrix %>%
+  filter(!is.na(latent_artifact_note)) %>%
+  arrange(transition_year, indicator, unit) %>%
+  select(transition_year, transition_target, indicator, window_def, layer, unit,
+         tau, p_value, confidence)
 
 # Format key columns for display
 fmt_df <- function(df) {
@@ -491,6 +591,10 @@ md_lines <- c(
   "",
   "## Indicators dropped or hedged",
   "",
+  "Includes: disqualified (observed-layer artifact), wrong_direction (sig. but in",
+  "non-EWS direction — for sd/variance the negative tau on latent series is the",
+  "mean-collapse confounder), weak_power, mar1_numerical, and unsupported_stars.",
+  "",
   "| indicator | layer | unit | window_def | confidence | tau | p_value | fold_power | reason |",
   "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
   {
@@ -498,10 +602,17 @@ md_lines <- c(
       purrr::pmap_chr(dropped, function(indicator, layer, unit, window_def,
                                         confidence, tau, p_value, fold_power) {
         reason <- switch(confidence,
-          disqualified    = "Survey artifact: indicator tracks survey footprint change (Task 4.3)",
+          disqualified    = "Observed-layer survey artifact: indicator tracks survey footprint change (Task 4.3)",
           weak_power      = "Fold-power < 0.3: null/marginal results uninterpretable (Boettiger-Hastings)",
           mar1_numerical  = "mar1_eigen |tau| > 0.7: possible near-singular OLS artifact (Task 1.5)",
           unsupported_stars = "STARS-only candidate not co-located with validated transition",
+          wrong_direction = {
+            if (indicator %in% c("variance", "sd") && layer == "latent") {
+              "Sig. NEGATIVE tau for canonical (+1) EWS indicator — for variance/sd on latent series this is the documented mean-collapse confounder (declining biomass → declining absolute variance), NOT an EWS hit"
+            } else {
+              "Sig. tau in non-EWS direction (sign mismatch with canonical +1 warning direction) — not a positive EWS signal"
+            }
+          },
           "unknown"
         )
         paste0("| ", indicator, " | ", layer, " | ", unit, " | ", window_def,
@@ -511,6 +622,35 @@ md_lines <- c(
     } else {
       "*(none)*"
     }
+  },
+  "",
+  "---",
+  "",
+  "## Latent rows with observed-artifact concern",
+  "",
+  "Per DEFECT-2 fix: the artifact audit (Task 4.3) simulates OBSERVATION artifacts",
+  "(catchability, zero injection, coverage). The m1_stier_11 state-space model",
+  "separates obs error from process error, so the latent state largely absorbs",
+  "these artifacts — `disqualified` therefore applies only to `layer == \"observed\"`.",
+  "However, latent rows whose indicator IS in the artifact list (`ar1`, `cv`, etc.)",
+  "may still inherit residual artifact via obs-model misspecification. These rows",
+  "keep their original confidence but are flagged below for interpretive caution.",
+  "",
+  if (nrow(latent_artifact_rows) > 0) {
+    paste(c(
+      "| transition_year | transition_target | indicator | window_def | layer | unit | tau | p_value | confidence |",
+      "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+      purrr::pmap_chr(latent_artifact_rows, function(transition_year, transition_target,
+                                                      indicator, window_def, layer, unit,
+                                                      tau, p_value, confidence) {
+        paste0("| ", transition_year, " | ", transition_target, " | ", indicator,
+               " | ", window_def, " | ", layer, " | ", unit,
+               " | ", round(tau, 4), " | ", round(p_value, 4),
+               " | ", confidence, " |")
+      })
+    ), collapse = "\n")
+  } else {
+    "*(none — no latent rows had an artifact-list indicator)*"
   },
   "",
   "---",
@@ -544,18 +684,33 @@ md_lines <- c(
   "from a specific first-year detection to the transition. It conservatively captures ",
   "\"the indicator was trending significantly over an N-year window before the transition.\"",
   "",
-  "**Confidence ladder (claim-control protection):**",
-  "- `strong`: p < 0.05, robust (leave-one-out majority), fold-power ≥ 0.60",
-  "- `supportive`: p < 0.05, at least one of: robust OR fold-power ≥ 0.60",
-  "- `marginal`: 0.05 ≤ p < 0.25, fold-power ≥ 0.30 (direction supports, not significant)",
+  "**EWS-warning direction (sign convention):**",
+  "All canonical CSD indicators in this analysis have sign = +1 (RISING tau is the",
+  "warning). Indicators: variance, sd, ar1, phi, eta, eig_share, lambda_max,",
+  "mar1_eigen, morans_i, spatial_var, cv, cv_ratio, returnrate, kurtosis, densratio,",
+  "spatial_skew, skew. A significant NEGATIVE tau on these reclassifies to",
+  "`wrong_direction` and is excluded from the talk-grade tier. The variance/sd",
+  "negative tau on latent series is the documented mean-collapse confounder.",
+  "",
+  "**Confidence ladder (sign-aware, layer-scoped, claim-control protection):**",
+  "- `strong`: p < 0.05 AND tau > 0 AND robust (LOO majority) AND fold-power ≥ 0.60",
+  "- `supportive`: p < 0.05 AND tau > 0 AND (robust OR fold-power ≥ 0.60)",
+  "- `marginal`: 0.05 ≤ p < 0.25 AND tau > 0 AND fold-power ≥ 0.30",
   "- `null`: p ≥ 0.25",
   "- `weak_power`: fold-power < 0.30 (overrides null/marginal — results uninterpretable)",
-  "- `disqualified`: artifact-contaminated indicator (DO NOT CITE)",
+  "- `wrong_direction`: p < 0.05 BUT tau in non-EWS direction (sign=+1 → tau<0)",
+  "- `disqualified`: observed-layer + indicator in artifact list (DO NOT CITE)",
   "- `mar1_numerical`: MAR(1) near-singular OLS artifact (|tau| > 0.7)",
   "- `unsupported_stars`: STARS-band candidate not co-located with validated transition",
   "",
-  "**Consistency invariant checked:** No row with `confidence ∈ {strong, supportive}` ",
-  "has `disqualified == TRUE`. Verified by `stopifnot()` at script end.",
+  "**Layer-scoped disqualification:** `disqualified` short-circuits the ladder only",
+  "for `layer == \"observed\"`. For `layer == \"latent\"`, the row keeps its ladder-",
+  "based confidence and gets `latent_artifact_note` set to flag the residual concern.",
+  "",
+  "**Consistency invariants checked (stopifnot at script end):**",
+  "- No row with `confidence ∈ {strong, supportive}` has `disqualified_applies == TRUE`",
+  "- No row with `confidence ∈ {strong, supportive}` has `tau < 0` (sign-aware)",
+  "- No row with `confidence == \"disqualified\"` has `layer == \"latent\"`",
   ""
 )
 

@@ -439,18 +439,29 @@ test_that("lead-time matrix: schema, confidence ladder, consistency invariant, t
   expect_true(all(c("transition_target","transition_year","transition_method",
                     "indicator","window_def","layer","unit","tier",
                     "tau","p_value","lead_years","robust","disqualified",
-                    "fold_power","confidence") %in% names(d)))
+                    "fold_power","confidence","latent_artifact_note") %in% names(d)))
+  expect_true("latent_artifact_note" %in% names(d))
   expect_true(all(d$confidence %in% c("strong","supportive","marginal","null",
                                        "weak_power","disqualified",
-                                       "mar1_numerical","unsupported_stars")))
-  # consistency invariant — no row both strong AND disqualified
-  expect_false(any(d$confidence == "strong" & d$disqualified, na.rm = TRUE))
-  expect_false(any(d$confidence == "supportive" & d$disqualified, na.rm = TRUE))
+                                       "mar1_numerical","unsupported_stars",
+                                       "wrong_direction")))
+  # consistency invariant — no row both strong/supportive AND disqualified_applies
+  # (disqualified_applies = disqualified & layer == "observed"; latent rows with the
+  # raw disqualified flag are allowed to keep their ladder confidence — they get
+  # latent_artifact_note instead per DEFECT-2)
+  expect_false(any(d$confidence == "strong" & d$disqualified & d$layer == "observed", na.rm = TRUE))
+  expect_false(any(d$confidence == "supportive" & d$disqualified & d$layer == "observed", na.rm = TRUE))
+  # sign-aware: no supportive/strong ever has negative tau
+  expect_false(any(d$confidence == "supportive" & d$tau < 0, na.rm = TRUE))
+  expect_false(any(d$confidence == "strong" & d$tau < 0, na.rm = TRUE))
+  # layer-scoped disqualification: latent never "disqualified" — uses note column instead
+  expect_false(any(d$confidence == "disqualified" & d$layer == "latent", na.rm = TRUE))
   expect_true(nrow(d) >= 10)
   # md sections
   md <- readLines(fm)
   for (s in c("Transition anchors used","Lead-time matrix","Talk-grade rows",
-              "Indicators dropped or hedged","Convention used")) {
+              "Indicators dropped or hedged","Convention used",
+              "Latent rows with observed-artifact concern")) {
     expect_true(any(grepl(s, md)), info = paste("missing md section:", s))
   }
 })
