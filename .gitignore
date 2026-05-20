@@ -105,6 +105,15 @@ talk-usuk-forum-2026/Talk_Materials/deck_build/qx-*.jpg
 tests/testthat/Rplots*.pdf
 
 # --- 2026-05-20 repo reorganization ---
+# Cold-storage archive — track only small text indexes, ignore heavy binaries
+_archive/**/*.pptx
+_archive/**/*.bak
+_archive/**/*.mp4
+_archive/**/*.mov
+_archive/**/*.png
+_archive/**/*.pdf
+_archive/**/*.zip
+
 # Stale snapshots awaiting confirmed deletion
 talk-usuk-forum-2026/Talk_Materials/_stale/
 analysis/04_talks/**/Talk_Materials/_stale/
