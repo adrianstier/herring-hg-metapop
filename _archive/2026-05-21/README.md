@@ -14,12 +14,19 @@ Originally retained "may be needed by PDF tooling" but the corresponding process
 ### `deck-assets-v36/` — 12 files, ~3.4 MB, **gitignored**
 Prior snapshot of the talk's slide assets directory. The active `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_assets/` supersedes it. `deck_assets_v35/` was empty and was deleted outright.
 
+### `saturday-talk-readiness-2026-05-16.md` — 1 file, tracked
+Date-stamped one-off readiness checklist written for the Saturday before the Royal Society talk. Talk delivered 2026-05-20; this doc has no forward use.
+
 ## Cleanup actions also taken in this batch (not file moves, recorded for traceability)
 
 - Removed all `.DS_Store` files repo-wide (macOS metadata, was already gitignored)
 - Removed empty `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_assets_v35/`
 - Added `.gitkeep` to empty `analysis/<workstream>/{output,docs,scripts}/` scaffold dirs
 - Cleaned up lingering historical text references in active READMEs
+- Removed orphan `excalidraw.log` from repo root
+- Removed empty `Output/presentations/` and `Output/tables/` subdirs
+- Updated `AGENTS.md`: 7 references `Code/07*.R` → `Code/probes/07*.R`
+- Updated `CLAUDE.md`: marked Royal Society talk as `[delivered]`
 
 ## Restoring a file
 

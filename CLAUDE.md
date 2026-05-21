@@ -1,8 +1,8 @@
 # ⭐ Haida Gwaii Herring Talk — READ FIRST
 
 If this session involves the **Pacific herring / Haida Gwaii talk** (US–UK
-Royal Society *Tipping Points in Ocean Systems* Forum, London, Wed 20 May 2026,
-09:30, Session 5 — Ecosystem Services; ~25 min; tied to the herring
+Royal Society *Tipping Points in Ocean Systems* Forum, London, Wed 20 May 2026
+[delivered], 09:30, Session 5 — Ecosystem Services; ~25 min; tied to the herring
 metapopulation paper):
 
 **⚠️ The submitted abstract is NOT the talk's guide.** It was just some early
