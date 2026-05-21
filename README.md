@@ -7,16 +7,25 @@
 If you are reading this repository for the first time, use this order:
 
 1. `README.md` for the project scope and the current model hierarchy.
-2. `docs/collaborator-reading-guide.md` for the codebase reading order and file map.
-3. `docs/theory-data-model-integration.md` for how ecological hypotheses become cleaned covariates, Stan data, parameters, and figures.
-4. `docs/stan-model-map.md` for which Stan files are primary, archival, or generated artifacts.
-5. `R/00_setup.R`, `R/01_data_cleaning.R`, `R/10_spatial_data.R`, and `R/02_prepare_model_data.R` for the data contract.
-6. `inst/stan/*.stan` plus `R/03_fit_model.R` for the model contract.
-7. `R/05_portfolio.R`, `R/08_occupancy_model.R`, `R/06_figures.R`, and `R/07_lecture_figures.R` for interpretation and communication.
-8. `docs/talk-model-claim-control-sheet.md` before turning any model result into talk language.
+2. `REPO_STRUCTURE.md` for the directory map and where to find common things.
+3. `CLAUDE.md` for active project state, talk firewall rules, and sprint context.
+4. `docs/collaborator-reading-guide.md` for the codebase reading order and file map.
+5. `docs/stan-model-map.md` for which Stan files are primary, archival, or generated artifacts.
+6. `R/00_setup.R`, `R/01_data_cleaning.R`, `R/10_spatial_data.R`, and `R/02_prepare_model_data.R` for the data contract.
+7. `inst/stan/*.stan` plus `R/03_fit_model.R` for the model contract.
+8. `R/05_portfolio.R`, `R/08_occupancy_model.R`, `R/06_figures.R`, and `R/07_lecture_figures.R` for interpretation and communication.
+9. `docs/talk-model-claim-control-sheet.md` before turning any model result into talk language.
 
-The maintained workflow lives in `R/`, `_targets.R`, `inst/stan/`, and `tests/testthat/`.
-The top-level `Code/` directory contains exploratory or one-off scripts that are useful context, but it is not the primary pipeline a collaborator should learn first.
+The maintained core pipeline lives in `R/` (shared library), `Code/` (data prep + model fits + `Code/probes/` for post-fit dossiers), `_targets.R`, `inst/stan/`, and `tests/testthat/`.
+
+Derivative analyses live under `analysis/<workstream>/`:
+- `analysis/00_core_model/` — manuscript workspace for the M1–M5 paper
+- `analysis/01_ews/` — Early Warning Signals pipeline (11 scripts, 5,257 lines)
+- `analysis/02_resilience/` — Reversibility / Hysteresis analysis (10 scripts)
+- `analysis/03_bioeconomics/` — self-contained sub-package (own `_targets.R`, `renv/`)
+- `analysis/04_talks/2026-royalsociety/` — Royal Society USUK Forum 2026 talk workspace (firewalled)
+
+Each workstream has its own `README.md`. Cold storage of obsolete files lives in `_archive/` (see `_archive/README.md`).
 
 ## Motivation
 
@@ -69,7 +78,7 @@ All models compared via LOO-CV. See `docs/analysis-plan.md` for details.
 | Collective memory | Not tested | Formal occupancy sub-model |
 | Models | 1 | 7 in a comparison hierarchy |
 | Pipeline | Scripts with `setwd()` | `{targets}` + `here()` |
-| Tests | None | 235 `testthat` expectations across 4 test files |
+| Tests | None | 553 `testthat` expectations across 6 test files |
 
 ## Current Modeling Direction
 
@@ -284,70 +293,37 @@ and which still require exact DFO inputs.
 
 ## Repository Structure
 
+Full directory map with descriptions and "where to find common things" lookup table lives in **[`REPO_STRUCTURE.md`](REPO_STRUCTURE.md)**. Brief overview:
+
 ```
 stier-2027-herring-metapopulation/
-├── R/                              # 12 maintained R files
-│   ├── 00_setup.R                  # Constants, themes, palettes
-│   ├── 01_data_cleaning.R          # 7 data functions (tidyverse, named columns)
-│   ├── 02_prepare_model_data.R     # Stan/JAGS dual-format data assembly
-│   ├── 03_fit_model.R              # cmdstanr fitting, tidybayes extraction (M1-M6)
-│   ├── 04_model_comparison.R       # LOO-CV comparison + visualization
-│   ├── 05_portfolio.R              # Portfolio effect, synchrony, site occupancy
-│   ├── 06_figures.R                # 6 publication figures (patchwork + theme_pub)
-│   ├── 07_lecture_figures.R         # 4K dark-theme lecture figures
-│   ├── 08_occupancy_model.R        # Collective memory Stan model interface
-│   ├── 09_zero_inflated_obs.R      # Censored observation classification
-│   ├── 10_spatial_data.R           # Distance matrices, spatial predator indices
-│   └── process_oisst_monthly.R     # Utility to regenerate monthly SST inputs
-├── inst/stan/                      # Primary Stan models + archival variants/cache artifacts
-│   ├── herring_metapop_m1_stier_11.stan    # Promoted Stier-aligned baseline (zeros ambiguous, 11 sections)
-│   ├── herring_metapop_v1.stan             # Earlier diagonal-equal baseline (archival)
-│   ├── herring_metapop_v2.stan             # Legacy v2: free MVN (reference only)
-│   ├── herring_metapop_m2_distance.stan    # Distance-decay process covariance
-│   ├── herring_metapop_m3_dd_global.stan   # + global Gompertz
-│   ├── herring_metapop_m4_dd_site.stan     # + site-specific Gompertz
-│   ├── herring_metapop_m5_predators.stan   # + predator covariates
-│   ├── herring_metapop_m6_timevarying.stan # + time-varying φ
-│   ├── site_occupancy.stan                 # Collective memory model
-│   ├── herring_metapop_m1_v{2,3,4,5}.stan  # Detection-aware / informative-zero sensitivities (archival)
-│   └── herring_metapop_m{3,5}_v{2,3,5}.stan # Earlier process-branch experiments (archival)
-├── _targets.R                      # Maintained targets pipeline entrypoint
-├── tests/testthat/                 # Regression tests for maintained R code
-├── Code/legacy-2019/               # Original JAGS scripts (historical reference)
-├── Code/                           # Exploratory / one-off scripts, not primary pipeline
-├── Data/
-│   ├── raw/                        # 62 files across 7 sources
-│   │   ├── legacy-2019/            # Original CSVs (1940-2015)
-│   │   ├── dfo-spawn/              # DFO spawn survey (through 2025)
-│   │   ├── dfo-catch/              # DFO catch data
-│   │   ├── environmental/          # PDO, SST, Chl-a
-│   │   ├── predators/              # SSL, harbour seal, humpback
-│   │   ├── steller-sea-lions/      # Breeding counts 1971-2013
-│   │   └── harbour-seals/          # Haul-out surveys
-│   └── processed/                  # Cleaned, merged analysis-ready data
-├── Literature/                     # 71 PDFs (core + predators)
-├── docs/
-│   ├── analysis-plan.md                  # Forward plan after `m1_stier_11`; historical M1-M6 reference
-│   ├── analysis-issues-and-fixes.md      # Historical diagnostic memo
-│   ├── collaborator-reading-guide.md     # First-pass codebase reading order
-│   ├── current-population-driver-findings.md # Current state, driver, and next-model synthesis
-│   ├── data-dictionary.md                # All variables documented
-│   ├── high-quality-analysis-scope.md    # What is ready vs what would strengthen the analysis
-│   ├── okamoto-deep-dive.md              # Okamoto et al. 2020 model deep-dive
-│   ├── parameter-comparison-stier2020.md # JAGS vs Stan parameter comparison
-│   ├── stan-model-map.md                 # Which Stan files are primary vs archival
-│   ├── theory-data-model-integration.md  # Hypotheses → cleaned data → Stan inputs → outputs
-│   ├── v3-model-comparison-results.md    # Historical `v3` comparison record
-│   └── v5-covariate-rationale.md         # `v5` covariate selection rationale
-├── Output/
-│   ├── figures/                    # Publication + lecture figures
-│   ├── diagnostics/                # Sampler audits, PPCs, LOO/Pareto-k summaries, `latest_model_status.md`
-│   ├── tables/                     # Model summaries
-│   └── posteriors/                 # MCMC output / LOO artifacts
-├── .gitignore
-├── README.md
-└── stier-2027-herring-metapopulation.Rproj
+├── R/                  16 numbered shared-library scripts (00_setup → 12_reversibility_figs)
+├── Code/               core data pipeline (00–06) + Code/probes/ (71 post-fit dossiers)
+│   └── archive/        Stier 2020 Ecosphere read-only provenance
+├── inst/stan/          primary Stan models + archival variants
+├── Data/               raw + processed (gitignored, 15 GB)
+├── Output/             model fits, figures, diagnostics (gitignored, 13 GB)
+├── _targets.R          {targets} pipeline driver
+├── tests/testthat/     6 test files, 553 expectations
+├── analysis/           derivative workstreams (see analysis/README.md)
+│   ├── 00_core_model/  paper-writing for M1–M5 manuscript
+│   ├── 01_ews/         Early Warning Signals pipeline
+│   ├── 02_resilience/  Reversibility / Hysteresis analysis
+│   ├── 03_bioeconomics/  self-contained sub-package
+│   ├── 04_talks/       talk workspaces (firewalled from core pipeline)
+│   └── probes/         reserved scaffold for cross-workstream one-offs
+├── docs/               active specs/plans + session logs
+│   └── superpowers/{plans,specs}/   current sprint design docs
+├── Literature/         PDF library (gitignored)
+├── cloud/              AWS Batch artifacts (gitignored, 12 GB)
+├── logs/               build/job logs (gitignored)
+├── _archive/           cold storage of obsolete files (see _archive/README.md)
+├── CLAUDE.md           active project state — read first
+├── REPO_STRUCTURE.md   full directory map + lookup table
+└── README.md           this file
 ```
+
+For Stan model inventory and primary-vs-archival classification see `docs/stan-model-map.md`.
 
 ## Stan Directory Note
 
