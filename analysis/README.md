@@ -9,6 +9,7 @@ Each subdirectory holds the scripts, outputs, and docs for one **derivative anal
 | [`02_resilience/`](02_resilience/) | implemented + figs rendered | `Output/figures/reversibility_*.{pdf,png}`, `Output/diagnostics/reversibility_*.md` |
 | [`03_bioeconomics/`](03_bioeconomics/) | sub-package with own `_targets.R`/`renv/` | `analysis/03_bioeconomics/Output/` (gitignored) |
 | [`04_talks/2026-royalsociety/`](04_talks/2026-royalsociety/) | active (talk workspace, firewalled) | `analysis/04_talks/2026-royalsociety/Talk_Materials/` |
+| [`05_bc_coastwide/`](05_bc_coastwide/) | scaffold (data acquisition in progress) | future — BC-wide hierarchical M1/M3/M5 fits, comparative-areas figures |
 | [`probes/`](probes/) | reserved scaffold | future — cross-workstream one-offs |
 
 ## Firewall rule
