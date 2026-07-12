@@ -1,5 +1,8 @@
 # stier-2027-herring-metapopulation
 
+> **📁 Presentations & large media (Google Drive):** Decks and video for the predators → herring-dynamics paper live at
+> `Stier Lab/People/Adrian Stier/Projects/In Progress/Herring-Predator-Dynamics/` — the "Coupled Tipping Points" 2026 talk (`presentations/`), video clips (`talk-media/Herring_Talk_Clips/`), and talk-prep. That folder's `README.md` is the cross-repo map (this repo, the metapop modeling repo, and herring-bioeconomics).
+
 **Updated analysis of Pacific herring metapopulation dynamics at Haida Gwaii, extending Stier et al. (2020) with a decade of new data, Stan models, and new ecological questions.**
 
 ## Start Here
