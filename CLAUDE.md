@@ -1,5 +1,19 @@
 # ⭐ Haida Gwaii Herring Talk — READ FIRST
 
+## Related herring repositories (cross-walk)
+
+> **You are here: `stier-2027-herring-metapopulation`**
+
+Part of a **three-repo Pacific herring / Haida Gwaii set**. Keep this map in sync across all three (each repo's CLAUDE.md carries it):
+
+- **`pacific-herring-predators`** — GitHub `stier-lab/pacific-herring-predators` · `~/pacific-herring-predators`. Predator-data backbone: audited HG/BC predator time series, pressure/consumption products, harbour-seal & Steller sea-lion spatial products, curated literature. **Not** the modeling repo.
+- **`stier-2027-herring-metapopulation`** — GitHub `adrianstier/herring-hg-metapop` · `~/stier-2027-herring-metapopulation`. Herring state-space / metapopulation modeling (extends Stier et al. 2020 *Ecosphere*); consumes predator covariates from the predator repo; houses the 2026 Royal Society talk workspace.
+- **`herring-bioeconomics`** — `~/herring-bioeconomics`. Bioeconomic backbone + four-lens economic analysis of the BC / Haida Gwaii fishery (kazunoko demand, ecosystem-service & value tipping points).
+
+**Presentations & large media (Google Drive):** `Stier Lab/People/Adrian Stier/Projects/In Progress/Herring-Predator-Dynamics/` — talk decks, video clips, talk-prep. Its `README.md` is the canonical cross-repo map.
+
+**Shared NotebookLM:** "Herring Haida Gwaii" — https://notebooklm.google.com/notebook/63dbc0f0-3a56-4fc0-9a2e-3302ff949b2e
+
 If this session involves the **Pacific herring / Haida Gwaii talk** (US–UK
 Royal Society *Tipping Points in Ocean Systems* Forum, London, Wed 20 May 2026,
 09:30, Session 5 — Ecosystem Services; ~25 min; tied to the herring
