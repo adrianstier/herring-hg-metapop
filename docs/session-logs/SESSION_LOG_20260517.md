@@ -12,7 +12,7 @@ Actions:
   contract.
 - Added `docs/doherty-style-hg-gap-table.md` as the concise answer to how far
   the repository is from a full Doherty-style HG replication.
-- Updated `talk-usuk-forum-2026/Talk_Materials/talk_production_plan.md` to
+- Updated `analysis/04_talks/2026-royalsociety/Talk_Materials/talk_production_plan.md` to
   resolve the predator rigor flag: predator demand is large and WCVI provides
   a mechanism analogue, but no HG predator coefficient is promoted.
 - Updated the talk timeline so the 2020/2021 entries no longer claim predator

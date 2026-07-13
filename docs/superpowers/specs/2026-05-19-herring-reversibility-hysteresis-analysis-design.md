@@ -341,9 +341,9 @@ Iteration Protocol; companion legend files; `audit_figure_consistency()`.
 
 ### 6.4 Firewall
 
-Nothing imported from `talk-usuk-forum-2026/` into the core pipeline. Talk
+Nothing imported from `analysis/04_talks/2026-royalsociety/` into the core pipeline. Talk
 numbers are pulled **from** these core outputs only, never the reverse.
-Consistent with `CLAUDE.md` and `talk-usuk-forum-2026/README.md`.
+Consistent with `CLAUDE.md` and `analysis/04_talks/2026-royalsociety/README.md`.
 
 ### 6.5 New dependency
 

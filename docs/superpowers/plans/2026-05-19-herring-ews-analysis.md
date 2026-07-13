@@ -21,7 +21,7 @@
 - All randomness uses `set.seed(20260519L)` and the seed is written into every output that consumes it.
 - Tests live in `tests/testthat/test-early-warning.R`; run with `Rscript -e 'testthat::test_file("tests/testthat/test-early-warning.R")'`.
 - Commit after every task with `git add <exact paths>` then a `feat:`/`test:`/`chore:` message ending with the repo's `Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>` trailer.
-- Firewall: nothing under `talk-usuk-forum-2026/` is ever `source()`d or read by `R/` or `Code/`. Phase 12 reads core outputs only.
+- Firewall: nothing under `analysis/04_talks/2026-royalsociety/` is ever `source()`d or read by `R/` or `Code/`. Phase 12 reads core outputs only.
 
 ---
 
@@ -45,7 +45,7 @@
 | `Code/11_ews_11_figures.R` | pub-figure-pipeline figures (dashboard, synchrony↔eigen, sensitivity heatmap, surrogate-null, artifact audit). |
 | `Code/run_ews_suite.sh` | Dependency-ordered runner (zsh, `set -euo pipefail`, tee log). |
 | `_targets.R` | New EWS target stage downstream of posterior extraction + portfolio. |
-| `talk-usuk-forum-2026/Talk_Materials/ews_phase0/` | Firewalled Phase-0 talk panel + speaker notes + degrade note. |
+| `analysis/04_talks/2026-royalsociety/Talk_Materials/ews_phase0/` | Firewalled Phase-0 talk panel + speaker notes + degrade note. |
 
 ---
 
@@ -992,18 +992,18 @@ Expected: no cycle errors; EWS targets appear downstream of portfolio.
 ### Task 7.1: Phase-0 claim-safe synchrony↔eigen panel
 
 **Files:**
-- Create: `talk-usuk-forum-2026/Talk_Materials/ews_phase0/build_ews_phase0.R`
-- Create: `talk-usuk-forum-2026/Talk_Materials/ews_phase0/SPEAKER_NOTES.md`
-- Create: `talk-usuk-forum-2026/Talk_Materials/ews_phase0/DEGRADE_RULE.md`
+- Create: `analysis/04_talks/2026-royalsociety/Talk_Materials/ews_phase0/build_ews_phase0.R`
+- Create: `analysis/04_talks/2026-royalsociety/Talk_Materials/ews_phase0/SPEAKER_NOTES.md`
+- Create: `analysis/04_talks/2026-royalsociety/Talk_Materials/ews_phase0/DEGRADE_RULE.md`
 
 - [ ] **Step 1: Write `DEGRADE_RULE.md`** — explicit text: "If `ews_survey_artifact_disqualified.csv` marks φ or eig_share `disqualified==TRUE`, OR `ews_controls_power.csv` shows φ/eig_share fold `detect_rate<0.6`, DO NOT show this slide; fall back to the existing `portfolio_metrics_rolling.csv` framing already in the deck."
 - [ ] **Step 2: Write `build_ews_phase0.R`** — reads ONLY core outputs (`Output/diagnostics/ews_spatial_synchrony.csv`, `ews_covariance_eigen.csv`, `ews_surrogate_significance.csv`, `ews_survey_artifact_disqualified.csv`, `ews_controls_power.csv`); aborts with a clear message if the degrade rule trips; otherwise renders one `theme_lecture()` 16:9 panel (φ and eig_share, observed vs latent, τ/p annotation, artifact-caveat caption) at `ggsave(width=13.333,height=7.5,units="in",dpi=300)`. No `source()` of anything outside the talk dir except `R/00_setup.R` for the theme (read-only; this is the one allowed core import, theme only).
 - [ ] **Step 3: Run it**
 
-Run: `Rscript talk-usuk-forum-2026/Talk_Materials/ews_phase0/build_ews_phase0.R`
+Run: `Rscript analysis/04_talks/2026-royalsociety/Talk_Materials/ews_phase0/build_ews_phase0.R`
 Expected: either the PDF/PNG is written, or it exits stating the degrade rule tripped (both are acceptable, correct behaviour).
 - [ ] **Step 4: Write `SPEAKER_NOTES.md`** — the claim-safe sentences from `ews_claim_control.md` for this panel only; one "if asked about the artifact audit" rebuttal line.
-- [ ] **Step 5: Commit** (`git add talk-usuk-forum-2026/Talk_Materials/ews_phase0/`).
+- [ ] **Step 5: Commit** (`git add analysis/04_talks/2026-royalsociety/Talk_Materials/ews_phase0/`).
 
 ### Task 7.2: Final spec-coverage verification
 

@@ -26,7 +26,7 @@ Two tracks, sequenced:
   synthesis. Lives in the core pipeline.
 - **Talk subset** (Phase 0, attempt tonight, best-effort, degradable) — one
   claim-safe slide + backup + speaker notes, firewalled into
-  `talk-usuk-forum-2026/`. Explicit degrade rule if it cannot be made
+  `analysis/04_talks/2026-royalsociety/`. Explicit degrade rule if it cannot be made
   claim-safe in time.
 
 This spec is the contract for a single implementation plan. Approach **A**
@@ -239,9 +239,9 @@ panel · survey-artifact-audit panel. All via the Figure Iteration Protocol.
 
 ### 6.4 Firewall
 
-Nothing imported from `talk-usuk-forum-2026/` into the core pipeline. Talk
+Nothing imported from `analysis/04_talks/2026-royalsociety/` into the core pipeline. Talk
 numbers are pulled **from** these core EWS outputs only, never the reverse.
-Consistent with `CLAUDE.md` and `talk-usuk-forum-2026/README.md`.
+Consistent with `CLAUDE.md` and `analysis/04_talks/2026-royalsociety/README.md`.
 
 ---
 
@@ -250,7 +250,7 @@ Consistent with `CLAUDE.md` and `talk-usuk-forum-2026/README.md`.
 The full build is multi-day; the talk is in hours.
 
 - **Phase 0 (attempt tonight; claim-safe; firewalled into
-  `talk-usuk-forum-2026/`):** reuse already-computed
+  `analysis/04_talks/2026-royalsociety/`):** reuse already-computed
   `Data/processed/portfolio_metrics_rolling.csv` (φ 0.75→0.40,
   growth-corr 0.04→0.36) and add the single most defensible new panel only —
   synchrony φ + covariance λ_max / leading-EOF share, on **both** observed and

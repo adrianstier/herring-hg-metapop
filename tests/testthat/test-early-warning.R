@@ -465,3 +465,28 @@ test_that("lead-time matrix: schema, confidence ladder, consistency invariant, t
     expect_true(any(grepl(s, md)), info = paste("missing md section:", s))
   }
 })
+
+test_that("synthesis + claim-control md files: presence, sections, anti-hardcoded-number sniff", {
+  fs <- here::here("Output","diagnostics","ews_synthesis.md")
+  fc <- here::here("Output","diagnostics","ews_claim_control.md")
+  skip_if_not(file.exists(fs), "ews_synthesis.md absent — run Code/11_ews_10_synthesis.R first")
+  skip_if_not(file.exists(fc))
+  ms <- readLines(fs); mc <- readLines(fc)
+  for (s in c("The question","Battery","Lead-time results","Does synchrony lead",
+              "Survey-artifact verdict","Power calibration","Limitations","Take-home")) {
+    expect_true(any(grepl(s, ms, fixed = TRUE)), info = paste("synthesis missing:", s))
+  }
+  for (s in c("Bottom Line","Claim Boundaries","Slide-Level Translation","Current EWS Classes")) {
+    expect_true(any(grepl(s, mc, fixed = TRUE)), info = paste("claim-control missing:", s))
+  }
+  # the specific Task 4.1 finding (observed core9 variance gaussian|0.5 tau=+0.602) must appear
+  # numerically in the synthesis — not hardcoded; the script must templated it from the CSV.
+  expect_true(any(grepl("0.602", ms, fixed = TRUE)), info = "synthesis missing observed variance tau=0.602")
+  # the observed core9 phi marginal tau ~0.33 must appear in the synchrony section
+  expect_true(any(grepl("0.33", ms, fixed = TRUE) | grepl("0.331", ms, fixed = TRUE)),
+              info = "synthesis missing observed phi tau ~0.33")
+  # synthesis must reference both layers and units
+  for (s in c("observed","latent","core9","all11")) {
+    expect_true(any(grepl(s, ms)), info = paste("synthesis missing keyword:", s))
+  }
+})

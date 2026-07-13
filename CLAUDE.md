@@ -15,8 +15,8 @@ Part of a **three-repo Pacific herring / Haida Gwaii set**. Keep this map in syn
 **Shared NotebookLM:** "Herring Haida Gwaii" — https://notebooklm.google.com/notebook/63dbc0f0-3a56-4fc0-9a2e-3302ff949b2e
 
 If this session involves the **Pacific herring / Haida Gwaii talk** (US–UK
-Royal Society *Tipping Points in Ocean Systems* Forum, London, Wed 20 May 2026,
-09:30, Session 5 — Ecosystem Services; ~25 min; tied to the herring
+Royal Society *Tipping Points in Ocean Systems* Forum, London, Wed 20 May 2026
+[delivered], 09:30, Session 5 — Ecosystem Services; ~25 min; tied to the herring
 metapopulation paper):
 
 **⚠️ The submitted abstract is NOT the talk's guide.** It was just some early
@@ -35,11 +35,11 @@ Before turning a model result into slide language, read
 `docs/talk-model-claim-control-sheet.md`. It is the safe-language contract for
 baseline, held branches, predators, DFO summaries, and the Doherty-style bridge.
 
-**Talk work lives in `talk-usuk-forum-2026/`** — a TALK-ONLY workspace
+**Talk work lives in `analysis/04_talks/2026-royalsociety/`** — a TALK-ONLY workspace
 firewalled from the core metapopulation analysis. Never import anything from
 it into the modeling pipeline (`R/`, `inst/stan/`, `Data/`, `Output/`,
 `Code/`, `_targets.R`); talk numbers are pulled *from* the core analysis,
-never the reverse. See `talk-usuk-forum-2026/README.md`. Current direction:
+never the reverse. See `analysis/04_talks/2026-royalsociety/README.md`. Current direction:
 Spine B (coupled social–ecological tipping points, hysteresis-led, NOT
 portfolio-as-early-warning, solutions-forward).
 

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>S1.5 — Haida Gwaii: sense of place</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:3840px;height:2160px;overflow:hidden;}
+  :root{
+    --bg:#0e0e0e;
+    --ink:#f0eee9;
+    --ink-soft:#a8a59f;
+    --rust:#d9714f;
+    --marine:#6e9bc4;
+    --marine-bright:#9ec0e0;
+    --amber:#cfa055;
+    --kelp:#8aa074;
+  }
+  body{
+    font-family:'IBM Plex Sans',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    position:relative;
+  }
+  .slide{width:3840px;height:2160px;position:relative;}
+
+  /* Map panel — hero element: right ~65% of slide, full height */
+  .map{
+    position:absolute;
+    top:0;
+    right:0;
+    width:2520px;
+    height:2160px;
+    overflow:hidden;
+  }
+  .map img{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    height:2160px;           /* fill panel vertically — shows the FULL archipelago */
+    width:auto;
+    filter:saturate(1.18) contrast(1.10) brightness(1.06);
+  }
+  .map::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(90deg, rgba(14,14,14,1) 0%, rgba(14,14,14,0.0) 14%, rgba(14,14,14,0) 100%),
+      radial-gradient(ellipse at 55% 50%, rgba(14,14,14,0) 60%, rgba(14,14,14,0.30) 100%);
+    pointer-events:none;
+  }
+
+  /* Left text panel — 33% width */
+  .text-panel{
+    position:absolute;
+    top:0;
+    left:0;
+    width:1320px;
+    height:2160px;
+    padding:140px 140px 130px 140px;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .kicker{
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:500;
+    font-size:42px;
+    letter-spacing:.18em;
+    color:var(--rust);
+    text-transform:uppercase;
+    margin-bottom:110px;
+    white-space:nowrap;
+  }
+
+  h1{
+    font-family:'Crimson Pro',serif;
+    font-weight:600;
+    font-size:260px;
+    line-height:0.95;
+    color:var(--ink);
+    margin-bottom:32px;
+    letter-spacing:-0.012em;
+    white-space:nowrap;
+  }
+
+  .deck-sub{
+    font-family:'Crimson Pro',serif;
+    font-weight:400;
+    font-style:italic;
+    font-size:76px;
+    color:var(--marine-bright);
+    line-height:1.25;
+    margin-bottom:100px;
+    letter-spacing:0.005em;
+  }
+
+  .body{
+    font-family:'IBM Plex Sans',sans-serif;
+    font-weight:400;
+    font-size:54px;
+    line-height:1.45;
+    color:var(--ink-soft);
+    max-width:1100px;
+    margin-bottom:42px;
+  }
+  .body em{
+    color:var(--ink);
+    font-style:italic;
+    font-weight:500;
+  }
+
+  .takeaway{
+    margin-top:auto;
+    padding-left:34px;
+    border-left:6px solid var(--amber);
+    font-family:'Crimson Pro',serif;
+    font-weight:400;
+    font-size:72px;
+    line-height:1.25;
+    color:var(--ink);
+    max-width:1100px;
+  }
+  .takeaway em{
+    font-style:italic;
+    color:var(--amber);
+  }
+
+  .provenance{
+    margin-top:36px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:28px;
+    letter-spacing:.04em;
+    color:var(--ink-soft);
+    opacity:0.7;
+    line-height:1.4;
+  }
+
+  /* Annotation labels on the map */
+  .label{
+    position:absolute;
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:500;
+    font-size:48px;
+    letter-spacing:.16em;
+    color:var(--ink);
+    text-transform:uppercase;
+    line-height:1.3;
+    text-shadow:0 2px 18px rgba(0,0,0,1), 0 0 60px rgba(0,0,0,0.95);
+    z-index:2;
+  }
+
+  /* Place-name dots — the inlets the talk later cites */
+  .place{
+    position:absolute;
+    font-family:'IBM Plex Sans',sans-serif;
+    font-weight:400;
+    font-size:52px;
+    letter-spacing:.01em;
+    color:var(--ink);
+    text-shadow:0 2px 14px rgba(0,0,0,1), 0 0 32px rgba(0,0,0,0.85);
+    z-index:2;
+    line-height:1.2;
+    white-space:nowrap;
+    transform:translate(-8px, -50%);
+  }
+  .place::before{
+    content:"";
+    display:inline-block;
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    background:var(--amber);
+    margin-right:18px;
+    vertical-align:middle;
+    box-shadow:0 0 0 4px rgba(14,14,14,0.85);
+  }
+
+  /* Spawning cove scatter dots — string along east coast */
+  .cove-dot{
+    position:absolute;
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    background:var(--marine-bright);
+    opacity:0.92;
+    z-index:3;
+    box-shadow:0 0 0 4px rgba(14,14,14,0.7), 0 0 16px rgba(158,192,224,0.6);
+  }
+
+  /* SVG layer for leader lines */
+  .leaders{
+    position:absolute;
+    inset:0;
+    width:3840px;
+    height:2160px;
+    z-index:1;
+    pointer-events:none;
+  }
+  .leaders path, .leaders line{
+    fill:none;
+    stroke:rgba(158,192,224,0.78);
+    stroke-width:3.2;
+  }
+  .leaders .dot{
+    fill:rgba(158,192,224,0.95);
+  }
+
+  /* Label positions (canvas coords 3840×2160; map panel x≈1320 to x=3840) */
+  /* Map img is ~1850 wide (2160 tall × ~0.857 aspect from 2400×2800 source),
+     centered in the 2520-wide panel → img runs from x≈1655 to x≈3505. */
+  .lbl-shelf{      top: 1380px; left: 1500px; max-width:480px;}
+  .lbl-upwelling{  top: 1730px; left: 1900px; max-width:560px;}
+  .lbl-coves{      top: 320px;  left: 3360px; max-width:460px; text-align:right;}
+
+  /* Place dots — inlets cited later */
+  .pl-skidegate { top: 920px;  left: 3000px;}
+  .pl-cumshewa  { top: 1100px; left: 3200px;}
+  .pl-selwyn    { top: 1290px; left: 3140px;}
+
+</style>
+</head>
+<body>
+<div class="slide">
+
+  <!-- Map panel — uses in-project satellite (portable across machines) -->
+  <div class="map">
+    <img src="deck_assets/_sources/haida_gwaii_satellite_esri.jpg" alt="Haida Gwaii satellite imagery">
+  </div>
+
+  <!-- Leader lines (SVG over the full slide) -->
+  <svg class="leaders" viewBox="0 0 3840 2160" preserveAspectRatio="none">
+    <!-- Shelf edge: label at (~1500, 1410) → deep-ocean point on shelf break -->
+    <path d="M 1870 1420 L 2100 1700"/>
+    <circle class="dot" cx="2100" cy="1700" r="8"/>
+
+    <!-- Upwelling: label at (~1900, 1755) → coastal margin -->
+    <path d="M 2380 1770 L 2580 1640"/>
+    <circle class="dot" cx="2580" cy="1640" r="8"/>
+
+    <!-- Spawning coves: label at (~3550, 380) → nearest cove dot -->
+    <path d="M 3500 410 L 3220 660"/>
+    <circle class="dot" cx="3220" cy="660" r="6"/>
+  </svg>
+
+  <!-- Annotation labels -->
+  <div class="label lbl-shelf">Pacific shelf edge</div>
+  <div class="label lbl-upwelling">Upwelling /<br>productive waters</div>
+  <div class="label lbl-coves">Protected<br>spawning coves</div>
+
+  <!-- Spawning cove scatter dots — string of 8 dots along east coast of Haida Gwaii -->
+  <!-- East coast runs roughly x:3180-3360, y:600-1500 in 3840×2160 canvas coords -->
+  <div class="cove-dot" style="top:610px;  left:3210px;"></div>
+  <div class="cove-dot" style="top:680px;  left:3250px;"></div>
+  <div class="cove-dot" style="top:770px;  left:3280px;"></div>
+  <div class="cove-dot" style="top:870px;  left:3300px;"></div>
+  <div class="cove-dot" style="top:980px;  left:3290px;"></div>
+  <div class="cove-dot" style="top:1090px; left:3260px;"></div>
+  <div class="cove-dot" style="top:1210px; left:3220px;"></div>
+  <div class="cove-dot" style="top:1330px; left:3170px;"></div>
+
+  <!-- Place-name dots (inlets cited later in the talk) -->
+  <div class="place pl-skidegate">Skidegate Inlet</div>
+  <div class="place pl-cumshewa">Cumshewa Inlet</div>
+  <div class="place pl-selwyn">Selwyn Inlet</div>
+
+  <!-- Text panel -->
+  <div class="text-panel">
+    <div class="kicker">Coupled tipping points &nbsp;|&nbsp; Pacific herring &nbsp;|&nbsp; Haida Gwaii</div>
+
+    <h1>Haida Gwaii</h1>
+    <div class="deck-sub">At the edge of the North Pacific</div>
+
+    <div class="body">
+      A fragmented archipelago ~100&nbsp;km off British Columbia.
+      <em>Graham</em> in the north, <em>Moresby</em> in the south.
+    </div>
+
+    <div class="body" style="margin-bottom:0;">
+      Deep Pacific water bathes <em>hundreds of sheltered spawning coves</em>
+      along the east coast — a herring network running for <em>~10,700&nbsp;years</em>.
+    </div>
+
+    <div class="takeaway">
+      A geography built for <em>spatial structure</em>.
+    </div>
+
+    <div class="provenance">Imagery: Esri World Imagery (Maxar / Sentinel‑2 mosaic). Place names per DFO Pacific Herring SR 2025; 10,700‑yr baseline per McKechnie et&nbsp;al. 2014 PNAS.</div>
+  </div>
+
+</div>
+</body>
+</html>

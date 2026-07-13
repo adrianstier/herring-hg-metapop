@@ -80,7 +80,7 @@ script string-matches `sim_anim`; the mp4 was rendered from frames/ffmpeg).
 ## For future Claude/Codex sessions
 - **Restyling the animation** → read `Code/Recent Figs/Simulator_catch__2q_v3.R`
   for the simulation logic; `_animation/sim_anim.mp4` is the visual target;
-  reimplement in `talk-usuk-forum-2026/Talk_Materials/deck_build/redesign_figs.py`
+  reimplement in `analysis/04_talks/2026-royalsociety/Talk_Materials/deck_build/redesign_figs.py`
   per the canonical pipeline (see `deck_build/README.md`).
 - **Method/provenance questions** about the 2020 paper → `Recent Figs/` first,
   then `old/` lineage.
