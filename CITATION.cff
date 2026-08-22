@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this repository, cite the paper below."
+title: "Fishing, environment, and the erosion of a population portfolio"
+authors:
+  - family-names: Stier
+    given-names: Adrian C.
+preferred-citation:
+  type: article
+  title: "Fishing, environment, and the erosion of a population portfolio"
+  year: 2020
+  journal: "ecosphere"
+  doi: 10.1002/ecs2.3283
